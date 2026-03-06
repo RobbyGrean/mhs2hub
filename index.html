@@ -115,7 +115,55 @@
         </a>
       </div>
     </div>
+<div class="max-w-4xl mx-auto mb-24 text-center">
+    <h2 class="text-2xl font-bold mb-6 text-yellow-400 flex items-center justify-center gap-3">
+        ⚡ โหมดพักสายตา: ปิกาจูวอลเลย์บอล ⚡
+    </h2>
+    
+    <div id="pikachuBtn" onclick="playPikachuMusic()" class="inline-block cursor-pointer hover:scale-110 transition-transform mb-6">
+        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueXZueXJueXJueXJueXJueXJueXJueXJueXJueXJueXJueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/13G7hmmFr9yuxG/giphy.gif" 
+             alt="Pikachu" class="w-20 h-20 mx-auto">
+        <div id="musicStatus" class="text-sm text-yellow-400 font-bold mt-2">จิ้มที่ตัวผมเพื่อเปิด BGM! 🎵</div>
+    </div>
 
+    <div class="bg-slate-900 rounded-3xl p-4 border-4 border-yellow-500 shadow-[0_0_30px_rgba(234,179,8,0.3)] overflow-hidden">
+        <iframe 
+            src="https://gorisanson.github.io/pikachu-volleyball/" 
+            width="100%" 
+            height="450px" 
+            frameborder="0" 
+            scrolling="no"
+            class="rounded-xl">
+        </iframe>
+    </div>
+</div>
+
+<audio id="pikachuBGM" loop>
+    <source src="penpaitam.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    const song = document.getElementById('pikachuBGM');
+    const statusText = document.getElementById('musicStatus');
+
+    function playPikachuMusic() {
+        if (song.paused) {
+            song.play(); // เริ่มเพลง
+            statusText.innerText = "กำลังเล่น BGM... ⏸️";
+        } else {
+            song.pause(); // หยุดเพลง
+            statusText.innerText = "จิ้มที่ตัวผมเพื่อเปิด BGM! 🎵";
+        }
+    }
+
+    // เงื่อนไขหยุดเพลงเมื่อกดปุ่มคู่มือ
+    document.querySelectorAll('.btn-card').forEach(button => {
+        button.addEventListener('click', () => {
+            song.pause();
+            statusText.innerText = "จิ้มที่ตัวผมเพื่อเปิด BGM! 🎵";
+        });
+    });
+</script>
     <footer class="text-center">
       <div class="inline-block bg-slate-800/40 backdrop-blur-md rounded-[3rem] p-12 border border-slate-700/50 glow-purple">
         <p class="text-2xl text-slate-200 mb-8 font-medium italic text-center">พบปัญหา/สอบถามเพิ่มเติม ติดต่อผ่าน QR Code นี้</p>
