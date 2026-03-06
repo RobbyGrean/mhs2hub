@@ -116,54 +116,22 @@
       </div>
     </div>
 <div class="max-w-4xl mx-auto mb-24 text-center">
-    <h2 class="text-2xl font-bold mb-6 text-yellow-400 flex items-center justify-center gap-3">
-        ⚡ โหมดพักสายตา: ปิกาจูวอลเลย์บอล ⚡
-    </h2>
-    
-    <div id="pikachuBtn" onclick="playPikachuMusic()" class="inline-block cursor-pointer hover:scale-110 transition-transform mb-6">
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNHJueXZueXJueXJueXJueXJueXJueXJueXJueXJueXJueXJueCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/13G7hmmFr9yuxG/giphy.gif" 
-             alt="Pikachu" class="w-20 h-20 mx-auto">
-        <div id="musicStatus" class="text-sm text-yellow-400 font-bold mt-2">จิ้มที่ตัวผมเพื่อเปิด BGM! 🎵</div>
-    </div>
-
+    <h2 class="text-2xl font-bold mb-6 text-yellow-400">⚡ โหมดพักสายตา: ปิกาจูวอลเลย์บอล ⚡</h2>
     <div class="bg-slate-900 rounded-3xl p-4 border-4 border-yellow-500 shadow-[0_0_30px_rgba(234,179,8,0.3)] overflow-hidden">
-        <iframe 
-            src="https://gorisanson.github.io/pikachu-volleyball/" 
-            width="100%" 
-            height="450px" 
-            frameborder="0" 
-            scrolling="no"
-            class="rounded-xl">
-        </iframe>
+        <iframe src="https://gorisanson.github.io/pikachu-volleyball/" width="100%" height="450px" frameborder="0" scrolling="no" class="rounded-xl"></iframe>
+        
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-left bg-slate-800 p-6 rounded-2xl border border-slate-700">
+            <div>
+                <h4 class="text-yellow-400 font-bold mb-2">👤 ผู้เล่น 1 (ซ้าย):</h4>
+                <p class="text-slate-300 text-sm">● บังคับ: <span class="bg-slate-600 px-2 rounded">D</span> <span class="bg-slate-600 px-2 rounded">R</span> <span class="bg-slate-600 px-2 rounded">G</span> <span class="bg-slate-600 px-2 rounded">F</span> | ตบ: <span class="bg-slate-600 px-2 rounded">Z</span></p>
+            </div>
+            <div>
+                <h4 class="text-yellow-400 font-bold mb-2">🤖 ผู้เล่น 2 (ขวา):</h4>
+                <p class="text-slate-300 text-sm">● บังคับ: <span class="bg-slate-600 px-2 rounded">ปุ่มลูกศร</span> | ตบ: <span class="bg-slate-600 px-2 rounded">Enter</span></p>
+            </div>
+        </div>
     </div>
 </div>
-
-<audio id="pikachuBGM" loop>
-    <source src="penpaitam.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-    const song = document.getElementById('pikachuBGM');
-    const statusText = document.getElementById('musicStatus');
-
-    function playPikachuMusic() {
-        if (song.paused) {
-            song.play(); // เริ่มเพลง
-            statusText.innerText = "กำลังเล่น BGM... ⏸️";
-        } else {
-            song.pause(); // หยุดเพลง
-            statusText.innerText = "จิ้มที่ตัวผมเพื่อเปิด BGM! 🎵";
-        }
-    }
-
-    // เงื่อนไขหยุดเพลงเมื่อกดปุ่มคู่มือ
-    document.querySelectorAll('.btn-card').forEach(button => {
-        button.addEventListener('click', () => {
-            song.pause();
-            statusText.innerText = "จิ้มที่ตัวผมเพื่อเปิด BGM! 🎵";
-        });
-    });
-</script>
     <footer class="text-center">
       <div class="inline-block bg-slate-800/40 backdrop-blur-md rounded-[3rem] p-12 border border-slate-700/50 glow-purple">
         <p class="text-2xl text-slate-200 mb-8 font-medium italic text-center">พบปัญหา/สอบถามเพิ่มเติม ติดต่อผ่าน QR Code นี้</p>
@@ -176,5 +144,30 @@
       </div>
     </footer>
   </div>
+  <audio id="bgMusic" loop>
+    <source src="penpaitam.mp3" type="audio/mpeg">
+</audio>
+
+<button onclick="toggleMusic()" id="musicBtn" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg flex items-center justify-center z-[100] hover:scale-110 active:scale-95 transition-all border-2 border-white/30">
+    <span id="musicIcon" class="text-2xl">🎵</span>
+</button>
+
+<script>
+    const music = document.getElementById('bgMusic');
+    const mIcon = document.getElementById('musicIcon');
+    const mBtn = document.getElementById('musicBtn');
+
+    function toggleMusic() {
+        if (music.paused) {
+            music.play();
+            mIcon.innerText = '⏸️';
+            mBtn.classList.add('animate-pulse');
+        } else {
+            music.pause();
+            mIcon.innerText = '🎵';
+            mBtn.classList.remove('animate-pulse');
+        }
+    }
+</script>
 </body>
 </html>
