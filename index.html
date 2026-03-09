@@ -154,11 +154,11 @@
     </footer>
   </div>
 
-<!-- 1. ตัวเล่นเพลง (ซ่อนไว้) -->
-  <audio id="bgMusic"></audio>
+<!-- 1. ตัวเล่นเพลง (วางไว้ก่อนปุ่มควบคุม) -->
+<audio id="bgMusic"></audio>
 
-  <!-- 2. แถบควบคุมเพลง (2 ปุ่ม: Play/Pause และ Next) -->
-  <div class="fixed bottom-6 right-6 flex items-center bg-slate-900/90 backdrop-blur-md border-2 border-white/20 rounded-full p-2 shadow-2xl z-[100] gap-3">
+<!-- 2. แถบควบคุมเพลง (2 ปุ่ม: Play/Pause และ Next) -->
+<div class="fixed bottom-6 right-6 flex items-center bg-slate-900/90 backdrop-blur-md border-2 border-white/20 rounded-full p-2 shadow-2xl z-[100] gap-3">
     <!-- ปุ่มเล่น/หยุด -->
     <button onclick="toggleMusic()" id="musicBtn" class="w-14 h-14 flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all">
         <span id="musicIcon" class="text-2xl">🎵</span>
@@ -167,16 +167,15 @@
     <button onclick="nextSong()" title="สุ่มเพลงใหม่" class="w-10 h-10 flex items-center justify-center bg-slate-800 text-white rounded-full hover:bg-slate-700 active:scale-90 transition-all">
         <span class="text-sm">⏭️</span>
     </button>
-  </div>
+</div>
 
 <script>
-    // ดึง Element มาเก็บไว้ในตัวแปร
-    <script>
+    // ดึง Element มาเก็บไว้ในตัวแปรให้เรียบร้อย
     const music = document.getElementById('bgMusic');
     const mIcon = document.getElementById('musicIcon');
     const mBtn = document.getElementById('musicBtn');
 
-    // รายชื่อเพลง (ผมพิมพ์ตามรูปที่พี่ส่งมาให้เป๊ะๆ แล้วครับ)
+    // รายชื่อเพลงล่าสุด (ภาษาอังกฤษทั้งหมดตามที่พี่จอยแจ้งมา)
     const playlist = [
         'penpaitam.mp3',
         'zakv2.mp3',
@@ -190,41 +189,53 @@
         'PSDv1.mp3'
     ];
 
+    // ฟังก์ชันสุ่มเพลง
     function getRandomIndex() {
         return Math.floor(Math.random() * playlist.length);
     }
 
-   function loadTrack(index) {
-        music.src = playlist[index]; // ดึงชื่อไฟล์จาก playlist มาใส่
+    // ฟังก์ชันโหลดเพลง (รองรับทั้งภาษาไทยและอังกฤษ)
+    function loadTrack(index) {
+        const trackName = playlist[index];
+        music.src = encodeURI(trackName); 
         music.load();
     }
 
-    // เริ่มต้นสุ่มเพลง
+    // เริ่มต้น: สุ่มเพลงรอไว้ทันทีที่โหลดหน้าเว็บ
     loadTrack(getRandomIndex());
 
+    // --- ฟังก์ชัน เล่น/หยุด (จุดที่พี่กดไม่ติด) ---
     function toggleMusic() {
         if (music.paused) {
+            // ถ้าหยุดอยู่ -> ให้เล่น
             music.play().then(() => {
                 mIcon.innerText = '⏸️';
                 mBtn.classList.add('animate-pulse');
-            }).catch(e => {
-                console.log("จิ้มหน้าจอ 1 ทีเพื่อให้เพลงเล่นครับ");
+                mBtn.classList.replace('from-green-500', 'from-red-500'); // เปลี่ยนสีให้รู้ว่ากำลังเล่น
+            }).catch(err => {
+                console.log("Browser บังคับให้คลิกหน้าจอก่อน 1 ครั้งครับ");
+                alert("กรุณาคลิกที่ใดก็ได้บนหน้าจอ 1 ครั้ง เพื่อเริ่มเล่นเพลงครับ");
             });
         } else {
+            // ถ้าเล่นอยู่ -> ให้หยุด
             music.pause();
             mIcon.innerText = '🎵';
             mBtn.classList.remove('animate-pulse');
+            mBtn.classList.replace('from-red-500', 'from-green-500');
         }
     }
 
+    // ฟังก์ชัน สุ่มเพลงถัดไป
     function nextSong() {
         loadTrack(getRandomIndex());
         music.play().then(() => {
             mIcon.innerText = '⏸️';
             mBtn.classList.add('animate-pulse');
+            mBtn.classList.replace('from-green-500', 'from-red-500');
         });
     }
 
+    // เมื่อเพลงจบ ให้สุ่มเพลงใหม่ขึ้นมาทันที
     music.onended = function() {
         nextSong();
     };
