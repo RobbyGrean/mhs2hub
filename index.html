@@ -171,41 +171,33 @@
     const mIcon = document.getElementById('musicIcon');
     const mBtn = document.getElementById('musicBtn');
 
+    // รายชื่อเพลง 1-12 (เช็คให้ชัวร์ว่าใน GitHub มีไฟล์ 1.mp3 จนถึง 12.mp3 นะครับ)
     const playlist = [
-        'PSDv1.mp3',
-        'machinev2.mp3',
-        'myhusbandPopv2.mp3',
-        'penpaitam.mp3',
-        'psdv2.mp3',
-        'uptomefinal.mp3',
-        'uptomev3.mp3',
-        'whymev3.mp3',
-        'whymev4.mp3',
-        'zakv2.mp3'
+        '1.mp3', '2.mp3', '3.mp3', '4.mp3', '5.mp3', 
+        '6.mp3', '7.mp3', '8.mp3', '9.mp3', '10.mp3', 
+        '11.mp3', '12.mp3'
     ];
 
     let currentTrackIndex = -1;
 
     function loadTrack(index) {
-        // เติม ?v= + เลขสุ่ม เพื่อป้องกัน Browser จำเพลงเก่า (Anti-cache)
+        // เติม ?v= เพื่อล้าง Cache เก่า บังคับโหลดไฟล์ใหม่เสมอ
         const cacheBuster = "?v=" + Math.random();
-        music.src = encodeURI(playlist[index] + cacheBuster);
+        music.src = playlist[index] + cacheBuster;
         music.load();
-        
-        // โชว์ชื่อเพลงใน Console (กด F12 ดูได้ว่าตอนนี้เล่นเพลงไหน)
-        console.log("กำลังเล่นเพลงที่ " + (index + 1) + ": " + playlist[index]);
+        console.log("Next track loaded: " + playlist[index]);
     }
 
     function getRandomIndex() {
         let newIndex;
-        // ป้องกันสุ่มได้เพลงซ้ำเพลงเดิมทันที
+        // สุ่มใหม่ถ้าได้เพลงเดิม เพื่อให้เพลงไม่เล่นซ้ำที่เดิม
         do {
             newIndex = Math.floor(Math.random() * playlist.length);
         } while (newIndex === currentTrackIndex);
         return newIndex;
     }
 
-    // เริ่มต้นสุ่มเพลงแรก
+    // เริ่มต้น: สุ่มเตรียมไว้ 1 เพลง
     currentTrackIndex = getRandomIndex();
     loadTrack(currentTrackIndex);
 
@@ -215,7 +207,9 @@
                 mIcon.innerText = '⏸️';
                 mBtn.classList.add('animate-pulse');
             }).catch(e => {
-                console.log("กรุณากดปุ่ม Play เพื่อเริ่มเพลง");
+                // ถ้าติดกฎ Browser (Autoplay Block) ให้ลองกด Next เพื่อกระตุ้น
+                console.log("User interaction required");
+                nextSong();
             });
         } else {
             music.pause();
@@ -230,12 +224,11 @@
         music.play().then(() => {
             mIcon.innerText = '⏸️';
             mBtn.classList.add('animate-pulse');
-        });
+        }).catch(err => console.log("Waiting for play click..."));
     }
 
-    music.onended = function() {
-        nextSong();
-    };
+    // เมื่อจบเพลง ให้สุ่มเพลงถัดไปทันที
+    music.onended = nextSong;
 </script>
 </body>
 </html>
