@@ -16,10 +16,11 @@
     .glow-orange { box-shadow: 0 0 15px rgba(249, 115, 22, 0.3); border: 1px solid rgba(249, 115, 22, 0.4); }
     .glow-green { box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); border: 1px solid rgba(34, 197, 94, 0.4); }
     .glow-indigo { box-shadow: 0 0 15px rgba(99, 102, 241, 0.3); border: 1px solid rgba(99, 102, 241, 0.4); }
+    .glow-amber { box-shadow: 0 0 20px rgba(245, 158, 11, 0.4); border: 1px solid rgba(245, 158, 11, 0.5); }
     .btn-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; position: relative; }
     .btn-card:hover { transform: translateY(-5px); filter: brightness(1.1); }
     .dropdown-content { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s ease-in-out; }
-    .dropdown-active .dropdown-content { max-height: 400px; opacity: 1; margin-top: 1.25rem; }
+    .dropdown-active .dropdown-content { max-height: 5000px; opacity: 1; margin-top: 1.25rem; }
     .dropdown-active .arrow-icon { transform: rotate(180deg); color: white; }
     .arrow-icon { transition: transform 0.3s; }
     .shine-box { position: relative; overflow: hidden; border-radius: 1.5rem; }
@@ -29,6 +30,9 @@
       transform: rotate(30deg); animation: shine-logic 5s infinite;
     }
     @keyframes shine-logic { 0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; } }
+    /* CSS สำหรับการยืดภาพแบบเต็มจอในกรอบ */
+    .img-collapse { max-height: 0; overflow: hidden; transition: max-height 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+    .img-show { max-height: 4000px; margin-top: 1rem; }
   </style>
   <script>
     if (navigator.userAgent.includes("Line")) {
@@ -48,8 +52,10 @@
       <p class="text-slate-400 text-xl font-light italic">งานพัสดุหนีให้ไกล หนีไม่ได้ค่อยมาหาเรา</p>
     </header>
 
+<!-- ส่วนของเมนูหลัก (Grid) -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
       
+      <!-- 1. คู่มือการตั้งเบิก (ครึ่งจอ) -->
       <div onclick="this.classList.toggle('dropdown-active')" class="btn-card shine-box glow-cyan bg-slate-800/80 backdrop-blur-md p-8">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-5">
@@ -59,15 +65,16 @@
           <svg class="arrow-icon w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
         </div>
         <div class="dropdown-content space-y-3">
-          <a href="https://drive.google.com/file/d/1YLlkxb7_P5ZItuLOorpb1yNzKTUUwctO/view?usp=sharing&openExternalBrowser=1" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
+          <a href="https://drive.google.com/file/d/1YLlkxb7_P5ZItuLOorpb1yNzKTUUwctO/view?usp=sharing&openExternalBrowser=1" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300">
             <span class="w-2 h-2 rounded-full bg-cyan-400"></span> 1.1 คู่มือการส่งเบิก
           </a>
-          <a href="https://drive.google.com/drive/folders/1rd-2zcOPMJZDo1UbYEcmCaMPVvYHZ5wu?usp=sharing&openExternalBrowser=1" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
+          <a href="https://drive.google.com/drive/folders/1rd-2zcOPMJZDo1UbYEcmCaMPVvYHZ5wu?usp=sharing&openExternalBrowser=1" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300">
             <span class="w-2 h-2 rounded-full bg-cyan-400"></span> 1.2 แบบฟอร์มใบเบิก / ทะเบียนคุม
           </a>
         </div>
       </div>
 
+      <!-- 2. คู่มือตรวจสอบพัสดุประจำปี (ครึ่งจอ) -->
       <a href="https://drive.google.com/file/d/1Mk_KzDl6d91KcbM2U2D4rK77ujxhzp6k/view?usp=sharing&openExternalBrowser=1" class="btn-card shine-box glow-purple bg-slate-800/80 backdrop-blur-md p-8 block">
         <div class="flex items-center gap-5">
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/40 text-2xl">📋</div>
@@ -75,6 +82,7 @@
         </div>
       </a>
 
+      <!-- 3. งานจ้างเหมาบริการ (ครึ่งจอ) -->
       <div onclick="this.classList.toggle('dropdown-active')" class="btn-card shine-box glow-orange bg-slate-800/80 backdrop-blur-md p-8">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-5">
@@ -89,6 +97,7 @@
         </div>
       </div>
 
+      <!-- 4. คู่มือระบบ EGP (ครึ่งจอ) -->
       <a href="https://drive.google.com/drive/folders/1ycDaO_xA6caj04mJgURbOajlq93hkjtk?usp=sharing&openExternalBrowser=1" class="btn-card shine-box glow-green bg-slate-800/80 backdrop-blur-md p-8 block">
         <div class="flex items-center gap-5">
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-lg shadow-green-500/40 text-2xl">💻</div>
@@ -96,14 +105,60 @@
         </div>
       </a>
 
+      <!-- 5. หนังสือเวียน (กว้างเต็มจอ) -->
       <a href="https://drive.google.com/drive/folders/1RqBlTaetk0uJFzkGP5R84fyLjDNJB_pa?usp=sharing&openExternalBrowser=1" class="btn-card shine-box glow-indigo bg-slate-800/80 backdrop-blur-md p-8 block md:col-span-2">
         <div class="flex items-center gap-5">
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-indigo-500/40 text-2xl">📂</div>
           <h3 class="text-2xl font-bold text-white tracking-wide text-left">ศูนย์รวมหนังสือเวียนกรมบัญชีกลาง</h3>
         </div>
       </a>
-    </div>
 
+      <!-- 6. หลักเกณฑ์การเบิกเบี้ยเลี้ยง (กว้างเต็มจอ - ย้ายมาเติมท้ายกรอบตามที่พี่จอยบอก) -->
+      <div onclick="this.classList.toggle('dropdown-active')" class="btn-card shine-box glow-amber bg-slate-800/80 backdrop-blur-md p-8 md:col-span-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-5">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-yellow-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/40 text-2xl">💰</div>
+            <h3 class="text-2xl font-bold text-white tracking-wide">หลักเกณฑ์การเบิกเบี้ยเลี้ยงเดินทางและค่าอาหาร</h3>
+          </div>
+          <svg class="arrow-icon w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+        
+        <!-- ส่วนที่ยืดออกมา -->
+        <div class="dropdown-content space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- ข้อย่อย 1 -->
+              <div onclick="event.stopPropagation(); document.getElementById('img-travel').classList.toggle('img-show')" class="group cursor-pointer">
+                <div class="flex items-center justify-between p-5 bg-slate-900/80 rounded-2xl group-hover:bg-amber-500/20 border border-slate-700 group-hover:border-amber-500/50 transition-all">
+                   <span class="text-lg font-bold text-amber-400">📍 การเบิกค่าเดินทางไปราชการ</span>
+                   <span class="text-slate-500 group-hover:text-amber-400 text-sm italic">คลิกดูภาพ</span>
+                </div>
+                <div id="img-travel" class="img-collapse">
+                   <a href="การเบิกค่าเดินทางไปราชการ.png" target="_blank" onclick="event.stopPropagation()">
+                      <img src="การเบิกค่าเดินทางไปราชการ.png" alt="Travel" class="w-full h-auto rounded-xl mt-4 shadow-2xl border border-white/10 hover:brightness-110 transition-all">
+                   </a>
+                </div>
+              </div>
+
+              <!-- ข้อย่อย 2 -->
+              <div onclick="event.stopPropagation(); document.getElementById('img-food').classList.toggle('img-show')" class="group cursor-pointer">
+                <div class="flex items-center justify-between p-5 bg-slate-900/80 rounded-2xl group-hover:bg-amber-500/20 border border-slate-700 group-hover:border-amber-500/50 transition-all">
+                   <span class="text-lg font-bold text-amber-400">🍱 ค่าอาหารและเครื่องดื่ม</span>
+                   <span class="text-slate-500 group-hover:text-amber-400 text-sm italic">คลิกดูภาพ</span>
+                </div>
+                <div id="img-food" class="img-collapse">
+                   <a href="อาหาร.png" target="_blank" onclick="event.stopPropagation()">
+                      <img src="อาหาร.png" alt="Food" class="w-full h-auto rounded-xl mt-4 shadow-2xl border border-white/10 hover:brightness-110 transition-all">
+                   </a>
+                </div>
+              </div>
+          </div>
+          <p class="text-center text-slate-500 text-sm italic">หมายเหตุ: กดที่ภาพเพื่อเปิดดูไฟล์ต้นฉบับขนาดใหญ่</p>
+        </div>
+      </div>
+
+    </div> <!-- ปิด Grid เมนู -->
+
+    <!-- ภาพรวมการทำงาน -->
     <div class="mb-24">
       <h2 class="text-3xl font-bold text-center mb-10 text-white">ภาพรวมการทำงาน</h2>
       <div class="bg-slate-800/40 backdrop-blur-sm rounded-3xl p-6 border border-slate-700/30 shadow-2xl overflow-hidden">
@@ -115,23 +170,26 @@
         </a>
       </div>
     </div>
-<div class="max-w-4xl mx-auto mb-24 text-center">
-    <h2 class="text-2xl font-bold mb-6 text-yellow-400">⚡ โหมดพักสายตา: ปิกาจูวอลเลย์บอล กด [PLAY] โลด ⚡</h2>
-    <div class="bg-slate-900 rounded-3xl p-4 border-4 border-yellow-500 shadow-[0_0_30px_rgba(234,179,8,0.3)] overflow-hidden">
-        <iframe src="https://gorisanson.github.io/pikachu-volleyball/" width="100%" height="450px" frameborder="0" scrolling="no" class="rounded-xl"></iframe>
-        
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-left bg-slate-800 p-6 rounded-2xl border border-slate-700">
-            <div>
-                <h4 class="text-yellow-400 font-bold mb-2">👤 ผู้เล่น 1 (ซ้าย):</h4>
-                <p class="text-slate-300 text-sm">● บังคับ: <span class="bg-slate-600 px-2 rounded">D</span> <span class="bg-slate-600 px-2 rounded">R</span> <span class="bg-slate-600 px-2 rounded">G</span> <span class="bg-slate-600 px-2 rounded">F</span> | ตบ: <span class="bg-slate-600 px-2 rounded">Z</span></p>
-            </div>
-            <div>
-                <h4 class="text-yellow-400 font-bold mb-2">🤖 ผู้เล่น 2 (ขวา):</h4>
-                <p class="text-slate-300 text-sm">● บังคับ: <span class="bg-slate-600 px-2 rounded">ปุ่มลูกศร</span> | ตบ: <span class="bg-slate-600 px-2 rounded">Enter</span></p>
+
+    <!-- เกมปิกาจู -->
+    <div class="max-w-4xl mx-auto mb-24 text-center">
+        <h2 class="text-2xl font-bold mb-6 text-yellow-400">⚡ โหมดพักสายตา: ปิกาจูวอลเลย์บอล กด [PLAY] โลด ⚡</h2>
+        <div class="bg-slate-900 rounded-3xl p-4 border-4 border-yellow-500 shadow-[0_0_30px_rgba(234,179,8,0.3)] overflow-hidden">
+            <iframe src="https://gorisanson.github.io/pikachu-volleyball/" width="100%" height="450px" frameborder="0" scrolling="no" class="rounded-xl"></iframe>
+            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-left bg-slate-800 p-6 rounded-2xl border border-slate-700">
+                <div>
+                    <h4 class="text-yellow-400 font-bold mb-2">👤 ผู้เล่น 1 (ซ้าย):</h4>
+                    <p class="text-slate-300 text-sm">● บังคับ: <span class="bg-slate-600 px-2 rounded">D</span> <span class="bg-slate-600 px-2 rounded">R</span> <span class="bg-slate-600 px-2 rounded">G</span> <span class="bg-slate-600 px-2 rounded">F</span> | ตบ: <span class="bg-slate-600 px-2 rounded">Z</span></p>
+                </div>
+                <div>
+                    <h4 class="text-yellow-400 font-bold mb-2">🤖 ผู้เล่น 2 (ขวา):</h4>
+                    <p class="text-slate-300 text-sm">● บังคับ: <span class="bg-slate-600 px-2 rounded">ปุ่มลูกศร</span> | ตบ: <span class="bg-slate-600 px-2 rounded">Enter</span></p>
+                </div>
             </div>
         </div>
     </div>
-</div>
+
+    <!-- Footer -->
     <footer class="text-center">
       <div class="inline-block bg-slate-800/40 backdrop-blur-md rounded-[3rem] p-12 border border-slate-700/50 glow-purple">
         <p class="text-2xl text-slate-200 mb-8 font-medium italic text-center">พบปัญหา/สอบถามเพิ่มเติม ติดต่อผ่าน QR Code นี้</p>
@@ -139,35 +197,84 @@
           <img src="https://img5.pic.in.th/file/secure-sv1/messageImage_1772591928721.jpg" alt="QR Code" class="w-48 h-48 object-contain">
         </div>
         <div class="mt-10 text-slate-500 text-sm">
-           <p>© 2026 งานพัสดุ @Robbygrean | มั่นใจ โปร่งใส ตรวจสอบได้ แต๊เน้อ</p>
+            <p>© 2026 งานพัสดุ @Robbygrean | มั่นใจ โปร่งใส ตรวจสอบได้ แต๊เน้อ</p>
         </div>
       </div>
     </footer>
   </div>
-  <audio id="bgMusic" loop>
-    <source src="penpaitam.mp3" type="audio/mpeg">
-</audio>
 
-<button onclick="toggleMusic()" id="musicBtn" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg flex items-center justify-center z-[100] hover:scale-110 active:scale-95 transition-all border-2 border-white/30">
-    <span id="musicIcon" class="text-2xl">🎵</span>
-</button>
+  <!-- ระบบ Music Player แบบลอยตัวพร้อม Shuffle -->
+  <audio id="bgMusic"></audio>
+
+  <div class="fixed bottom-6 right-6 flex items-center bg-slate-900/90 backdrop-blur-md border-2 border-white/20 rounded-full p-2 shadow-2xl z-[100] gap-2">
+    <button onclick="prevSong()" class="w-10 h-10 flex items-center justify-center bg-slate-800 text-white rounded-full hover:bg-slate-700 active:scale-90 transition-all">⏮️</button>
+    <button onclick="toggleMusic()" id="musicBtn" class="w-14 h-14 flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all">
+        <span id="musicIcon" class="text-2xl">🎵</span>
+    </button>
+    <button onclick="nextSong()" class="w-10 h-10 flex items-center justify-center bg-slate-800 text-white rounded-full hover:bg-slate-700 active:scale-90 transition-all">⏭️</button>
+  </div>
 
 <script>
     const music = document.getElementById('bgMusic');
     const mIcon = document.getElementById('musicIcon');
     const mBtn = document.getElementById('musicBtn');
 
+    // รายชื่อเพลงทั้งหมด
+    const playlist = [
+        'penpaitam.mp3',
+        'ซาก v.2.mp3',
+        'ทำไมต้องเป็นพี่ v.4.mp3',
+        'ทำไมต้องเป็นพี่ v3 best.mp3',
+        'พัสดุจงเจริญ V.1.mp3',
+        'พัสดุจงเจริญ and Rap v.2.mp3',
+        'เครื่องจักรนักตอบ v 2.4.mp3',
+        'แล้วแต่อารมณ์ Ver.Final.mp3',
+        'แล้วแต่อารมณ์ v.3.mp3'
+    ];
+
+    let currentTrackIndex = 0;
+
+    function getRandomIndex() {
+        return Math.floor(Math.random() * playlist.length);
+    }
+
+    function loadTrack(index) {
+        music.src = playlist[index];
+        music.load();
+    }
+
+    // เริ่มต้นสุ่มเพลง
+    currentTrackIndex = getRandomIndex();
+    loadTrack(currentTrackIndex);
+
     function toggleMusic() {
         if (music.paused) {
-            music.play();
-            mIcon.innerText = '⏸️';
-            mBtn.classList.add('animate-pulse');
+            music.play().then(() => {
+                mIcon.innerText = '⏸️';
+                mBtn.classList.add('animate-pulse');
+            }).catch(e => console.log("User interaction required"));
         } else {
             music.pause();
             mIcon.innerText = '🎵';
             mBtn.classList.remove('animate-pulse');
         }
     }
+
+    function nextSong() {
+        currentTrackIndex = getRandomIndex();
+        loadTrack(currentTrackIndex);
+        music.play();
+        mIcon.innerText = '⏸️';
+        mBtn.classList.add('animate-pulse');
+    }
+
+    function prevSong() {
+        nextSong(); // ในโหมดสุ่ม Previous ก็คือการสุ่มใหม่
+    }
+
+    music.onended = function() {
+        nextSong();
+    };
 </script>
 </body>
 </html>
