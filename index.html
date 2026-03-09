@@ -171,11 +171,12 @@
 
 <script>
     // ดึง Element มาเก็บไว้ในตัวแปร
+    <script>
     const music = document.getElementById('bgMusic');
     const mIcon = document.getElementById('musicIcon');
     const mBtn = document.getElementById('musicBtn');
 
-    // รายชื่อเพลง (ตรวจสอบชื่อไฟล์ให้ตรงกับในโฟลเดอร์นะครับ)
+    // รายชื่อเพลง (ผมพิมพ์ตามรูปที่พี่ส่งมาให้เป๊ะๆ แล้วครับ)
     const playlist = [
         'penpaitam.mp3',
         'ซาก v.2.mp3',
@@ -183,44 +184,41 @@
         'ทำไมต้องเป็นพี่ v3 best.mp3',
         'พัสดุจงเจริญ V.1.mp3',
         'พัสดุจงเจริญ and Rap v.2.mp3',
+        'สหวิชาชีพ Pop v.2.mp3',
         'เครื่องจักรนักตอบ v 2.4.mp3',
         'แล้วแต่อารมณ์ Ver.Final.mp3',
         'แล้วแต่อารมณ์ v.3.mp3'
     ];
 
-    // ฟังก์ชันสุ่มเลข index เพลง
     function getRandomIndex() {
         return Math.floor(Math.random() * playlist.length);
     }
 
-    // ฟังก์ชันโหลดเพลง
     function loadTrack(index) {
-        music.src = playlist[index];
+        // *** จุดตายอยู่ที่บรรทัดนี้ครับ ใช้ encodeURI เพื่อรองรับภาษาไทยและเว้นวรรค ***
+        const trackName = playlist[index];
+        music.src = encodeURI(trackName); 
         music.load();
     }
 
-    // เริ่มต้น: สุ่มเพลงรอไว้เลย
+    // เริ่มต้นสุ่มเพลง
     loadTrack(getRandomIndex());
 
-    // ฟังก์ชัน เล่น/หยุด (หัวใจหลักที่พี่ถาม)
     function toggleMusic() {
         if (music.paused) {
-            // ถ้าเพลงหยุดอยู่ ให้เล่น
             music.play().then(() => {
-                mIcon.innerText = '⏸️'; // เปลี่ยนไอคอนเป็นหยุด
-                mBtn.classList.add('animate-pulse'); // ใส่เอฟเฟกต์เต้น
-            }).catch(err => {
-                console.log("ต้องคลิกหน้าจอก่อนหนึ่งครั้งถึงจะเล่นได้ตามกฎ Browser");
+                mIcon.innerText = '⏸️';
+                mBtn.classList.add('animate-pulse');
+            }).catch(e => {
+                console.log("จิ้มหน้าจอ 1 ทีเพื่อให้เพลงเล่นครับ");
             });
         } else {
-            // ถ้าเพลงเล่นอยู่ ให้หยุด
             music.pause();
-            mIcon.innerText = '🎵'; // เปลี่ยนไอคอนกลับเป็นโน้ตเพลง
+            mIcon.innerText = '🎵';
             mBtn.classList.remove('animate-pulse');
         }
     }
 
-    // ฟังก์ชัน สุ่มเพลงถัดไป
     function nextSong() {
         loadTrack(getRandomIndex());
         music.play().then(() => {
@@ -229,7 +227,6 @@
         });
     }
 
-    // เมื่อเพลงจบ ให้สุ่มเพลงใหม่ทันที
     music.onended = function() {
         nextSong();
     };
