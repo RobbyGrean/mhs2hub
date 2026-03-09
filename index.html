@@ -153,24 +153,29 @@
       </div>
     </footer>
   </div>
+
+<!-- 1. ตัวเล่นเพลง (ซ่อนไว้) -->
   <audio id="bgMusic"></audio>
 
-<!-- ระบบ Music Player แบบ 2 ปุ่ม (Play & Next) -->
+  <!-- 2. แถบควบคุมเพลง (2 ปุ่ม: Play/Pause และ Next) -->
   <div class="fixed bottom-6 right-6 flex items-center bg-slate-900/90 backdrop-blur-md border-2 border-white/20 rounded-full p-2 shadow-2xl z-[100] gap-3">
     <!-- ปุ่มเล่น/หยุด -->
     <button onclick="toggleMusic()" id="musicBtn" class="w-14 h-14 flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all">
         <span id="musicIcon" class="text-2xl">🎵</span>
     </button>
-    <!-- ปุ่มสุ่มเพลงถัดไป -->
-    <button onclick="nextSong()" title="สุ่มเพลงใหม่" class="w-10 h-10 flex items-center justify-center bg-slate-800 text-white rounded-full hover:bg-slate-700 active:scale-90 transition-all text-sm">⏭️</button>
+    <!-- ปุ่มสุ่มเพลงถัดไป (Next) -->
+    <button onclick="nextSong()" title="สุ่มเพลงใหม่" class="w-10 h-10 flex items-center justify-center bg-slate-800 text-white rounded-full hover:bg-slate-700 active:scale-90 transition-all">
+        <span class="text-sm">⏭️</span>
+    </button>
   </div>
 
 <script>
+    // ดึง Element มาเก็บไว้ในตัวแปร
     const music = document.getElementById('bgMusic');
     const mIcon = document.getElementById('musicIcon');
     const mBtn = document.getElementById('musicBtn');
 
-    // รายชื่อเพลงทั้งหมด
+    // รายชื่อเพลง (ตรวจสอบชื่อไฟล์ให้ตรงกับในโฟลเดอร์นะครับ)
     const playlist = [
         'penpaitam.mp3',
         'ซาก v.2.mp3',
@@ -183,48 +188,51 @@
         'แล้วแต่อารมณ์ v.3.mp3'
     ];
 
-    let currentTrackIndex = 0;
-
+    // ฟังก์ชันสุ่มเลข index เพลง
     function getRandomIndex() {
         return Math.floor(Math.random() * playlist.length);
     }
 
+    // ฟังก์ชันโหลดเพลง
     function loadTrack(index) {
         music.src = playlist[index];
         music.load();
     }
 
-    // เริ่มต้นสุ่มเพลง
-    currentTrackIndex = getRandomIndex();
-    loadTrack(currentTrackIndex);
+    // เริ่มต้น: สุ่มเพลงรอไว้เลย
+    loadTrack(getRandomIndex());
 
+    // ฟังก์ชัน เล่น/หยุด (หัวใจหลักที่พี่ถาม)
     function toggleMusic() {
         if (music.paused) {
+            // ถ้าเพลงหยุดอยู่ ให้เล่น
             music.play().then(() => {
-                mIcon.innerText = '⏸️';
-                mBtn.classList.add('animate-pulse');
-            }).catch(e => console.log("User interaction required"));
+                mIcon.innerText = '⏸️'; // เปลี่ยนไอคอนเป็นหยุด
+                mBtn.classList.add('animate-pulse'); // ใส่เอฟเฟกต์เต้น
+            }).catch(err => {
+                console.log("ต้องคลิกหน้าจอก่อนหนึ่งครั้งถึงจะเล่นได้ตามกฎ Browser");
+            });
         } else {
+            // ถ้าเพลงเล่นอยู่ ให้หยุด
             music.pause();
-            mIcon.innerText = '🎵';
+            mIcon.innerText = '🎵'; // เปลี่ยนไอคอนกลับเป็นโน้ตเพลง
             mBtn.classList.remove('animate-pulse');
         }
     }
 
+    // ฟังก์ชัน สุ่มเพลงถัดไป
     function nextSong() {
-        currentTrackIndex = getRandomIndex();
-        loadTrack(currentTrackIndex);
-        music.play();
-        mIcon.innerText = '⏸️';
-        mBtn.classList.add('animate-pulse');
+        loadTrack(getRandomIndex());
+        music.play().then(() => {
+            mIcon.innerText = '⏸️';
+            mBtn.classList.add('animate-pulse');
+        });
     }
 
-    }
-
+    // เมื่อเพลงจบ ให้สุ่มเพลงใหม่ทันที
     music.onended = function() {
         nextSong();
     };
-
 </script>
 </body>
 </html>
