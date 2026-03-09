@@ -48,8 +48,10 @@
       <p class="text-slate-400 text-xl font-light italic">งานพัสดุหนีให้ไกล หนีไม่ได้ค่อยมาหาเรา</p>
     </header>
 
+   <!-- ส่วน Grid เมนูที่ปรับให้เปิด Tab ใหม่ทั้งหมด -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
       
+      <!-- 1. คู่มือการตั้งเบิก -->
       <div onclick="this.classList.toggle('dropdown-active')" class="btn-card shine-box glow-cyan bg-slate-800/80 backdrop-blur-md p-8">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-5">
@@ -59,22 +61,25 @@
           <svg class="arrow-icon w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
         </div>
         <div class="dropdown-content space-y-3">
-          <a href="https://drive.google.com/file/d/1YLlkxb7_P5ZItuLOorpb1yNzKTUUwctO/view?usp=sharing&openExternalBrowser=1" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
+          <!-- เติม target="_blank" ตรงนี้ -->
+          <a href="https://drive.google.com/file/d/1YLlkxb7_P5ZItuLOorpb1yNzKTUUwctO/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
             <span class="w-2 h-2 rounded-full bg-cyan-400"></span> 1.1 คู่มือการส่งเบิก
           </a>
-          <a href="https://drive.google.com/drive/folders/1rd-2zcOPMJZDo1UbYEcmCaMPVvYHZ5wu?usp=sharing&openExternalBrowser=1" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
+          <a href="https://drive.google.com/drive/folders/1rd-2zcOPMJZDo1UbYEcmCaMPVvYHZ5wu?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
             <span class="w-2 h-2 rounded-full bg-cyan-400"></span> 1.2 แบบฟอร์มใบเบิก / ทะเบียนคุม
           </a>
         </div>
       </div>
 
-      <a href="https://drive.google.com/file/d/1Mk_KzDl6d91KcbM2U2D4rK77ujxhzp6k/view?usp=sharing&openExternalBrowser=1" class="btn-card shine-box glow-purple bg-slate-800/80 backdrop-blur-md p-8 block">
+      <!-- 2. คู่มือตรวจสอบพัสดุประจำปี -->
+      <a href="https://drive.google.com/file/d/1Mk_KzDl6d91KcbM2U2D4rK77ujxhzp6k/view?usp=sharing" target="_blank" class="btn-card shine-box glow-purple bg-slate-800/80 backdrop-blur-md p-8 block">
         <div class="flex items-center gap-5">
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/40 text-2xl">📋</div>
           <h3 class="text-2xl font-bold text-white tracking-wide text-left">คู่มือตรวจสอบพัสดุประจำปี</h3>
         </div>
       </a>
 
+      <!-- 3. งานจ้างเหมาบริการ -->
       <div onclick="this.classList.toggle('dropdown-active')" class="btn-card shine-box glow-orange bg-slate-800/80 backdrop-blur-md p-8">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-5">
@@ -84,19 +89,21 @@
           <svg class="arrow-icon w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
         </div>
         <div class="dropdown-content space-y-3">
-          <a href="https://drive.google.com/drive/folders/1sQtmmxb74I0Z6MRiX3A94mElyph-scYJ?usp=sharing&openExternalBrowser=1" onclick="event.stopPropagation()" class="block p-4 bg-slate-900/60 rounded-xl hover:bg-orange-500/30 text-slate-300">3.1 Template กระบวนการจัดซื้อจัดจ้าง</a>
-          <a href="https://drive.google.com/drive/folders/1So9BayVwMEnDkHTWDbYKN_3YcoruCDfj?usp=sharing&openExternalBrowser=1" onclick="event.stopPropagation()" class="block p-4 bg-slate-900/60 rounded-xl hover:bg-orange-500/30 text-slate-300">3.2 เอกสารเบิกเงินเดือน</a>
+          <a href="https://drive.google.com/drive/folders/1sQtmmxb74I0Z6MRiX3A94mElyph-scYJ?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="block p-4 bg-slate-900/60 rounded-xl hover:bg-orange-500/30 text-slate-300">3.1 Template กระบวนการจัดซื้อจัดจ้าง</a>
+          <a href="https://drive.google.com/drive/folders/1So9BayVwMEnDkHTWDbYKN_3YcoruCDfj?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="block p-4 bg-slate-900/60 rounded-xl hover:bg-orange-500/30 text-slate-300">3.2 เอกสารเบิกเงินเดือน</a>
         </div>
       </div>
 
-      <a href="https://drive.google.com/drive/folders/1ycDaO_xA6caj04mJgURbOajlq93hkjtk?usp=sharing&openExternalBrowser=1" class="btn-card shine-box glow-green bg-slate-800/80 backdrop-blur-md p-8 block">
+      <!-- 4. คู่มือระบบ EGP -->
+      <a href="https://drive.google.com/drive/folders/1ycDaO_xA6caj04mJgURbOajlq93hkjtk?usp=sharing" target="_blank" class="btn-card shine-box glow-green bg-slate-800/80 backdrop-blur-md p-8 block">
         <div class="flex items-center gap-5">
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-lg shadow-green-500/40 text-2xl">💻</div>
           <h3 class="text-2xl font-bold text-white tracking-wide text-left">คู่มือระบบ EGP</h3>
         </div>
       </a>
 
-      <a href="https://drive.google.com/drive/folders/1RqBlTaetk0uJFzkGP5R84fyLjDNJB_pa?usp=sharing&openExternalBrowser=1" class="btn-card shine-box glow-indigo bg-slate-800/80 backdrop-blur-md p-8 block md:col-span-2">
+      <!-- 5. หนังสือเวียน -->
+      <a href="https://drive.google.com/drive/folders/1RqBlTaetk0uJFzkGP5R84fyLjDNJB_pa?usp=sharing" target="_blank" class="btn-card shine-box glow-indigo bg-slate-800/80 backdrop-blur-md p-8 block md:col-span-2">
         <div class="flex items-center gap-5">
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-indigo-500/40 text-2xl">📂</div>
           <h3 class="text-2xl font-bold text-white tracking-wide text-left">ศูนย์รวมหนังสือเวียนกรมบัญชีกลาง</h3>
@@ -104,13 +111,15 @@
       </a>
     </div>
 
+    <!-- ส่วนภาพรวมการทำงาน (Preview Image) -->
     <div class="mb-24">
       <h2 class="text-3xl font-bold text-center mb-10 text-white">ภาพรวมการทำงาน</h2>
       <div class="bg-slate-800/40 backdrop-blur-sm rounded-3xl p-6 border border-slate-700/30 shadow-2xl overflow-hidden">
-        <a href="https://drive.google.com/file/d/1ypFXawAq2kC_2z9-XzZyGHEJ_HQGDsbQ/view?usp=sharing&openExternalBrowser=1" class="block group relative">
+        <!-- เติม target="_blank" ตรงนี้ด้วย -->
+        <a href="https://drive.google.com/file/d/1ypFXawAq2kC_2z9-XzZyGHEJ_HQGDsbQ/view?usp=sharing" target="_blank" class="block group relative">
           <img src="https://img2.pic.in.th/messageImage_1772618723051.jpg" alt="Preview" class="w-full h-auto rounded-2xl transition-all duration-700 group-hover:scale-105 group-hover:brightness-50">
           <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/40 rounded-2xl">
-            <span class="px-8 py-4 bg-cyan-500 text-white rounded-full font-bold shadow-2xl">คลิกเพื่อดูฉบับเต็ม</span>
+            <span class="px-8 py-4 bg-cyan-500 text-white rounded-full font-bold shadow-2xl">คลิกเพื่อดูฉบับเต็ม (Tab ใหม่)</span>
           </div>
         </a>
       </div>
