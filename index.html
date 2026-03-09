@@ -155,11 +155,14 @@
   </div>
   <audio id="bgMusic"></audio>
 
-  <div class="fixed bottom-6 right-6 flex items-center bg-slate-900/90 backdrop-blur-md border-2 border-white/20 rounded-full p-2 shadow-2xl z-[100] gap-2">
+<!-- ระบบ Music Player แบบ 2 ปุ่ม (Play & Next) -->
+  <div class="fixed bottom-6 right-6 flex items-center bg-slate-900/90 backdrop-blur-md border-2 border-white/20 rounded-full p-2 shadow-2xl z-[100] gap-3">
+    <!-- ปุ่มเล่น/หยุด -->
     <button onclick="toggleMusic()" id="musicBtn" class="w-14 h-14 flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all">
         <span id="musicIcon" class="text-2xl">🎵</span>
     </button>
-    <button onclick="nextSong()" class="w-10 h-10 flex items-center justify-center bg-slate-800 text-white rounded-full hover:bg-slate-700 active:scale-90 transition-all">⏭️</button>
+    <!-- ปุ่มสุ่มเพลงถัดไป -->
+    <button onclick="nextSong()" title="สุ่มเพลงใหม่" class="w-10 h-10 flex items-center justify-center bg-slate-800 text-white rounded-full hover:bg-slate-700 active:scale-90 transition-all text-sm">⏭️</button>
   </div>
 
 <script>
