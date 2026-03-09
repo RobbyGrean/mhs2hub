@@ -194,10 +194,8 @@
         return Math.floor(Math.random() * playlist.length);
     }
 
-    function loadTrack(index) {
-        // *** จุดตายอยู่ที่บรรทัดนี้ครับ ใช้ encodeURI เพื่อรองรับภาษาไทยและเว้นวรรค ***
-        const trackName = playlist[index];
-        music.src = encodeURI(trackName); 
+   function loadTrack(index) {
+        music.src = playlist[index]; // ดึงชื่อไฟล์จาก playlist มาใส่
         music.load();
     }
 
