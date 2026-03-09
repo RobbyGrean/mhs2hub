@@ -171,7 +171,6 @@
     const mIcon = document.getElementById('musicIcon');
     const mBtn = document.getElementById('musicBtn');
 
-    // รายชื่อเพลง (อัปเดตตาม GitHub ล่าสุดของพี่จอย)
     const playlist = [
         'PSDv1.mp3',
         'machinev2.mp3',
@@ -185,18 +184,28 @@
         'zakv2.mp3'
     ];
 
-    let currentTrackIndex = 0;
-
-    function getRandomIndex() {
-        return Math.floor(Math.random() * playlist.length);
-    }
+    let currentTrackIndex = -1;
 
     function loadTrack(index) {
-        music.src = playlist[index];
+        // เติม ?v= + เลขสุ่ม เพื่อป้องกัน Browser จำเพลงเก่า (Anti-cache)
+        const cacheBuster = "?v=" + Math.random();
+        music.src = encodeURI(playlist[index] + cacheBuster);
         music.load();
+        
+        // โชว์ชื่อเพลงใน Console (กด F12 ดูได้ว่าตอนนี้เล่นเพลงไหน)
+        console.log("กำลังเล่นเพลงที่ " + (index + 1) + ": " + playlist[index]);
     }
 
-    // เริ่มต้นสุ่มเพลง
+    function getRandomIndex() {
+        let newIndex;
+        // ป้องกันสุ่มได้เพลงซ้ำเพลงเดิมทันที
+        do {
+            newIndex = Math.floor(Math.random() * playlist.length);
+        } while (newIndex === currentTrackIndex);
+        return newIndex;
+    }
+
+    // เริ่มต้นสุ่มเพลงแรก
     currentTrackIndex = getRandomIndex();
     loadTrack(currentTrackIndex);
 
@@ -206,8 +215,7 @@
                 mIcon.innerText = '⏸️';
                 mBtn.classList.add('animate-pulse');
             }).catch(e => {
-                // ลบ Alert ออกแล้ว เพลงจะเล่นเมื่อพี่จิ้มปุ่ม Play เท่านั้น
-                console.log("Playback blocked until user interaction");
+                console.log("กรุณากดปุ่ม Play เพื่อเริ่มเพลง");
             });
         } else {
             music.pause();
