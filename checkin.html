@@ -175,22 +175,20 @@
                       // ส่วนแสดงผล Live Log แบบเน้นชื่อตัวใหญ่
 currentLogState.forEach((log, index) => {
     const isNew = index < newEntries.length;
-    logContainer.innerHTML += `
-        <div class="p-5 rounded-2xl text-white border-l-8 shadow-2xl transition-all duration-700 ${
-            isNew ? 'border-yellow-400 bg-indigo-600 animate-pulse scale-[1.02]' : 'border-indigo-500 bg-slate-800/60'
-        }">
-            <div class="flex justify-between items-start">
-                <div class="w-full">
-                    <div class="text-sm font-medium ${isNew ? 'text-indigo-200' : 'text-slate-400'} mb-1">
-                        🏫 ${log.school}
-                    </div>
-                    <div class="text-2xl md:text-3xl font-bold ${isNew ? 'text-white' : 'text-indigo-100'} tracking-wide">
-                        👤 ${log.details}
-                    </div>
+   logContainer.innerHTML += `
+    <div class="p-5 rounded-2xl text-white border-l-8 shadow-2xl transition-all duration-700 ${
+        isNew ? 'border-yellow-400 bg-indigo-600 animate-pulse scale-[1.02]' : 'border-indigo-500 bg-slate-800/60'
+    }">
+        <div class="flex justify-between items-start">
+            <div class="w-full">
+                <div class="text-sm font-medium ${isNew ? 'text-indigo-200' : 'text-slate-400'} mb-1">🏫 ${log.school}</div>
+                <div class="text-2xl md:text-3xl font-bold ${isNew ? 'text-white' : 'text-indigo-100'} leading-relaxed">
+                    👤 ${log.details}
                 </div>
-                ${isNew ? '<span class="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-black animate-bounce shadow-lg">NEW</span>' : ''}
             </div>
-        </div>`;
+            ${isNew ? '<span class="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-black animate-bounce shadow-lg">NEW</span>' : ''}
+        </div>
+    </div>`;
 });
                     }
                 }
