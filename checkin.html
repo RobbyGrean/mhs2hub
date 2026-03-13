@@ -42,8 +42,12 @@
             
             <div>
               <label class="block text-sm text-slate-400 mb-2">ค้นหาชื่อโรงเรียน (176 แห่ง)</label>
-              <input type="text" id="schoolInput" list="schoolOptions" class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500" placeholder="พิมพ์ชื่อโรงเรียนเพื่อค้นหา..." required autocomplete="off">
-              <datalist id="schoolOptions"></datalist>
+              <input type="text" id="schoolInput" list="schoolOptions" 
+       placeholder="พิมพ์ชื่อโรงเรียนเพื่อค้นหา..." 
+       autocomplete="off"
+       onfocus="this.value=''; this.click();" 
+       class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 transition-all placeholder:text-slate-500">
+<datalist id="schoolOptions"></datalist>
             </div>
 
             <div>
