@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบเช็คชื่อออนไลน์ - ไข่พัสดุ</title>
+    <title>ระบบเช็คชื่อออนไลน์ MHS2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
@@ -228,34 +228,44 @@ currentLogState.forEach((log, index) => {
         }
 
         // ฟังก์ชันบันทึกข้อมูล
-        document.getElementById('checkinForm').onsubmit = async (e) => {
-            e.preventDefault();
-            const school = document.getElementById('schoolSelect').value;
-            if (!school) { alert("⚠️ กรุณาเลือกโรงเรียนให้ครบถ้วนครับ"); return; }
-            
-            const btn = document.getElementById('btnSubmit');
-            btn.disabled = true; btn.innerText = "กำลังบันทึกข้อมูล...";
-            
-            const name = document.getElementById('userName').value;
-            const pos = document.getElementById('userPosition').value;
+       document.getElementById('checkinForm').onsubmit = async (e) => {
+    e.preventDefault();
+    const school = document.getElementById('schoolSelect').value;
+    const name = document.getElementById('userName').value;
+    const pos = document.getElementById('userPosition').value;
+    const newDetails = `${name} (${pos})`;
 
-            try {
-                const res = await fetch(WEB_APP_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ school, name, position: pos }) 
-                });
-                const result = await res.json();
-                
-                if (result.status === "success" || result.status === "exists") {
-                    alert(result.status === "exists" ? "ชื่อนี้ได้รับการลงทะเบียนไปแล้วครับ" : "บันทึกสำเร็จ! ขอบคุณครับ");
-                    document.getElementById('checkinForm').reset();
-                    document.getElementById('tambonSelect').disabled = true;
-                    document.getElementById('schoolSelect').disabled = true;
-                    await updateData();
-                }
-            } catch (err) { alert("❌ เกิดข้อผิดพลาด กรุณาลองใหม่"); }
-            btn.disabled = false; btn.innerText = "บันทึกการเช็คชื่อ";
-        };
+    if (!school) { alert("⚠️ กรุณาเลือกโรงเรียนให้ครบถ้วนครับ"); return; }
+    
+    // เช็คเบื้องต้นว่าโรงเรียนนี้เคยมาหรือยัง (จาก Live Log ปัจจุบัน)
+    const existingLog = currentLogState.find(l => l.school === school);
+    if (existingLog) {
+        const confirmAdd = confirm(`โรงเรียนนี้มีการลงทะเบียนอยู่ก่อนแล้วโดย:\n"${existingLog.details}"\n\nกด 'ตกลง' เพื่อเพิ่มชื่อของคุณต่อท้ายเข้าไประบบครับ`);
+        if (!confirmAdd) return;
+    }
+
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true; btn.innerText = "กำลังบันทึก...";
+
+    try {
+        const res = await fetch(WEB_APP_URL, { 
+            method: 'POST', 
+            body: JSON.stringify({ school, name, position: pos }) 
+        });
+        const result = await res.json();
+        
+        if (result.status === "success" || result.status === "updated") {
+            alert(result.status === "updated" ? "เพิ่มรายชื่อของคุณเข้าสู่ระบบเรียบร้อยแล้ว!" : "บันทึกการลงทะเบียนสำเร็จ!");
+            document.getElementById('checkinForm').reset();
+            document.getElementById('tambonSelect').disabled = true;
+            document.getElementById('schoolSelect').disabled = true;
+            await updateData(); // ดึงข้อมูลล่าสุดมาโชว์ใน Live Log ทันที
+        } else if (result.status === "exists") {
+            alert("คุณได้ลงทะเบียนไปแล้วครับ");
+        }
+    } catch (err) { alert("❌ ล้มเหลว กรุณาลองใหม่"); }
+    btn.disabled = false; btn.innerText = "บันทึกการเช็คชื่อ";
+};
 
         // เริ่มทำงาน
         updateData();
