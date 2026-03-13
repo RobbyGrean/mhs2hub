@@ -1,0 +1,16 @@
+<input list="schoolOptions" id="schoolSearch" placeholder="ทดสอบพิมพ์ชื่อโรงเรียน...">
+<datalist id="schoolOptions"></datalist>
+
+<script>
+  const WEB_APP_URL = "https://script.google.com/macros/library/d/1BUR_16G25ByO9uyHRNncD8QgHG82olGgCwGGp_wIdRVriPb7Q6Bz1jPt/2";
+  fetch(WEB_APP_URL + "?action=getSchoolList")
+    .then(res => res.json())
+    .then(data => {
+      const dl = document.getElementById('schoolOptions');
+      data.schools.forEach(name => {
+        let opt = document.createElement('option');
+        opt.value = name;
+        dl.appendChild(opt);
+      });
+    });
+</script>
