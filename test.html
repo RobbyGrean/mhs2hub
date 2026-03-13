@@ -3,70 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Recommended List - Center Mode</title>
+    <title>Neon Loading Search - Test Mode</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* ตั้งค่าพื้นหลังสีน้ำเงิน และจัดวางกึ่งกลาง */
         body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center; /* กลางแนวนอน */
-            align-items: center;     /* กลางแนวตั้ง */
-            min-height: 100vh;       /* เต็มความสูงจอ */
-            background: linear-gradient(135deg, #1e3a8a, #3b82f6); /* ไล่เฉดน้ำเงินให้ดูแพง */
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0f172a, #1e293b); /* สีน้ำเงินเข้มเกือบดำเพื่อให้แสงนีออนเด่น */
             font-family: 'Sarabun', sans-serif;
+            overflow: hidden; /* ป้องกันสกอร์บาร์โผล่ตอนไฟวิ่ง */
         }
 
-        .container {
-            background: white;
-            padding: 40px;
+        /* Container หลักที่มีไฟวิ่ง */
+        .neon-box {
+            position: relative;
+            width: 380px;
+            height: 280px; /* ปรับความสูงให้พอดีกับเนื้อหา */
+            background: rgba(255, 255, 255, 0.05); /* พื้นหลังใสๆ */
             border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            width: 90%;
-            max-width: 400px;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; /* กั้นไฟวิ่งให้อยู่แค่ขอบ */
+            transition: 0.5s; /* เวลาเปลี่ยนเป็นแสงนีออน */
+        }
+
+        /* 🟢 ฐานแสงนีออน (ซ่อนไว้ตอนแรก) */
+        .neon-box.ready {
+            background: rgba(0, 255, 100, 0.1); /* พื้นหลังเขียวอ่อนๆ */
+            box-shadow: 0 0 20px rgba(0, 255, 100, 0.6), /* แสงฟุ้งรอบกรอบ */
+                        0 0 40px rgba(0, 255, 100, 0.4),
+                        0 0 60px rgba(0, 255, 100, 0.2);
+        }
+
+        /* 🟢 เส้นแสงนีออนเขียว (ซ่อนไว้ตอนแรก) */
+        .neon-box.ready::before {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px; bottom: 2px; right: 2px;
+            border: 2px solid #00ff64; /* เส้นขอบเขียวนีออน */
+            border-radius: 18px;
+            pointer-events: none; /* จิ้มทะลุได้ */
+            box-shadow: 0 0 10px #00ff64, inset 0 0 10px #00ff64; /* แสงฟุ้งทั้งนอกและใน */
+        }
+
+
+        /* 🔴 เส้นไฟวิ่ง (Border Spin) - แสดงตอนกำลังโหลด */
+        .neon-box::after {
+            content: '';
+            position: absolute;
+            width: 150%; height: 150%;
+            background: conic-gradient(#00ff64, transparent, transparent, transparent); /* ไล่เฉดให้เห็นเป็นเส้นเดียว */
+            animation: spin 3s linear infinite; /* หมุนวนไป */
+            transition: 0.5s; /* เวลาหายไป */
+        }
+
+        /* ซ่อนไฟวิ่งเมื่อโหลดเสร็จ */
+        .neon-box.ready::after {
+            animation: none;
+            opacity: 0;
+        }
+
+        /* Content ด้านใน */
+        .content {
+            position: relative;
+            z-index: 10; /* ให้อยู่เหนือไฟวิ่ง */
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 85%;
             text-align: center;
         }
 
-        h3 { color: #1e3a8a; margin-bottom: 25px; }
+        h3 { color: #1e3a8a; margin-top: 0; }
 
         input {
-            width: 100%;
-            padding: 15px;
+            width: 100%; padding: 12px;
             font-size: 16px;
             border: 2px solid #ddd;
             border-radius: 10px;
             outline: none;
+            box-sizing: border-box;
             transition: 0.3s;
-            box-sizing: border-box; /* ป้องกันกล่องล้น */
         }
 
         input:focus { border-color: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
 
-        .status {
-            margin-top: 15px;
-            font-size: 0.85rem;
-            color: #64748b;
-        }
+        .status { margin-top: 15px; font-size: 0.85rem; color: #64748b; }
+        .ready-text { color: #10b981; font-weight: bold; }
 
-        .ready { color: #10b981; font-weight: bold; }
+        /* Animation หมุนวน */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h3>ระบบเช็คชื่อ (ตัวเทส)</h3>
-    
-    <input list="schoolOptions" id="schoolInput" placeholder="⏳ กำลังเชื่อมต่อข้อมูล..." disabled>
-    
-    <datalist id="schoolOptions"></datalist>
+<div class="neon-box" id="neonBox">
+    <div class="content">
+        <h3>ระบบเช็คชื่อ (ตัวเทส)</h3>
+        
+        <input list="schoolOptions" id="schoolInput" placeholder="⏳ กำลังดึงข้อมูล..." disabled>
+        
+        <datalist id="schoolOptions"></datalist>
 
-    <div id="status" class="status">กำลังดึงข้อมูล 176 โรงเรียน...</div>
+        <div id="status" class="status">รอสักครู่ ไฟกำลังวิ่ง...</div>
+    </div>
 </div>
 
 <script>
     // 🔴 อย่าลืมวาง URL /exec ของพี่ร้อบตรงนี้ครับ!
-    const scriptUrl = "https://script.google.com/macros/s/AKfycbxAcJS270SGvBiXvV2A52ZpnsOMyqOirdzNaq3dSyq-4Gp-9P_srCq9mUls07ymR8Jm9A/exec"; 
+    const scriptUrl = "วาง_URL_ของพี่ตรงนี้ครับ"; 
 
     fetch(scriptUrl + "?action=getSchoolList")
       .then(res => res.json())
@@ -74,6 +122,7 @@
         const dl = document.getElementById('schoolOptions');
         const input = document.getElementById('schoolInput');
         const status = document.getElementById('status');
+        const neonBox = document.getElementById('neonBox'); // ดึงตัวกล่องมา
 
         // ฉีดข้อมูลเข้าลิสต์
         data.schools.forEach(name => {
@@ -82,14 +131,18 @@
           dl.appendChild(opt);
         });
 
-        // เปิดให้พิมพ์ได้ และเปลี่ยนสถานะ
+        // ✅ เปิดใช้งานระบบและเปิดแสงนีออน
         input.disabled = false;
         input.placeholder = "พิมพ์ชื่อโรงเรียนได้เลย...";
-        status.innerText = "✅ ข้อมูลพร้อมแล้ว (176 โรงเรียน)";
-        status.classList.add('ready');
+        status.innerText = "✅ พร้อมแล้ว! (176 โรงเรียน)";
+        status.classList.add('ready-text');
+        
+        // 🟢 สั่งให้กล่อง "สว่าง" เป็นเขียวนีออน
+        neonBox.classList.add('ready'); 
       })
       .catch(err => {
         document.getElementById('status').innerText = "❌ เชื่อมต่อล้มเหลว: " + err;
+        document.getElementById('status').style.color = "red";
       });
 </script>
 
