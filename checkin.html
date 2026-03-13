@@ -3,11 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบเช็คชื่อออนไลน์ - พี่ร้อบ</title>
+  <title>ระบบเช็คชื่อออนไลน์</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+  
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+  
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Prompt', sans-serif; }
@@ -15,12 +17,21 @@
     .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-blur: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 2rem; }
     .glow-indigo { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
     
-    /* Tom Select Custom Theme */
-    .ts-control { background: rgba(15, 23, 42, 0.9) !important; color: white !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 0.75rem !important; padding: 12px !important; }
-    .ts-dropdown { background: #1e293b !important; color: white !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 0.75rem !important; }
+    /* แก้ไขปัญหาช่องหด และปรับแต่ง Tom Select ให้สวยเข้ม */
+    .ts-wrapper.single .ts-control {
+      background: rgba(15, 23, 42, 0.9) !important;
+      color: white !important;
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      border-radius: 0.75rem !important;
+      padding: 14px !important;
+      min-height: 54px !important; /* ล็อกความสูงไม่ให้หด */
+      width: 100% !important;
+    }
+    .ts-dropdown { background: #1e293b !important; color: white !important; border-radius: 0.75rem !important; border: 1px solid rgba(255,255,255,0.2) !important; }
     .ts-dropdown .active { background: #4f46e5 !important; color: white !important; }
-    .ts-dropdown .option { color: #e2e8f0 !important; }
-    .ts-control input { color: white !important; }
+    .ts-dropdown .option { color: #e2e8f0 !important; padding: 10px !important; }
+    .ts-control input { color: white !important; font-size: 16px !important; }
+    .ts-wrapper .ts-control { display: flex !important; align-items: center !important; }
 
     .log-item { animation: fadeIn 0.5s ease-out; border-left: 4px solid #6366f1; background: rgba(99, 102, 241, 0.1); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -32,28 +43,28 @@
 <body class="p-4 md:p-10">
 
   <div class="max-w-6xl mx-auto">
-    <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4 text-center md:text-left">
-      <a href="index.html" class="text-slate-400 hover:text-white transition-all order-2 md:order-1">← กลับหน้าหลัก</a>
-      <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight order-1 md:order-2">📍 ระบบเช็คชื่อออนไลน์</h1>
-      <div class="hidden md:block w-20 order-3"></div>
+    <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+      <a href="index.html" class="text-slate-400 hover:text-white transition-all">← กลับหน้าหลัก</a>
+      <h1 class="text-3xl md:text-4xl font-bold text-white tracking-tight">📍 ระบบเช็คชื่อออนไลน์</h1>
+      <div class="hidden md:block w-20"></div>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
       <div class="lg:col-span-5">
         <div class="glass-card glow-indigo p-8 h-full border-t border-indigo-500/30">
-          <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-indigo-400">📝 ลงทะเบียนเข้างาน</h3>
+          <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-indigo-400">📝 ลงทะเบียนเข้าประชุม</h3>
           <form id="checkinForm" class="space-y-6">
             <div>
               <label class="block text-sm text-slate-400 mb-2">ค้นหาชื่อโรงเรียน (176 แห่ง)</label>
-              <select id="schoolSelect" placeholder="พิมพ์ชื่อโรงเรียน..." required></select>
+              <select id="schoolSelect" placeholder="พิมพ์ชื่อโรงเรียนเพื่อค้นหา..." required></select>
             </div>
             <div>
-              <label class="block text-sm text-slate-400 mb-2">ชื่อ-นามสกุล (เพื่อบันทึกลง Sheet เท่านั้น)</label>
-              <input type="text" id="userName" class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 focus:ring-2 focus:ring-indigo-500" placeholder="ระบุชื่อจริง-นามสกุล" required>
+              <label class="block text-sm text-slate-400 mb-2">ชื่อ-นามสกุล</label>
+              <input type="text" id="userName" class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500" placeholder="ระบุชื่อจริง-นามสกุล" required>
             </div>
             <div>
               <label class="block text-sm text-slate-400 mb-2">ตำแหน่ง</label>
-              <select id="userPosition" class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 focus:ring-2 focus:ring-indigo-500" required>
+              <select id="userPosition" class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500" required>
                 <option value="">-- เลือกตำแหน่ง --</option>
                 <option value="ผอ.โรงเรียน">ผอ.โรงเรียน</option>
                 <option value="รอง ผอ.โรงเรียน">รอง ผอ.โรงเรียน</option>
@@ -64,7 +75,7 @@
                 <option value="อื่นๆ">อื่นๆ</option>
               </select>
             </div>
-            <button type="submit" id="btnSubmit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-xl transition-all shadow-lg shadow-indigo-500/30 hover:scale-[1.02] active:scale-95">
+            <button type="submit" id="btnSubmit" class="w-full py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-xl transition-all shadow-lg shadow-indigo-500/30">
               บันทึกการเช็คชื่อ
             </button>
           </form>
@@ -83,8 +94,7 @@
                   <span class="text-[10px] text-slate-500 tracking-[0.2em] uppercase mt-1">Checked In</span>
                 </div>
               </div>
-              <div id="countDisplay" class="mt-4 p-3 bg-slate-900/50 rounded-xl">
-                 </div>
+              <div id="countDisplay" class="mt-4 p-3 bg-slate-900/50 rounded-xl"></div>
             </div>
 
             <div>
@@ -106,7 +116,7 @@
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyW-33Zqrb3giadq-wzNIRt5aUJ8Lgum4c_qVc_8NmcLJeo1yxB134l35gwQyuQ20_D/exec";
     let myChart;
     let schoolPicker;
-    let logData = {}; // เก็บข้อมูล log เพื่อป้องกันการแสดงซ้ำแบบไม่เป็นระเบียบ
+    let logData = {};
 
     window.onload = () => {
       initChart();
@@ -120,14 +130,9 @@
         type: 'doughnut',
         data: {
           labels: ['มาแล้ว', 'ยังไม่มา'],
-          datasets: [{
-            data: [0, 100],
-            backgroundColor: ['#6366f1', '#0f172a'],
-            borderWidth: 0,
-            hoverOffset: 0
-          }]
+          datasets: [{ data: [0, 100], backgroundColor: ['#6366f1', '#0f172a'], borderWidth: 0 }]
         },
-        options: { cutout: '85%', plugins: { legend: { display: false } }, animation: { duration: 1500 } }
+        options: { cutout: '85%', plugins: { legend: { display: false } } }
       });
     }
 
@@ -136,35 +141,36 @@
         const res = await fetch(WEB_APP_URL);
         const data = await res.json();
         
-        // Setup Searchable Dropdown (ทำครั้งเดียวตอนโหลด)
         const select = document.getElementById('schoolSelect');
-        if (!schoolPicker && data.schoolList) {
-            select.innerHTML = '<option value="">-- พิมพ์ชื่อโรงเรียน --</option>';
+        // ตรวจสอบว่ามีข้อมูลโรงเรียนและยังไม่ได้สร้าง Picker
+        if (!schoolPicker && data.schoolList && data.schoolList.length > 0) {
             data.schoolList.forEach(s => {
                 const opt = document.createElement('option');
                 opt.value = s; opt.innerText = s;
                 select.appendChild(opt);
             });
+            
+            // สร้าง Tom Select หลังจากเพิ่ม Options
             schoolPicker = new Tom Select("#schoolSelect", {
                 create: false,
                 sortField: { field: "text", order: "asc" },
-                maxOptions: 200
+                maxOptions: 200,
+                placeholder: "พิมพ์เพื่อค้นหาชื่อโรงเรียน...",
+                allowEmptyOption: true
             });
         }
 
-        // อัปเดตกราฟ
         myChart.data.datasets[0].data = [data.attendedCount, data.missingCount];
         myChart.update();
 
-        // อัปเดตตัวเลข
         document.getElementById('percentDisplay').innerText = ((data.attendedCount / data.totalCount) * 100).toFixed(0) + "%";
         document.getElementById('countDisplay').innerHTML = `
-          <div class="text-sm space-y-1">
+          <div class="text-sm space-y-1 text-center">
             <div class="text-indigo-400 font-bold">มาแล้ว: ${data.attendedCount} จาก ${data.totalCount}</div>
             <div class="text-rose-400">ยังไม่มา: ${data.missingCount} จาก ${data.totalCount}</div>
           </div>
         `;
-      } catch (err) { console.log("Load failed"); }
+      } catch (err) { console.log("Load failed", err); }
     }
 
     document.getElementById('checkinForm').onsubmit = async (e) => {
@@ -176,21 +182,16 @@
       const position = document.getElementById('userPosition').value;
       const name = document.getElementById('userName').value;
 
-      const payload = { school, name, position };
-
       try {
-        const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
+        const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify({ school, name, position }) });
         const result = await res.json();
         
         if (result.status === "success" || result.status === "exists") {
-          // อัปเดต Log แบบ Privacy: ชื่อโรงเรียน , ตำแหน่ง
           updateLiveLog(school, position);
-          
           document.getElementById('checkinForm').reset();
           if (schoolPicker) schoolPicker.clear();
           updateData();
-          
-          if(result.status === "exists") alert("เพิ่มรายชื่อผู้เข้าร่วมในแถวเดิมเรียบร้อยครับ");
+          if(result.status === "exists") alert("เพิ่มรายชื่อผู้เข้าร่วมเรียบร้อยครับ");
         }
       } catch (err) { alert("ล้มเหลว กรุณาลองใหม่"); }
       btn.disabled = false; btn.innerText = "บันทึกการเช็คชื่อ";
@@ -199,29 +200,18 @@
     function updateLiveLog(school, newPosition) {
       const log = document.getElementById('activityLog');
       if (log.innerHTML.includes("รอข้อมูล")) log.innerHTML = "";
+      if (!logData[school]) { logData[school] = [newPosition]; } 
+      else { if (!logData[school].includes(newPosition)) logData[school].push(newPosition); }
 
-      // ถ้าโรงเรียนนี้เคยเช็คอินแล้วในเซสชันนี้ ให้รวมตำแหน่ง
-      if (!logData[school]) {
-          logData[school] = [newPosition];
-      } else {
-          if (!logData[school].includes(newPosition)) {
-              logData[school].push(newPosition);
-          }
-      }
-
-      const allPositions = logData[school].join(" , ");
-      
-      // สร้าง Element ใหม่ (หรืออัปเดตถ้ามีอยู่แล้วในรายการบนสุด)
       const div = document.createElement('div');
-      div.className = "log-item p-3 rounded-xl mb-2 text-white shadow-lg border-l-4 border-indigo-500";
+      div.className = "log-item p-3 rounded-xl mb-2 text-white border-l-4 border-indigo-500 shadow-lg";
       div.innerHTML = `
-        <div class="flex justify-between items-center">
-            <span class="font-bold text-indigo-300">${school}</span>
+        <div class="flex justify-between items-center font-bold text-indigo-300">
+            <span>${school}</span>
             <span class="text-[9px] bg-indigo-500/30 px-2 py-0.5 rounded">JUST NOW</span>
         </div>
-        <div class="text-xs text-slate-400 mt-1">📍 ${allPositions}</div>
+        <div class="text-xs text-slate-400 mt-1">📍 ${logData[school].join(" , ")}</div>
       `;
-      
       log.prepend(div);
     }
   </script>
