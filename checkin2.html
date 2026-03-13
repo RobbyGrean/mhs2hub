@@ -1,1 +1,261 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบเช็คชื่อออนไลน์ MHS2 - Search Mode</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Kanit', sans-serif; background-color: #0f172a; }
+        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glow-indigo { box-shadow: 0 0 20px rgba(79, 70, 229, 0.2); }
+        
+        /* 🟢 สไตล์ไฟวิ่งนีออน */
+        .neon-wrapper {
+            position: relative;
+            border-radius: 1.5rem;
+            overflow: hidden;
+            padding: 2px; /* ขนาดเส้นไฟ */
+            transition: 0.5s;
+        }
+        .neon-wrapper::before {
+            content: ''; position: absolute; width: 150%; height: 150%;
+            background: conic-gradient(#00ff64, transparent, transparent, transparent);
+            animation: spin 3s linear infinite;
+            top: -25%; left: -25%;
+        }
+        .neon-wrapper.ready::before { animation: none; opacity: 0; }
+        .neon-wrapper.ready { 
+            background: #00ff64; 
+            box-shadow: 0 0 15px #00ff64; 
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
+        #activityLog::-webkit-scrollbar { width: 4px; }
+        #activityLog::-webkit-scrollbar-thumb { background: #4f46e5; border-radius: 10px; }
+    </style>
+</head>
+<body class="p-4 md:p-10 text-white">
+
+    <div class="max-w-6xl mx-auto">
+        <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
+            <a href="index.html" class="text-slate-400 hover:text-white transition-all">← กลับหน้าหลัก</a>
+            <h1 class="text-3xl md:text-4xl font-bold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
+                📍 ระบบเช็คชื่อออนไลน์ (Check-in 2)
+            </h1>
+            <div class="hidden md:block w-20"></div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <div class="lg:col-span-5">
+                <div class="neon-wrapper" id="neonBorder">
+                    <div class="glass-card p-8 rounded-[1.4rem]">
+                        <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-indigo-400">
+                            📝 ลงทะเบียนเข้าประชุม
+                        </h3>
+                        
+                        <form id="checkinForm" class="space-y-5">
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-2">1. ค้นหาโรงเรียน</label>
+                                <input list="schoolOptions" id="schoolInput" required 
+                                    placeholder="⏳ กำลังโหลดข้อมูล 176 แห่ง..." 
+                                    disabled
+                                    class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 text-white focus:ring-2 focus:ring-emerald-500 transition-all">
+                                <datalist id="schoolOptions"></datalist>
+                                <p id="loadStatus" class="text-xs mt-2 text-slate-500 italic text-center">รอไฟวิ่งจบก่อนพิมพ์นะครับ</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-2">2. ชื่อ-นามสกุล</label>
+                                <input type="text" id="userName" required placeholder="ระบุชื่อจริง-นามสกุล" 
+                                    class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm text-slate-400 mb-2">3. ตำแหน่ง</label>
+                                <select id="userPosition" required class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 text-white focus:ring-2 focus:ring-indigo-500 cursor-pointer">
+                                    <option value="">-- เลือกตำแหน่ง --</option>
+                                    <option value="ผอ.โรงเรียน">ผอ.โรงเรียน</option>
+                                    <option value="รอง ผอ.โรงเรียน">รอง ผอ.โรงเรียน</option>
+                                    <option value="ครูพัสดุ">ครูพัสดุ</option>
+                                    <option value="ครู">ครู</option>
+                                    <option value="ธุรการโรงเรียน">ธุรการโรงเรียน</option>
+                                    <option value="อื่นๆ/ผู้มาแทน">อื่นๆ/ผู้มาแทน</option>
+                                </select>
+                            </div>
+
+                            <button type="submit" id="btnSubmit" disabled
+                                class="w-full mt-4 py-4 bg-slate-700 text-slate-400 font-bold rounded-xl transition-all cursor-not-allowed">
+                                รอข้อมูลพร้อม...
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 space-y-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="glass-card p-6 rounded-3xl flex flex-col items-center">
+                        <div class="relative w-40 h-40">
+                            <canvas id="myChart"></canvas>
+                            <div id="percentDisplay" class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-indigo-400">0%</div>
+                        </div>
+                    </div>
+                    <div class="glass-card p-6 rounded-3xl flex flex-col justify-center items-center text-center">
+                        <h4 class="text-slate-400 mb-4 font-medium uppercase tracking-widest text-xs">สถานะปัจจุบัน</h4>
+                        <div id="countDisplay" class="space-y-2">
+                             <div class="text-2xl font-bold text-indigo-400 animate-pulse">กำลังโหลด...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-6 rounded-3xl h-[400px] flex flex-col">
+                    <h3 class="text-lg font-bold mb-4 flex items-center gap-2 text-yellow-400">
+                        🔔 ล่าสุด (Live Activity)
+                    </h3>
+                    <div id="activityLog" class="flex-1 overflow-y-auto pr-2 space-y-3">
+                        <div class="text-center text-slate-500 mt-10 italic">รอข้อมูลการลงทะเบียน...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <button onclick="openSummary('attended')" class="p-4 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/30 rounded-2xl transition-all font-bold flex items-center justify-center gap-2">
+                📊 สรุปรายชื่อ (มาแล้ว)
+            </button>
+            <button onclick="openSummary('missing')" class="p-4 bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 border border-rose-500/30 rounded-2xl transition-all font-bold flex items-center justify-center gap-2">
+                ❌ รายชื่อ (ยังไม่มา)
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxvS0e-vC-ozQvoyfZdbbmhaCZ4ZIKQ07zSBb48HTYWBcTp6I1H_1LAy8-bv5D5S3Si/exec"; 
+        let currentLogState = [];
+        let schoolListLoaded = false;
+
+        function openSummary(type) { window.open(`${WEB_APP_URL}?page=${type}`, '_blank'); }
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['มาแล้ว', 'ยังไม่มา'],
+                datasets: [{
+                    data: [0, 100],
+                    backgroundColor: ['#6366f1', '#1e293b'],
+                    borderWidth: 0
+                }]
+            },
+            options: { cutout: '80%', plugins: { legend: { display: false } } }
+        });
+
+        // 🟢 ฟังก์ชันโหลดข้อมูลหลัก
+        async function updateData() {
+            try {
+                const res = await fetch(WEB_APP_URL);
+                const data = await res.json();
+                
+                // โหลดรายชื่อโรงเรียนใส่ Datalist (ทำครั้งเดียว)
+                if (!schoolListLoaded && data.schoolData) {
+                    const dl = document.getElementById('schoolOptions');
+                    const input = document.getElementById('schoolInput');
+                    const btn = document.getElementById('btnSubmit');
+                    const border = document.getElementById('neonBorder');
+
+                    // ดึงชื่อโรงเรียน (สมมติว่า API ส่ง schoolData ที่มี .name มาให้)
+                    const schools = [...new Set(data.schoolData.map(d => d.name))].sort();
+                    schools.forEach(s => {
+                        let opt = document.createElement('option');
+                        opt.value = s;
+                        dl.appendChild(opt);
+                    });
+
+                    // ✅ ปลดล็อคระบบ
+                    input.disabled = false;
+                    input.placeholder = "พิมพ์ชื่อโรงเรียนที่นี่...";
+                    btn.disabled = false;
+                    btn.className = "w-full mt-4 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl shadow-lg transition-all active:scale-95";
+                    btn.innerText = "บันทึกการเช็คชื่อ";
+                    border.classList.add('ready');
+                    document.getElementById('loadStatus').innerHTML = "✅ ข้อมูลพร้อมใช้งาน";
+                    schoolListLoaded = true;
+                }
+
+                // อัปเดตกราฟและตัวเลข
+                myChart.data.datasets[0].data = [data.attendedCount, data.missingCount];
+                myChart.update();
+                document.getElementById('percentDisplay').innerText = ((data.attendedCount / data.totalCount) * 100).toFixed(0) + "%";
+                document.getElementById('countDisplay').innerHTML = `
+                    <div class="text-sm space-y-2">
+                        <div class="px-4 py-2 bg-indigo-500/20 rounded-full text-indigo-400 font-bold border border-indigo-500/30">มาแล้ว: ${data.attendedCount}</div>
+                        <div class="px-4 py-2 bg-rose-500/10 rounded-full text-rose-400 font-medium border border-rose-500/20">ยังไม่มา: ${data.missingCount}</div>
+                    </div>`;
+
+                // อัปเดต Live Log
+                const logContainer = document.getElementById('activityLog');
+                if (data.recentLogs) {
+                    const newEntries = data.recentLogs.filter(n => 
+                        !currentLogState.some(old => old.school === n.school && old.details === n.details)
+                    );
+                    if (newEntries.length > 0) {
+                        if (logContainer.innerHTML.includes("รอข้อมูล")) logContainer.innerHTML = "";
+                        currentLogState = [...newEntries, ...currentLogState].slice(0, 20);
+                        logContainer.innerHTML = '';
+                        currentLogState.forEach((log, index) => {
+                            const isNew = index < newEntries.length;
+                            logContainer.innerHTML += `
+                                <div class="p-4 rounded-2xl text-white border-l-8 transition-all duration-700 ${isNew ? 'border-emerald-400 bg-indigo-600 animate-pulse' : 'border-indigo-500 bg-slate-800/60'}">
+                                    <div class="text-lg font-medium ${isNew ? 'text-indigo-200' : 'text-slate-400'}">🏫 ${log.school}</div>
+                                    <div class="text-xl font-bold">👤 ${log.details}</div>
+                                </div>`;
+                        });
+                    }
+                }
+            } catch (err) { console.error("Load failed", err); }
+        }
+
+        // 🟢 ฟังก์ชันส่งข้อมูล
+        document.getElementById('checkinForm').onsubmit = async (e) => {
+            e.preventDefault();
+            const school = document.getElementById('schoolInput').value;
+            const name = document.getElementById('userName').value;
+            const pos = document.getElementById('userPosition').value;
+
+            // ตรวจสอบความถูกต้องของชื่อโรงเรียน
+            const options = document.getElementById('schoolOptions').options;
+            const isValid = Array.from(options).some(opt => opt.value === school);
+            
+            if (!isValid) {
+                alert("⚠️ กรุณาเลือกโรงเรียนจากรายการที่ระบบแนะนำเท่านั้นครับ");
+                return;
+            }
+
+            const btn = document.getElementById('btnSubmit');
+            btn.disabled = true; btn.innerText = "กำลังบันทึก...";
+
+            try {
+                const res = await fetch(WEB_APP_URL, { 
+                    method: 'POST', 
+                    body: JSON.stringify({ school, name, position: pos }) 
+                });
+                const result = await res.json();
+                if (result.status === "success" || result.status === "updated") {
+                    alert("บันทึกสำเร็จ!");
+                    document.getElementById('checkinForm').reset();
+                    await updateData();
+                } else {
+                    alert("เกิดข้อผิดพลาด: " + result.status);
+                }
+            } catch (err) { alert("❌ บันทึกล้มเหลว"); }
+            btn.disabled = false; btn.innerText = "บันทึกการเช็คชื่อ";
+        };
+
+        updateData();
+        setInterval(updateData, 10000);
+    </script>
+</body>
+</html>
