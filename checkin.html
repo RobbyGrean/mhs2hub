@@ -3,16 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ระบบเช็คชื่อออนไลน์ สพป.มส.2</title>
+  <title>ระบบเช็คชื่อออนไลน์ - พี่ร้อบ</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Prompt', sans-serif; }
     body { background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%); min-height: 100vh; color: #e2e8f0; }
     .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-blur: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 2rem; }
     .glow-indigo { box-shadow: 0 0 20px rgba(99, 102, 241, 0.2); }
-    select, input { background: rgba(15, 23, 42, 0.9) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; }
+    
+    /* Tom Select Custom Theme */
+    .ts-control { background: rgba(15, 23, 42, 0.9) !important; color: white !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 0.75rem !important; padding: 12px !important; }
+    .ts-dropdown { background: #1e293b !important; color: white !important; border: 1px solid rgba(255,255,255,0.1) !important; border-radius: 0.75rem !important; }
+    .ts-dropdown .active { background: #4f46e5 !important; color: white !important; }
+    .ts-dropdown .option { color: #e2e8f0 !important; }
+    .ts-control input { color: white !important; }
+
     .log-item { animation: fadeIn 0.5s ease-out; border-left: 4px solid #6366f1; background: rgba(99, 102, 241, 0.1); }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .custom-scrollbar::-webkit-scrollbar { width: 5px; }
@@ -35,18 +44,16 @@
           <h3 class="text-xl font-bold mb-6 flex items-center gap-2 text-indigo-400">📝 ลงทะเบียนเข้างาน</h3>
           <form id="checkinForm" class="space-y-6">
             <div>
-              <label class="block text-sm text-slate-400 mb-2">เลือกโรงเรียน (รายชื่อจาก MasterData)</label>
-              <select id="schoolSelect" class="w-full p-4 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 transition-all" required>
-                <option value="">🔄 กำลังโหลดรายชื่อ...</option>
-              </select>
+              <label class="block text-sm text-slate-400 mb-2">ค้นหาชื่อโรงเรียน (176 แห่ง)</label>
+              <select id="schoolSelect" placeholder="พิมพ์ชื่อโรงเรียน..." required></select>
             </div>
             <div>
-              <label class="block text-sm text-slate-400 mb-2">ชื่อ-นามสกุล</label>
-              <input type="text" id="userName" class="w-full p-4 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" placeholder="ระบุชื่อจริง-นามสกุล" required>
+              <label class="block text-sm text-slate-400 mb-2">ชื่อ-นามสกุล (เพื่อบันทึกลง Sheet เท่านั้น)</label>
+              <input type="text" id="userName" class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 focus:ring-2 focus:ring-indigo-500" placeholder="ระบุชื่อจริง-นามสกุล" required>
             </div>
             <div>
               <label class="block text-sm text-slate-400 mb-2">ตำแหน่ง</label>
-              <select id="userPosition" class="w-full p-4 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500" required>
+              <select id="userPosition" class="w-full p-4 rounded-xl outline-none bg-slate-900/90 border border-white/10 focus:ring-2 focus:ring-indigo-500" required>
                 <option value="">-- เลือกตำแหน่ง --</option>
                 <option value="ผอ.โรงเรียน">ผอ.โรงเรียน</option>
                 <option value="รอง ผอ.โรงเรียน">รอง ผอ.โรงเรียน</option>
@@ -82,11 +89,11 @@
 
             <div>
               <h3 class="text-lg font-bold mb-4 flex justify-between items-center">
-                <span>🔔 ล่าสุด (Live)</span>
+                <span>🔔 ล่าสุด (Live Log)</span>
                 <span class="px-2 py-1 bg-green-500/20 text-green-400 text-[10px] rounded animate-pulse font-bold">REALTIME</span>
               </h3>
               <div id="activityLog" class="space-y-3 h-[250px] overflow-y-auto pr-2 custom-scrollbar text-sm">
-                <div class="text-slate-600 text-center py-10 italic">รอข้อมูลเข้าระบบ...</div>
+                <div class="text-slate-600 text-center py-10 italic">รอข้อมูลเข้า...</div>
               </div>
             </div>
           </div>
@@ -98,11 +105,13 @@
   <script>
     const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyW-33Zqrb3giadq-wzNIRt5aUJ8Lgum4c_qVc_8NmcLJeo1yxB134l35gwQyuQ20_D/exec";
     let myChart;
+    let schoolPicker;
+    let logData = {}; // เก็บข้อมูล log เพื่อป้องกันการแสดงซ้ำแบบไม่เป็นระเบียบ
 
     window.onload = () => {
       initChart();
       updateData();
-      setInterval(updateData, 20000); // อัปเดตทุก 20 วินาที
+      setInterval(updateData, 20000); 
     };
 
     function initChart() {
@@ -127,19 +136,27 @@
         const res = await fetch(WEB_APP_URL);
         const data = await res.json();
         
+        // Setup Searchable Dropdown (ทำครั้งเดียวตอนโหลด)
         const select = document.getElementById('schoolSelect');
-        if (select.options.length <= 1) {
-            select.innerHTML = '<option value="">-- เลือกโรงเรียน --</option>';
+        if (!schoolPicker && data.schoolList) {
+            select.innerHTML = '<option value="">-- พิมพ์ชื่อโรงเรียน --</option>';
             data.schoolList.forEach(s => {
                 const opt = document.createElement('option');
                 opt.value = s; opt.innerText = s;
                 select.appendChild(opt);
             });
+            schoolPicker = new Tom Select("#schoolSelect", {
+                create: false,
+                sortField: { field: "text", order: "asc" },
+                maxOptions: 200
+            });
         }
 
+        // อัปเดตกราฟ
         myChart.data.datasets[0].data = [data.attendedCount, data.missingCount];
         myChart.update();
 
+        // อัปเดตตัวเลข
         document.getElementById('percentDisplay').innerText = ((data.attendedCount / data.totalCount) * 100).toFixed(0) + "%";
         document.getElementById('countDisplay').innerHTML = `
           <div class="text-sm space-y-1">
@@ -155,31 +172,56 @@
       const btn = document.getElementById('btnSubmit');
       btn.disabled = true; btn.innerText = "กำลังบันทึก...";
 
-      const payload = {
-        school: document.getElementById('schoolSelect').value,
-        name: document.getElementById('userName').value,
-        position: document.getElementById('userPosition').value
-      };
+      const school = document.getElementById('schoolSelect').value;
+      const position = document.getElementById('userPosition').value;
+      const name = document.getElementById('userName').value;
+
+      const payload = { school, name, position };
 
       try {
         const res = await fetch(WEB_APP_URL, { method: 'POST', body: JSON.stringify(payload) });
         const result = await res.json();
+        
         if (result.status === "success" || result.status === "exists") {
-          addLog(payload.school);
+          // อัปเดต Log แบบ Privacy: ชื่อโรงเรียน , ตำแหน่ง
+          updateLiveLog(school, position);
+          
           document.getElementById('checkinForm').reset();
+          if (schoolPicker) schoolPicker.clear();
           updateData();
-          if(result.status === "exists") alert("โรงเรียนนี้เคยลงทะเบียนแล้ว ระบบจะเพิ่มชื่อต่อท้ายให้ครับ");
+          
+          if(result.status === "exists") alert("เพิ่มรายชื่อผู้เข้าร่วมในแถวเดิมเรียบร้อยครับ");
         }
       } catch (err) { alert("ล้มเหลว กรุณาลองใหม่"); }
       btn.disabled = false; btn.innerText = "บันทึกการเช็คชื่อ";
     };
 
-    function addLog(school) {
+    function updateLiveLog(school, newPosition) {
       const log = document.getElementById('activityLog');
       if (log.innerHTML.includes("รอข้อมูล")) log.innerHTML = "";
+
+      // ถ้าโรงเรียนนี้เคยเช็คอินแล้วในเซสชันนี้ ให้รวมตำแหน่ง
+      if (!logData[school]) {
+          logData[school] = [newPosition];
+      } else {
+          if (!logData[school].includes(newPosition)) {
+              logData[school].push(newPosition);
+          }
+      }
+
+      const allPositions = logData[school].join(" , ");
+      
+      // สร้าง Element ใหม่ (หรืออัปเดตถ้ามีอยู่แล้วในรายการบนสุด)
       const div = document.createElement('div');
-      div.className = "log-item p-3 rounded-xl mb-2 flex items-center justify-between text-white shadow-lg";
-      div.innerHTML = `<span>🏁 <b>${school}</b> เช็คอินแล้ว!</span> <span class="text-[9px] bg-indigo-500 px-2 py-0.5 rounded-full">DONE</span>`;
+      div.className = "log-item p-3 rounded-xl mb-2 text-white shadow-lg border-l-4 border-indigo-500";
+      div.innerHTML = `
+        <div class="flex justify-between items-center">
+            <span class="font-bold text-indigo-300">${school}</span>
+            <span class="text-[9px] bg-indigo-500/30 px-2 py-0.5 rounded">JUST NOW</span>
+        </div>
+        <div class="text-xs text-slate-400 mt-1">📍 ${allPositions}</div>
+      `;
+      
       log.prepend(div);
     }
   </script>
