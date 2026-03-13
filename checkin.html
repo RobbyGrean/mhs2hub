@@ -129,15 +129,18 @@
       });
     }
 
+<script>
+    let currentLogState = []; // ตัวแปรเก็บรายชื่อเพื่อเช็คคนใหม่
+
     async function updateData() {
       try {
         const res = await fetch(WEB_APP_URL);
         const data = await res.json();
         
-        // ดึงข้อมูลโรงเรียนใส่ Datalist 
+        // 1. ดึงข้อมูลโรงเรียนใส่ Datalist (ทำครั้งเดียวเมื่อโหลดหน้า)
         const datalist = document.getElementById('schoolOptions');
         if (datalist.options.length === 0 && data.schoolList) {
-            validSchools = data.schoolList; // เก็บไว้เช็คตอนกด submit
+            validSchools = data.schoolList; 
             data.schoolList.forEach(s => {
                 const opt = document.createElement('option');
                 opt.value = s;
@@ -145,7 +148,7 @@
             });
         }
 
-        // อัปเดตกราฟและตัวเลข
+        // 2. อัปเดตกราฟและตัวเลขสรุป
         myChart.data.datasets[0].data = [data.attendedCount, data.missingCount];
         myChart.update();
 
@@ -156,22 +159,56 @@
             <div class="text-rose-400">ยังไม่มา: ${data.missingCount} จาก ${data.totalCount}</div>
           </div>
         `;
+
+        // 3. ระบบ Live Log: เช็ครายชื่อใหม่จาก Server และแสดงผล
+        const logContainer = document.getElementById('activityLog');
+        if (logContainer && data.recentLogs) {
+            // กรองเอาเฉพาะรายชื่อที่ยังไม่เคยโชว์บนหน้าจอ
+            const newEntries = data.recentLogs.filter(n => 
+                !currentLogState.some(old => old.school === n.school && old.details === n.details)
+            );
+
+            if (newEntries.length > 0) {
+                // ถ้ามีข้อมูลใหม่ ให้ลบคำว่า "รอข้อมูลเข้า..." ออก
+                if (logContainer.innerHTML.includes("รอข้อมูล")) logContainer.innerHTML = "";
+
+                // รวมข้อมูลใหม่เข้ากับของเดิม (เอาของใหม่ไว้บนสุด) และจำกัดไว้ 20 รายการ
+                currentLogState = [...newEntries, ...currentLogState].slice(0, 20);
+
+                logContainer.innerHTML = ''; // ล้างเพื่อวาดใหม่ให้ลำดับถูกต้อง
+                currentLogState.forEach((log, index) => {
+                    const isNewest = index < newEntries.length; // เช็คว่าเป็นชื่อที่เพิ่งเด้งมาใหม่รอบนี้ไหม
+                    const div = document.createElement('div');
+                    div.className = `p-3 rounded-xl mb-2 text-white border-l-4 shadow-lg transition-all duration-500 ${
+                        isNewest ? 'border-yellow-400 bg-indigo-600 animate-pulse' : 'border-indigo-500 bg-slate-800/50'
+                    }`;
+                    div.innerHTML = `
+                        <div class="flex justify-between items-center font-bold">
+                            <span class="${isNewest ? 'text-yellow-200' : 'text-indigo-300'}">${log.school}</span>
+                            ${isNewest ? '<span class="text-[9px] bg-yellow-500 text-black px-2 py-0.5 rounded-full font-black">LATEST</span>' : ''}
+                        </div>
+                        <div class="text-[11px] text-slate-400 mt-1">📍 ${log.details}</div>
+                    `;
+                    logContainer.appendChild(div);
+                });
+            }
+        }
       } catch (err) { console.log("Load failed", err); }
     }
 
+    // ฟังก์ชันบันทึกข้อมูล
     document.getElementById('checkinForm').onsubmit = async (e) => {
       e.preventDefault();
-      
       const school = document.getElementById('schoolInput').value;
       
-      // Validation: ป้องกันคนพิมพ์มั่ว ให้แจ้งเตือนถ้าชื่อไม่ตรงกับใน Datalist
       if (!validSchools.includes(school)) {
           alert("❌ กรุณาเลือกหรือพิมพ์ชื่อโรงเรียนให้ตรงกับในฐานข้อมูลครับ");
           return;
       }
 
       const btn = document.getElementById('btnSubmit');
-      btn.disabled = true; btn.innerText = "กำลังบันทึก...";
+      btn.disabled = true; 
+      btn.innerText = "กำลังบันทึก...";
 
       const position = document.getElementById('userPosition').value;
       const name = document.getElementById('userName').value;
@@ -181,32 +218,18 @@
         const result = await res.json();
         
         if (result.status === "success" || result.status === "exists") {
-          updateLiveLog(school, position);
           document.getElementById('checkinForm').reset();
-          updateData();
+          await updateData(); // ดึงข้อมูลล่าสุดทันทีหลังบันทึก
           if(result.status === "exists") alert("เพิ่มรายชื่อผู้เข้าร่วมเรียบร้อยครับ");
+          else alert("บันทึกการเช็คชื่อสำเร็จ!");
         }
       } catch (err) { alert("ล้มเหลว กรุณาลองใหม่"); }
       btn.disabled = false; btn.innerText = "บันทึกการเช็คชื่อ";
     };
 
-    function updateLiveLog(school, newPosition) {
-      const log = document.getElementById('activityLog');
-      if (log.innerHTML.includes("รอข้อมูล")) log.innerHTML = "";
-      if (!logData[school]) { logData[school] = [newPosition]; } 
-      else { if (!logData[school].includes(newPosition)) logData[school].push(newPosition); }
-
-      const div = document.createElement('div');
-      div.className = "log-item p-3 rounded-xl mb-2 text-white border-l-4 border-indigo-500 shadow-lg";
-      div.innerHTML = `
-        <div class="flex justify-between items-center font-bold text-indigo-300">
-            <span>${school}</span>
-            <span class="text-[9px] bg-indigo-500/30 px-2 py-0.5 rounded">JUST NOW</span>
-        </div>
-        <div class="text-xs text-slate-400 mt-1">📍 ${logData[school].join(" , ")}</div>
-      `;
-      log.prepend(div);
-    }
+    // เริ่มทำงานครั้งแรกและตั้งเวลาอัปเดตทุก 10 วินาที
+    updateData();
+    setInterval(updateData, 10000); 
   </script>
 </body>
 </html>
