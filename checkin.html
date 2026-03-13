@@ -109,12 +109,22 @@
             </div>
         </div>
     </div>
-
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+            <button onclick="openSummary('attended')" class="p-4 bg-emerald-600/20 hover:bg-emerald-600/40 text-emerald-400 border border-emerald-500/30 rounded-2xl transition-all font-bold flex items-center justify-center gap-2">
+                📊 สรุปรายชื่อ (มาแล้ว)
+            </button>
+            <button onclick="openSummary('missing')" class="p-4 bg-rose-600/20 hover:bg-rose-600/40 text-rose-400 border border-rose-500/30 rounded-2xl transition-all font-bold flex items-center justify-center gap-2">
+                ❌ รายชื่อ (ยังไม่มา)
+            </button>
+        </div>
     <script>
-        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyW-33Zqrb3giadq-wzNIRt5aUJ8Lgum4c_qVc_8NmcLJeo1yxB134l35gwQyuQ20_D/exec"; 
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycby0956vJla3zKiId2UFhizfnl_bAABnGFH3bmCb5xAwFKQ-jcSXu_mPs1gUZVmKux7S/exec"; 
         let rawSchoolData = [];
         let currentLogState = [];
-
+// เพิ่มฟังก์ชันนี้ไว้ใต้ประกาศตัวแปร WEB_APP_URL
+function openSummary(type) {
+    window.open(`${WEB_APP_URL}?page=${type}`, '_blank');
+}
         // ตั้งค่า Chart
         const ctx = document.getElementById('myChart').getContext('2d');
         const myChart = new Chart(ctx, {
