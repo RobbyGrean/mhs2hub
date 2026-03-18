@@ -27,6 +27,23 @@
       content: ''; position: absolute; top: -50%; left: -100%; width: 50%; height: 200%;
       background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
       transform: rotate(30deg); animation: shine-logic 5s infinite;
+      /* --- เพิ่มโค้ดไฟวิ่งตรงนี้ --- */
+    @keyframes border-beam {
+      0%, 100% { clip-path: inset(0 0 98% 0); }
+      25% { clip-path: inset(0 98% 0 0); }
+      50% { clip-path: inset(98% 0 0 0); }
+      75% { clip-path: inset(0 0 0 98%); }
+    }
+    .animate-border-beam::after {
+      content: "";
+      position: absolute;
+      inset: -4px; /* ความหนาของกรอบไฟ */
+      border: 4px solid #a855f7; /* สีม่วง (purple-500) ตามธีมเว็บพี่ */
+      border-radius: 1.5rem; /* ปรับให้โค้งเท่ากับกรอบรูป */
+      animation: border-beam 4s linear infinite;
+      box-shadow: 0 0 15px #a855f7, 0 0 30px #a855f7; /* เพิ่มแสง Neon */
+      z-index: -1; /* ให้ไฟอยู่ข้างหลังรูป */
+    }
     }
     @keyframes shine-logic { 0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; } }
   </style>
@@ -193,8 +210,12 @@
     <footer class="text-center">
       <div class="inline-block bg-slate-800/40 backdrop-blur-md rounded-[3rem] p-12 border border-slate-700/50 glow-purple">
         <p class="text-2xl text-slate-200 mb-8 font-medium italic text-center">พบปัญหา/สอบถามเพิ่มเติม ติดต่อผ่าน QR Code นี้</p>
-        <div class="bg-white p-6 rounded-3xl inline-block shadow-2xl hover:scale-110 transition-transform">
-          <img src="messageImage_1772459948844.jpg" alt="QR Code" class="w-48 h-48 object-contain">
+        <div class="relative group">
+          <div class="absolute inset-0 rounded-3xl animate-border-beam blur-sm"></div> 
+          
+          <div class="bg-white p-6 rounded-3xl inline-block shadow-2xl hover:scale-110 transition-transform relative z-10 glow-purple">
+            <img src="messageImage_1772459948844.jpg" alt="QR Code" class="w-48 h-48 object-contain">
+          </div>
         </div>
         <div class="mt-10 text-slate-500 text-sm">
            <p>© 2026 งานพัสดุ @Robbygrean | มั่นใจ โปร่งใส ตรวจสอบได้ แต๊เน้อ</p>
