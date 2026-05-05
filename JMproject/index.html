@@ -63,16 +63,17 @@
 
                     <!-- Dashboard Bar -->
                     <div class="filter-container p-3 rounded-2xl flex flex-col md:flex-row gap-3 bg-slate-800/20">
-                        <select id="regionFilter" onchange="filterData()" 
-                                class="bg-blue-600 text-white font-bold p-4 rounded-xl outline-none cursor-pointer shadow-lg border-b-4 border-blue-800">
-                            <option value="">🌐 เลือกภาคทั้งหมด</option>
-                            <option value="ภาคเหนือ">⛰️ ภาคเหนือ</option>
-                            <option value="ภาคตะวันออกเฉียงเหนือ">🏜️ ภาคอีสาน</option>
-                            <option value="ภาคกลาง">🌾 ภาคกลาง</option>
-                            <option value="ภาคตะวันออก">🌊 ภาคตะวันออก</option>
-                            <option value="ภาคตะวันตก">🌳 ภาคตะวันตก</option>
-                            <option value="ภาคใต้">🏝️ ภาคใต้</option>
-                        </select>
+                        <!-- แก้ไข value ให้ตรงกับ Database ครับพี่ร็อบ -->
+<select id="regionFilter" onchange="filterData()" 
+        class="bg-blue-600 text-white font-bold p-4 rounded-xl outline-none cursor-pointer shadow-lg border-b-4 border-blue-800">
+    <option value="">🌐 เลือกภาคทั้งหมด</option>
+    <option value="เหนือ">⛰️ ภาคเหนือ</option>
+    <option value="ตะวันออกเฉียงเหนือ">🏜️ ภาคอีสาน</option> <!-- value ตัวนี้จะไปดักจับ "ตะวันออกเฉียงเหนือ อีสาน" ที่พี่จะแก้ใน DB ได้ด้วย -->
+    <option value="กลาง">🌾 ภาคกลาง</option>
+    <option value="ตะวันออก">🌊 ภาคตะวันออก</option>
+    <option value="ตะวันตก">🌳 ภาคตะวันตก</option>
+    <option value="ใต้">🏝️ ภาคใต้</option>
+</select>
 
                         <div class="relative flex-1">
                             <input type="text" id="searchInput" oninput="filterData()" 
