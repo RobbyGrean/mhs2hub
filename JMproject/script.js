@@ -85,7 +85,7 @@ async function handleSliderChange(slider, name, currentStatus) {
     if (nextStatus === currentStatus) return;
 
     // ถามยืนยันเพื่อความชัวร์
-    const confirmMsg = `ยืนยันเปลี่ยนสถานะของ "${name}"\nเป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่ร็อบ?`;
+    const confirmMsg = `ยืนยันเปลี่ยนสถานะของ "${name}"\nเป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่?`;
     if (!confirm(confirmMsg)) {
         renderList(allData); // วาดใหม่เพื่อดีดปุ่มกลับที่เดิม
         return;
