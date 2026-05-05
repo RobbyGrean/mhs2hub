@@ -1,7 +1,22 @@
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyXTMpnUJw4R9u-g-WV_0nBURdiW6-B9T2HwZCzuq0QDeJVGqV9ok6D7UfMXbXw3jM4LQ/exec';
 let allData = [];
 
-window.onload = async () => { await fetchData(); };
+window.onload = async () => { 
+    await fetchData();
+    updateMonthHeader(); // เพิ่มการแสดงผลเดือนที่หัวเว็บ
+};
+
+// 1. คำนวณเดือนย้อนหลัง (เบิกเดือนนี้ คือยอดของเดือนที่แล้ว)
+function updateMonthHeader() {
+    const months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+    const d = new Date();
+    d.setMonth(d.getMonth() - 1); // ถอยกลับ 1 เดือนตามเงื่อนไขพี่ร็อบ
+
+    const monthDisplay = document.getElementById('currentMonthDisplay');
+    if (monthDisplay) {
+        monthDisplay.innerText = `${months[d.getMonth()]} ${d.getFullYear() + 543}`;
+    }
+}
 
 async function fetchData() {
     try {
@@ -14,6 +29,7 @@ async function fetchData() {
     }
 }
 
+// 2. แสดงผลรายการ (ปรับให้ลิงก์ไปอยู่ที่ Preview Card แทน)
 function renderList(data) {
     const container = document.getElementById('itemList');
     container.innerHTML = '';
@@ -24,24 +40,22 @@ function renderList(data) {
         
         let sliderValue = 0; 
         let statusColor = 'text-slate-500';
+        let nameColor = 'text-slate-200';
         
         if (item.status === 'ยังไม่ออก') {
             sliderValue = 1;
             statusColor = 'text-red-400';
+            nameColor = 'text-rose-400 animate-pulse'; // เน้นชื่อเขตที่ค้าง
         } else if (item.status === 'ออกแล้ว') {
             sliderValue = 2;
             statusColor = 'text-emerald-400';
+            nameColor = 'text-emerald-400';
         }
 
         card.innerHTML = `
             <div>
-                <h3 class="text-xl font-semibold mb-1">
-                    ${(item.status === 'ออกแล้ว' && item.url !== '#') 
-                        ? `<a href="${item.url}" target="_blank" class="text-cyan-400 hover:underline decoration-2 underline-offset-4 animate-pulse">
-                             ${item.name} 🔗
-                           </a>` 
-                        : `<span class="text-slate-200">${item.name}</span>`
-                    }
+                <h3 class="text-xl font-semibold mb-1 ${nameColor}">
+                    ${item.name}
                 </h3>
                 <p class="text-slate-400 text-sm">${item.region} | ${item.type}</p>
             </div>
@@ -65,6 +79,7 @@ function renderList(data) {
     });
 }
 
+// 3. จัดการการรูด Slider และสั่งเด้ง Preview Card
 async function handleSliderChange(slider, name, currentStatus) {
     const val = parseInt(slider.value);
     let nextStatus = val === 0 ? 'ยังไม่มีข้อมูล' : val === 1 ? 'ยังไม่ออก' : 'ออกแล้ว';
@@ -77,11 +92,17 @@ async function handleSliderChange(slider, name, currentStatus) {
         return;
     }
 
-    // อัปเดตข้อมูลในเครื่องทันที (รวมถึงคงค่า URL เดิมไว้ด้วย)
     const index = allData.findIndex(i => i.name === name);
     if (index !== -1) {
         allData[index].status = nextStatus;
         renderList(allData); 
+        
+        // --- เงื่อนไขใหม่: ถ้าค้าง ให้โชว์ Card ทันที ---
+        if (nextStatus === 'ยังไม่ออก' && allData[index].url !== '#') {
+            showPreview(name, allData[index].url);
+        } else {
+            hidePreview();
+        }
     }
 
     try {
@@ -95,9 +116,25 @@ async function handleSliderChange(slider, name, currentStatus) {
     }
 }
 
-// ส่วนระบบ Search และ Report ใช้ของเดิมได้เลยครับพี่ร็อบ
+// 4. ควบคุม Preview Card (มุมขวาล่าง)
+function showPreview(name, url) {
+    const card = document.getElementById('previewCard');
+    document.getElementById('prevName').innerText = name;
+    document.getElementById('prevLink').href = url;
+    document.getElementById('prevImg').src = `https://api.microlink.io/?url=${url}&screenshot=true&embed=screenshot.url`;
 
-// 4. ระบบค้นหา (คงเดิม)
+    card.classList.remove('hidden', 'scale-0', 'opacity-0');
+    card.classList.add('scale-100', 'opacity-100');
+}
+
+function hidePreview() {
+    const card = document.getElementById('previewCard');
+    card.classList.remove('scale-100', 'opacity-100');
+    card.classList.add('scale-0', 'opacity-0');
+    setTimeout(() => { if(card.classList.contains('scale-0')) card.classList.add('hidden'); }, 500);
+}
+
+// 5. ระบบค้นหา
 function filterList() {
     const searchTerm = document.getElementById('searchBox').value.toLowerCase();
     const regionSelect = document.getElementById('regionFilter').value;
@@ -106,16 +143,16 @@ function filterList() {
         const regionText = item.region.toLowerCase();
         const isIsanSearch = searchTerm.includes("อีสาน") && regionText.includes("ตะวันออกเฉียงเหนือ");
         const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
-                              regionText.includes(searchTerm) ||
-                              item.type.toLowerCase().includes(searchTerm) ||
-                              isIsanSearch;
+                             regionText.includes(searchTerm) ||
+                             item.type.toLowerCase().includes(searchTerm) ||
+                             isIsanSearch;
         const matchesRegion = regionSelect === "" || item.region === regionSelect;
         return matchesSearch && matchesRegion;
     });
     renderList(filtered);
 }
 
-// 5. ระบบรายงาน (คงเดิม)
+// 6. ระบบรายงาน
 function generatePendingReport() {
     const pendingItems = allData.filter(item => item.status === 'ยังไม่ออก');
     const noDataItems = allData.filter(item => item.status === 'ยังไม่มีข้อมูล');
