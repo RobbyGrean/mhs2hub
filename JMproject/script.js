@@ -1,16 +1,18 @@
+// บรรทัดที่ 1: URL จาก Apps Script ของพี่
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyXTMpnUJw4R9u-g-WV_0nBURdiW6-B9T2HwZCzuq0QDeJVGqV9ok6D7UfMXbXw3jM4LQ/exec';
 let allData = [];
+let previousDataState = {}; // ตัวแปรจำสถานะเพื่อใช้เช็ก Live Feed
 
 window.onload = async () => { 
     await fetchData();
-    updateMonthHeader(); // เพิ่มการแสดงผลเดือนที่หัวเว็บ
+    updateMonthHeader(); 
 };
 
 // 1. คำนวณเดือนย้อนหลัง (เบิกเดือนนี้ คือยอดของเดือนที่แล้ว)
 function updateMonthHeader() {
     const months = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
     const d = new Date();
-    d.setMonth(d.getMonth() - 1); // ถอยกลับ 1 เดือนตามเงื่อนไขพี่ร็อบ
+    d.setMonth(d.getMonth() - 1); 
 
     const monthDisplay = document.getElementById('currentMonthDisplay');
     if (monthDisplay) {
@@ -18,20 +20,29 @@ function updateMonthHeader() {
     }
 }
 
+// 2. ดึงข้อมูลครั้งแรก
 async function fetchData() {
     try {
         const response = await fetch(WEB_APP_URL);
         allData = await response.json();
+        
+        // บันทึกสถานะเริ่มต้นไว้ใน previousDataState เพื่อไม่ให้ Feed เด้งตอนเปิดเว็บครั้งแรก
+        allData.forEach(item => {
+            previousDataState[item["ชื่อเขต"]] = item["สถานะ"];
+        });
+
         document.getElementById('loading').classList.add('hidden');
         renderList(allData);
+        startAutoUpdate(); // เริ่มระบบเช็กอัตโนมัติ
     } catch (error) {
         document.getElementById('loading').innerHTML = '<p class="text-red-400">เกิดข้อผิดพลาดในการดึงข้อมูลครับพี่</p>';
     }
 }
 
-// 2. แสดงผลรายการ (ปรับให้ลิงก์ไปอยู่ที่ Preview Card แทน)
+// 3. แสดงผลรายการ (ปรับให้ตรงกับหัวตารางภาษาไทยในชีท DB245)
 function renderList(data) {
     const container = document.getElementById('itemList');
+    if (!container) return;
     container.innerHTML = '';
 
     data.forEach(item => {
@@ -42,11 +53,15 @@ function renderList(data) {
         let statusColor = 'text-slate-500';
         let nameColor = 'text-slate-200';
         
-        if (item.status === 'ยังไม่ออก') {
+        // เช็กสถานะตามคำในชีทพี่ร็อบ
+        const status = item["สถานะ"];
+        const name = item["ชื่อเขต"];
+
+        if (status === 'ยังไม่ออก' || status === 'ค้างจ่าย') {
             sliderValue = 1;
             statusColor = 'text-red-400';
-            nameColor = 'text-rose-400 animate-pulse'; // เน้นชื่อเขตที่ค้าง
-        } else if (item.status === 'ออกแล้ว') {
+            nameColor = 'text-rose-400 animate-pulse';
+        } else if (status === 'ออกแล้ว') {
             sliderValue = 2;
             statusColor = 'text-emerald-400';
             nameColor = 'text-emerald-400';
@@ -54,32 +69,24 @@ function renderList(data) {
 
         card.innerHTML = `
             <div>
-                <h3 class="text-xl font-semibold mb-1 ${nameColor}">
-                    ${item.name}
-                </h3>
-                <p class="text-slate-400 text-sm">${item.region} | ${item.type}</p>
+                <h3 class="text-xl font-semibold mb-1 ${nameColor}">${name}</h3>
+                <p class="text-slate-400 text-sm">${item["ภาค"]} | ${item["ประเภท"]}</p>
             </div>
             <div class="flex flex-col items-center gap-2 min-w-[150px]">
                 <input type="range" min="0" max="2" step="1" value="${sliderValue}" 
                        class="status-slider w-full" 
-                       onchange="handleSliderChange(this, '${item.name}', '${item.status}')">
-                
+                       onchange="handleSliderChange(this, '${name}', '${status}')">
                 <div class="flex justify-between w-full px-1 text-[10px] text-slate-500 font-bold">
-                    <span>ไม่มี</span>
-                    <span>ค้าง</span>
-                    <span>ออก</span>
+                    <span>ไม่มี</span><span>ค้าง</span><span>ออก</span>
                 </div>
-
-                <span class="text-[10px] uppercase tracking-widest font-bold ${statusColor} mt-1">
-                    ${item.status}
-                </span>
+                <span class="text-[10px] uppercase tracking-widest font-bold ${statusColor} mt-1">${status}</span>
             </div>
         `;
         container.appendChild(card);
     });
 }
 
-// 3. จัดการการรูด Slider และสั่งเด้ง Preview Card
+// 4. จัดการการรูด Slider
 async function handleSliderChange(slider, name, currentStatus) {
     const val = parseInt(slider.value);
     let nextStatus = val === 0 ? 'ยังไม่มีข้อมูล' : val === 1 ? 'ยังไม่ออก' : 'ออกแล้ว';
@@ -87,22 +94,17 @@ async function handleSliderChange(slider, name, currentStatus) {
 
     if (nextStatus === currentStatus) return;
 
-    if (!confirm(`ยืนยันเปลี่ยนสถานะของ "${name}"\nเป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่?`)) {
+    if (!confirm(`ยืนยันเปลี่ยนสถานะของ "${name}" เป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่?`)) {
         renderList(allData);
         return;
     }
 
-    const index = allData.findIndex(i => i.name === name);
+    // อัปเดตข้อมูลในเครื่องทันทีไม่ต้องรอ Server
+    const index = allData.findIndex(i => i["ชื่อเขต"] === name);
     if (index !== -1) {
-        allData[index].status = nextStatus;
+        allData[index]["สถานะ"] = nextStatus;
+        previousDataState[name] = nextStatus; // อัปเดตตัวจำสถานะด้วย
         renderList(allData); 
-        
-        // --- เงื่อนไขใหม่: ถ้าค้าง ให้โชว์ Card ทันที ---
-        if (nextStatus === 'ยังไม่ออก' && allData[index].url !== '#') {
-            showPreview(name, allData[index].url);
-        } else {
-            hidePreview();
-        }
     }
 
     try {
@@ -116,113 +118,20 @@ async function handleSliderChange(slider, name, currentStatus) {
     }
 }
 
-function showPreview(name, url) {
-    const card = document.getElementById('previewCard');
-    const prevImg = document.getElementById('prevImg');
-    
-    document.getElementById('prevName').innerText = name;
-    document.getElementById('prevLink').href = url;
-
-    // เคลียร์รูปเก่าให้เป็นค่าว่างก่อน
-    prevImg.src = ""; 
-
-    // --- สูตรดึงภาพใหม่ (เลือกใช้แบบใดแบบหนึ่งนะครับพี่) ---
-
-    // แบบที่ 1: ใช้ Google PageSpeed (ฟรี และแคปภาพหน้าจอได้ค่อนข้างเสถียร)
-    // มันจะดึงภาพ Screenshot ของหน้าเว็บนั้นๆ มาให้เลยครับ
-    const googleCapture = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&screenshot=true`;
-    
-    // แบบที่ 2: ใช้ Microlink (ถ้าแบบแรกยังไม่ขึ้น ลองสลับมาใช้อันนี้แต่ปรับ Parameter ใหม่)
-    const microlinkCapture = `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&embed=screenshot.url&waitFor=2000`;
-
-    // ลองใช้ Microlink แบบใส่ค่าหน่วงเวลา (waitFor) เพื่อให้เว็บโหลดเสร็จก่อนแคปครับ
-    prevImg.src = microlinkCapture;
-
-    // ถ้ายังไม่ขึ้นอีก ให้ใช้ภาพ Logo เว็บ (Favicon) แทน อย่างน้อยก็มีรูปขึ้นครับพี่ร็อบ
-    prevImg.onerror = function() {
-        this.src = `https://www.google.com/s2/favicons?sz=256&domain=${url}`;
-    };
-
-    // แสดง Card
-    card.classList.remove('hidden', 'scale-0', 'opacity-0');
-    card.classList.add('scale-100', 'opacity-100');
-}
-
-function hidePreview() {
-    const card = document.getElementById('previewCard');
-    card.classList.remove('scale-100', 'opacity-100');
-    card.classList.add('scale-0', 'opacity-0');
-    setTimeout(() => { if(card.classList.contains('scale-0')) card.classList.add('hidden'); }, 500);
-}
-
-// 5. ระบบค้นหา
-function filterList() {
-    const searchTerm = document.getElementById('searchBox').value.toLowerCase();
-    const regionSelect = document.getElementById('regionFilter').value;
-
-    const filtered = allData.filter(item => {
-        const regionText = item.region.toLowerCase();
-        const isIsanSearch = searchTerm.includes("อีสาน") && regionText.includes("ตะวันออกเฉียงเหนือ");
-        const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
-                             regionText.includes(searchTerm) ||
-                             item.type.toLowerCase().includes(searchTerm) ||
-                             isIsanSearch;
-        const matchesRegion = regionSelect === "" || item.region === regionSelect;
-        return matchesSearch && matchesRegion;
-    });
-    renderList(filtered);
-}
-
-// 6. ระบบรายงาน
-function generatePendingReport() {
-    const pendingItems = allData.filter(item => item.status === 'ยังไม่ออก');
-    const noDataItems = allData.filter(item => item.status === 'ยังไม่มีข้อมูล');
-    if (pendingItems.length === 0 && noDataItems.length === 0) {
-        alert("🎉 ข้อมูลครบทุกเขตแล้วครับ!");
-        return;
-    }
-    const reportContent = document.getElementById('reportContent');
-    const timestamp = new Date().toLocaleString('th-TH');
-    let tableHtml = (data) => `
-        <table border="1" style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
-            <tr style="background: #eee;"><th>ชื่อเขต</th><th>ภาค</th><th>ประเภท</th></tr>
-            ${data.map(i => `<tr><td>${i.name}</td><td>${i.region}</td><td>${i.type}</td></tr>`).join('')}
-        </table>`;
-    reportContent.innerHTML = `
-        <div style="font-family: 'Kanit', sans-serif; color: black; padding:20px;">
-            <h1 style="text-align:center;">รายงานสรุปเขตที่ค้างจ่าย (JM Project)</h1>
-            <p style="text-align:right;">ข้อมูล ณ วันที่: ${timestamp}</p>
-            ${pendingItems.length > 0 ? `<h3>🔴 ยังไม่ออก (${pendingItems.length})</h3>${tableHtml(pendingItems)}` : ''}
-            ${noDataItems.length > 0 ? `<h3>⚪ ยังไม่มีข้อมูล (${noDataItems.length})</h3>${tableHtml(noDataItems)}` : ''}
-        </div>`;
-    window.print();
-}
-
-// 1. ตัวแปรสำหรับจำสถานะเก่า (ห้ามลืมตัวนี้ครับ)
-let previousDataState = {};
-
-// 2. ฟังก์ชันบันทึกกิจกรรมลง Feed ซ้ายมือ
+// 5. ระบบ Live Feed แจ้งเตือนการเปลี่ยนแปลง
 function pushToFeed(areaName, status) {
     const feedContainer = document.getElementById('statusFeed');
     if (!feedContainer) return;
 
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    const timeStr = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    let statusMsg = status === "ออกแล้ว" 
+        ? `เปลี่ยนสถานะเป็น <span class="text-emerald-400 font-bold">[ออกแล้ว]</span> ✅`
+        : `เปลี่ยนสถานะเป็น <span class="text-rose-400 font-bold">[ค้างจ่าย]</span> 🔴`;
     
-    let statusMsg = "";
-    let borderClass = "";
-
-    // ปรับเงื่อนไขให้ตรงกับคำในชีทพี่ (ถ้าในชีทใช้คำอื่น ให้แก้ในเครื่องหมาย " " ครับ)
-    if (status === "ยังไม่ออก" || status === "ค้างจ่าย") {
-        statusMsg = `เปลี่ยนสถานะเป็น <span class="text-rose-400 font-bold">[ค้างจ่าย]</span> 🔴`;
-        borderClass = "border-rose-500/30 bg-rose-500/5";
-    } else if (status === "ออกแล้ว") {
-        statusMsg = `เปลี่ยนสถานะเป็น <span class="text-emerald-400 font-bold">[ออกแล้ว]</span> ✅`;
-        borderClass = "border-emerald-500/30 bg-emerald-500/5";
-    } else { return; }
+    let borderClass = status === "ออกแล้ว" ? "border-emerald-500/30 bg-emerald-500/5" : "border-rose-500/30 bg-rose-500/5";
 
     const logHTML = `
-        <div class="p-3 rounded-xl border ${borderClass} mb-3 shadow-lg transition-all duration-500">
+        <div class="p-3 rounded-xl border ${borderClass} mb-3 shadow-lg animate-fade-in-down">
             <div class="text-[10px] text-slate-500 font-mono mb-1">${timeStr}</div>
             <div class="text-slate-200 font-bold mb-1">${areaName}</div>
             <div class="text-slate-400 text-[11px]">${statusMsg}</div>
@@ -231,58 +140,41 @@ function pushToFeed(areaName, status) {
 
     if (feedContainer.querySelector('p')) feedContainer.innerHTML = '';
     feedContainer.insertAdjacentHTML('afterbegin', logHTML);
-
     if (feedContainer.children.length > 15) feedContainer.lastChild.remove();
 }
 
-// 3. ฟังก์ชันดึงข้อมูลมาเช็ก (ใช้ WEB_APP_URL จากบรรทัดที่ 1 ของพี่)
+// 6. ฟังก์ชันแอบเช็กข้อมูลอัตโนมัติ
 async function autoUpdateCheck() {
     try {
         const response = await fetch(WEB_APP_URL); 
         const data = await response.json();
 
         data.forEach(item => {
-            // แก้ให้ตรงกับหัวคอลัมน์ A ในรูป image_f3e79c.png
-            const areaName = item["ชื่อเขต"]; 
-            // แก้ให้ตรงกับชื่อหัวคอลัมน์สถานะในชีทพี่ (สมมติว่าชื่อ "สถานะ")
-            const currentStatus = item["สถานะ"]; 
+            const areaName = item["ชื่อเขต"];
+            const currentStatus = item["สถานะ"];
 
-            // ตรวจสอบว่ามีการเปลี่ยนแปลงจากค่าที่จำไว้หรือไม่
+            // ถ้าสถานะในชีทเปลี่ยนไปจากที่หน้าจอจำไว้ ให้เด้ง Feed
             if (previousDataState[areaName] !== undefined && previousDataState[areaName] !== currentStatus) {
                 pushToFeed(areaName, currentStatus);
             }
-
-            // บันทึกสถานะปัจจุบันลงตัวจำ
             previousDataState[areaName] = currentStatus;
         });
 
-        // อัปเดตตารางหลักหน้าเว็บด้วย ข้อมูลจะได้สดใหม่เสมอ
-        if (typeof renderList === "function") {
-            renderList(data);
-        }
-
+        allData = data; // อัปเดตข้อมูลชุดหลัก
+        renderList(allData); // รีเฟรชหน้าจอหลัก
     } catch (error) {
-        console.error("Auto update error:", error);
+        console.error("Auto check error:", error);
     }
 }
 
-// 4. ตั้งระบบเปิด-ปิดการทำงานอัตโนมัติ (ประหยัดทรัพยากร)
+// 7. ตั้งเวลาเปิด-ปิดอัตโนมัติ
 let autoUpdateInterval;
-
 function startAutoUpdate() {
     if (autoUpdateInterval) clearInterval(autoUpdateInterval);
-    autoUpdateInterval = setInterval(autoUpdateCheck, 60000); // 1 นาทีเช็กที
+    autoUpdateInterval = setInterval(autoUpdateCheck, 60000); 
 }
 
-// ตรวจสอบว่าถ้าปิดหน้าจอไป หรือพับจอไว้ ให้หยุดดึงข้อมูล
 document.addEventListener("visibilitychange", () => {
-    if (document.hidden) {
-        clearInterval(autoUpdateInterval);
-    } else {
-        autoUpdateCheck(); // เช็กทันทีหนึ่งรอบเมื่อกลับมาเปิดหน้าเว็บ
-        startAutoUpdate();
-    }
+    if (document.hidden) clearInterval(autoUpdateInterval);
+    else startAutoUpdate();
 });
-
-// เริ่มทำงานครั้งแรก
-startAutoUpdate();
