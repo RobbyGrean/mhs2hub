@@ -15,7 +15,7 @@ async function fetchData() {
         renderList(allData);
     } catch (error) {
         console.error('Error:', error);
-        document.getElementById('loading').innerHTML = '<p class="text-red-400">เกิดข้อผิดพลาดในการดึงข้อมูลครับพี่ร็อบ</p>';
+        document.getElementById('loading').innerHTML = '<p class="text-red-400">เกิดข้อผิดพลาดในการดึงข้อมูลครับพี่</p>';
     }
 }
 
@@ -48,7 +48,7 @@ function renderList(data) {
                 <p class="text-slate-400 text-sm">${item.region} | ${item.type}</p>
             </div>
             <div class="flex flex-col items-center gap-3 min-w-[140px]">
-                <!-- ตัวรูดสถานะสไตล์พี่ร็อบ -->
+                <!-- ตัวรูดสถานะสไตล์พี่ -->
                 <input type="range" min="0" max="2" step="1" value="${sliderValue}" 
                        class="status-slider" 
                        onchange="handleSliderChange(this, '${item.name}', '${item.status}')">
