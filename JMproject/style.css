@@ -151,19 +151,6 @@ input#searchInput:focus {
     text-shadow: 0 0 10px var(--neon-green);
 }
 
-/* 9. Print Settings (สวยงามตอนออก PDF) */
-@media print {
-    body { background: white !important; color: black !important; }
-    .item-card { 
-        border: 1px solid #ccc !important; 
-        background: white !important; 
-        break-inside: avoid;
-        color: black !important;
-    }
-    .toggle-bg, button, select, input, .animate-spin { display: none !important; }
-    #reportSection { display: block !important; }
-}
-
 /* 10. Animations */
 @keyframes glow {
     0% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.2); }
@@ -260,53 +247,65 @@ input#searchInput:focus {
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* สำหรับสั่งซ่อนทุกอย่างที่ไม่ใช่รายงานตอน Print แบบถอนรากถอนโคน */
+/* =============================================
+   11. PRINT SETTINGS (ชุดสมบูรณ์ หายมั่วแน่นอน)
+   ============================================= */
 @media print {
-    /* 1. ซ่อนเนื้อหาหลักทั้งหมดของหน้าเว็บไม่ให้กินพื้นที่ */
+    /* 1. ซ่อนทุกอย่างที่ไม่ใช่เนื้อหารายงาน (รวม Live Update และ Preview Card) */
+    body > *:not(#reportSection),
     header, 
     .filter-container, 
     .guide-bar, 
     #itemList, 
     #loading, 
-    button,
-    footer {
-        display: none !important;
+    #statusFeed,
+    #previewCard,
+    .live-updates-container,
+    button, 
+    select, 
+    input, 
+    footer { 
+        display: none !important; 
     }
 
-    /* 2. บังคับให้ body และ container ไม่ต้องเว้นที่ว่างไว้ */
-    body, .container {
-        background: white !important;
-        margin: 0 !important;
+    /* 2. ตั้งค่าพื้นหลังและตัวอักษรให้เป็นขาวดำสำหรับงานเอกสาร */
+    body { 
+        background: white !important; 
+        color: black !important; 
+        margin: 0 !important; 
         padding: 0 !important;
-        min-height: auto !important;
+        -webkit-print-color-adjust: exact; /* ให้สีที่เซตในตารางยังคงอยู่ */
     }
 
-    /* 3. แสดงเฉพาะส่วนของรายงานเท่านั้น */
-    #reportSection {
-        display: block !important;
-        position: relative !important;
+    /* 3. บังคับให้ส่วนรายงานแสดงผลเต็มหน้ากระดาษ */
+    #reportSection { 
+        display: block !important; 
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
         width: 100% !important;
         margin: 0 !important;
         padding: 0 !important;
+        background: white !important;
     }
 
-    /* 4. ล้างค่าการจัดหน้าของ Tailwind ที่อาจขวางทาง */
-    .mx-auto {
-        margin-left: 0 !important;
-        margin-right: 0 !important;
-    }
-}
-
-@media print {
-    /* ซ่อนทุกอย่างที่ติดมากับหน้าเว็บหลัก */
-    body > *:not(#reportSection) {
-        display: none !important;
+    /* 4. จัดการตารางให้เส้นขอบชัดเจนตอนพิมพ์ */
+    #reportSection table {
+        border-collapse: collapse !important;
+        width: 100% !important;
     }
     
-    #reportSection {
-        display: block !important;
-        position: static !important;
-        width: 100% !important;
-        background: white !important;
+    #reportSection th, 
+    #reportSection td {
+        border: 1px solid black !important;
+        color: black !important;
+    }
+
+    /* 5. ล้างค่า Margin/Padding ของ Tailwind ที่อาจทำให้หน้าเบี้ยว */
+    .container, .mx-auto {
+        max-width: none !important;
+        margin: 0 !important;
     }
 }
+
+
