@@ -145,22 +145,24 @@ async function handleSliderChange(slider, name, currentStatus, url) {
     }
 }
 
+// ตรงบรรทัดที่สร้าง Card (renderList) ต้องเช็กว่าส่งค่าแบบนี้:
+// onchange="handleSliderChange(this, '${item.name}', '${item.status}', '${item.url}')"
+
 function showPreview(name, url) {
     const card = document.getElementById('previewCard');
     if (!card) return;
 
-    // เช็ก ID เหล่านี้ใน Index.html ของพี่ด้วยนะครับว่าตรงกันไหม
-    const nameEl = document.getElementById('prevName');
-    const linkEl = document.getElementById('prevLink');
-    const imgEl = document.getElementById('prevImg');
+    document.getElementById('prevName').innerText = name;
+    document.getElementById('prevLink').href = url || '#';
+    // ใช้รูปตรา สพฐ. ตามที่พี่ต้องการ
+    document.getElementById('prevImg').src = "https://www.kruchiangrai.net/wp-content/uploads/2021/02/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B1%E0%B8%8D%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B8%93%E0%B9%8C-%E0%B8%AA%E0%B8%9E%E0%B8%90.-%E0%B8%AA%E0%B8%9E%E0%B8%90.-3-D-%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%82%E0%B8%AD%E0%B8%9า-1024x1024.png";
 
-    if (nameEl) nameEl.innerText = name;
-    if (linkEl) linkEl.href = url || '#'; // ถ้าไม่มี URL ให้ใส่ # ไว้ก่อน
-    if (imgEl) imgEl.src = "https://www.kruchiangrai.net/wp-content/uploads/2021/02/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B1%E0%B8%8D%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B8%93%E0%B9%8C-%E0%B8%AA%E0%B8%9E%E0%B8%90.-%E0%B8%AA%E0%B8%9E%E0%B8%90.-3-D-%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%82%E0%B8%AD%E0%B8%9า-1024x1024.png";
-
-    // ปรับ Class ให้แสดงผล (ใช้สไตล์เดียวกับ CSS ที่พี่เขียน)
-    card.classList.remove('hidden', 'scale-0', 'opacity-0');
-    card.classList.add('scale-100', 'opacity-100');
+    // จังหวะแสดงตัว: ต้องลบ hidden ออกก่อน แล้วค่อยใส่ scale-100
+    card.classList.remove('hidden');
+    setTimeout(() => {
+        card.classList.remove('scale-0', 'opacity-0');
+        card.classList.add('scale-100', 'opacity-100');
+    }, 10);
 }
 
 function hidePreview() {
@@ -216,4 +218,39 @@ let autoUpdateInterval;
 function startAutoUpdate() {
     if (autoUpdateInterval) clearInterval(autoUpdateInterval);
     autoUpdateInterval = setInterval(autoUpdateCheck, 40000); // เช็กทุก 40 วินาที
+}
+
+function generateReport() {
+    // 1. กรองข้อมูลจาก allData โดยใช้ชื่อตัวแปรภาษาอังกฤษ
+    const completed = allData.filter(item => item.status === 'ออกแล้ว');
+    const pending = allData.filter(item => item.status === 'ค้างจ่าย' || item.status === 'ยังไม่ออก');
+
+    const reportSection = document.getElementById('reportSection');
+    if (!reportSection) return;
+
+    // 2. สร้างโครงสร้าง HTML สำหรับพิมพ์
+    reportSection.innerHTML = `
+        <div style="padding: 40px; font-family: 'Kanit', sans-serif; color: black; background: white;">
+            <h1 style="text-align: center; font-size: 24px;">รายงานสถานะการโอนเงินเงินเดือน</h1>
+            <p style="text-align: center;">ข้อมูล ณ วันที่: ${new Date().toLocaleDateString('th-TH')} เวลา ${new Date().toLocaleTimeString('th-TH')}</p>
+            <hr style="margin: 20px 0;">
+            <div style="display: flex; justify-content: space-between;">
+                <div style="width: 48%;">
+                    <h3 style="color: #059669; border-bottom: 2px solid #059669;">✅ ออกแล้ว (${completed.length} เขต)</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        ${completed.map(i => `<li style="padding: 5px 0; border-bottom: 1px solid #eee;">${i.name}</li>`).join('')}
+                    </ul>
+                </div>
+                <div style="width: 48%;">
+                    <h3 style="color: #dc2626; border-bottom: 2px solid #dc2626;">🔴 ค้างจ่าย (${pending.length} เขต)</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        ${pending.map(i => `<li style="padding: 5px 0; border-bottom: 1px solid #eee;">${i.name}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // 3. สั่งพิมพ์
+    window.print();
 }
