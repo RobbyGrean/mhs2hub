@@ -53,26 +53,53 @@ function renderList(data) {
     });
 }
 
-// 3. ระบบ Toggle สถานะ 3 จังหวะ (ยังไม่ออก -> ออกแล้ว -> ยังไม่มีข้อมูล)
+// 3. ระบบ Toggle สถานะ 3 จังหวะ พร้อมระบบถามยืนยันก่อนบันทึก
 async function updateStatus(name, currentStatus) {
     let nextStatus = '';
-    if (currentStatus === 'ยังไม่ออก') nextStatus = 'ออกแล้ว';
-    else if (currentStatus === 'ออกแล้ว') nextStatus = 'ยังไม่มีข้อมูล';
-    else nextStatus = 'ยังไม่ออก';
+    let statusEmoji = '';
 
-    // Update UI ทันที (Optimistic Update)
+    // กำหนดลำดับสถานะและ Emoji ให้ดูง่ายตอนยืนยัน
+    if (currentStatus === 'ยังไม่ออก') {
+        nextStatus = 'ออกแล้ว';
+        statusEmoji = '✅';
+    } else if (currentStatus === 'ออกแล้ว') {
+        nextStatus = 'ยังไม่มีข้อมูล';
+        statusEmoji = '⚪';
+    } else {
+        nextStatus = 'ยังไม่ออก';
+        statusEmoji = '🔴';
+    }
+
+    // ถามยืนยันก่อน เพื่อป้องกันมือลั่น
+    const confirmMessage = `ต้องการเปลี่ยนสถานะของ:\n"${name}"\n\nจาก: ${currentStatus}\nเป็น: ${statusEmoji} ${nextStatus}\n\nยืนยันหรือไม่ครับพี่ร็อบ?`;
+    
+    if (!confirm(confirmMessage)) return;
+
+    // --- เริ่มกระบวนการบันทึกเมื่อยืนยันแล้ว ---
+
+    // 1. Update UI ทันทีบนหน้าเว็บ (Optimistic Update)
     const index = allData.findIndex(i => i.name === name);
-    allData[index].status = nextStatus;
-    renderList(allData);
+    if (index !== -1) {
+        allData[index].status = nextStatus;
+        renderList(allData);
+    }
 
-    // ส่งข้อมูลไปบันทึกใน Google Sheets
+    // 2. ส่งข้อมูลไปบันทึกใน Google Sheets
     try {
-        await fetch(WEB_APP_URL, {
+        const response = await fetch(WEB_APP_URL, {
             method: 'POST',
             body: JSON.stringify({ name: name, status: nextStatus })
         });
+        
+        if (!response.ok) throw new Error('Network response was not ok');
+        
+        console.log(`บันทึก ${name} เป็น ${nextStatus} สำเร็จ`);
     } catch (error) {
-        alert('บันทึกข้อมูลไม่สำเร็จครับพี่ร็อบ ลองตรวจสอบเน็ตดูนะครับ');
+        console.error('Error:', error);
+        alert('❌ บันทึกไม่สำเร็จ! ข้อมูลในชีทอาจไม่เปลี่ยน ลองเช็คอินเทอร์เน็ตแล้วรีเฟรชหน้าจอนะครับพี่ร็อบ');
+        
+        // ถ้าบันทึกพลาด ให้ดึงข้อมูลใหม่เพื่อคืนค่าสถานะที่ถูกต้อง
+        fetchData(); 
     }
 }
 
@@ -106,7 +133,7 @@ function generatePendingReport() {
     const noDataItems = allData.filter(item => item.status === 'ยังไม่มีข้อมูล');
 
     if (pendingItems.length === 0 && noDataItems.length === 0) {
-        alert("🎉 ข้อมูลครบทุกเขตแล้วครับพี่ร็อบ!");
+        alert("🎉 ข้อมูลครบทุกเขตแล้วครับ!");
         return;
     }
 
