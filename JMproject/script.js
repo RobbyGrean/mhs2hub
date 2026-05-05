@@ -237,9 +237,10 @@ function generatePendingReport() {
 
     // 2. กรองข้อมูลเฉพาะ "ยังไม่ออก" และ "ยังไม่มีข้อมูล" ตามฐานข้อมูล
     const pending = allData.filter(item => 
+        item.status === 'ค้างจ่าย' || 
         item.status === 'ยังไม่ออก' || 
         item.status === 'ยังไม่มีข้อมูล'
-    );
+    ).sort((a, b) => a.name.localeCompare(b.name, 'th'));
 
     if (pending.length === 0) {
         alert("ไม่มีรายการค้างดำเนินการครับ");
