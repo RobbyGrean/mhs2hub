@@ -103,7 +103,7 @@ async function handleSliderChange(slider, name, currentStatus) {
             body: JSON.stringify({ name: name, status: nextStatus })
         });
     } catch (error) {
-        alert('❌ บันทึกไม่สำเร็จครับพี่ร็อบ!');
+        alert('❌ บันทึกไม่สำเร็จครับพี่!');
         fetchData(); 
     }
 }
