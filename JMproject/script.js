@@ -197,3 +197,46 @@ function generatePendingReport() {
         </div>`;
     window.print();
 }
+
+// ฟังก์ชันสำหรับบันทึก Log การเปลี่ยนสถานะ
+function pushToFeed(areaName, status) {
+    const feedContainer = document.getElementById('statusFeed');
+    const now = new Date();
+    const timestamp = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+    
+    // กำหนดสีและข้อความตามสถานะ
+    let statusText = "";
+    let statusClass = "";
+    
+    if (status === "ยังไม่ออก") {
+        statusText = `ได้เปลี่ยนสถานะเป็น <span class="text-rose-400 font-bold">[ยังไม่ออก]</span> แล้ว`;
+        statusClass = "border-rose-500/20 bg-rose-500/5";
+    } else if (status === "ออกแล้ว") {
+        statusText = `ได้เปลี่ยนสถานะเป็น <span class="text-emerald-400 font-bold">[ออกแล้ว]</span> เรียบร้อยแล้ว`;
+        statusClass = "border-emerald-500/20 bg-emerald-500/5";
+    } else {
+        return; // ถ้าไม่มีข้อมูลไม่ต้องโชว์ในฟีด
+    }
+
+    // สร้าง Element ของ Log
+    const logItem = document.createElement('div');
+    logItem.className = `flex items-center gap-3 p-2 rounded-lg border ${statusClass} transition-all animate-fade-in-down`;
+    logItem.innerHTML = `
+        <span class="text-slate-500 text-xs font-mono">[${timestamp}]</span>
+        <span class="text-slate-200 text-sm font-semibold">${areaName}</span>
+        <span class="text-slate-400 text-sm">${statusText}</span>
+    `;
+
+    // ถ้าเป็นอันแรก ให้ลบข้อความ "ยังไม่มีข้อมูล" ออก
+    if (feedContainer.querySelector('p')) {
+        feedContainer.innerHTML = '';
+    }
+
+    // เพิ่ม Log ใหม่ไว้บนสุด
+    feedContainer.prepend(logItem);
+
+    // จำกัดจำนวน Log ไม่ให้ยาวเกินไป (เช่น เก็บแค่ 10 รายการล่าสุด)
+    if (feedContainer.children.length > 10) {
+        feedContainer.removeChild(feedContainer.lastChild);
+    }
+}
