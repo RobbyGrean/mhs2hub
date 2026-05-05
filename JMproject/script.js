@@ -120,28 +120,26 @@ async function handleSliderChange(slider, name, currentStatus) {
 function showPreview(name, url) {
     const card = document.getElementById('previewCard');
     const prevImg = document.getElementById('prevImg');
-    const prevLink = document.getElementById('prevLink');
-
-    // ตรวจสอบว่ามีลิงก์ไหม ถ้าไม่มีไม่ต้องทำต่อครับพี่
-    if (!url || url === "#") return;
-
-    document.getElementById('prevName').innerText = name;
-    prevLink.href = url;
-
-    // --- วิธีดึงภาพให้เหมือน Google Sheets ---
-    // เราจะใช้ Microlink ดึง 'image' (รูปที่เขาตั้งค่าไว้โชว์เวลาแชร์) 
-    // ถ้าไม่มีมันจะไปแคปหน้าจอ (screenshot) มาให้เองโดยอัตโนมัติครับ
-    const apiUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}&embed=image.url&screenshot=true&meta=false`;
     
+    // 1. ใส่ชื่อเขตและลิงก์เข้าไปก่อน
+    document.getElementById('prevName').innerText = name;
+    document.getElementById('prevLink').href = url;
+
+    // 2. เคลียร์รูปเก่าออกก่อน (เพื่อไม่ให้รูปเขตก่อนหน้าค้างตอนโหลดรูปใหม่)
+    prevImg.src = ""; 
+
+    // 3. ดึงภาพด้วย API (ใช้สูตรดึงภาพ Open Graph เหมือน Google Sheets)
+    // ผมใช้ encodeURIComponent เพื่อให้รองรับ URL ทุกรูปแบบครับ
+    const apiUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}&embed=image.url&screenshot=true&meta=false`;
     prevImg.src = apiUrl;
 
-    // แสดง Card แบบมี Animation
+    // 4. สั่งให้ Card เด้งขึ้นมา
     card.classList.remove('hidden', 'scale-0', 'opacity-0');
     card.classList.add('scale-100', 'opacity-100');
 
-    // ถ้าภาพโหลดไม่ได้ (Error) ให้แสดงรูปพื้นหลังสีเข้มๆ แทนครับพี่
+    // 5. กรณีดึงรูปไม่สำเร็จ ให้ใช้ภาพ Default ที่ดู Professional หน่อยครับ
     prevImg.onerror = function() {
-        this.src = 'https://via.placeholder.com/400x200/0f172a/3b82f6?text=กำลังโหลดภาพเขต...';
+        this.src = 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=400&h=200&auto=format&fit=crop';
     };
 }
 
