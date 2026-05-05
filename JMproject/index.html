@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JM Project - Tracker</title>
+    <title>Project จ้างเหมา - ระบบติดตาม</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
@@ -17,6 +17,10 @@
                 JM Project
             </h1>
             <p class="text-slate-400">ระบบติดตามสถานะเบิกจ่ายจ้างเหมาบริการ 245 เขตพื้นที่</p>
+            <!-- ส่วนที่เพิ่มใหม่: แสดงเดือนที่ตรวจเบิก -->
+            <p class="mt-4 text-xl">
+                สถานะค้างเบิก เดือน : <span id="currentMonthDisplay" class="text-yellow-400 font-bold underline decoration-yellow-500/50">กำลังคำนวณ...</span>
+            </p>
         </header>
 
         <!-- Tools -->
@@ -43,30 +47,30 @@
             <div class="relative flex-1">
                 <input type="text" id="searchBox" onkeyup="filterList()" 
                        placeholder="🔍 ค้นหา: จังหวัด, เขต, ภาค (เช่น อีสาน)..." 
-                       class="w-full p-4 rounded-xl bg-slate-900 text-cyan-300 border-2 border-slate-700 focus:border-cyan-500 outline-none transition-all">
+                       class="w-full p-4 rounded-xl bg-slate-800 text-cyan-300 border-2 border-slate-700 focus:border-cyan-500 outline-none transition-all">
             </div>
         </div>
 
-<!-- แถบ Guide วิธีใช้งาน แบบตัวโตชัดเจน -->
-<div class="max-w-5xl mx-auto mb-10 p-6 bg-slate-800/40 border-2 border-cyan-500/40 rounded-2xl backdrop-blur-md guide-bar">
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-center text-center">
-        <div class="text-cyan-400 font-black text-xl mb-2 md:mb-0">
-            💡 วิธีใช้งานหลอด:
+        <!-- แถบ Guide วิธีใช้งาน -->
+        <div class="max-w-5xl mx-auto mb-10 p-6 bg-slate-800/40 border-2 border-cyan-500/40 rounded-2xl backdrop-blur-md guide-bar">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 items-center text-center">
+                <div class="text-cyan-400 font-black text-xl mb-2 md:mb-0">
+                    💡 วิธีใช้งานหลอด:
+                </div>
+                <div class="flex items-center justify-center gap-3">
+                    <div class="w-5 h-5 rounded-full bg-slate-500"></div>
+                    <span class="text-base font-semibold text-slate-200">ซ้ายสุด: ไม่มีข้อมูล</span>
+                </div>
+                <div class="flex items-center justify-center gap-3">
+                    <div class="w-5 h-5 rounded-full bg-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.8)]"></div>
+                    <span class="text-base font-semibold text-slate-200">ตรงกลาง: ค้างจ่าย</span>
+                </div>
+                <div class="flex items-center justify-center gap-3">
+                    <div class="w-5 h-5 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]"></div>
+                    <span class="text-base font-semibold text-slate-200">ขวาสุด: ออกแล้ว</span>
+                </div>
+            </div>
         </div>
-        <div class="flex items-center justify-center gap-3">
-            <div class="w-5 h-5 rounded-full bg-slate-500"></div>
-            <span class="text-base font-semibold text-slate-200">ซ้ายสุด: ยังไม่มีข้อมูล</span>
-        </div>
-        <div class="flex items-center justify-center gap-3">
-            <div class="w-5 h-5 rounded-full bg-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.8)]"></div>
-            <span class="text-base font-semibold text-slate-200">ตรงกลาง: ยังไม่ออก (ค้าง)</span>
-        </div>
-        <div class="flex items-center justify-center gap-3">
-            <div class="w-5 h-5 rounded-full bg-emerald-500 shadow-[0_0_12px_rgba(16,185,129,0.8)]"></div>
-            <span class="text-base font-semibold text-slate-200">ขวาสุด: ออกแล้ว</span>
-        </div>
-    </div>
-</div>
 
         <!-- List Content -->
         <div id="loading" class="text-center py-20">
@@ -75,7 +79,27 @@
         </div>
 
         <div id="itemList" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- รายการเขตพื้นที่แบบ Slider จะมาโชว์ตรงนี้ผ่าน script.js -->
+            <!-- รายการจะมาแสดงที่นี่ -->
+        </div>
+    </div>
+
+    <!-- ส่วนที่เพิ่มใหม่: Preview Card มุมขวาล่าง -->
+    <div id="previewCard" class="hidden fixed bottom-10 right-10 z-50 w-80 transform transition-all duration-500 scale-0 opacity-0">
+        <div class="bg-slate-900 border-2 border-blue-500/50 rounded-[30px] overflow-hidden shadow-[0_0_40px_rgba(59,130,246,0.4)] relative">
+            <!-- ปุ่มปิด Card -->
+            <button onclick="hidePreview()" class="absolute top-3 right-3 z-[60] bg-black/50 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-500 transition-colors">✕</button>
+            
+            <div id="thumbnailArea" class="w-full h-40 bg-slate-800 relative">
+                <img id="prevImg" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
+            </div>
+            <div class="p-6">
+                <h4 id="prevName" class="text-2xl font-bold text-white mb-2">ชื่อเขตพื้นที่</h4>
+                <a id="prevLink" href="#" target="_blank" 
+                   class="inline-block w-full text-center py-3 bg-blue-600 hover:bg-blue-400 text-white rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)]">
+                   🌐 เข้าสู่เว็บไซต์เขต
+                </a>
+            </div>
         </div>
     </div>
 
