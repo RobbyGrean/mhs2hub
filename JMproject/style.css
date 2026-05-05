@@ -1,26 +1,63 @@
+/* --- JMproject Custom Style by Gemini --- */
+
+/* 1. พื้นฐานและฟอนต์ (เน้นตัวโต อ่านง่าย) */
 body {
-    background-color: #0f172a;
-    color: white;
+    background-color: #0b0f1a;
+    color: #e2e8f0;
     font-family: 'Sarabun', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding-bottom: 50px;
 }
 
-.glow-card {
-    background: rgba(30, 41, 59, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 1.5rem;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+/* 2. การ์ดรายชื่อ (สไตล์แอปมือถือ ทันสมัย) */
+.item-card {
+    background: linear-gradient(145deg, #1e293b, #0f172a);
+    border: 2px solid rgba(255, 255, 255, 0.05);
+    border-radius: 24px;
+    padding: 24px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-/* สวิตช์ Toggle เขียว-แดง */
+.item-card:hover {
+    border-color: #3b82f6;
+    transform: translateY(-3px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+/* 3. ขนาดตัวหนังสือ (สำหรับตาสีตาสา) */
+.text-title {
+    font-size: 1.5rem; /* ตัวโตชัดเจน */
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.text-subtitle {
+    font-size: 1rem;
+    color: #94a3b8;
+    font-weight: 400;
+}
+
+/* 4. สวิตช์ Toggle (ขยายใหญ่พิเศษ กดง่าย) */
 .switch {
     position: relative;
     display: inline-block;
-    width: 50px;
-    height: 24px;
+    width: 80px;
+    height: 44px;
+    flex-shrink: 0;
 }
 
-.switch input { opacity: 0; width: 0; height: 0; }
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
 
 .slider {
     position: absolute;
@@ -28,38 +65,83 @@ body {
     top: 0; left: 0; right: 0; bottom: 0;
     background-color: #ef4444; /* แดง: ยังไม่ออก */
     transition: .4s;
-    border-radius: 34px;
+    border-radius: 44px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 18px; width: 18px;
-    left: 3px; bottom: 3px;
+    height: 36px;
+    width: 36px;
+    left: 4px;
+    bottom: 4px;
     background-color: white;
     transition: .4s;
     border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 input:checked + .slider {
     background-color: #22c55e; /* เขียว: ออกแล้ว */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 0 15px rgba(34, 197, 94, 0.4);
 }
 
 input:checked + .slider:before {
-    transform: translateX(26px);
+    transform: translateX(36px);
 }
 
-/* แผนที่ SVG */
-path {
-    fill: #1e293b;
-    stroke: #334155;
-    stroke-width: 0.5;
+/* 5. ช่องค้นหา (โฉบเฉี่ยว ทรงแคปซูล) */
+.search-input {
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 100px;
+    padding: 18px 28px;
+    font-size: 1.2rem;
+    color: white;
+    width: 100%;
     transition: all 0.3s;
-    cursor: pointer;
+    box-sizing: border-box;
 }
 
-path:hover {
-    fill: #3b82f6;
-    filter: drop-shadow(0 0 8px #3b82f6);
-    transform: scale(1.01);
+.search-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
+    outline: none;
+    background: #0f172a;
+}
+
+/* 6. Scrollbar สวยๆ (สำหรับรายการยาวๆ) */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(15, 23, 42, 0.5);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #3b82f6;
+}
+
+/* 7. กล่องยืนยัน (Modal) */
+#confirmModal {
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background: #1e293b;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 32px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* 8. Glow Effect สำหรับหัวข้อ */
+.text-glow {
+    text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
 }
