@@ -1,1 +1,44 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMproject - ระบบติดตามการจ้างเหมา</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-blue-400 mb-2">JMproject</h1>
+            <p class="text-slate-400">ระบบติดตามสถานะการเบิกจ่ายจ้างเหมาบริการ (245 เขต)</p>
+        </header>
 
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- โซนรายชื่อ -->
+            <div class="glow-card p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold">รายชื่อเขตพื้นที่</h2>
+                    <div class="text-xs text-slate-400">เขียว = ออกแล้ว / แดง = ยังไม่ออก</div>
+                </div>
+                <div id="list-container" class="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                    <!-- ข้อมูลจาก JS จะมาลงที่นี่ -->
+                </div>
+            </div>
+
+            <!-- โซนแผนที่ (Placeholder) -->
+            <div class="glow-card p-6 flex items-center justify-center min-h-[400px]">
+                <div class="text-center text-slate-500">
+                    <p class="mb-4">ส่วนแสดงผลแผนที่ SVG</p>
+                    <div class="w-full max-w-sm opacity-20">
+                        <!-- พี่ร็อบสามารถก๊อปปี้ Code SVG แผนที่ไทยมาวางตรงนี้ได้เลยครับ -->
+                        [ แผนที่ประเทศไทย ]
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
