@@ -157,11 +157,10 @@ function showPreview(name, url) {
 
     const imgEl = document.getElementById('prevImg');
     if (imgEl) {
-        // แก้เป็นชื่อไฟล์ที่พี่อัปโหลดเข้าไปได้เลยครับ
+        // เรียกไฟล์ OBECs.png จากใน Repo ได้เลยครับพี่ร็อบ
         imgEl.src = "OBECs.png"; 
     }
 
-    // จังหวะแสดงตัว PreviewCard
     card.classList.remove('hidden');
     setTimeout(() => {
         card.classList.remove('scale-0', 'opacity-0');
