@@ -198,7 +198,7 @@ function generatePendingReport() {
     window.print();
 }
 
-// 1. ตัวแปรสำหรับจำสถานะเก่า (เอาไว้เช็กว่ามีการเปลี่ยนแปลงไหม)
+// 1. ตัวแปรสำหรับจำสถานะเก่า (ห้ามลืมตัวนี้ครับ)
 let previousDataState = {};
 
 // 2. ฟังก์ชันบันทึกกิจกรรมลง Feed ซ้ายมือ
@@ -212,7 +212,8 @@ function pushToFeed(areaName, status) {
     let statusMsg = "";
     let borderClass = "";
 
-    if (status === "ยังไม่ออก") {
+    // ปรับเงื่อนไขให้ตรงกับคำในชีทพี่ (ถ้าในชีทใช้คำอื่น ให้แก้ในเครื่องหมาย " " ครับ)
+    if (status === "ยังไม่ออก" || status === "ค้างจ่าย") {
         statusMsg = `เปลี่ยนสถานะเป็น <span class="text-rose-400 font-bold">[ค้างจ่าย]</span> 🔴`;
         borderClass = "border-rose-500/30 bg-rose-500/5";
     } else if (status === "ออกแล้ว") {
@@ -221,51 +222,67 @@ function pushToFeed(areaName, status) {
     } else { return; }
 
     const logHTML = `
-        <div class="p-3 rounded-xl border ${borderClass} animate-fade-in-down mb-3 shadow-lg">
+        <div class="p-3 rounded-xl border ${borderClass} mb-3 shadow-lg transition-all duration-500">
             <div class="text-[10px] text-slate-500 font-mono mb-1">${timeStr}</div>
             <div class="text-slate-200 font-bold mb-1">${areaName}</div>
             <div class="text-slate-400 text-[11px]">${statusMsg}</div>
         </div>
     `;
 
-    // ถ้ามีข้อความ "กำลังโหลด" ให้ลบทิ้งก่อน
     if (feedContainer.querySelector('p')) feedContainer.innerHTML = '';
-    
-    // เพิ่ม Log ใหม่ไว้บนสุด
     feedContainer.insertAdjacentHTML('afterbegin', logHTML);
 
-    // เก็บแค่ 15 รายการล่าสุดพอครับพี่ จะได้ไม่หนักเครื่อง
     if (feedContainer.children.length > 15) feedContainer.lastChild.remove();
 }
 
-// 3. ฟังก์ชันแอบไปดึงข้อมูลมาเช็ก (Auto Update)
+// 3. ฟังก์ชันดึงข้อมูลมาเช็ก (ใช้ WEB_APP_URL จากบรรทัดที่ 1 ของพี่)
 async function autoUpdateCheck() {
     try {
-        // ใช้ URL เดียวกับที่พี่ใช้ดึงข้อมูลหลัก
-        const response = await fetch(scriptUrl); 
+        const response = await fetch(WEB_APP_URL); 
         const data = await response.json();
 
         data.forEach(item => {
-            const areaName = item.name; // ปรับให้ตรงกับชื่อฟิลด์ในชีทพี่นะ
-            const currentStatus = item.status; // ปรับให้ตรงกับชื่อฟิลด์สถานะ
+            // แก้ให้ตรงกับหัวคอลัมน์ A ในรูป image_f3e79c.png
+            const areaName = item["ชื่อเขต"]; 
+            // แก้ให้ตรงกับชื่อหัวคอลัมน์สถานะในชีทพี่ (สมมติว่าชื่อ "สถานะ")
+            const currentStatus = item["สถานะ"]; 
 
-            // เช็กว่าถ้าสถานะเปลี่ยนไปจากที่เราจำไว้ ให้ยิงเข้า Feed
+            // ตรวจสอบว่ามีการเปลี่ยนแปลงจากค่าที่จำไว้หรือไม่
             if (previousDataState[areaName] !== undefined && previousDataState[areaName] !== currentStatus) {
                 pushToFeed(areaName, currentStatus);
-                
-                // ถ้าพี่มีฟังก์ชันแสดงผลรายการหลัก (เช่น renderList) 
-                // ให้เรียกตรงนี้เพื่อให้หน้าจอหลักอัปเดตตามด้วยครับ
-                // renderList(data); 
             }
 
-            // อัปเดตสถานะล่าสุดเก็บไว้เปรียบเทียบรอบหน้า
+            // บันทึกสถานะปัจจุบันลงตัวจำ
             previousDataState[areaName] = currentStatus;
         });
+
+        // อัปเดตตารางหลักหน้าเว็บด้วย ข้อมูลจะได้สดใหม่เสมอ
+        if (typeof renderList === "function") {
+            renderList(data);
+        }
+
     } catch (error) {
         console.error("Auto update error:", error);
     }
 }
 
-// 4. ตั้งเวลาให้ทำงานอัตโนมัติ (ใส่ไว้ในจุดที่โปรแกรมเริ่มทำงาน)
-// เช็กทุกๆ 60 วินาที (60000 ms)
-setInterval(autoUpdateCheck, 60000);
+// 4. ตั้งระบบเปิด-ปิดการทำงานอัตโนมัติ (ประหยัดทรัพยากร)
+let autoUpdateInterval;
+
+function startAutoUpdate() {
+    if (autoUpdateInterval) clearInterval(autoUpdateInterval);
+    autoUpdateInterval = setInterval(autoUpdateCheck, 60000); // 1 นาทีเช็กที
+}
+
+// ตรวจสอบว่าถ้าปิดหน้าจอไป หรือพับจอไว้ ให้หยุดดึงข้อมูล
+document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+        clearInterval(autoUpdateInterval);
+    } else {
+        autoUpdateCheck(); // เช็กทันทีหนึ่งรอบเมื่อกลับมาเปิดหน้าเว็บ
+        startAutoUpdate();
+    }
+});
+
+// เริ่มทำงานครั้งแรก
+startAutoUpdate();
