@@ -1,3 +1,4 @@
+<!-- คัดลอกไปแทนที่ในไฟล์ index.html -->
 <!DOCTYPE html>
 <html lang="th">
 <head>
@@ -9,36 +10,54 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
 </head>
 <body class="p-4 md:p-8">
-    <div class="max-w-6xl mx-auto">
+    <div class="max-w-7xl mx-auto">
         <header class="text-center mb-10">
-            <h1 class="text-4xl font-bold text-blue-400 mb-2">JMproject</h1>
-            <p class="text-slate-400">ระบบติดตามสถานะการเบิกจ่ายจ้างเหมาบริการ (245 เขต)</p>
+            <h1 class="text-5xl font-bold text-blue-400 mb-2 drop-shadow-lg">JMproject</h1>
+            <p class="text-lg text-slate-400">ระบบติดตามสถานะการเบิกจ่ายจ้างเหมาบริการ (245 เขต)</p>
         </header>
+
+        <!-- Search Box -->
+        <div class="max-w-md mx-auto mb-8">
+            <input type="text" id="searchBox" placeholder="🔍 ค้นหาชื่อเขต หรือภาค..." 
+                class="w-full p-4 rounded-2xl bg-slate-800 border border-white/10 text-white focus:outline-none focus:ring-2 focus:ring-blue-500 shadow-xl"
+                onkeyup="filterList()">
+        </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- โซนรายชื่อ -->
-            <div class="glow-card p-6">
+            <div class="glow-card p-8">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold">รายชื่อเขตพื้นที่</h2>
-                    <div class="text-xs text-slate-400">เขียว = ออกแล้ว / แดง = ยังไม่ออก</div>
+                    <h2 class="text-2xl font-bold text-white">รายชื่อเขตพื้นที่</h2>
+                    <div class="text-sm text-slate-400 bg-slate-900/50 px-3 py-1 rounded-full">🟢 ออกแล้ว | 🔴 ยังไม่ออก</div>
                 </div>
-                <div id="list-container" class="max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
-                    <!-- ข้อมูลจาก JS จะมาลงที่นี่ -->
+                <div id="list-container" class="max-h-[650px] overflow-y-auto pr-4 custom-scrollbar">
+                    <!-- ข้อมูลจะโหลดลงที่นี่ -->
                 </div>
             </div>
 
-            <!-- โซนแผนที่ (Placeholder) -->
-            <div class="glow-card p-6 flex items-center justify-center min-h-[400px]">
-                <div class="text-center text-slate-500">
-                    <p class="mb-4">ส่วนแสดงผลแผนที่ SVG</p>
-                    <div class="w-full max-w-sm opacity-20">
-                        <!-- พี่ร็อบสามารถก๊อปปี้ Code SVG แผนที่ไทยมาวางตรงนี้ได้เลยครับ -->
-                        [ แผนที่ประเทศไทย ]
-                    </div>
+            <!-- โซนแผนที่ -->
+            <div id="map-container" class="glow-card p-8 flex flex-col items-center justify-center min-h-[500px]">
+                <h3 class="text-xl text-slate-500 mb-4 font-bold uppercase tracking-widest">Thailand Status Map</h3>
+                <div id="svg-holder" class="w-full h-full opacity-80">
+                    <!-- ใส่ SVG แผนที่ไทยตรงนี้ -->
+                    <p class="text-slate-600 text-center italic">กำลังพัฒนาระบบดึง SVG...</p>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal ยืนยันข้อมูล -->
+    <div id="confirmModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="bg-slate-900 p-8 rounded-3xl border border-white/10 max-w-sm w-full text-center shadow-2xl">
+            <h3 class="text-2xl font-bold mb-4 text-white">ยืนยันการเปลี่ยนสถานะ?</h3>
+            <p id="modalText" class="text-slate-400 mb-8 text-lg"></p>
+            <div class="flex gap-4">
+                <button onclick="closeModal()" class="flex-1 py-3 bg-slate-700 rounded-xl hover:bg-slate-600 transition">ยกเลิก</button>
+                <button id="confirmBtn" class="flex-1 py-3 bg-blue-600 rounded-xl hover:bg-blue-500 transition font-bold">ตกลง</button>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>
