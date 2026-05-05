@@ -261,25 +261,39 @@ input#searchBox:focus {
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
 
-/* สำหรับสั่งซ่อนทุกอย่างที่ไม่ใช่รายงานตอน Print */
+/* สำหรับสั่งซ่อนทุกอย่างที่ไม่ใช่รายงานตอน Print แบบถอนรากถอนโคน */
 @media print {
-    /* ซ่อนทุกอย่างในหน้าเว็บปกติ */
-    body * {
-        visibility: hidden;
-    }
-    /* ให้แสดงเฉพาะส่วนของรายงานเท่านั้น */
-    #reportSection, #reportSection * {
-        visibility: visible;
-    }
-    /* จัดตำแหน่งรายงานให้ชิดขอบบน */
-    #reportSection {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-    }
-    /* ซ่อนแถบ Guide และปุ่มต่างๆ ในหน้าพิมพ์ */
-    .guide-bar, header, .filter-container, button {
+    /* 1. ซ่อนเนื้อหาหลักทั้งหมดของหน้าเว็บไม่ให้กินพื้นที่ */
+    header, 
+    .filter-container, 
+    .guide-bar, 
+    #itemList, 
+    #loading, 
+    button,
+    footer {
         display: none !important;
+    }
+
+    /* 2. บังคับให้ body และ container ไม่ต้องเว้นที่ว่างไว้ */
+    body, .container {
+        background: white !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        min-height: auto !important;
+    }
+
+    /* 3. แสดงเฉพาะส่วนของรายงานเท่านั้น */
+    #reportSection {
+        display: block !important;
+        position: relative !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* 4. ล้างค่าการจัดหน้าของ Tailwind ที่อาจขวางทาง */
+    .mx-auto {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
     }
 }
