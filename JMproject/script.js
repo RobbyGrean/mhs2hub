@@ -113,7 +113,7 @@ async function handleSliderChange(slider, name, currentStatus, url) {
     if (nextStatus === currentStatus) return;
 
     // 2. [จุดสำคัญ] บังคับถาม Confirm ทุกกรณี ไม่ว่าจะเลื่อนไปซ้าย (ไม่มีข้อมูล) หรือขวา (ออกแล้ว)
-    if (!confirm(`ยืนยันเปลี่ยนสถานะของ "${name}" เป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่ร็อบ?`)) {
+    if (!confirm(`ยืนยันเปลี่ยนสถานะของ "${name}" เป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่?`)) {
         renderList(allData); // ถ้ากด Cancel ให้เด้งกลับไปตำแหน่งเดิม
         return;
     }
