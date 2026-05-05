@@ -51,12 +51,11 @@ select#regionFilter:hover {
     box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
 }
 
-input#searchBox {
+input#searchInput { 
     background: rgba(2, 6, 23, 0.8);
     transition: all 0.3s ease;
 }
-
-input#searchBox:focus {
+input#searchInput:focus { 
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
     border-color: var(--neon-blue);
 }
