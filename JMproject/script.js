@@ -198,45 +198,74 @@ function generatePendingReport() {
     window.print();
 }
 
-// ฟังก์ชันสำหรับบันทึก Log การเปลี่ยนสถานะ
+// 1. ตัวแปรสำหรับจำสถานะเก่า (เอาไว้เช็กว่ามีการเปลี่ยนแปลงไหม)
+let previousDataState = {};
+
+// 2. ฟังก์ชันบันทึกกิจกรรมลง Feed ซ้ายมือ
 function pushToFeed(areaName, status) {
     const feedContainer = document.getElementById('statusFeed');
-    const now = new Date();
-    const timestamp = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-    
-    // กำหนดสีและข้อความตามสถานะ
-    let statusText = "";
-    let statusClass = "";
-    
-    if (status === "ยังไม่ออก") {
-        statusText = `ได้เปลี่ยนสถานะเป็น <span class="text-rose-400 font-bold">[ยังไม่ออก]</span> แล้ว`;
-        statusClass = "border-rose-500/20 bg-rose-500/5";
-    } else if (status === "ออกแล้ว") {
-        statusText = `ได้เปลี่ยนสถานะเป็น <span class="text-emerald-400 font-bold">[ออกแล้ว]</span> เรียบร้อยแล้ว`;
-        statusClass = "border-emerald-500/20 bg-emerald-500/5";
-    } else {
-        return; // ถ้าไม่มีข้อมูลไม่ต้องโชว์ในฟีด
-    }
+    if (!feedContainer) return;
 
-    // สร้าง Element ของ Log
-    const logItem = document.createElement('div');
-    logItem.className = `flex items-center gap-3 p-2 rounded-lg border ${statusClass} transition-all animate-fade-in-down`;
-    logItem.innerHTML = `
-        <span class="text-slate-500 text-xs font-mono">[${timestamp}]</span>
-        <span class="text-slate-200 text-sm font-semibold">${areaName}</span>
-        <span class="text-slate-400 text-sm">${statusText}</span>
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    
+    let statusMsg = "";
+    let borderClass = "";
+
+    if (status === "ยังไม่ออก") {
+        statusMsg = `เปลี่ยนสถานะเป็น <span class="text-rose-400 font-bold">[ค้างจ่าย]</span> 🔴`;
+        borderClass = "border-rose-500/30 bg-rose-500/5";
+    } else if (status === "ออกแล้ว") {
+        statusMsg = `เปลี่ยนสถานะเป็น <span class="text-emerald-400 font-bold">[ออกแล้ว]</span> ✅`;
+        borderClass = "border-emerald-500/30 bg-emerald-500/5";
+    } else { return; }
+
+    const logHTML = `
+        <div class="p-3 rounded-xl border ${borderClass} animate-fade-in-down mb-3 shadow-lg">
+            <div class="text-[10px] text-slate-500 font-mono mb-1">${timeStr}</div>
+            <div class="text-slate-200 font-bold mb-1">${areaName}</div>
+            <div class="text-slate-400 text-[11px]">${statusMsg}</div>
+        </div>
     `;
 
-    // ถ้าเป็นอันแรก ให้ลบข้อความ "ยังไม่มีข้อมูล" ออก
-    if (feedContainer.querySelector('p')) {
-        feedContainer.innerHTML = '';
-    }
-
+    // ถ้ามีข้อความ "กำลังโหลด" ให้ลบทิ้งก่อน
+    if (feedContainer.querySelector('p')) feedContainer.innerHTML = '';
+    
     // เพิ่ม Log ใหม่ไว้บนสุด
-    feedContainer.prepend(logItem);
+    feedContainer.insertAdjacentHTML('afterbegin', logHTML);
 
-    // จำกัดจำนวน Log ไม่ให้ยาวเกินไป (เช่น เก็บแค่ 10 รายการล่าสุด)
-    if (feedContainer.children.length > 10) {
-        feedContainer.removeChild(feedContainer.lastChild);
+    // เก็บแค่ 15 รายการล่าสุดพอครับพี่ จะได้ไม่หนักเครื่อง
+    if (feedContainer.children.length > 15) feedContainer.lastChild.remove();
+}
+
+// 3. ฟังก์ชันแอบไปดึงข้อมูลมาเช็ก (Auto Update)
+async function autoUpdateCheck() {
+    try {
+        // ใช้ URL เดียวกับที่พี่ใช้ดึงข้อมูลหลัก
+        const response = await fetch(scriptUrl); 
+        const data = await response.json();
+
+        data.forEach(item => {
+            const areaName = item.name; // ปรับให้ตรงกับชื่อฟิลด์ในชีทพี่นะ
+            const currentStatus = item.status; // ปรับให้ตรงกับชื่อฟิลด์สถานะ
+
+            // เช็กว่าถ้าสถานะเปลี่ยนไปจากที่เราจำไว้ ให้ยิงเข้า Feed
+            if (previousDataState[areaName] !== undefined && previousDataState[areaName] !== currentStatus) {
+                pushToFeed(areaName, currentStatus);
+                
+                // ถ้าพี่มีฟังก์ชันแสดงผลรายการหลัก (เช่น renderList) 
+                // ให้เรียกตรงนี้เพื่อให้หน้าจอหลักอัปเดตตามด้วยครับ
+                // renderList(data); 
+            }
+
+            // อัปเดตสถานะล่าสุดเก็บไว้เปรียบเทียบรอบหน้า
+            previousDataState[areaName] = currentStatus;
+        });
+    } catch (error) {
+        console.error("Auto update error:", error);
     }
 }
+
+// 4. ตั้งเวลาให้ทำงานอัตโนมัติ (ใส่ไว้ในจุดที่โปรแกรมเริ่มทำงาน)
+// เช็กทุกๆ 60 วินาที (60000 ms)
+setInterval(autoUpdateCheck, 60000);
