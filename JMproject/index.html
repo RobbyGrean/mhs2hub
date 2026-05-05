@@ -28,28 +28,27 @@
             </button>
         </div>
 
-        <!-- Search & Filter Bar -->
-        <div class="mb-10 max-w-4xl mx-auto flex flex-col md:flex-row gap-4">
-            <!-- Dropdown เลือกภาค -->
-            <select id="regionFilter" onchange="filterList()" 
-                    class="bg-slate-800 text-white p-4 rounded-xl border-2 border-slate-700 outline-none focus:border-blue-500 transition-all cursor-pointer shadow-xl">
-                <option value="">ทุกภาค</option>
-                <option value="ภาคเหนือ">ภาคเหนือ</option>
-                <option value="ภาคตะวันออกเฉียงเหนือ">ภาคตะวันออกเฉียงเหนือ</option>
-                <option value="ภาคกลาง">ภาคกลาง</option>
-                <option value="ภาคตะวันออก">ภาคตะวันออก</option>
-                <option value="ภาคตะวันตก">ภาคตะวันตก</option>
-                <option value="ภาคใต้">ภาคใต้</option>
-            </select>
+<!-- ค้นหาส่วน Search & Filter Bar ใน index.html แล้ววางทับด้วยชุดนี้ครับ -->
+<div class="mb-10 max-w-5xl mx-auto p-2 bg-slate-800/50 backdrop-blur-md rounded-2xl border border-white/10 shadow-2xl flex flex-col md:flex-row gap-2">
+    <!-- Dropdown เลือกภาค แบบมีสีสัน -->
+    <select id="regionFilter" onchange="filterList()" 
+            class="bg-blue-600 hover:bg-blue-500 text-white font-bold p-4 rounded-xl outline-none transition-all cursor-pointer shadow-lg border-b-4 border-blue-800 active:border-b-0">
+        <option value="">🌐 เลือกภาคทั้งหมด</option>
+        <option value="ภาคเหนือ">⛰️ ภาคเหนือ</option>
+        <option value="ภาคตะวันออกเฉียงเหนือ">🏜️ ภาคอีสาน</option>
+        <option value="ภาคกลาง">🌾 ภาคกลาง</option>
+        <option value="ภาคตะวันออก">🌊 ภาคตะวันออก</option>
+        <option value="ภาคตะวันตก">🌳 ภาคตะวันตก</option>
+        <option value="ภาคใต้">🏝️ ภาคใต้</option>
+    </select>
 
-            <!-- กล่องค้นหาพร้อม Guide -->
-            <div class="relative flex-1">
-                <span class="absolute inset-y-0 left-4 flex items-center text-slate-500">🔍</span>
-                <input type="text" id="searchBox" onkeyup="filterList()" 
-                       placeholder="พิมพ์ชื่อจังหวัด ชื่อเขต หรือชื่อภาค (เช่น อีสาน) เพื่อค้นหา..." 
-                       class="w-full p-4 pl-12 rounded-xl bg-slate-800 text-white border-2 border-slate-700 focus:border-blue-500 outline-none transition-all shadow-xl">
-            </div>
-        </div>
+    <!-- กล่องค้นหาที่เด่นขึ้น -->
+    <div class="relative flex-1">
+        <input type="text" id="searchBox" onkeyup="filterList()" 
+               placeholder="🔍 ค้นหา: จังหวัด, เขต, ภาค (เช่น อีสาน)..." 
+               class="w-full p-4 rounded-xl bg-slate-900/80 text-cyan-300 border-2 border-slate-700 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 outline-none transition-all placeholder:text-slate-500 font-medium">
+    </div>
+</div>
 
         <!-- Main Content: รายการเขตพื้นที่ -->
         <div id="loading" class="text-center text-blue-400 text-xl py-20">
