@@ -116,31 +116,36 @@ async function handleSliderChange(slider, name, currentStatus) {
     }
 }
 
-// 4. ควบคุม Preview Card (มุมขวาล่าง)
 function showPreview(name, url) {
     const card = document.getElementById('previewCard');
     const prevImg = document.getElementById('prevImg');
     
-    // 1. ใส่ชื่อเขตและลิงก์เข้าไปก่อน
     document.getElementById('prevName').innerText = name;
     document.getElementById('prevLink').href = url;
 
-    // 2. เคลียร์รูปเก่าออกก่อน (เพื่อไม่ให้รูปเขตก่อนหน้าค้างตอนโหลดรูปใหม่)
+    // เคลียร์รูปเก่าให้เป็นค่าว่างก่อน
     prevImg.src = ""; 
 
-    // 3. ดึงภาพด้วย API (ใช้สูตรดึงภาพ Open Graph เหมือน Google Sheets)
-    // ผมใช้ encodeURIComponent เพื่อให้รองรับ URL ทุกรูปแบบครับ
-    const apiUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}&embed=image.url&screenshot=true&meta=false`;
-    prevImg.src = apiUrl;
+    // --- สูตรดึงภาพใหม่ (เลือกใช้แบบใดแบบหนึ่งนะครับพี่) ---
 
-    // 4. สั่งให้ Card เด้งขึ้นมา
+    // แบบที่ 1: ใช้ Google PageSpeed (ฟรี และแคปภาพหน้าจอได้ค่อนข้างเสถียร)
+    // มันจะดึงภาพ Screenshot ของหน้าเว็บนั้นๆ มาให้เลยครับ
+    const googleCapture = `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&screenshot=true`;
+    
+    // แบบที่ 2: ใช้ Microlink (ถ้าแบบแรกยังไม่ขึ้น ลองสลับมาใช้อันนี้แต่ปรับ Parameter ใหม่)
+    const microlinkCapture = `https://api.microlink.io/?url=${encodeURIComponent(url)}&screenshot=true&embed=screenshot.url&waitFor=2000`;
+
+    // ลองใช้ Microlink แบบใส่ค่าหน่วงเวลา (waitFor) เพื่อให้เว็บโหลดเสร็จก่อนแคปครับ
+    prevImg.src = microlinkCapture;
+
+    // ถ้ายังไม่ขึ้นอีก ให้ใช้ภาพ Logo เว็บ (Favicon) แทน อย่างน้อยก็มีรูปขึ้นครับพี่ร็อบ
+    prevImg.onerror = function() {
+        this.src = `https://www.google.com/s2/favicons?sz=256&domain=${url}`;
+    };
+
+    // แสดง Card
     card.classList.remove('hidden', 'scale-0', 'opacity-0');
     card.classList.add('scale-100', 'opacity-100');
-
-    // 5. กรณีดึงรูปไม่สำเร็จ ให้ใช้ภาพ Default ที่ดู Professional หน่อยครับ
-    prevImg.onerror = function() {
-        this.src = 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?q=80&w=400&h=200&auto=format&fit=crop';
-    };
 }
 
 function hidePreview() {
