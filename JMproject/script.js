@@ -1,4 +1,8 @@
-// บรรทัดที่ 1: URL จาก Apps Script ของพี่
+/**
+ * JM Project - Modern Command Center (Stable & Refined)
+ * สำหรับ พี่ร็อบ (Brother Robb)
+ */
+
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyXTMpnUJw4R9u-g-WV_0nBURdiW6-B9T2HwZCzuq0QDeJVGqV9ok6D7UfMXbXw3jM4LQ/exec';
 let allData = [];
 let previousDataState = {}; 
@@ -18,32 +22,50 @@ function updateMonthHeader() {
     }
 }
 
-// แก้ใน script.js ของเดิม
 async function fetchData() {
     try {
         const response = await fetch(WEB_APP_URL);
         const result = await response.json(); 
         
-        allData = result.items;
-        const initialLogs = result.logs; // ดึงประวัติมา
+        allData = result.items; // ข้อมูลเขต
+        const initialLogs = result.logs; // ประวัติล่าสุด
 
-        // โหลดประวัติลง Live Feed ทันทีที่เปิดเว็บ
+        // 1. โหลดประวัติลง Live Feed ทันที
         const feedContainer = document.getElementById('statusFeed');
-        if (feedContainer) feedContainer.innerHTML = ''; // ล้างค่าเก่า
-        initialLogs.forEach(log => {
-            pushToFeed(log.name, log.status, log.time);
-        });
+        if (feedContainer) {
+            feedContainer.innerHTML = '';
+            if (initialLogs && initialLogs.length > 0) {
+                initialLogs.forEach(log => pushToFeed(log.name, log.status, log.time));
+            } else {
+                feedContainer.innerHTML = '<p class="text-slate-500 italic text-center py-4 text-sm">ยังไม่มีการเคลื่อนไหว</p>';
+            }
+        }
 
+        // 2. เก็บสถานะเริ่มต้นไว้เช็กการเปลี่ยนแปลง
         allData.forEach(item => {
             previousDataState[item.name] = item.status;
         });
 
         document.getElementById('loading').classList.add('hidden');
-        renderList(allData);
+        renderList(allData); // แสดงรายการทั้งหมด
         startAutoUpdate();
     } catch (error) {
-        console.error(error);
+        console.error("Fetch Error:", error);
     }
+}
+
+// --- ระบบ Search & Filter (เพิ่มกลับเข้ามาให้พี่ร็อบแล้ว) ---
+function filterData() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const regionFilter = document.getElementById('regionFilter').value;
+
+    const filtered = allData.filter(item => {
+        const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
+                              item.region.toLowerCase().includes(searchTerm);
+        const matchesRegion = regionFilter === "" || item.region === regionFilter;
+        return matchesSearch && matchesRegion;
+    });
+    renderList(filtered);
 }
 
 function renderList(data) {
@@ -52,40 +74,26 @@ function renderList(data) {
     container.innerHTML = '';
 
     data.forEach(item => {
+        const { name, status, region, type, url } = item; // Destructuring ชื่อภาษาอังกฤษจาก GAS
+        
+        let sliderValue = (status === 'ออกแล้ว') ? 2 : (status === 'ยังไม่ออก' || status === 'ค้างจ่าย') ? 1 : 0;
+        let statusColor = sliderValue === 1 ? 'text-rose-400' : sliderValue === 2 ? 'text-emerald-400' : 'text-slate-500';
+        let nameColor = sliderValue === 1 ? 'text-rose-400 animate-pulse' : sliderValue === 2 ? 'text-emerald-400' : 'text-slate-200';
+
         const card = document.createElement('div');
         card.className = 'item-card p-6 rounded-2xl flex justify-between items-center';
-        
-        let sliderValue = 0; 
-        let statusColor = 'text-slate-500';
-        let nameColor = 'text-slate-200';
-        
-        // --- จุดที่พี่ต้องแก้ให้เป็นชื่อภาษาอังกฤษตาม Object ใน GAS ---
-        const status = item.status; // เปลี่ยนจาก item["สถานะ"]
-        const name = item.name;     // เปลี่ยนจาก item["ชื่อเขต"]
-        const region = item.region; // เปลี่ยนจาก item["ภาค"]
-        const type = item.type;     // เปลี่ยนจาก item["ประเภท"]
-        // ------------------------------------------------------
-
-        if (status === 'ยังไม่ออก' || status === 'ค้างจ่าย') {
-            sliderValue = 1;
-            statusColor = 'text-red-400';
-            nameColor = 'text-rose-400 animate-pulse';
-        } else if (status === 'ออกแล้ว') {
-            sliderValue = 2;
-            statusColor = 'text-emerald-400';
-            nameColor = 'text-emerald-400';
-        }
-
         card.innerHTML = `
             <div>
-                <h3 class="text-xl font-semibold mb-1 ${nameColor}">${name}</h3>
+                <h3 class="text-xl font-semibold mb-1 ${nameColor}">
+                    <a href="${url}" target="_blank" class="hover:underline">${name}</a>
+                </h3>
                 <p class="text-slate-400 text-sm">${region} | ${type}</p>
             </div>
             <div class="flex flex-col items-center gap-2 min-w-[150px]">
                 <input type="range" min="0" max="2" step="1" value="${sliderValue}" 
                        class="status-slider w-full" 
-                       onchange="handleSliderChange(this, '${name}', '${status}')">
-                <div class="flex justify-between w-full px-1 text-[10px] text-slate-500 font-bold">
+                       onchange="handleSliderChange(this, '${name}', '${status}', '${url}')">
+                <div class="flex justify-between w-full px-1 text-[10px] text-slate-500 font-bold uppercase">
                     <span>ไม่มี</span><span>ค้าง</span><span>ออก</span>
                 </div>
                 <span class="text-[10px] uppercase tracking-widest font-bold ${statusColor} mt-1">${status}</span>
@@ -94,53 +102,50 @@ function renderList(data) {
         container.appendChild(card);
     });
 }
-async function handleSliderChange(slider, name, currentStatus) {
+
+async function handleSliderChange(slider, name, currentStatus, url) {
     const val = parseInt(slider.value);
-    let nextStatus = val === 0 ? 'ยังไม่มีข้อมูล' : val === 1 ? 'ยังไม่ออก' : 'ออกแล้ว';
+    let nextStatus = val === 0 ? 'ยังไม่มีข้อมูล' : val === 1 ? 'ค้างจ่าย' : 'ออกแล้ว';
     let emoji = val === 0 ? '⚪' : val === 1 ? '🔴' : '✅';
 
     if (nextStatus === currentStatus) return;
 
-    if (!confirm(`ยืนยันเปลี่ยนสถานะของ "${name}" เป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่?`)) {
-        renderList(allData);
-        return;
+    if (!confirm(`ยืนยันเปลี่ยนสถานะของ "${name}" เป็น [ ${emoji} ${nextStatus} ]?`)) {
+        renderList(allData); return;
     }
 
-    const index = allData.findIndex(i => i["ชื่อเขต"] === name);
-    if (index !== -1) {
-        allData[index]["สถานะ"] = nextStatus;
+    // Update UI ทันทีไม่ต้องรอ Database
+    const idx = allData.findIndex(i => i.name === name);
+    if (idx !== -1) {
+        allData[idx].status = nextStatus;
         previousDataState[name] = nextStatus;
-        renderList(allData); 
-
-        // ถ้าสถานะเป็น "ค้างจ่าย" ให้เด้ง Preview ตรา สพฐ. ทันที
-        if (nextStatus === 'ยังไม่ออก' || nextStatus === 'ค้างจ่าย') {
-            showPreview(name, allData[index].url || '#');
-        } else {
-            hidePreview();
-        }
+        renderList(allData);
+        
+        if (nextStatus === 'ค้างจ่าย') showPreview(name, url);
+        else hidePreview();
+        
+        pushToFeed(name, nextStatus); // ดันขึ้น Feed ทันที
     }
 
     try {
         await fetch(WEB_APP_URL, {
             method: 'POST',
+            mode: 'no-cors', // ป้องกัน Error CORS บางกรณี
             body: JSON.stringify({ name: name, status: nextStatus })
         });
-    } catch (error) {
-        alert('❌ บันทึกไม่สำเร็จครับพี่!');
+    } catch (e) {
+        console.error("Save Error:", e);
+        alert('❌ บันทึกไม่สำเร็จ!');
         fetchData(); 
     }
 }
 
-// ฟังก์ชันแสดงพรีวิว (ล็อคภาพตรา สพฐ.)
 function showPreview(name, url) {
     const card = document.getElementById('previewCard');
-    const prevImg = document.getElementById('prevImg');
-    
+    if (!card) return;
     document.getElementById('prevName').innerText = name;
     document.getElementById('prevLink').href = url;
-
-    // ล็อคลิงก์ภาพเป็นตรา สพฐ. ตามที่พี่ร็อบสั่งเลยครับ
-    prevImg.src = "https://www.kruchiangrai.net/wp-content/uploads/2021/02/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B1%E0%B8%8D%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B8%93%E0%B9%8C-%E0%B8%AA%E0%B8%9E%E0%B8%90.-%E0%B8%AA%E0%B8%9E%E0%B8%90.-3-D-%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%82%E0%B8%AD%E0%B8%9า-1024x1024.png";
+    document.getElementById('prevImg').src = "https://www.kruchiangrai.net/wp-content/uploads/2021/02/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B1%E0%B8%8D%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B8%93%E0%B9%8C-%E0%B8%AA%E0%B8%9E%E0%B8%90.-%E0%B8%AA%E0%B8%9E%E0%B8%90.-3-D-%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%82%E0%B8%AD%E0%B8%9า-1024x1024.png";
 
     card.classList.remove('hidden', 'scale-0', 'opacity-0');
     card.classList.add('scale-100', 'opacity-100');
@@ -148,20 +153,30 @@ function showPreview(name, url) {
 
 function hidePreview() {
     const card = document.getElementById('previewCard');
-    card.classList.remove('scale-100', 'opacity-100');
-    card.classList.add('scale-0', 'opacity-0');
-    setTimeout(() => { if(card.classList.contains('scale-0')) card.classList.add('hidden'); }, 500);
+    if (!card) return;
+    card.classList.replace('scale-100', 'scale-0');
+    card.classList.replace('opacity-100', 'opacity-0');
+    setTimeout(() => card.classList.add('hidden'), 500);
 }
 
-function pushToFeed(areaName, status) {
+function pushToFeed(name, status, time = null) {
     const feedContainer = document.getElementById('statusFeed');
     if (!feedContainer) return;
-    const timeStr = new Date().toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-    let statusMsg = status === "ออกแล้ว" 
-        ? `เปลี่ยนสถานะเป็น <span class="text-emerald-400 font-bold">[ออกแล้ว]</span> ✅`
-        : `เปลี่ยนสถานะเป็น <span class="text-rose-400 font-bold">[ค้างจ่าย]</span> 🔴`;
-    let borderClass = status === "ออกแล้ว" ? "border-emerald-500/30 bg-emerald-500/5" : "border-rose-500/30 bg-rose-500/5";
-    const logHTML = `<div class="p-3 rounded-xl border ${borderClass} mb-3 shadow-lg animate-fade-in-down"><div class="text-[10px] text-slate-500 font-mono mb-1">${timeStr}</div><div class="text-slate-200 font-bold mb-1">${areaName}</div><div class="text-slate-400 text-[11px]">${statusMsg}</div></div>`;
+    
+    const timeStr = time || new Date().toLocaleTimeString('th-TH');
+    const isSuccess = status === "ออกแล้ว";
+    const colorClass = isSuccess ? "border-emerald-500/30 bg-emerald-500/5" : "border-rose-500/30 bg-rose-500/5";
+    const textClass = isSuccess ? "text-emerald-400" : "text-rose-400";
+    
+    const logHTML = `
+        <div class="p-3 rounded-xl border ${colorClass} mb-3 shadow-lg animate-fade-in-down">
+            <div class="text-[10px] text-slate-500 font-mono mb-1">${timeStr}</div>
+            <div class="text-slate-200 font-bold mb-1">${name}</div>
+            <div class="${textClass} text-[11px] font-bold">
+                ${isSuccess ? '✅ [ออกแล้ว]' : '🔴 [ค้างจ่าย]'}
+            </div>
+        </div>`;
+        
     if (feedContainer.querySelector('p')) feedContainer.innerHTML = '';
     feedContainer.insertAdjacentHTML('afterbegin', logHTML);
     if (feedContainer.children.length > 15) feedContainer.lastChild.remove();
@@ -169,28 +184,24 @@ function pushToFeed(areaName, status) {
 
 async function autoUpdateCheck() {
     try {
-        const response = await fetch(WEB_APP_URL); 
-        const data = await response.json();
-        data.forEach(item => {
-            const areaName = item["ชื่อเขต"];
-            const currentStatus = item["สถานะ"];
-            if (previousDataState[areaName] !== undefined && previousDataState[areaName] !== currentStatus) {
-                pushToFeed(areaName, currentStatus);
+        const response = await fetch(WEB_APP_URL);
+        const result = await response.json();
+        const newData = result.items;
+
+        newData.forEach(item => {
+            if (previousDataState[item.name] !== undefined && previousDataState[item.name] !== item.status) {
+                pushToFeed(item.name, item.status);
+                previousDataState[item.name] = item.status;
             }
-            previousDataState[areaName] = currentStatus;
         });
-        allData = data;
-        renderList(allData);
-    } catch (error) { console.error("Auto check error:", error); }
+        
+        allData = newData;
+        // ไม่สั่ง renderList() ใหม่ที่นี่เพื่อไม่ให้ไปกวนการ Search ของพี่ขณะพิมพ์
+    } catch (e) { console.log("Silent update error"); }
 }
 
 let autoUpdateInterval;
 function startAutoUpdate() {
     if (autoUpdateInterval) clearInterval(autoUpdateInterval);
-    autoUpdateInterval = setInterval(autoUpdateCheck, 60000); 
+    autoUpdateInterval = setInterval(autoUpdateCheck, 40000); // เช็กทุก 40 วินาที
 }
-
-document.addEventListener("visibilitychange", () => {
-    if (document.hidden) clearInterval(autoUpdateInterval);
-    else startAutoUpdate();
-});
