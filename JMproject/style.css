@@ -1,72 +1,88 @@
-/* --- JMproject Custom Style by Gemini --- */
+/* 
+   JM Project - Space Stealth UI 
+   Designed for Brother Robb 
+*/
 
-/* 1. พื้นฐานและฟอนต์ (เน้นตัวโต อ่านง่าย) */
+/* 1. ตั้งค่าฟอนต์และการแสดงผลพื้นฐาน */
 body {
     background-color: #0b0f1a;
     color: #e2e8f0;
     font-family: 'Sarabun', sans-serif;
-    -webkit-font-smoothing: antialiased;
     margin: 0;
-    padding-bottom: 50px;
+    line-height: 1.6;
+    background-image: radial-gradient(circle at 50% 50%, #1e293b 0%, #0b0f1a 100%);
+    background-attachment: fixed;
 }
 
-/* 2. การ์ดรายชื่อ (สไตล์แอปมือถือ ทันสมัย) */
+/* 2. การ์ดรายชื่อเขต (สไตล์ล้ำสมัย) */
 .item-card {
-    background: linear-gradient(145deg, #1e293b, #0f172a);
-    border: 2px solid rgba(255, 255, 255, 0.05);
-    border-radius: 24px;
-    padding: 24px;
-    margin-bottom: 16px;
+    background: rgba(30, 41, 59, 0.4);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 30px;
+    padding: 24px 32px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
 .item-card:hover {
+    background: rgba(30, 41, 59, 0.7);
     border-color: #3b82f6;
-    transform: translateY(-3px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 130, 246, 0.2);
+    transform: scale(1.02);
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.2);
 }
 
-/* 3. ขนาดตัวหนังสือ (สำหรับตาสีตาสา) */
+/* 3. ตัวหนังสือเน้นอ่านง่าย (สไตล์ตาสีตาสา) */
 .text-title {
-    font-size: 1.5rem; /* ตัวโตชัดเจน */
-    font-weight: 700;
+    font-size: 1.8rem;
+    font-weight: 800;
     color: #ffffff;
-    margin-bottom: 4px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .text-subtitle {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #94a3b8;
-    font-weight: 400;
 }
 
-/* 4. สวิตช์ Toggle (ขยายใหญ่พิเศษ กดง่าย) */
+/* 4. ช่องค้นหา (ทรงแคปซูลอวกาศ) */
+.search-input {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border: 2px solid rgba(51, 65, 85, 1) !important;
+    border-radius: 100px !important;
+    padding: 20px 30px !important;
+    font-size: 1.2rem !important;
+    color: white !important;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 30px rgba(59, 130, 246, 0.4) !important;
+    background: #000000 !important;
+}
+
+/* 5. สวิตช์ Toggle ขนาดใหญ่พิเศษ (กดง่าย) */
 .switch {
     position: relative;
     display: inline-block;
-    width: 80px;
-    height: 44px;
-    flex-shrink: 0;
+    width: 90px;
+    height: 48px;
 }
 
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+.switch input { opacity: 0; width: 0; height: 0; }
 
 .slider {
     position: absolute;
     cursor: pointer;
     top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #ef4444; /* แดง: ยังไม่ออก */
+    background-color: #450a0a; /* แดงเข้ม */
+    border: 2px solid #991b1b;
     transition: .4s;
-    border-radius: 44px;
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+    border-radius: 50px;
 }
 
 .slider:before {
@@ -76,86 +92,59 @@ body {
     width: 36px;
     left: 4px;
     bottom: 4px;
-    background-color: white;
+    background: white;
     transition: .4s;
     border-radius: 50%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
 input:checked + .slider {
-    background-color: #22c55e; /* เขียว: ออกแล้ว */
-    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1), 0 0 15px rgba(34, 197, 94, 0.4);
+    background-color: #064e3b; /* เขียวเข้ม */
+    border-color: #059669;
 }
 
 input:checked + .slider:before {
-    transform: translateX(36px);
+    transform: translateX(42px);
+    background: #4ade80;
 }
 
-/* 5. ช่องค้นหา (โฉบเฉี่ยว ทรงแคปซูล) */
-.search-input {
+/* 6. แอนิเมชันสำหรับ Space Preview */
+@keyframes space-float {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+#previewCard {
+    animation: space-float 4s ease-in-out infinite;
+}
+
+/* 7. ปรับปรุงตารางรายงานให้สวยงาม (Print Friendly) */
+#reportSection table tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+#reportSection table th {
+    background-color: #f1f5f9;
+    color: #475569;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+/* 8. Custom Scrollbar (เท่ๆ) */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #0b0f1a; }
+::-webkit-scrollbar-thumb {
     background: #1e293b;
-    border: 2px solid #334155;
-    border-radius: 100px;
-    padding: 18px 28px;
-    font-size: 1.2rem;
-    color: white;
-    width: 100%;
-    transition: all 0.3s;
-    box-sizing: border-box;
-}
-
-.search-input:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
-    outline: none;
-    background: #0f172a;
-}
-
-/* 6. Scrollbar สวยๆ (สำหรับรายการยาวๆ) */
-.custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(15, 23, 42, 0.5);
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #334155;
     border-radius: 10px;
 }
+::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #3b82f6;
-}
-
-/* 7. กล่องยืนยัน (Modal) */
-#confirmModal {
-    transition: opacity 0.3s ease;
-}
-
-.modal-content {
-    background: #1e293b;
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: 32px;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-}
-
-/* 8. Glow Effect สำหรับหัวข้อ */
-.text-glow {
-    text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
-}
-
-@media print {
-    body * { visibility: hidden; }
-    #reportSection, #reportSection * { visibility: visible; }
-    #reportSection { 
-        position: absolute; 
-        left: 0; 
-        top: 0; 
-        width: 100%; 
-        border: none;
-        box-shadow: none;
-    }
-    button { display: none; } /* ซ่อนปุ่มเวลาพิมพ์ */
+/* 9. หน้าจอมือถือ */
+@media (max-width: 640px) {
+    .text-title { font-size: 1.4rem; }
+    .item-card { padding: 16px 20px; }
+    .switch { width: 70px; height: 38px; }
+    .slider:before { height: 28px; width: 28px; }
+    input:checked + .slider:before { transform: translateX(32px); }
 }
