@@ -1,10 +1,8 @@
-// JM Project - Core Logic
-// พี่ร็อบอย่าลืมตรวจสอบ URL ด้านล่างนี้ให้ตรงกับที่ Deploy มานะครับ
+// JM Project - Core Logic (Slider Version)
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyXTMpnUJw4R9u-g-WV_0nBURdiW6-B9T2HwZCzuq0QDeJVGqV9ok6D7UfMXbXw3jM4LQ/exec';
 
 let allData = [];
 
-// 1. ดึงข้อมูลเมื่อโหลดหน้าเว็บ
 window.onload = async () => {
     await fetchData();
 };
@@ -21,7 +19,7 @@ async function fetchData() {
     }
 }
 
-// 2. แสดงผลรายการ Card
+// 2. แสดงผลรายการ Card พร้อม Slider 3 ระดับ
 function renderList(data) {
     const container = document.getElementById('itemList');
     container.innerHTML = '';
@@ -30,139 +28,115 @@ function renderList(data) {
         const card = document.createElement('div');
         card.className = 'item-card p-6 rounded-2xl flex justify-between items-center';
         
-        // กำหนด Class ตามสถานะ
-        let statusClass = 'none';
-        if (item.status === 'ออกแล้ว') statusClass = 'active';
-        if (item.status === 'ยังไม่ออก') statusClass = '';
+        // แปลงสถานะเป็นตัวเลข 0, 1, 2 สำหรับ Slider
+        let sliderValue = 0; // ยังไม่มีข้อมูล
+        let statusColor = 'text-slate-500';
+        
+        if (item.status === 'ยังไม่ออก') {
+            sliderValue = 1;
+            statusColor = 'text-red-400';
+        } else if (item.status === 'ออกแล้ว') {
+            sliderValue = 2;
+            statusColor = 'text-emerald-400';
+        }
 
         card.innerHTML = `
             <div>
                 <h3 class="text-xl font-semibold mb-1">
-                    ${item.status === 'ออกแล้ว' ? `<a href="${item.url}" target="_blank" class="text-blue-400 hover:underline">${item.name}</a>` : item.name}
+                    ${item.status === 'ออกแล้ว' ? `<a href="${item.url}" target="_blank" class="text-cyan-400 hover:underline">${item.name}</a>` : item.name}
                 </h3>
                 <p class="text-slate-400 text-sm">${item.region} | ${item.type}</p>
             </div>
-            <div class="flex flex-col items-center gap-2">
-                <div class="toggle-bg ${statusClass}" onclick="updateStatus('${item.name}', '${item.status}')">
-                    <div class="toggle-dot"></div>
-                </div>
-                <span class="text-xs ${item.status === 'ออกแล้ว' ? 'text-emerald-400' : 'text-slate-500'}">${item.status}</span>
+            <div class="flex flex-col items-center gap-3 min-w-[140px]">
+                <!-- ตัวรูดสถานะสไตล์พี่ร็อบ -->
+                <input type="range" min="0" max="2" step="1" value="${sliderValue}" 
+                       class="status-slider" 
+                       onchange="handleSliderChange(this, '${item.name}', '${item.status}')">
+                <span class="text-[10px] uppercase tracking-widest font-bold ${statusColor}">
+                    ${item.status}
+                </span>
             </div>
         `;
         container.appendChild(card);
     });
 }
 
-// 3. ระบบ Toggle สถานะ 3 จังหวะ พร้อมระบบถามยืนยันก่อนบันทึก
-async function updateStatus(name, currentStatus) {
+// 3. ฟังก์ชันจัดการการรูด (Slider)
+async function handleSliderChange(slider, name, currentStatus) {
+    const val = parseInt(slider.value);
     let nextStatus = '';
-    let statusEmoji = '';
+    let emoji = '';
 
-    // กำหนดลำดับสถานะและ Emoji ให้ดูง่ายตอนยืนยัน
-    if (currentStatus === 'ยังไม่ออก') {
-        nextStatus = 'ออกแล้ว';
-        statusEmoji = '✅';
-    } else if (currentStatus === 'ออกแล้ว') {
-        nextStatus = 'ยังไม่มีข้อมูล';
-        statusEmoji = '⚪';
-    } else {
-        nextStatus = 'ยังไม่ออก';
-        statusEmoji = '🔴';
+    if (val === 0) { nextStatus = 'ยังไม่มีข้อมูล'; emoji = '⚪'; }
+    else if (val === 1) { nextStatus = 'ยังไม่ออก'; emoji = '🔴'; }
+    else { nextStatus = 'ออกแล้ว'; emoji = '✅'; }
+
+    // ถ้าลากมาที่เดิม ไม่ต้องทำอะไร
+    if (nextStatus === currentStatus) return;
+
+    // ถามยืนยันเพื่อความชัวร์
+    const confirmMsg = `ยืนยันเปลี่ยนสถานะของ "${name}"\nเป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่ร็อบ?`;
+    if (!confirm(confirmMsg)) {
+        renderList(allData); // วาดใหม่เพื่อดีดปุ่มกลับที่เดิม
+        return;
     }
 
-    // ถามยืนยันก่อน เพื่อป้องกันมือลั่น
-    const confirmMessage = `ต้องการเปลี่ยนสถานะของ:\n"${name}"\n\nจาก: ${currentStatus}\nเป็น: ${statusEmoji} ${nextStatus}\n\nยืนยันหรือไม่ครับพี่ร็อบ?`;
-    
-    if (!confirm(confirmMessage)) return;
-
-    // --- เริ่มกระบวนการบันทึกเมื่อยืนยันแล้ว ---
-
-    // 1. Update UI ทันทีบนหน้าเว็บ (Optimistic Update)
+    // Update UI ทันที
     const index = allData.findIndex(i => i.name === name);
-    if (index !== -1) {
-        allData[index].status = nextStatus;
-        renderList(allData);
-    }
+    allData[index].status = nextStatus;
+    renderList(allData);
 
-    // 2. ส่งข้อมูลไปบันทึกใน Google Sheets
+    // ส่งข้อมูลไปบันทึก
     try {
-        const response = await fetch(WEB_APP_URL, {
+        await fetch(WEB_APP_URL, {
             method: 'POST',
             body: JSON.stringify({ name: name, status: nextStatus })
         });
-        
-        if (!response.ok) throw new Error('Network response was not ok');
-        
-        console.log(`บันทึก ${name} เป็น ${nextStatus} สำเร็จ`);
     } catch (error) {
-        console.error('Error:', error);
-        alert('❌ บันทึกไม่สำเร็จ! ข้อมูลในชีทอาจไม่เปลี่ยน ลองเช็คอินเทอร์เน็ตแล้วรีเฟรชหน้าจอนะครับพี่ร็อบ');
-        
-        // ถ้าบันทึกพลาด ให้ดึงข้อมูลใหม่เพื่อคืนค่าสถานะที่ถูกต้อง
+        alert('❌ บันทึกไม่สำเร็จครับพี่ร็อบ!');
         fetchData(); 
     }
 }
 
-// 4. ระบบค้นหาและคัดกรอง (รองรับคำว่า "อีสาน")
+// 4. ระบบค้นหา (คงเดิม)
 function filterList() {
     const searchTerm = document.getElementById('searchBox').value.toLowerCase();
     const regionSelect = document.getElementById('regionFilter').value;
 
     const filtered = allData.filter(item => {
         const regionText = item.region.toLowerCase();
-        
-        // รองรับ Alias "อีสาน"
         const isIsanSearch = searchTerm.includes("อีสาน") && regionText.includes("ตะวันออกเฉียงเหนือ");
-
         const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
                               regionText.includes(searchTerm) ||
                               item.type.toLowerCase().includes(searchTerm) ||
                               isIsanSearch;
-
         const matchesRegion = regionSelect === "" || item.region === regionSelect;
-
         return matchesSearch && matchesRegion;
     });
-
     renderList(filtered);
 }
 
-// 5. ระบบออกรายงาน PDF (Direct Print)
+// 5. ระบบรายงาน (คงเดิม)
 function generatePendingReport() {
     const pendingItems = allData.filter(item => item.status === 'ยังไม่ออก');
     const noDataItems = allData.filter(item => item.status === 'ยังไม่มีข้อมูล');
-
     if (pendingItems.length === 0 && noDataItems.length === 0) {
         alert("🎉 ข้อมูลครบทุกเขตแล้วครับ!");
         return;
     }
-
     const reportContent = document.getElementById('reportContent');
     const timestamp = new Date().toLocaleString('th-TH');
-    
     let tableHtml = (data) => `
         <table border="1" style="width:100%; border-collapse: collapse; margin-bottom: 20px;">
-            <thead>
-                <tr style="background: #eee;">
-                    <th style="padding: 8px;">ชื่อเขต</th>
-                    <th style="padding: 8px;">ภาค</th>
-                    <th style="padding: 8px;">ประเภท</th>
-                </tr>
-            </thead>
-            <tbody>
-                ${data.map(i => `<tr><td style="padding: 8px;">${i.name}</td><td style="padding: 8px;">${i.region}</td><td style="padding: 8px;">${i.type}</td></tr>`).join('')}
-            </tbody>
-        </table>
-    `;
-
+            <tr style="background: #eee;"><th>ชื่อเขต</th><th>ภาค</th><th>ประเภท</th></tr>
+            ${data.map(i => `<tr><td>${i.name}</td><td>${i.region}</td><td>${i.type}</td></tr>`).join('')}
+        </table>`;
     reportContent.innerHTML = `
-        <div style="font-family: 'Kanit', sans-serif; color: black;">
+        <div style="font-family: 'Kanit', sans-serif; color: black; padding:20px;">
             <h1 style="text-align:center;">รายงานสรุปเขตที่ค้างจ่าย (JM Project)</h1>
             <p style="text-align:right;">ข้อมูล ณ วันที่: ${timestamp}</p>
-            ${pendingItems.length > 0 ? `<h3>🔴 รายการที่ยังไม่ออก (${pendingItems.length} เขต)</h3>${tableHtml(pendingItems)}` : ''}
-            ${noDataItems.length > 0 ? `<h3>⚪ รายการที่ยังไม่มีข้อมูล (${noDataItems.length} เขต)</h3>${tableHtml(noDataItems)}` : ''}
-        </div>
-    `;
-
+            ${pendingItems.length > 0 ? `<h3>🔴 ยังไม่ออก (${pendingItems.length})</h3>${tableHtml(pendingItems)}` : ''}
+            ${noDataItems.length > 0 ? `<h3>⚪ ยังไม่มีข้อมูล (${noDataItems.length})</h3>${tableHtml(noDataItems)}` : ''}
+        </div>`;
     window.print();
 }
