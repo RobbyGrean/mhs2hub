@@ -220,55 +220,59 @@ function startAutoUpdate() {
     autoUpdateInterval = setInterval(autoUpdateCheck, 40000); // เช็กทุก 40 วินาที
 }
 
-// ฟังก์ชันออกรายงาน เฉพาะเขตที่ค้างจ่าย (ตามชื่อใน HTML ของพี่ร็อบ)
 function generatePendingReport() {
     const reportSection = document.getElementById('reportSection');
-    if (!reportSection) {
-        alert("ไม่พบส่วนแสดงรายงาน (reportSection) ในหน้า HTML ครับพี่!");
-        return;
-    }
+    if (!reportSection) return;
 
-    // 1. กรองเฉพาะเขตที่สถานะคือ 'ค้างจ่าย' หรือ 'ยังไม่ออก'
-    const pending = allData.filter(item => item.status === 'ค้างจ่าย' || item.status === 'ยังไม่ออก');
+    // กรองเฉพาะเขตที่ต้องติดตามงาน (ยังไม่ออก และ ยังไม่มีข้อมูล)
+    const pending = allData.filter(item => 
+        item.status === 'ยังไม่ออก' || 
+        item.status === 'ยังไม่มีข้อมูล'
+    );
 
     if (pending.length === 0) {
-        alert("ไม่มีข้อมูลเขตที่ค้างจ่ายในขณะนี้ครับพี่!");
+        alert("ยอดเยี่ยมครับพี่ร็อบ! ตอนนี้ไม่มีเขตที่ค้างจ่ายแล้ว");
         return;
     }
 
-    // 2. สร้างโครงสร้างรายงานแบบทางการ (เน้นขาวดำเพื่อพิมพ์ง่าย)
     let html = `
-        <div style="padding: 40px; font-family: 'Kanit', sans-serif; color: black; background: white; min-height: 100vh;">
-            <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="font-size: 28px; margin-bottom: 5px;">รายงานสรุปรายชื่อเขตพื้นที่ (ค้างจ่าย)</h1>
-                <h2 style="font-size: 18px; color: #444; margin-bottom: 10px;">โครงการติดตามการโอนเงินเดือน (JM Project)</h2>
-                <p style="font-size: 14px; color: #666;">
-                    ข้อมูล ณ วันที่: ${new Date().toLocaleDateString('th-TH')} เวลา ${new Date().toLocaleTimeString('th-TH')} น.
-                </p>
-            </div>
-            
-            <div style="border: 2px solid #000; padding: 20px; border-radius: 10px;">
-                <h3 style="background: #be123c; color: white; padding: 10px; margin: -20px -20px 20px -20px; border-radius: 8px 8px 0 0; font-size: 20px;">
-                    🔴 รายชื่อเขตที่ยังไม่ดำเนินการ (${pending.length} เขต)
-                </h3>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                    ${pending.map((i, index) => `
-                        <div style="font-size: 16px; padding: 8px; border-bottom: 1px solid #eee;">
-                            <span style="font-weight: bold; color: #be123c;">${index + 1}.</span> ${i.name} 
-                            <span style="font-size: 12px; color: #888;">(${i.region})</span>
-                        </div>
-                    `).join('')}
-                </div>
+        <div style="padding: 40px; font-family: 'Kanit', sans-serif; color: black; background: white;">
+            <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 20px; margin-bottom: 30px;">
+                <h1 style="margin: 0; font-size: 26px;">รายงานสรุปเขตพื้นที่ที่ยังไม่ดำเนินการ</h1>
+                <p style="font-size: 18px; margin: 10px 0;">สถานะค้างเบิก เดือน : <span style="color: #e11d48; font-weight: bold;">เมษายน 2569</span></p>
+                <p style="font-size: 14px; color: #666;">ข้อมูล ณ วันที่: ${new Date().toLocaleDateString('th-TH')} เวลา ${new Date().toLocaleTimeString('th-TH')} น.</p>
             </div>
 
-            <div style="margin-top: 40px; text-align: right; font-size: 14px;">
-                <p>พิมพ์โดยระบบอัตโนมัติ JM Project - Brother Robb</p>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                <thead>
+                    <tr style="background: #f8fafc;">
+                        <th style="border: 1px solid #cbd5e1; padding: 12px; text-align: center; width: 60px;">ลำดับ</th>
+                        <th style="border: 1px solid #cbd5e1; padding: 12px; text-align: left;">ชื่อเขตพื้นที่</th>
+                        <th style="border: 1px solid #cbd5e1; padding: 12px; text-align: center; width: 150px;">สถานะ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${pending.map((i, index) => `
+                        <tr>
+                            <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: center;">${index + 1}</td>
+                            <td style="border: 1px solid #cbd5e1; padding: 10px;">${i.name}</td>
+                            <td style="border: 1px solid #cbd5e1; padding: 10px; text-align: center; font-weight: bold; color: ${i.status === 'ยังไม่ออก' ? '#be123c' : '#64748b'};">
+                                ${i.status}
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+
+            <div style="text-align: right; margin-top: 50px;">
+                <p>จำนวนที่ยังไม่เรียบร้อยรวมทั้งสิ้น: <strong>${pending.length}</strong> เขต</p>
+                <br><br><br>
+                <p>ลงชื่อ...........................................................</p>
+                <p>( พี่ร็อบ - ระบบ JM Project )</p>
             </div>
         </div>
     `;
 
-    // 3. ยัด HTML ลงไปและสั่งพิมพ์
     reportSection.innerHTML = html;
     window.print();
 }
