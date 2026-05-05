@@ -261,12 +261,19 @@ function generatePendingReport() {
         previewCard.style.display = 'none';
     }
 
-    // 2. กรองข้อมูลเฉพาะ "ยังไม่ออก" และ "ยังไม่มีข้อมูล" ตามฐานข้อมูล
+ // 2. กรองข้อมูลและจัดลำดับ (แก้ตรงส่วน .sort ใหม่ครับพี่)
     const pending = allData.filter(item => 
         item.status === 'ค้างจ่าย' || 
         item.status === 'ยังไม่ออก' || 
         item.status === 'ยังไม่มีข้อมูล'
-    ).sort((a, b) => a.name.localeCompare(b.name, 'th'));
+    ).sort((a, b) => {
+        // 1. เรียงตามสถานะก่อน (ให้ 'ค้างจ่าย' มาก่อน)
+        if (a.status === 'ค้างจ่าย' && b.status !== 'ค้างจ่าย') return -1;
+        if (a.status !== 'ค้างจ่าย' && b.status === 'ค้างจ่าย') return 1;
+
+        // 2. ถ้าสถานะเหมือนกัน ให้เรียงตามชื่อเขต (ก-ฮ) เหมือนเดิม
+        return a.name.localeCompare(b.name, 'th');
+    });
 
     if (pending.length === 0) {
         alert("ไม่มีรายการค้างดำเนินการครับ");
