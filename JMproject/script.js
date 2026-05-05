@@ -1,11 +1,7 @@
-// JM Project - Core Logic (Slider Version)
 const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyXTMpnUJw4R9u-g-WV_0nBURdiW6-B9T2HwZCzuq0QDeJVGqV9ok6D7UfMXbXw3jM4LQ/exec';
-
 let allData = [];
 
-window.onload = async () => {
-    await fetchData();
-};
+window.onload = async () => { await fetchData(); };
 
 async function fetchData() {
     try {
@@ -14,12 +10,10 @@ async function fetchData() {
         document.getElementById('loading').classList.add('hidden');
         renderList(allData);
     } catch (error) {
-        console.error('Error:', error);
         document.getElementById('loading').innerHTML = '<p class="text-red-400">เกิดข้อผิดพลาดในการดึงข้อมูลครับพี่</p>';
     }
 }
 
-// 2. แสดงผลรายการ Card พร้อม Slider และจุดมาร์ค (Tick Marks)
 function renderList(data) {
     const container = document.getElementById('itemList');
     container.innerHTML = '';
@@ -28,7 +22,6 @@ function renderList(data) {
         const card = document.createElement('div');
         card.className = 'item-card p-6 rounded-2xl flex justify-between items-center';
         
-        // แปลงสถานะเป็นตัวเลข 0, 1, 2 สำหรับ Slider
         let sliderValue = 0; 
         let statusColor = 'text-slate-500';
         
@@ -40,28 +33,29 @@ function renderList(data) {
             statusColor = 'text-emerald-400';
         }
 
-        // --- จุดที่พี่ต้องดูคือ card.innerHTML ด้านล่างนี้ครับ ---
         card.innerHTML = `
             <div>
                 <h3 class="text-xl font-semibold mb-1">
-                    ${item.status === 'ออกแล้ว' ? `<a href="${item.url}" target="_blank" class="text-cyan-400 hover:underline">${item.name}</a>` : item.name}
+                    ${(item.status === 'ออกแล้ว' && item.url !== '#') 
+                        ? `<a href="${item.url}" target="_blank" class="text-cyan-400 hover:underline decoration-2 underline-offset-4 animate-pulse">
+                             ${item.name} 🔗
+                           </a>` 
+                        : `<span class="text-slate-200">${item.name}</span>`
+                    }
                 </h3>
                 <p class="text-slate-400 text-sm">${item.region} | ${item.type}</p>
             </div>
             <div class="flex flex-col items-center gap-2 min-w-[150px]">
-                <!-- 1. ตัวรูด Slider -->
                 <input type="range" min="0" max="2" step="1" value="${sliderValue}" 
                        class="status-slider w-full" 
                        onchange="handleSliderChange(this, '${item.name}', '${item.status}')">
                 
-                <!-- 2. จุดมาร์คใต้เส้น (Label) -->
                 <div class="flex justify-between w-full px-1 text-[10px] text-slate-500 font-bold">
                     <span>ไม่มี</span>
                     <span>ค้าง</span>
                     <span>ออก</span>
                 </div>
 
-                <!-- 3. สถานะตัวหนังสือ (ล่างสุด) -->
                 <span class="text-[10px] uppercase tracking-widest font-bold ${statusColor} mt-1">
                     ${item.status}
                 </span>
@@ -71,32 +65,25 @@ function renderList(data) {
     });
 }
 
-// 3. ฟังก์ชันจัดการการรูด (Slider)
 async function handleSliderChange(slider, name, currentStatus) {
     const val = parseInt(slider.value);
-    let nextStatus = '';
-    let emoji = '';
+    let nextStatus = val === 0 ? 'ยังไม่มีข้อมูล' : val === 1 ? 'ยังไม่ออก' : 'ออกแล้ว';
+    let emoji = val === 0 ? '⚪' : val === 1 ? '🔴' : '✅';
 
-    if (val === 0) { nextStatus = 'ยังไม่มีข้อมูล'; emoji = '⚪'; }
-    else if (val === 1) { nextStatus = 'ยังไม่ออก'; emoji = '🔴'; }
-    else { nextStatus = 'ออกแล้ว'; emoji = '✅'; }
-
-    // ถ้าลากมาที่เดิม ไม่ต้องทำอะไร
     if (nextStatus === currentStatus) return;
 
-    // ถามยืนยันเพื่อความชัวร์
-    const confirmMsg = `ยืนยันเปลี่ยนสถานะของ "${name}"\nเป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่?`;
-    if (!confirm(confirmMsg)) {
-        renderList(allData); // วาดใหม่เพื่อดีดปุ่มกลับที่เดิม
+    if (!confirm(`ยืนยันเปลี่ยนสถานะของ "${name}"\nเป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่?`)) {
+        renderList(allData);
         return;
     }
 
-    // Update UI ทันที
+    // อัปเดตข้อมูลในเครื่องทันที (รวมถึงคงค่า URL เดิมไว้ด้วย)
     const index = allData.findIndex(i => i.name === name);
-    allData[index].status = nextStatus;
-    renderList(allData);
+    if (index !== -1) {
+        allData[index].status = nextStatus;
+        renderList(allData); 
+    }
 
-    // ส่งข้อมูลไปบันทึก
     try {
         await fetch(WEB_APP_URL, {
             method: 'POST',
@@ -107,6 +94,8 @@ async function handleSliderChange(slider, name, currentStatus) {
         fetchData(); 
     }
 }
+
+// ส่วนระบบ Search และ Report ใช้ของเดิมได้เลยครับพี่ร็อบ
 
 // 4. ระบบค้นหา (คงเดิม)
 function filterList() {
