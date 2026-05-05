@@ -63,7 +63,7 @@
 
                     <!-- Dashboard Bar -->
                     <div class="filter-container p-3 rounded-2xl flex flex-col md:flex-row gap-3 bg-slate-800/20">
-                        <select id="regionFilter" onchange="filterList()" 
+                        <select id="regionFilter" onchange="filterData()" 
                                 class="bg-blue-600 text-white font-bold p-4 rounded-xl outline-none cursor-pointer shadow-lg border-b-4 border-blue-800">
                             <option value="">🌐 เลือกภาคทั้งหมด</option>
                             <option value="ภาคเหนือ">⛰️ ภาคเหนือ</option>
@@ -75,7 +75,7 @@
                         </select>
 
                         <div class="relative flex-1">
-                            <input type="text" id="searchBox" onkeyup="filterList()" 
+                            <input type="text" id="searchInput" oninput="filterData()" 
                                    placeholder="🔍 ค้นหา: จังหวัด, เขต, ภาค (เช่น อีสาน)..." 
                                    class="w-full p-4 rounded-xl bg-slate-800 text-cyan-300 border-2 border-slate-700 focus:border-cyan-500 outline-none transition-all">
                         </div>
