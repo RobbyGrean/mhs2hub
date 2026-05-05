@@ -22,9 +22,9 @@ function updateMonthHeader() {
 async function fetchData() {
     try {
         const response = await fetch(WEB_APP_URL);
-        const result = await response.json(); // เปลี่ยนชื่อจาก allData เป็น result
+        const result = await response.json(); 
         
-        allData = result.items; // ดึงรายการหลักมาใส่ allData
+        allData = result.items;
         const initialLogs = result.logs; // ดึงประวัติมา
 
         // โหลดประวัติลง Live Feed ทันทีที่เปิดเว็บ
