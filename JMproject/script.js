@@ -119,12 +119,30 @@ async function handleSliderChange(slider, name, currentStatus) {
 // 4. ควบคุม Preview Card (มุมขวาล่าง)
 function showPreview(name, url) {
     const card = document.getElementById('previewCard');
-    document.getElementById('prevName').innerText = name;
-    document.getElementById('prevLink').href = url;
-    document.getElementById('prevImg').src = `https://api.microlink.io/?url=${url}&screenshot=true&embed=screenshot.url`;
+    const prevImg = document.getElementById('prevImg');
+    const prevLink = document.getElementById('prevLink');
 
+    // ตรวจสอบว่ามีลิงก์ไหม ถ้าไม่มีไม่ต้องทำต่อครับพี่
+    if (!url || url === "#") return;
+
+    document.getElementById('prevName').innerText = name;
+    prevLink.href = url;
+
+    // --- วิธีดึงภาพให้เหมือน Google Sheets ---
+    // เราจะใช้ Microlink ดึง 'image' (รูปที่เขาตั้งค่าไว้โชว์เวลาแชร์) 
+    // ถ้าไม่มีมันจะไปแคปหน้าจอ (screenshot) มาให้เองโดยอัตโนมัติครับ
+    const apiUrl = `https://api.microlink.io/?url=${encodeURIComponent(url)}&embed=image.url&screenshot=true&meta=false`;
+    
+    prevImg.src = apiUrl;
+
+    // แสดง Card แบบมี Animation
     card.classList.remove('hidden', 'scale-0', 'opacity-0');
     card.classList.add('scale-100', 'opacity-100');
+
+    // ถ้าภาพโหลดไม่ได้ (Error) ให้แสดงรูปพื้นหลังสีเข้มๆ แทนครับพี่
+    prevImg.onerror = function() {
+        this.src = 'https://via.placeholder.com/400x200/0f172a/3b82f6?text=กำลังโหลดภาพเขต...';
+    };
 }
 
 function hidePreview() {
