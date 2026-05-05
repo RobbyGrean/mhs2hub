@@ -255,70 +255,97 @@ function generatePendingReport() {
     
     if (!reportSection) return;
 
-    // 1. สั่งซ่อน Preview Card ทันทีถ้ามันเปิดค้างอยู่
     if (previewCard) {
         previewCard.classList.add('hidden');
         previewCard.style.display = 'none';
     }
 
- // 2. กรองข้อมูลและจัดลำดับ (แก้ตรงส่วน .sort ใหม่ครับพี่)
-    const pending = allData.filter(item => 
-        item.status === 'ค้างจ่าย' || 
-        item.status === 'ยังไม่ออก' || 
-        item.status === 'ยังไม่มีข้อมูล'
-    ).sort((a, b) => {
-        // 1. เรียงตามสถานะก่อน (ให้ 'ค้างจ่าย' มาก่อน)
-        if (a.status === 'ค้างจ่าย' && b.status !== 'ค้างจ่าย') return -1;
-        if (a.status !== 'ค้างจ่าย' && b.status === 'ค้างจ่าย') return 1;
+    // --- 1. จัดการเรื่องเดือน (ถอยหลัง 1 เดือน) ---
+    const monthNames = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
+                        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+    const d = new Date();
+    d.setMonth(d.getMonth() - 1); // ลืมนับ -1 จัดให้แล้วครับพี่
+    const targetMonth = `${monthNames[d.getMonth()]} ${d.getFullYear() + 543}`;
 
-        // 2. ถ้าสถานะเหมือนกัน ให้เรียงตามชื่อเขต (ก-ฮ) เหมือนเดิม
-        return a.name.localeCompare(b.name, 'th');
-    });
+    // --- 2. กรองและแยกกลุ่ม (นับลำดับแยกกัน) ---
+    const regionFilter = document.getElementById('regionFilter').value;
+    
+    // กรองข้อมูลตามภาคที่เลือกก่อน (ถ้าเลือก)
+    const baseFiltered = allData.filter(item => regionFilter === "" || item.region === regionFilter);
 
-    if (pending.length === 0) {
+    // แยกเป็น 2 กลุ่ม
+    const overDue = baseFiltered.filter(item => item.status === 'ค้างจ่าย' || item.status === 'ยังไม่ออก')
+                                .sort((a, b) => a.name.localeCompare(b.name, 'th'));
+    
+    const noData = baseFiltered.filter(item => item.status === 'ยังไม่มีข้อมูล')
+                               .sort((a, b) => a.name.localeCompare(b.name, 'th'));
+
+    if (overDue.length === 0 && noData.length === 0) {
         alert("ไม่มีรายการค้างดำเนินการครับ");
         return;
     }
 
-    // 3. สร้างโครงสร้างรายงาน (ตัดชื่อ พี่ร็อบ และส่วนลงชื่อออกทั้งหมด)
+    // ฟังก์ชันช่วยสร้างแถวตาราง (เพื่อความสะอาดของโค้ด)
+    const renderRows = (data) => data.map((i, index) => `
+        <tr>
+            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${index + 1}</td>
+            <td style="border: 1px solid #000; padding: 8px;">${i.name || '-'}</td>
+            <td style="border: 1px solid #000; padding: 8px; text-align: center; ${i.status === 'ค้างจ่าย' ? 'color: red; font-weight: bold;' : ''}">${i.status}</td>
+        </tr>
+    `).join('');
+
+    // --- 3. สร้าง HTML รายงาน ---
     let html = `
         <div style="padding: 30px; font-family: 'Kanit', sans-serif; color: black; background: white; min-height: 100vh;">
             <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 25px;">
                 <h1 style="margin: 0; font-size: 24px;">รายงานสรุปเขตพื้นที่ที่ยังไม่ดำเนินการ</h1>
-                <p style="font-size: 16px; margin: 8px 0;">สถานะค้างเบิก เดือน : พฤษภาคม 2569</p>
+                <p style="font-size: 16px; margin: 8px 0;">สถานะค้างเบิก เดือน : ${targetMonth}</p>
                 <p style="font-size: 12px; color: #666;">ข้อมูล ณ วันที่: ${new Date().toLocaleDateString('th-TH')} เวลา ${new Date().toLocaleTimeString('th-TH')} น.</p>
             </div>
 
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-                <thead>
-                    <tr style="background: #f1f5f9;">
-                        <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 60px;">ลำดับ</th>
-                        <th style="border: 1px solid #000; padding: 10px; text-align: left;">ชื่อเขตพื้นที่</th>
-                        <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 150px;">สถานะ</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${pending.map((i, index) => `
-                        <tr>
-                            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${index + 1}</td>
-                            <td style="border: 1px solid #000; padding: 8px;">${i.name || '-'}</td>
-                            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${i.status}</td>
+            <!-- ตารางที่ 1: ค้างจ่าย -->
+            ${overDue.length > 0 ? `
+                <h3 style="margin: 15px 0 10px 0; color: #e11d48;">⚠️ รายการค้างจ่าย (${overDue.length} เขต)</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background: #f1f5f9;">
+                            <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 60px;">ลำดับ</th>
+                            <th style="border: 1px solid #000; padding: 10px; text-align: left;">ชื่อเขตพื้นที่</th>
+                            <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 150px;">สถานะ</th>
                         </tr>
-                    `).join('')}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>${renderRows(overDue)}</tbody>
+                </table>
+            ` : ''}
+
+            <!-- ตารางที่ 2: ยังไม่มีข้อมูล -->
+            ${noData.length > 0 ? `
+                <h3 style="margin: 25px 0 10px 0; color: #475569;">⚪ รายการยังไม่มีข้อมูล (${noData.length} เขต)</h3>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+                    <thead>
+                        <tr style="background: #f1f5f9;">
+                            <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 60px;">ลำดับ</th>
+                            <th style="border: 1px solid #000; padding: 10px; text-align: left;">ชื่อเขตพื้นที่</th>
+                            <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 150px;">สถานะ</th>
+                        </tr>
+                    </thead>
+                    <tbody>${renderRows(noData)}</tbody>
+                </table>
+            ` : ''}
             
             <div style="text-align: right; font-weight: bold; font-size: 16px; margin-top: 20px;">
-                จำนวนที่ยังไม่เรียบร้อยรวมทั้งสิ้น: ${pending.length} เขต
+                จำนวนที่ยังไม่เรียบร้อยรวมทั้งสิ้น: ${overDue.length + noData.length} เขต
             </div>
         </div>
     `;
 
-    // 4. แสดงผลและสั่งพิมพ์
     reportSection.innerHTML = html;
     
     setTimeout(() => {
         window.print();
-        // พิมพ์เสร็จแล้ว ถ้าอยากให้ Preview Card กลับมาทำงานปกติ ก็ค่อยเอา hidden ออกได้ครับ
+        if (previewCard) {
+            previewCard.classList.remove('hidden');
+            previewCard.style.display = 'block';
+        }
     }, 300);
 }
