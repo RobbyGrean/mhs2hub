@@ -145,3 +145,17 @@ input:checked + .slider:before {
 .text-glow {
     text-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
 }
+
+@media print {
+    body * { visibility: hidden; }
+    #reportSection, #reportSection * { visibility: visible; }
+    #reportSection { 
+        position: absolute; 
+        left: 0; 
+        top: 0; 
+        width: 100%; 
+        border: none;
+        box-shadow: none;
+    }
+    button { display: none; } /* ซ่อนปุ่มเวลาพิมพ์ */
+}
