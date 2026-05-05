@@ -1,95 +1,120 @@
-/* JM Project - Full Space UI (3-Step Toggle Edition) */
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700;800&display=swap');
+/* JM Project Custom Style */
+:root {
+    --glass-bg: rgba(30, 41, 59, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.1);
+}
 
 body {
-    background-color: #0b0f1a;
-    color: #e2e8f0;
-    font-family: 'Sarabun', sans-serif;
-    margin: 0;
-    background-image: radial-gradient(circle at 50% 50%, #1e293b 0%, #0b0f1a 100%);
+    background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
     background-attachment: fixed;
-    overflow-x: hidden;
 }
 
-/* Container & Layout */
-.container { max-width: 800px; margin: 0 auto; padding: 20px; }
-
-/* Item Card */
+/* Card Styling: ดีไซน์แบบกระจกฝ้าล้ำๆ */
 .item-card {
-    background: rgba(30, 41, 59, 0.4);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 30px;
-    padding: 20px 25px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
-    transition: all 0.3s ease;
-}
-.item-card:hover { transform: translateY(-2px); background: rgba(30, 41, 59, 0.6); }
-
-/* --- 3-Step Toggle Logic --- */
-.tri-state-toggle {
-    display: flex;
-    align-items: center;
-    background: #1e293b;
-    border: 2px solid #334155;
-    border-radius: 50px;
-    width: 110px;
-    height: 38px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.toggle-ball {
-    position: absolute;
+.item-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(56, 189, 248, 0.5);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Toggle Switch: ดีไซน์ปุ่มสลับสีตามสถานะ */
+.toggle-bg {
+    width: 60px;
     height: 30px;
-    width: 30px;
-    background: white;
+    background-color: #ef4444; /* สีแดง: ยังไม่ออก */
+    border-radius: 999px;
+    position: relative;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.toggle-bg.active {
+    background-color: #10b981; /* สีเขียว: ออกแล้ว */
+}
+
+.toggle-bg.none {
+    background-color: #64748b; /* สีเทา: ยังไม่มีข้อมูล */
+}
+
+.toggle-dot {
+    width: 24px;
+    height: 24px;
+    background-color: white;
     border-radius: 50%;
-    top: 2px;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    z-index: 2;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: transform 0.3s;
 }
 
-/* 0: ยังไม่มีข้อมูล (ซ้ายสุด - Default - สีเทา) */
-.state-0 { background-color: #1e293b; border-color: #334155; }
-.state-0 .toggle-ball { left: 4px; background: #64748b; }
-
-/* 1: ยังไม่ออก (ตรงกลาง - สีแดง) */
-.state-1 { background-color: #450a0a; border-color: #991b1b; }
-.state-1 .toggle-ball { left: 38px; background: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); }
-
-/* 2: ออกแล้ว (ขวาสุด - สีเขียว) */
-.state-2 { background-color: #064e3b; border-color: #059669; }
-.state-2 .toggle-ball { left: 72px; background: #4ade80; box-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
-
-/* Typography */
-.text-title { font-size: 1.6rem; font-weight: 800; color: white; line-height: 1.2; }
-.text-subtitle { font-size: 0.9rem; color: #94a3b8; }
-
-/* Modal & Popups */
-.modal-bg {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.8); backdrop-filter: blur(5px);
-    display: flex; align-items: center; justify-content: center; z-index: 100;
-}
-.modal-content {
-    background: #1e293b; padding: 30px; border-radius: 25px;
-    max-width: 400px; text-align: center; border: 1px solid #334155;
+.toggle-bg.active .toggle-dot {
+    transform: translateX(30px);
 }
 
-/* Space Preview Card */
-#previewCard {
-    position: fixed; bottom: 20px; right: 20px; width: 300px;
-    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-    border: 2px solid #3b82f6; border-radius: 20px;
-    padding: 20px; z-index: 1000; transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+/* Dropdown styling: ลบลูกศรเดิมแล้วใส่ลูกศรขาวเท่ๆ */
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.2em;
+    padding-right: 3rem !important;
 }
 
-/* Utilities */
-.hidden { display: none !important; }
-.scale-0 { transform: scale(0); }
-.opacity-0 { opacity: 0; }
+/* 🖨️ Print Style: ส่วนสำคัญที่สุดสำหรับการทำ PDF */
+@media print {
+    /* ซ่อนองค์ประกอบที่ไม่ต้องการตอนพิมพ์ */
+    body { 
+        background: white !important; 
+        color: black !important;
+        margin: 0;
+        padding: 0;
+    }
+    
+    header, .container > div:not(#reportSection), button, select, input {
+        display: none !important;
+    }
+
+    #reportSection {
+        display: block !important;
+        position: static;
+    }
+
+    #reportContent {
+        color: black !important;
+        background: white !important;
+        width: 100%;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th { background-color: #f2f2f2 !important; -webkit-print-color-adjust: exact; }
+    
+    h1, h3 { color: black !important; }
+}
+
+/* Animation สำหรับการโหลด */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.item-card {
+    animation: fadeIn 0.4s ease-out forwards;
+}
