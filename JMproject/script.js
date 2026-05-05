@@ -18,18 +18,31 @@ function updateMonthHeader() {
     }
 }
 
+// แก้ใน script.js ของเดิม
 async function fetchData() {
     try {
         const response = await fetch(WEB_APP_URL);
-        allData = await response.json();
-        allData.forEach(item => {
-            previousDataState[item["ชื่อเขต"]] = item["สถานะ"];
+        const result = await response.json(); // เปลี่ยนชื่อจาก allData เป็น result
+        
+        allData = result.items; // ดึงรายการหลักมาใส่ allData
+        const initialLogs = result.logs; // ดึงประวัติมา
+
+        // โหลดประวัติลง Live Feed ทันทีที่เปิดเว็บ
+        const feedContainer = document.getElementById('statusFeed');
+        if (feedContainer) feedContainer.innerHTML = ''; // ล้างค่าเก่า
+        initialLogs.forEach(log => {
+            pushToFeed(log.name, log.status, log.time);
         });
+
+        allData.forEach(item => {
+            previousDataState[item.name] = item.status;
+        });
+
         document.getElementById('loading').classList.add('hidden');
         renderList(allData);
         startAutoUpdate();
     } catch (error) {
-        document.getElementById('loading').innerHTML = '<p class="text-red-400">เกิดข้อผิดพลาดในการดึงข้อมูลครับพี่</p>';
+        console.error(error);
     }
 }
 
