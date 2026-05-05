@@ -260,3 +260,26 @@ input#searchBox:focus {
 .guide-bar span {
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
 }
+
+/* สำหรับสั่งซ่อนทุกอย่างที่ไม่ใช่รายงานตอน Print */
+@media print {
+    /* ซ่อนทุกอย่างในหน้าเว็บปกติ */
+    body * {
+        visibility: hidden;
+    }
+    /* ให้แสดงเฉพาะส่วนของรายงานเท่านั้น */
+    #reportSection, #reportSection * {
+        visibility: visible;
+    }
+    /* จัดตำแหน่งรายงานให้ชิดขอบบน */
+    #reportSection {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+    }
+    /* ซ่อนแถบ Guide และปุ่มต่างๆ ในหน้าพิมพ์ */
+    .guide-bar, header, .filter-container, button {
+        display: none !important;
+    }
+}
