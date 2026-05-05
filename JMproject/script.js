@@ -105,26 +105,31 @@ function renderList(data) {
 
 async function handleSliderChange(slider, name, currentStatus, url) {
     const val = parseInt(slider.value);
+    // กำหนดค่าสถานะใหม่ตามตำแหน่ง Slider
     let nextStatus = val === 0 ? 'ยังไม่มีข้อมูล' : val === 1 ? 'ค้างจ่าย' : 'ออกแล้ว';
     let emoji = val === 0 ? '⚪' : val === 1 ? '🔴' : '✅';
 
+    // 1. ถ้าเลื่อนแล้วได้ค่าเดิม (ไม่ได้เปลี่ยนตำแหน่งจริง) ไม่ต้องทำอะไร
     if (nextStatus === currentStatus) return;
 
-    if (!confirm(`ยืนยันเปลี่ยนสถานะของ "${name}" เป็น [ ${emoji} ${nextStatus} ]?`)) {
-        renderList(allData); return;
+    // 2. [จุดสำคัญ] บังคับถาม Confirm ทุกกรณี ไม่ว่าจะเลื่อนไปซ้าย (ไม่มีข้อมูล) หรือขวา (ออกแล้ว)
+    if (!confirm(`ยืนยันเปลี่ยนสถานะของ "${name}" เป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่ร็อบ?`)) {
+        renderList(allData); // ถ้ากด Cancel ให้เด้งกลับไปตำแหน่งเดิม
+        return;
     }
 
-    // Update UI ทันทีไม่ต้องรอ Database
+    // --- ส่วนที่เหลือคือการบันทึกลงฐานข้อมูล ---
     const idx = allData.findIndex(i => i.name === name);
     if (idx !== -1) {
         allData[idx].status = nextStatus;
         previousDataState[name] = nextStatus;
-        renderList(allData);
+        renderList(allData); 
         
+        // ถ้าค้างโอน ให้โชว์ Preview Card
         if (nextStatus === 'ค้างจ่าย') showPreview(name, url);
         else hidePreview();
         
-        pushToFeed(name, nextStatus); // ดันขึ้น Feed ทันที
+        pushToFeed(name, nextStatus); 
     }
 
     try {
