@@ -226,56 +226,65 @@ function startAutoUpdate() {
 function generatePendingReport() {
     const reportSection = document.getElementById('reportSection');
     const previewCard = document.getElementById('previewCard');
+    
     if (!reportSection) return;
 
-    // ซ่อน Preview Card ก่อนเพื่อไม่ให้บังรายงานตอนพิมพ์
-    if (previewCard) previewCard.classList.add('hidden');
+    // 1. สั่งซ่อน Preview Card ทันทีถ้ามันเปิดค้างอยู่
+    if (previewCard) {
+        previewCard.classList.add('hidden');
+        previewCard.style.display = 'none';
+    }
 
-    // กรองข้อมูลตามสถานะจริง
+    // 2. กรองข้อมูลเฉพาะ "ยังไม่ออก" และ "ยังไม่มีข้อมูล" ตามฐานข้อมูล
     const pending = allData.filter(item => 
         item.status === 'ยังไม่ออก' || 
         item.status === 'ยังไม่มีข้อมูล'
     );
 
     if (pending.length === 0) {
-        alert("ทุกเขตโอนเรียบร้อยหมดแล้วครับ");
+        alert("ไม่มีรายการค้างดำเนินการครับ");
         return;
     }
 
+    // 3. สร้างโครงสร้างรายงาน (ตัดชื่อ พี่ร็อบ และส่วนลงชื่อออกทั้งหมด)
     let html = `
-        <div style="padding: 20px; font-family: 'Kanit', sans-serif; color: black; background: white;">
-            <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;">
-                <h1 style="margin: 0; font-size: 22px;">รายงานสรุปเขตพื้นที่ที่ยังไม่ดำเนินการ</h1>
-                <p style="font-size: 16px; margin: 5px 0;">สถานะค้างเบิก เดือน : พฤษภาคม 2569</p>
-                <p style="font-size: 12px; color: #666;">ข้อมูล ณ วันที่: ${new Date().toLocaleDateString('th-TH')} ${new Date().toLocaleTimeString('th-TH')}</p>
+        <div style="padding: 30px; font-family: 'Kanit', sans-serif; color: black; background: white; min-height: 100vh;">
+            <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 25px;">
+                <h1 style="margin: 0; font-size: 24px;">รายงานสรุปเขตพื้นที่ที่ยังไม่ดำเนินการ</h1>
+                <p style="font-size: 16px; margin: 8px 0;">สถานะค้างเบิก เดือน : พฤษภาคม 2569</p>
+                <p style="font-size: 12px; color: #666;">ข้อมูล ณ วันที่: ${new Date().toLocaleDateString('th-TH')} เวลา ${new Date().toLocaleTimeString('th-TH')} น.</p>
             </div>
 
-            <table style="width: 100%; border-collapse: collapse;">
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
                 <thead>
                     <tr style="background: #f1f5f9;">
-                        <th style="border: 1px solid #000; padding: 8px; text-align: center; width: 50px;">ลำดับ</th>
-                        <th style="border: 1px solid #000; padding: 8px; text-align: left;">ชื่อเขตพื้นที่</th>
-                        <th style="border: 1px solid #000; padding: 8px; text-align: center; width: 120px;">สถานะ</th>
+                        <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 60px;">ลำดับ</th>
+                        <th style="border: 1px solid #000; padding: 10px; text-align: left;">ชื่อเขตพื้นที่</th>
+                        <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 150px;">สถานะ</th>
                     </tr>
                 </thead>
                 <tbody>
                     ${pending.map((i, index) => `
                         <tr>
-                            <td style="border: 1px solid #000; padding: 6px; text-align: center;">${index + 1}</td>
-                            <td style="border: 1px solid #000; padding: 6px;">${i.name || '-'}</td>
-                            <td style="border: 1px solid #000; padding: 6px; text-align: center;">${i.status}</td>
+                            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${index + 1}</td>
+                            <td style="border: 1px solid #000; padding: 8px;">${i.name || '-'}</td>
+                            <td style="border: 1px solid #000; padding: 8px; text-align: center;">${i.status}</td>
                         </tr>
                     `).join('')}
                 </tbody>
             </table>
-            <p style="margin-top: 15px; text-align: right; font-weight: bold;">จำนวนที่ยังไม่เรียบร้อยรวมทั้งสิ้น: ${pending.length} เขต</p>
+            
+            <div style="text-align: right; font-weight: bold; font-size: 16px; margin-top: 20px;">
+                จำนวนที่ยังไม่เรียบร้อยรวมทั้งสิ้น: ${pending.length} เขต
+            </div>
         </div>
     `;
 
+    // 4. แสดงผลและสั่งพิมพ์
     reportSection.innerHTML = html;
     
-    // หน่วงเวลาเล็กน้อยเพื่อให้เบราว์เซอร์ Render HTML ใหม่ก่อนสั่งพิมพ์
     setTimeout(() => {
         window.print();
-    }, 500);
+        // พิมพ์เสร็จแล้ว ถ้าอยากให้ Preview Card กลับมาทำงานปกติ ก็ค่อยเอา hidden ออกได้ครับ
+    }, 300);
 }
