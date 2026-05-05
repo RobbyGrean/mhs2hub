@@ -210,3 +210,33 @@ input#searchBox:focus {
 .slider-none::-webkit-slider-thumb { background: #64748b; }    /* เทา: ยังไม่มีข้อมูล */
 .slider-pending::-webkit-slider-thumb { background: #ef4444; } /* แดง: ยังไม่ออก */
 .slider-active::-webkit-slider-thumb { background: #10b981; }  /* เขียว: ออกแล้ว */
+
+/* ตกแต่งตัวรูด (Status Slider) */
+.status-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #334155;
+    border-radius: 10px;
+    outline: none;
+    cursor: pointer;
+}
+
+/* ปุ่มวงกลมสำหรับลาก */
+.status-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #00d4ff; /* สีฟ้า Neon */
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+    border: 2px solid white;
+    transition: 0.2s;
+}
+
+.status-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.8);
+}
