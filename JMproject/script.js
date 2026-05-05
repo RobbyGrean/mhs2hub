@@ -59,8 +59,12 @@ function renderList(data) {
         let statusColor = 'text-slate-500';
         let nameColor = 'text-slate-200';
         
-        const status = item["สถานะ"];
-        const name = item["ชื่อเขต"];
+        // --- จุดที่พี่ต้องแก้ให้เป็นชื่อภาษาอังกฤษตาม Object ใน GAS ---
+        const status = item.status; // เปลี่ยนจาก item["สถานะ"]
+        const name = item.name;     // เปลี่ยนจาก item["ชื่อเขต"]
+        const region = item.region; // เปลี่ยนจาก item["ภาค"]
+        const type = item.type;     // เปลี่ยนจาก item["ประเภท"]
+        // ------------------------------------------------------
 
         if (status === 'ยังไม่ออก' || status === 'ค้างจ่าย') {
             sliderValue = 1;
@@ -75,7 +79,7 @@ function renderList(data) {
         card.innerHTML = `
             <div>
                 <h3 class="text-xl font-semibold mb-1 ${nameColor}">${name}</h3>
-                <p class="text-slate-400 text-sm">${item["ภาค"]} | ${item["ประเภท"]}</p>
+                <p class="text-slate-400 text-sm">${region} | ${type}</p>
             </div>
             <div class="flex flex-col items-center gap-2 min-w-[150px]">
                 <input type="range" min="0" max="2" step="1" value="${sliderValue}" 
@@ -90,7 +94,6 @@ function renderList(data) {
         container.appendChild(card);
     });
 }
-
 async function handleSliderChange(slider, name, currentStatus) {
     const val = parseInt(slider.value);
     let nextStatus = val === 0 ? 'ยังไม่มีข้อมูล' : val === 1 ? 'ยังไม่ออก' : 'ออกแล้ว';
