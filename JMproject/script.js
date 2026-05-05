@@ -154,10 +154,14 @@ function showPreview(name, url) {
 
     document.getElementById('prevName').innerText = name;
     document.getElementById('prevLink').href = url || '#';
-    // ใช้รูปตรา สพฐ. ตามที่พี่ต้องการ
-    document.getElementById('prevImg').src = "https://www.kruchiangrai.net/wp-content/uploads/2021/02/%E0%B8%95%E0%B8%A3%E0%B8%B2%E0%B8%AA%E0%B8%B1%E0%B8%8D%E0%B8%A5%E0%B8%B1%E0%B8%81%E0%B8%A9%E0%B8%93%E0%B9%8C-%E0%B8%AA%E0%B8%9E%E0%B8%90.-%E0%B8%AA%E0%B8%9E%E0%B8%90.-3-D-%E0%B9%84%E0%B8%A1%E0%B9%88%E0%B8%A1%E0%B8%B5%E0%B8%82%E0%B8%AD%E0%B8%9า-1024x1024.png";
 
-    // จังหวะแสดงตัว: ต้องลบ hidden ออกก่อน แล้วค่อยใส่ scale-100
+    const imgEl = document.getElementById('prevImg');
+    if (imgEl) {
+        // แก้เป็นชื่อไฟล์ที่พี่อัปโหลดเข้าไปได้เลยครับ
+        imgEl.src = "OBECs.png"; 
+    }
+
+    // จังหวะแสดงตัว PreviewCard
     card.classList.remove('hidden');
     setTimeout(() => {
         card.classList.remove('scale-0', 'opacity-0');
