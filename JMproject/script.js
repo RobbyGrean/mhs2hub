@@ -32,6 +32,56 @@ function renderList(items) {
     `).join('');
 }
 
+function generatePendingReport() {
+    const reportSection = document.getElementById('reportSection');
+    const reportContent = document.getElementById('reportContent');
+    const reportTimestamp = document.getElementById('reportTimestamp');
+    
+    // 1. กรองเฉพาะเขตที่สถานะคือ "ยังไม่ออก"
+    const pendingItems = allData.filter(item => item.status === "ยังไม่ออก");
+
+    if (pendingItems.length === 0) {
+        alert("🎉 ยินดีด้วย! ทุกเขตเงินออกครบหมดแล้วครับพี่ร็อบ");
+        return;
+    }
+
+    // 2. จัดรูปแบบการแสดงผล
+    let html = `
+        <table class="w-full text-left">
+            <thead>
+                <tr class="text-slate-500 border-b">
+                    <th class="py-2">ลำดับ</th>
+                    <th class="py-2">รายชื่อเขตพื้นที่</th>
+                    <th class="py-2">ภาค</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    pendingItems.forEach((item, index) => {
+        html += `
+            <tr class="border-b border-slate-100">
+                <td class="py-3 font-bold text-slate-400">${index + 1}</td>
+                <td class="py-3 font-black text-2xl text-slate-800">${item.name}</td>
+                <td class="py-3 text-slate-600">${item.region}</td>
+            </tr>
+        `;
+    });
+
+    html += `</tbody></table>`;
+    html += `<div class="mt-6 text-2xl font-bold text-red-600">รวมทั้งหมด: ${pendingItems.length} เขต</div>`;
+
+    // 3. แสดงผลและเลื่อนหน้าจอมาที่รายงาน
+    reportContent.innerHTML = html;
+    reportTimestamp.innerText = `ข้อมูล ณ วันที่: ${new Date().toLocaleString('th-TH')}`;
+    reportSection.classList.remove('hidden');
+    reportSection.scrollIntoView({ behavior: 'smooth' });
+}
+
+function closeReport() {
+    document.getElementById('reportSection').classList.add('hidden');
+}
+
 // ระบบค้นหา
 function filterList() {
     const term = document.getElementById('searchBox').value.toLowerCase();
