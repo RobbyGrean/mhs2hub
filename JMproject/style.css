@@ -240,3 +240,14 @@ input#searchBox:focus {
     transform: scale(1.2);
     box-shadow: 0 0 15px rgba(0, 212, 255, 0.8);
 }
+
+/* แถบ Guide ใต้ช่องค้นหา */
+.guide-bar {
+    box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05);
+    animation: borderGlow 3s infinite alternate;
+}
+
+@keyframes borderGlow {
+    from { border-color: rgba(6, 182, 212, 0.2); }
+    to { border-color: rgba(6, 182, 212, 0.5); }
+}
