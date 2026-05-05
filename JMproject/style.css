@@ -180,3 +180,33 @@ input#searchBox:focus {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+/* ระบบ Slider 3 จังหวะ สไตล์พี่ร็อบ */
+.status-slider {
+    -webkit-appearance: none;
+    width: 120px;
+    height: 4px;
+    background: #475569; /* สีเส้น */
+    border-radius: 5px;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+/* ปุ่มกลมๆ ที่ใช้ลาก */
+.status-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
+    transition: all 0.2s;
+}
+
+/* สีตามสถานะของ Slider */
+.slider-none::-webkit-slider-thumb { background: #64748b; }    /* เทา: ยังไม่มีข้อมูล */
+.slider-pending::-webkit-slider-thumb { background: #ef4444; } /* แดง: ยังไม่ออก */
+.slider-active::-webkit-slider-thumb { background: #10b981; }  /* เขียว: ออกแล้ว */
