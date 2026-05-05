@@ -220,37 +220,55 @@ function startAutoUpdate() {
     autoUpdateInterval = setInterval(autoUpdateCheck, 40000); // เช็กทุก 40 วินาที
 }
 
-function generateReport() {
-    // 1. กรองข้อมูลจาก allData โดยใช้ชื่อตัวแปรภาษาอังกฤษ
-    const completed = allData.filter(item => item.status === 'ออกแล้ว');
+// ฟังก์ชันออกรายงาน เฉพาะเขตที่ค้างจ่าย (ตามชื่อใน HTML ของพี่ร็อบ)
+function generatePendingReport() {
+    const reportSection = document.getElementById('reportSection');
+    if (!reportSection) {
+        alert("ไม่พบส่วนแสดงรายงาน (reportSection) ในหน้า HTML ครับพี่!");
+        return;
+    }
+
+    // 1. กรองเฉพาะเขตที่สถานะคือ 'ค้างจ่าย' หรือ 'ยังไม่ออก'
     const pending = allData.filter(item => item.status === 'ค้างจ่าย' || item.status === 'ยังไม่ออก');
 
-    const reportSection = document.getElementById('reportSection');
-    if (!reportSection) return;
+    if (pending.length === 0) {
+        alert("ไม่มีข้อมูลเขตที่ค้างจ่ายในขณะนี้ครับพี่!");
+        return;
+    }
 
-    // 2. สร้างโครงสร้าง HTML สำหรับพิมพ์
-    reportSection.innerHTML = `
-        <div style="padding: 40px; font-family: 'Kanit', sans-serif; color: black; background: white;">
-            <h1 style="text-align: center; font-size: 24px;">รายงานสถานะการโอนเงินเงินเดือน</h1>
-            <p style="text-align: center;">ข้อมูล ณ วันที่: ${new Date().toLocaleDateString('th-TH')} เวลา ${new Date().toLocaleTimeString('th-TH')}</p>
-            <hr style="margin: 20px 0;">
-            <div style="display: flex; justify-content: space-between;">
-                <div style="width: 48%;">
-                    <h3 style="color: #059669; border-bottom: 2px solid #059669;">✅ ออกแล้ว (${completed.length} เขต)</h3>
-                    <ul style="list-style: none; padding: 0;">
-                        ${completed.map(i => `<li style="padding: 5px 0; border-bottom: 1px solid #eee;">${i.name}</li>`).join('')}
-                    </ul>
+    // 2. สร้างโครงสร้างรายงานแบบทางการ (เน้นขาวดำเพื่อพิมพ์ง่าย)
+    let html = `
+        <div style="padding: 40px; font-family: 'Kanit', sans-serif; color: black; background: white; min-height: 100vh;">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 style="font-size: 28px; margin-bottom: 5px;">รายงานสรุปรายชื่อเขตพื้นที่ (ค้างจ่าย)</h1>
+                <h2 style="font-size: 18px; color: #444; margin-bottom: 10px;">โครงการติดตามการโอนเงินเดือน (JM Project)</h2>
+                <p style="font-size: 14px; color: #666;">
+                    ข้อมูล ณ วันที่: ${new Date().toLocaleDateString('th-TH')} เวลา ${new Date().toLocaleTimeString('th-TH')} น.
+                </p>
+            </div>
+            
+            <div style="border: 2px solid #000; padding: 20px; border-radius: 10px;">
+                <h3 style="background: #be123c; color: white; padding: 10px; margin: -20px -20px 20px -20px; border-radius: 8px 8px 0 0; font-size: 20px;">
+                    🔴 รายชื่อเขตที่ยังไม่ดำเนินการ (${pending.length} เขต)
+                </h3>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    ${pending.map((i, index) => `
+                        <div style="font-size: 16px; padding: 8px; border-bottom: 1px solid #eee;">
+                            <span style="font-weight: bold; color: #be123c;">${index + 1}.</span> ${i.name} 
+                            <span style="font-size: 12px; color: #888;">(${i.region})</span>
+                        </div>
+                    `).join('')}
                 </div>
-                <div style="width: 48%;">
-                    <h3 style="color: #dc2626; border-bottom: 2px solid #dc2626;">🔴 ค้างจ่าย (${pending.length} เขต)</h3>
-                    <ul style="list-style: none; padding: 0;">
-                        ${pending.map(i => `<li style="padding: 5px 0; border-bottom: 1px solid #eee;">${i.name}</li>`).join('')}
-                    </ul>
-                </div>
+            </div>
+
+            <div style="margin-top: 40px; text-align: right; font-size: 14px;">
+                <p>พิมพ์โดยระบบอัตโนมัติ JM Project - Brother Robb</p>
             </div>
         </div>
     `;
 
-    // 3. สั่งพิมพ์
+    // 3. ยัด HTML ลงไปและสั่งพิมพ์
+    reportSection.innerHTML = html;
     window.print();
 }
