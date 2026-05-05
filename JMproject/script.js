@@ -56,15 +56,41 @@ async function fetchData() {
 
 // --- ระบบ Search & Filter (เพิ่มกลับเข้ามาให้พี่ร็อบแล้ว) ---
 function filterData() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const regionFilter = document.getElementById('regionFilter').value;
+    const searchInput = document.getElementById('searchInput');
+    const regionFilterEl = document.getElementById('regionFilter');
+    
+    if (!searchInput || !regionFilterEl) return;
+
+    let searchTerm = searchInput.value.toLowerCase().trim();
+    let selectedRegion = regionFilterEl.value;
+
+    // 1. สร้าง Mapping สำหรับคำค้นหาและตัวกรองภาค
+    // ถ้าเจอคำว่า 'อีสาน' ให้มองเป็น 'ตะวันออกเฉียงเหนือ' ทันที
+    const regionMap = {
+        'อีสาน': 'ตะวันออกเฉียงเหนือ',
+        'ภาคอีสาน': 'ตะวันออกเฉียงเหนือ'
+    };
+
+    // แปลงค่าจากตัวกรอง (ถ้าเลือกอีสาน ให้เปลี่ยนเป็นตะวันออกเฉียงเหนือเพื่อใช้เทียบกับ Data)
+    const mappedRegion = regionMap[selectedRegion] || selectedRegion;
 
     const filtered = allData.filter(item => {
-        const matchesSearch = item.name.toLowerCase().includes(searchTerm) || 
-                              item.region.toLowerCase().includes(searchTerm);
-        const matchesRegion = regionFilter === "" || item.region === regionFilter;
+        const regionText = item.region ? String(item.region).toLowerCase() : "";
+        const nameText = item.name ? String(item.name).toLowerCase() : "";
+
+        // 2. ปรับลอจิก Search ให้พิมพ์ 'อีสาน' แล้วเจอ 'ตะวันออกเฉียงเหนือ'
+        // เช็กทั้งคำค้นหาปกติ และคำค้นหาที่ผ่านการ Map แล้ว
+        const mappedSearch = regionMap[searchTerm] || searchTerm;
+        const matchesSearch = nameText.includes(searchTerm) || 
+                              regionText.includes(searchTerm) || 
+                              regionText.includes(mappedSearch);
+        
+        // 3. เช็กภาคโดยใช้ค่าที่ Map แล้ว
+        const matchesRegion = selectedRegion === "" || item.region === mappedRegion;
+
         return matchesSearch && matchesRegion;
     });
+
     renderList(filtered);
 }
 
