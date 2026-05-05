@@ -296,3 +296,17 @@ input#searchInput:focus {
         margin-right: 0 !important;
     }
 }
+
+@media print {
+    /* ซ่อนทุกอย่างที่ติดมากับหน้าเว็บหลัก */
+    body > *:not(#reportSection) {
+        display: none !important;
+    }
+    
+    #reportSection {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        background: white !important;
+    }
+}
