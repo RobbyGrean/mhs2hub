@@ -19,7 +19,7 @@ async function fetchData() {
     }
 }
 
-// 2. แสดงผลรายการ Card พร้อม Slider 3 ระดับ
+// 2. แสดงผลรายการ Card พร้อม Slider และจุดมาร์ค (Tick Marks)
 function renderList(data) {
     const container = document.getElementById('itemList');
     container.innerHTML = '';
@@ -29,7 +29,7 @@ function renderList(data) {
         card.className = 'item-card p-6 rounded-2xl flex justify-between items-center';
         
         // แปลงสถานะเป็นตัวเลข 0, 1, 2 สำหรับ Slider
-        let sliderValue = 0; // ยังไม่มีข้อมูล
+        let sliderValue = 0; 
         let statusColor = 'text-slate-500';
         
         if (item.status === 'ยังไม่ออก') {
@@ -40,6 +40,7 @@ function renderList(data) {
             statusColor = 'text-emerald-400';
         }
 
+        // --- จุดที่พี่ต้องดูคือ card.innerHTML ด้านล่างนี้ครับ ---
         card.innerHTML = `
             <div>
                 <h3 class="text-xl font-semibold mb-1">
@@ -47,12 +48,21 @@ function renderList(data) {
                 </h3>
                 <p class="text-slate-400 text-sm">${item.region} | ${item.type}</p>
             </div>
-            <div class="flex flex-col items-center gap-3 min-w-[140px]">
-                <!-- ตัวรูดสถานะสไตล์พี่ -->
+            <div class="flex flex-col items-center gap-2 min-w-[150px]">
+                <!-- 1. ตัวรูด Slider -->
                 <input type="range" min="0" max="2" step="1" value="${sliderValue}" 
-                       class="status-slider" 
+                       class="status-slider w-full" 
                        onchange="handleSliderChange(this, '${item.name}', '${item.status}')">
-                <span class="text-[10px] uppercase tracking-widest font-bold ${statusColor}">
+                
+                <!-- 2. จุดมาร์คใต้เส้น (Label) -->
+                <div class="flex justify-between w-full px-1 text-[10px] text-slate-500 font-bold">
+                    <span>ไม่มี</span>
+                    <span>ค้าง</span>
+                    <span>ออก</span>
+                </div>
+
+                <!-- 3. สถานะตัวหนังสือ (ล่างสุด) -->
+                <span class="text-[10px] uppercase tracking-widest font-bold ${statusColor} mt-1">
                     ${item.status}
                 </span>
             </div>
