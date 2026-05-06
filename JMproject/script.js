@@ -100,14 +100,25 @@ function renderList(data) {
     container.innerHTML = '';
 
     data.forEach(item => {
-        const { name, status, region, type, url } = item; // Destructuring ชื่อภาษาอังกฤษจาก GAS
+        const { name, status, region, type, url } = item; 
         
+        // กำหนดตำแหน่ง Slider
         let sliderValue = (status === 'ออกแล้ว') ? 2 : (status === 'ยังไม่ออก' || status === 'ค้างจ่าย') ? 1 : 0;
-        let statusColor = sliderValue === 1 ? 'text-rose-400' : sliderValue === 2 ? 'text-emerald-400' : 'text-slate-500';
-        let nameColor = sliderValue === 1 ? 'text-rose-400 animate-pulse' : sliderValue === 2 ? 'text-emerald-400' : 'text-slate-200';
+        
+        // --- ส่วนที่ปรับปรุงใหม่ ---
+        const isPending = (status === 'ค้างจ่าย'); // เช็คว่าเป็นค้างจ่ายหรือไม่
+        
+        // ถ้าค้างจ่าย ให้ใส่ class 'is-pending' (เพื่อเรียก CSS นีออนแดงกะพริบ)
+        // ถ้าไม่อยู่ในสถานะค้างจ่าย ให้ใช้สีปกติ
+        let statusColor = isPending ? 'text-rose-400' : sliderValue === 2 ? 'text-emerald-400' : 'text-slate-500';
+        let nameColor = isPending ? 'text-rose-400' : sliderValue === 2 ? 'text-emerald-400' : 'text-slate-200';
+        let pendingClass = isPending ? 'is-pending' : ''; 
+        // -----------------------
 
         const card = document.createElement('div');
-        card.className = 'item-card p-6 rounded-2xl flex justify-between items-center';
+        // เพิ่ม ${pendingClass} เข้าไปใน className ของ card
+        card.className = `item-card p-6 rounded-2xl flex justify-between items-center ${pendingClass}`;
+        
         card.innerHTML = `
             <div>
                 <h3 class="text-xl font-semibold mb-1 ${nameColor}">
