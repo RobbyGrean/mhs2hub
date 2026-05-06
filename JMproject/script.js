@@ -140,7 +140,7 @@ async function handleSliderChange(slider, name, currentStatus, url) {
 
     // 2. [จุดสำคัญ] บังคับถาม Confirm ทุกกรณี ไม่ว่าจะเลื่อนไปซ้าย (ไม่มีข้อมูล) หรือขวา (ออกแล้ว)
     if (!confirm(`ยืนยันเปลี่ยนสถานะของ "${name}" เป็น [ ${emoji} ${nextStatus} ] ใช่ไหมครับพี่?`)) {
-        renderList(allData); // ถ้ากด Cancel ให้เด้งกลับไปตำแหน่งเดิม
+        filterData(); // เปลี่ยนจาก renderList(allData) เป็นตัวนี้เพื่อให้มันกรองตามเงื่อนไขเดิม
         return;
     }
 
@@ -149,7 +149,7 @@ async function handleSliderChange(slider, name, currentStatus, url) {
     if (idx !== -1) {
         allData[idx].status = nextStatus;
         previousDataState[name] = nextStatus;
-        renderList(allData); 
+        filterData();
         
         // ถ้าค้างโอน ให้โชว์ Preview Card
         if (nextStatus === 'ค้างจ่าย') showPreview(name, url);
