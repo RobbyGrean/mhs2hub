@@ -332,23 +332,20 @@ input#searchInput:focus {
     }
 }
 
-/* Animation สำหรับการกะพริบ */
 @keyframes neon-red-blink {
-    0% { opacity: 1; filter: drop-shadow(0 0 10px var(--neon-red)); }
+    0%, 100% { opacity: 1; filter: drop-shadow(0 0 10px var(--neon-red)); }
     50% { opacity: 0.5; filter: drop-shadow(0 0 2px var(--neon-red)); }
-    100% { opacity: 1; filter: drop-shadow(0 0 10px var(--neon-red)); }
 }
 
-/* เมื่อติดสถานะ is-pending ให้เปลี่ยนเส้นนีออนเป็นสีแดงและกะพริบ */
 .item-card.is-pending::before {
     background: var(--neon-red) !important;
     box-shadow: 0 0 15px var(--neon-red) !important;
     animation: neon-red-blink 1.2s infinite ease-in-out !important;
 }
 
-/* ทำให้ชื่อเขตที่เป็น h3 กะพริบด้วย */
 .item-card.is-pending h3 {
-    animation: neon-red-blink 1.2s infinite ease-in-out;
-    text-shadow: 0 0 8px rgba(255, 49, 49, 0.4);
+    /* เพิ่ม !important ท้าย animation เพื่อไปสยบ animate-pulse เดิมครับ */
+    animation: neon-red-blink 1.2s infinite ease-in-out !important;
+    color: var(--neon-red) !important;
+    text-shadow: 0 0 8px rgba(255, 49, 49, 0.4) !important;
 }
-
