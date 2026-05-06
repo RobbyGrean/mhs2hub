@@ -60,32 +60,56 @@ input#searchInput:focus {
     border-color: var(--neon-blue);
 }
 
-/* 5. Item Cards (ดุดันมีมิติ) */
+/* 5. Item Cards - Cyberpunk Refined (เฟี้ยวแบบไม่พัง) */
 .item-card {
     background: var(--card-bg);
-    border: 1px solid var(--glass-border);
-    border-left: 5px solid var(--neon-blue);
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    /* ตัดมุมแค่ 2 ฝั่งเพื่อความโฉบเฉี่ยวแบบเฉียง (Asymmetric) */
+    clip-path: polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px);
+    
+    /* ใช้ Border จางๆ ล้อมรอบเพื่อให้เห็นรูปทรงที่ถูกตัดชัดขึ้น */
+    border: none;
     position: relative;
-    overflow: hidden;
+    padding: 1.5rem 1.2rem !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    
+    /* แสง Glow รอบตัว Card */
+    filter: drop-shadow(0 0 2px rgba(0, 212, 255, 0.3));
 }
 
-.item-card::before {
-    content: '';
+/* เพิ่มเส้นขอบหลอก (Pseudo-border) เพื่อให้ขอบดูคมเหมือนงานเหล็ก */
+.item-card::after {
+    content: "";
     position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(0, 212, 255, 0.05), transparent);
+    inset: 0;
+    clip-path: polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px);
+    border: 1px solid rgba(0, 212, 255, 0.2);
     pointer-events: none;
 }
 
+/* เส้นสีฟ้าด้านซ้าย (รักษาเอกลักษณ์เดิมแต่ปรับให้เข้ากับมุมตัด) */
+.item-card::before {
+    content: "";
+    position: absolute;
+    top: 25px;
+    left: 0;
+    width: 4px;
+    height: calc(100% - 50px);
+    background: var(--neon-blue);
+    box-shadow: 0 0 10px var(--neon-blue);
+    border-radius: 0 2px 2px 0;
+    z-index: 10;
+}
+
 .item-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    border-left-color: var(--neon-green);
+    transform: translateY(-5px);
     background: rgba(30, 41, 59, 0.95);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.5));
+}
+
+.item-card:hover::before {
+    background: var(--neon-green);
+    box-shadow: 0 0 15px var(--neon-green);
 }
 
 /* 6. Toggle Switch (Neon Pulse) */
