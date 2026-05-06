@@ -60,32 +60,40 @@ input#searchInput:focus {
     border-color: var(--neon-blue);
 }
 
-/* 5. Item Cards (ดุดันมีมิติ) */
+/* =============================================
+   [NEW 5.] Item Cards - CYBERPUNK OPTION D
+   = เหลี่ยม, ตัดมุม, นีออน (Functional & Aggressive)
+   ============================================= */
 .item-card {
+    /* พื้นหลัง */
     background: var(--card-bg);
-    border: 1px solid var(--glass-border);
-    border-left: 5px solid var(--neon-blue);
+    
+    /* [Core - D] Cutting the corners (ตัดมุมเท่ๆ) */
+    clip-path: polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px);
+    
+    /* [Glow - D] Neon Border - ใช้ drop-shadow แทน border เพื่อให้เรืองแสง */
+    filter: drop-shadow(0 0 1px var(--neon-blue)) drop-shadow(0 0 5px rgba(0, 212, 255, 0.3));
+    
+    /* เพิ่ม Padding เล็กน้อยเพื่อให้ข้อมูลไม่ชิดขอบที่ถูกตัด */
+    padding: 1.5rem 1rem !important; 
+    
+    /* รักษา Transition และ Position */
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     position: relative;
-    overflow: hidden;
+    overflow: hidden; /* จำเป็นสำหรับ clip-path */
+    border: none !important; /* เอาเส้นขอบจริงออก */
 }
 
+/* ลบแสงไล่เฉดสีเดิม (Optional: เก็บไว้ถ้าชอบ) */
 .item-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, rgba(0, 212, 255, 0.05), transparent);
-    pointer-events: none;
+    display: none; 
 }
 
+/* เอฟเฟกต์ตอน Hover - เปลี่ยนแสงเป็นสีเขียว */
 .item-card:hover {
-    transform: translateY(-8px) scale(1.02);
-    border-left-color: var(--neon-green);
-    background: rgba(30, 41, 59, 0.95);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    transform: translateY(-8px) scale(1.01);
+    background: rgba(30, 41, 59, 1);
+    filter: drop-shadow(0 0 1px var(--neon-green)) drop-shadow(0 0 10px rgba(57, 255, 20, 0.5));
 }
 
 /* 6. Toggle Switch (Neon Pulse) */
@@ -167,69 +175,71 @@ input#searchInput:focus {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ระบบ Slider 3 จังหวะ สไตล์พี่ร็อบ */
+/* =============================================
+    [NEW] ระบบ Slider 3 จังหวะ - CYBERPUNK D
+    (เหลี่ยม, ตัดมุม, เปลี่ยนสีตามสถานะ)
+   ============================================= */
+
+/* 1. ตัวเส้น Slider - ปรับให้คมและบางเข้ากับสไตล์ D */
 .status-slider {
     -webkit-appearance: none;
-    width: 120px;
+    width: 100%; /* ใช้ 100% เพื่อให้ยืดตามการจัดเลย์เอาต์ */
     height: 4px;
-    background: #475569; /* สีเส้น */
-    border-radius: 5px;
+    background: #334155;
+    border-radius: 0px; /* ทรงเหลี่ยม */
     outline: none;
     cursor: pointer;
     transition: all 0.3s;
+    border-top: 1px solid rgba(255,255,255,0.05);
 }
 
-/* ปุ่มกลมๆ ที่ใช้ลาก */
-.status-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: white;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
-    transition: all 0.2s;
-}
-
-/* สีตามสถานะของ Slider */
-.slider-none::-webkit-slider-thumb { background: #64748b; }    /* เทา: ยังไม่มีข้อมูล */
-.slider-pending::-webkit-slider-thumb { background: #ef4444; } /* แดง: ยังไม่ออก */
-.slider-active::-webkit-slider-thumb { background: #10b981; }  /* เขียว: ออกแล้ว */
-
-/* ตกแต่งตัวรูด (Status Slider) */
-.status-slider {
-    -webkit-appearance: none;
-    width: 100%;
-    height: 6px;
-    background: #334155;
-    border-radius: 10px;
-    outline: none;
-    cursor: pointer;
-}
-
-/* ปุ่มวงกลมสำหรับลาก */
+/* 2. ปุ่มรูด (Thumb) - เปลี่ยนเป็นทรงเหลี่ยมตัดมุม Option D */
 .status-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 20px;
     height: 20px;
-    border-radius: 50%;
-    background: #00d4ff; /* สีฟ้า Neon */
+    /* ตัดมุมทรง Hexagon/Polygon */
+    clip-path: polygon(20% 0%, 100% 0%, 100% 80%, 80% 100%, 0% 100%, 0% 20%);
+    
+    background: white; /* พื้นหลังสีขาวเป็นฐานเพื่อให้สีนีออนชัด */
     cursor: pointer;
+    border: 1px solid white;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
-    border: 2px solid white;
-    transition: 0.2s;
 }
 
+/* เอฟเฟกต์ตอน Hover ปุ่ม Slider */
 .status-slider::-webkit-slider-thumb:hover {
     transform: scale(1.2);
-    box-shadow: 0 0 15px rgba(0, 212, 255, 0.8);
+    filter: brightness(1.2);
 }
 
-/* แถบ Guide ใต้ช่องค้นหา */
+/* 3. [สำคัญ] สีตามสถานะของ Slider (ใช้ตัวแปรเดิมของพี่ร็อบ) */
+
+/* เทา: ยังไม่มีข้อมูล */
+.slider-none::-webkit-slider-thumb { 
+    background: #64748b !important; 
+    box-shadow: 0 0 8px #64748b !important;
+}
+
+/* แดง: ยังไม่ออก (ค้างจ่าย) */
+.slider-pending::-webkit-slider-thumb { 
+    background: var(--neon-red) !important; 
+    box-shadow: 0 0 15px var(--neon-red) !important;
+}
+
+/* เขียว: ออกแล้ว */
+.slider-active::-webkit-slider-thumb { 
+    background: var(--neon-green) !important; 
+    box-shadow: 0 0 15px var(--neon-green) !important;
+}
+
+/* 4. แถบ Guide ใต้ช่องค้นหา (รวมร่างให้สะอาดขึ้น) */
 .guide-bar {
-    box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05);
+    background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.6));
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(6, 182, 212, 0.2);
     animation: borderGlow 3s infinite alternate;
 }
 
@@ -237,16 +247,6 @@ input#searchInput:focus {
     from { border-color: rgba(6, 182, 212, 0.2); }
     to { border-color: rgba(6, 182, 212, 0.5); }
 }
-
-.guide-bar {
-    background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.6));
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.05);
-}
-
-.guide-bar span {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
 /* =============================================
    11. PRINT SETTINGS (ชุดสมบูรณ์ หายมั่วแน่นอน)
    ============================================= */
