@@ -12,7 +12,6 @@
         .scrollbar-hide::-webkit-scrollbar { display: none; }
         .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="bg-slate-900 text-slate-100 min-h-screen font-['Kanit']">
 
@@ -55,20 +54,12 @@
             <main class="flex-1">
                 <!-- Tools & Filters -->
                 <div class="flex flex-col gap-6 mb-10">
-    <div class="flex justify-start gap-4 flex-wrap">
-        
-        <button onclick="generatePendingReport()" 
-                class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-rose-900/40 transition-all transform hover:scale-105 flex items-center gap-2">
-            🖨️ พิมพ์รายงาน PDF (เขตที่ค้าง)
-        </button>
-
-        <button onclick="saveAsPDF()" 
-                class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-cyan-900/40 transition-all transform hover:scale-105 flex items-center gap-2">
-            💾 บันทึกไฟล์ PDF ลงเครื่อง
-        </button>
-
-    </div>
-</div>
+                    <div class="flex justify-start">
+                        <button onclick="generatePendingReport()" 
+                                class="bg-rose-600 hover:bg-rose-700 text-white font-bold py-3 px-8 rounded-full shadow-lg shadow-rose-900/40 transition-all transform hover:scale-105">
+                            🖨️ พิมพ์รายงาน PDF (เขตที่ค้าง)
+                        </button>
+                    </div>
 
                     <!-- Dashboard Bar -->
                     <div class="filter-container p-3 rounded-2xl flex flex-col md:flex-row gap-3 bg-slate-800/20">
