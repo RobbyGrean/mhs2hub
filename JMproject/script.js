@@ -217,7 +217,18 @@ function pushToFeed(name, status, time = null) {
     const feedContainer = document.getElementById('statusFeed');
     if (!feedContainer) return;
     
-    const timeStr = time || new Date().toLocaleTimeString('th-TH');
+    // --- ปรับ Logic เวลาให้แสดงวันที่ด้วย ---
+    let timeStr = "";
+    if (time) {
+        timeStr = time; // ถ้ามีค่า time ส่งมาจาก database อยู่แล้วให้ใช้ค่านั้น
+    } else {
+        const now = new Date();
+        const datePart = now.toLocaleDateString('th-TH', { day: '2-digit', month: '2-digit' });
+        const timePart = now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+        timeStr = `${datePart} | ${timePart}`; // ผลลัพธ์จะเป็น "20/05 | 14:52"
+    }
+    // --------------------------------------
+
     const isSuccess = status === "ออกแล้ว";
     const colorClass = isSuccess ? "border-emerald-500/30 bg-emerald-500/5" : "border-rose-500/30 bg-rose-500/5";
     const textClass = isSuccess ? "text-emerald-400" : "text-rose-400";
