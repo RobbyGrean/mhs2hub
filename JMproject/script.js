@@ -22,6 +22,28 @@ function updateMonthHeader() {
     }
 }
 
+function saveAsPDF() {
+    // 1. สั่งสร้าง HTML รายงานลงใน reportSection (ใช้ฟังก์ชันเดิมของพี่)
+    generatePendingReport(); 
+
+    // 2. ตั้งค่าสำหรับ PDF
+    const element = document.getElementById('reportSection');
+    const options = {
+        margin:       [10, 10, 10, 10], // บน, ซ้าย, ล่าง, ขวา
+        filename:     'รายงานค้างเบิก_' + new Date().toLocaleDateString('th-TH') + '.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true }, // scale 2 เพื่อความคมชัด
+        jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+
+    // 3. เริ่มกระบวนการแปลงและดาวน์โหลด
+    // เราจะแอบซ่อนหน้าต่าง print ของพี่ไม่ให้เด้งขึ้นมาถ้ากดปุ่มนี้
+    html2pdf().set(options).from(element).toPdf().get('pdf').save();
+    
+    // แจ้งเตือนคนแก่สักนิดว่ามันกำลังโหลด
+    alert("กำลังบันทึกไฟล์ PDF... กรุณารอสักครู่นะครับพี่");
+}
+
 async function fetchData() {
     try {
         const response = await fetch(WEB_APP_URL);
