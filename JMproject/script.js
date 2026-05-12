@@ -271,103 +271,78 @@ function startAutoUpdate() {
     autoUpdateInterval = setInterval(autoUpdateCheck, 40000); // เช็กทุก 40 วินาที
 }
 
-function generatePendingReport() {
-    const reportSection = document.getElementById('reportSection');
-    const previewCard = document.getElementById('previewCard');
-    
-    if (!reportSection) return;
-
-    if (previewCard) {
-        previewCard.classList.add('hidden');
-        previewCard.style.display = 'none';
+function openPrintMenu() {
+    // สร้าง Modal ถ้ายังไม่มีในหน้าเว็บ
+    let modal = document.getElementById('printModal');
+    if (!modal) {
+        const modalHTML = `
+            <div id="printModal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-hidden animate-fade-in">
+                    <div class="p-6 text-center border-b bg-slate-50">
+                        <h3 class="text-xl font-bold text-slate-800">เลือกประเภทรายงานที่ต้องการ</h3>
+                        <p class="text-slate-500 text-sm mt-1">กรุณาเลือกรูปแบบรายงานเพื่อพิมพ์ PDF</p>
+                    </div>
+                    <div class="p-8 flex flex-col gap-4">
+                        <button onclick="generateReport('pending')" class="w-full py-4 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-3 transform hover:scale-105">
+                            ⚠️ พิมพ์รายงาน (เขตที่ค้าง)
+                        </button>
+                        <button onclick="generateReport('success')" class="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold shadow-md transition-all flex items-center justify-center gap-3 transform hover:scale-105">
+                            ✅ พิมพ์รายงาน (เขตที่ออกแล้ว)
+                        </button>
+                        <button onclick="closePrintMenu()" class="mt-2 text-slate-400 hover:text-slate-600 font-medium">ยกเลิก</button>
+                    </div>
+                </div>
+            </div>`;
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
+        modal = document.getElementById('printModal');
     }
+    modal.classList.remove('hidden');
+}
 
-    // --- 1. จัดการเรื่องเดือน (ถอยหลัง 1 เดือน) ---
-    const monthNames = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", 
-                        "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+function closePrintMenu() {
+    const modal = document.getElementById('printModal');
+    if (modal) modal.classList.add('hidden');
+}
+
+function generateReport(mode) {
+    closePrintMenu(); // ปิดเมนูเลือกก่อน
+
+    const monthNames = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
     const d = new Date();
-    d.setMonth(d.getMonth() - 1); // ลืมนับ -1 จัดให้แล้วครับพี่
+    d.setMonth(d.getMonth() - 1); 
     const targetMonth = `${monthNames[d.getMonth()]} ${d.getFullYear() + 543}`;
-
-    // --- 2. กรองและแยกกลุ่ม (นับลำดับแยกกัน) ---
     const regionFilter = document.getElementById('regionFilter').value;
-    
-    // กรองข้อมูลตามภาคที่เลือกก่อน (ถ้าเลือก)
     const baseFiltered = allData.filter(item => regionFilter === "" || item.region === regionFilter);
 
-    // แยกเป็น 2 กลุ่ม
-    const overDue = baseFiltered.filter(item => item.status === 'ค้างจ่าย' || item.status === 'ยังไม่ออก')
-                                .sort((a, b) => a.name.localeCompare(b.name, 'th'));
-    
-    const noData = baseFiltered.filter(item => item.status === 'ยังไม่มีข้อมูล')
-                               .sort((a, b) => a.name.localeCompare(b.name, 'th'));
+    let reportTitle = "";
+    let contentHTML = "";
+    let totalCount = 0;
+    let colorTheme = mode === 'success' ? '#059669' : '#e11d48';
 
-    if (overDue.length === 0 && noData.length === 0) {
-        alert("ไม่มีรายการค้างดำเนินการครับ");
-        return;
-    }
-
-    // ฟังก์ชันช่วยสร้างแถวตาราง (เพื่อความสะอาดของโค้ด)
     const renderRows = (data) => data.map((i, index) => `
         <tr>
             <td style="border: 1px solid #000; padding: 8px; text-align: center;">${index + 1}</td>
             <td style="border: 1px solid #000; padding: 8px;">${i.name || '-'}</td>
             <td style="border: 1px solid #000; padding: 8px; text-align: center; ${i.status === 'ค้างจ่าย' ? 'color: red; font-weight: bold;' : ''}">${i.status}</td>
-        </tr>
-    `).join('');
+        </tr>`).join('');
 
-    // --- 3. สร้าง HTML รายงาน ---
-    let html = `
-        <div style="padding: 30px; font-family: 'Kanit', sans-serif; color: black; background: white; min-height: 100vh;">
-            <div style="text-align: center; border-bottom: 2px solid #000; padding-bottom: 15px; margin-bottom: 25px;">
-                <h1 style="margin: 0; font-size: 24px;">รายงานสรุปเขตพื้นที่ที่ยังไม่ดำเนินการ</h1>
-                <p style="font-size: 16px; margin: 8px 0;">สถานะค้างเบิก เดือน : ${targetMonth}</p>
-                <p style="font-size: 12px; color: #666;">ข้อมูล ณ วันที่: ${new Date().toLocaleDateString('th-TH')} เวลา ${new Date().toLocaleTimeString('th-TH')} น.</p>
-            </div>
+    if (mode === 'success') {
+        reportTitle = "รายงานสรุปเขตพื้นที่ที่ดำเนินการเรียบร้อยแล้ว";
+        const successData = baseFiltered.filter(item => item.status === 'ออกแล้ว').sort((a, b) => a.name.localeCompare(b.name, 'th'));
+        totalCount = successData.length;
+        if (totalCount === 0) return alert("ไม่มีรายการที่ออกแล้วครับ");
+        contentHTML = `<h3 style="color: #059669;">✅ รายการที่ดำเนินการแล้ว (${totalCount} เขต)</h3><table style="width: 100%; border-collapse: collapse;"><thead><tr style="background: #f1f5f9;"><th style="border: 1px solid #000; padding: 10px; width: 60px;">ลำดับ</th><th style="border: 1px solid #000; padding: 10px; text-align: left;">ชื่อเขตพื้นที่</th><th style="border: 1px solid #000; padding: 10px; width: 150px;">สถานะ</th></tr></thead><tbody>${renderRows(successData)}</tbody></table>`;
+    } else {
+        reportTitle = "รายงานสรุปเขตพื้นที่ที่ยังไม่ดำเนินการ";
+        const overDue = baseFiltered.filter(item => item.status === 'ค้างจ่าย' || item.status === 'ยังไม่ออก').sort((a, b) => a.name.localeCompare(b.name, 'th'));
+        const noData = baseFiltered.filter(item => item.status === 'ยังไม่มีข้อมูล').sort((a, b) => a.name.localeCompare(b.name, 'th'));
+        totalCount = overDue.length + noData.length;
+        if (totalCount === 0) return alert("ไม่มีรายการค้างดำเนินการครับ");
+        contentHTML = `${overDue.length > 0 ? `<h3 style="color: #e11d48;">⚠️ รายการค้างจ่าย (${overDue.length} เขต)</h3><table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;"><thead><tr style="background: #f1f5f9;"><th style="border: 1px solid #000; padding: 10px; width: 60px;">ลำดับ</th><th style="border: 1px solid #000; padding: 10px; text-align: left;">ชื่อเขตพื้นที่</th><th style="border: 1px solid #000; padding: 10px; width: 150px;">สถานะ</th></tr></thead><tbody>${renderRows(overDue)}</tbody></table>` : ''}${noData.length > 0 ? `<h3 style="color: #475569;">⚪ รายการยังไม่มีข้อมูล (${noData.length} เขต)</h3><table style="width: 100%; border-collapse: collapse;"><thead><tr style="background: #f1f5f9;"><th style="border: 1px solid #000; padding: 10px; width: 60px;">ลำดับ</th><th style="border: 1px solid #000; padding: 10px; text-align: left;">ชื่อเขตพื้นที่</th><th style="border: 1px solid #000; padding: 10px; width: 150px;">สถานะ</th></tr></thead><tbody>${renderRows(noData)}</tbody></table>` : ''}`;
+    }
 
-            <!-- ตารางที่ 1: ค้างจ่าย -->
-            ${overDue.length > 0 ? `
-                <h3 style="margin: 15px 0 10px 0; color: #e11d48;">⚠️ รายการค้างจ่าย (${overDue.length} เขต)</h3>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-                    <thead>
-                        <tr style="background: #f1f5f9;">
-                            <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 60px;">ลำดับ</th>
-                            <th style="border: 1px solid #000; padding: 10px; text-align: left;">ชื่อเขตพื้นที่</th>
-                            <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 150px;">สถานะ</th>
-                        </tr>
-                    </thead>
-                    <tbody>${renderRows(overDue)}</tbody>
-                </table>
-            ` : ''}
-
-            <!-- ตารางที่ 2: ยังไม่มีข้อมูล -->
-            ${noData.length > 0 ? `
-                <h3 style="margin: 25px 0 10px 0; color: #475569;">⚪ รายการยังไม่มีข้อมูล (${noData.length} เขต)</h3>
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
-                    <thead>
-                        <tr style="background: #f1f5f9;">
-                            <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 60px;">ลำดับ</th>
-                            <th style="border: 1px solid #000; padding: 10px; text-align: left;">ชื่อเขตพื้นที่</th>
-                            <th style="border: 1px solid #000; padding: 10px; text-align: center; width: 150px;">สถานะ</th>
-                        </tr>
-                    </thead>
-                    <tbody>${renderRows(noData)}</tbody>
-                </table>
-            ` : ''}
-            
-            <div style="text-align: right; font-weight: bold; font-size: 16px; margin-top: 20px;">
-                จำนวนที่ยังไม่เรียบร้อยรวมทั้งสิ้น: ${overDue.length + noData.length} เขต
-            </div>
-        </div>
-    `;
-
-    reportSection.innerHTML = html;
-    
-    setTimeout(() => {
-        window.print();
-        if (previewCard) {
-            previewCard.classList.remove('hidden');
-            previewCard.style.display = 'block';
-        }
-    }, 300);
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`<html><head><title>Report</title><link href="https://fonts.googleapis.com/css2?family=Kanit&display=swap" rel="stylesheet"><style>body{font-family:'Kanit',sans-serif;padding:40px;}.header{text-align:center;border-bottom:2px solid #000;padding-bottom:10px;margin-bottom:20px;}</style></head><body><div class="header"><h1 style="color:${colorTheme};">${reportTitle}</h1><p>เดือน : ${targetMonth}</p><p style="font-size:12px;">พิมพ์เมื่อ: ${new Date().toLocaleString('th-TH')} น.</p></div>${contentHTML}<div style="text-align:right;font-weight:bold;margin-top:20px;">รวมทั้งสิ้น: ${totalCount} เขต</div></body></html>`);
+    printWindow.document.close();
+    setTimeout(() => { printWindow.focus(); printWindow.print(); printWindow.close(); }, 500);
 }
