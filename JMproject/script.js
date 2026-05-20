@@ -255,15 +255,20 @@ function pushToFeed(name, status, time = null) {
     }
 
     const isSuccess = status === 'ออกแล้ว';
-    const colorClass = isSuccess ? 'border-emerald-500/30 bg-emerald-500/5' : 'border-rose-500/30 bg-rose-500/5';
-    const textClass  = isSuccess ? 'text-emerald-400' : 'text-rose-400';
+const isReset   = status === 'ยังไม่มีข้อมูล';
+const colorClass = isSuccess ? 'border-emerald-500/30 bg-emerald-500/5'
+                 : isReset   ? 'border-slate-500/30 bg-slate-500/5'
+                 :              'border-rose-500/30 bg-rose-500/5';
+const textClass  = isSuccess ? 'text-emerald-400'
+                 : isReset   ? 'text-slate-400'
+                 :              'text-rose-400';
 
     const logHTML = `
         <div class="p-3 rounded-xl border ${colorClass} mb-3 shadow-lg animate-fade-in-down">
             <div class="text-[10px] text-slate-500 font-mono mb-1">${timeStr}</div>
             <div class="text-slate-200 font-bold mb-1">${name}</div>
             <div class="${textClass} text-[11px] font-bold">
-                ${isSuccess ? '✅ [ออกแล้ว]' : '🔴 [ค้างจ่าย]'}
+                ${isSuccess ? '✅ [ออกแล้ว]' : isReset ? '⚪ [ไม่มีข้อมูล]' : '🔴 [ค้างจ่าย]'}
             </div>
         </div>`;
 
