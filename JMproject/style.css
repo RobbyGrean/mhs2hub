@@ -1,6 +1,6 @@
 /* 
-   JM Project - Cyberpunk Vibrant Theme 
-   Designed for: Brother Robb (พี่ร็อบ)
+   JM Project - Military Ops Center Theme
+   พี่ร็อบ (Robbygrean)
 */
 
 :root {
@@ -13,7 +13,9 @@
     --glass-border: rgba(255, 255, 255, 0.1);
 }
 
-/* 1. Global & Background */
+/* ─────────────────────────────────────────
+   1. Global & Background
+───────────────────────────────────────── */
 body {
     background: radial-gradient(circle at top, #0f172a 0%, #050b18 100%);
     background-attachment: fixed;
@@ -22,14 +24,18 @@ body {
     overflow-x: hidden;
 }
 
-/* 2. Header & Titles */
+/* ─────────────────────────────────────────
+   2. Header & Titles
+───────────────────────────────────────── */
 h1 {
     text-shadow: 0 0 10px rgba(0, 212, 255, 0.6), 0 0 20px rgba(0, 212, 255, 0.3);
     letter-spacing: 3px;
     font-weight: 700;
 }
 
-/* 3. Search & Filter Bar (The Dashboard Box) */
+/* ─────────────────────────────────────────
+   3. Filter Container
+───────────────────────────────────────── */
 .filter-container {
     background: rgba(30, 41, 59, 0.4);
     backdrop-filter: blur(15px);
@@ -37,7 +43,9 @@ h1 {
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
 }
 
-/* 4. Custom Select & Input (เน้นความคมชัด) */
+/* ─────────────────────────────────────────
+   4. Select & Input
+───────────────────────────────────────── */
 select#regionFilter {
     appearance: none;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
@@ -46,38 +54,30 @@ select#regionFilter {
     background-size: 1.2rem;
     transition: all 0.3s ease;
 }
-
 select#regionFilter:hover {
     box-shadow: 0 0 15px rgba(37, 99, 235, 0.5);
 }
-
-input#searchInput { 
+input#searchInput {
     background: rgba(2, 6, 23, 0.8);
     transition: all 0.3s ease;
 }
-input#searchInput:focus { 
+input#searchInput:focus {
     box-shadow: 0 0 20px rgba(0, 212, 255, 0.2);
     border-color: var(--neon-blue);
 }
 
-/* 5. Item Cards - Cyberpunk Refined (เฟี้ยวแบบไม่พัง) */
+/* ─────────────────────────────────────────
+   5. Item Cards — Cyberpunk Asymmetric
+───────────────────────────────────────── */
 .item-card {
     background: var(--card-bg);
-    
-    /* ตัดมุมแค่ 2 ฝั่งเพื่อความโฉบเฉี่ยวแบบเฉียง (Asymmetric) */
     clip-path: polygon(20px 0%, 100% 0%, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0% 100%, 0% 20px);
-    
-    /* ใช้ Border จางๆ ล้อมรอบเพื่อให้เห็นรูปทรงที่ถูกตัดชัดขึ้น */
     border: none;
     position: relative;
     padding: 1.5rem 1.2rem !important;
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    
-    /* แสง Glow รอบตัว Card */
     filter: drop-shadow(0 0 2px rgba(0, 212, 255, 0.3));
 }
-
-/* เพิ่มเส้นขอบหลอก (Pseudo-border) เพื่อให้ขอบดูคมเหมือนงานเหล็ก */
 .item-card::after {
     content: "";
     position: absolute;
@@ -86,8 +86,6 @@ input#searchInput:focus {
     border: 1px solid rgba(0, 212, 255, 0.2);
     pointer-events: none;
 }
-
-/* เส้นสีฟ้าด้านซ้าย (รักษาเอกลักษณ์เดิมแต่ปรับให้เข้ากับมุมตัด) */
 .item-card::before {
     content: "";
     position: absolute;
@@ -100,128 +98,19 @@ input#searchInput:focus {
     border-radius: 0 2px 2px 0;
     z-index: 10;
 }
-
 .item-card:hover {
     transform: translateY(-5px);
     background: rgba(30, 41, 59, 0.95);
     filter: drop-shadow(0 0 8px rgba(0, 212, 255, 0.5));
 }
-
 .item-card:hover::before {
     background: var(--neon-green);
     box-shadow: 0 0 15px var(--neon-green);
 }
 
-/* 6. Toggle Switch (Neon Pulse) */
-.toggle-bg {
-    width: 65px;
-    height: 32px;
-    background-color: #334155;
-    border-radius: 999px;
-    position: relative;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border: 2px solid rgba(255,255,255,0.05);
-}
-
-.toggle-bg.active {
-    background-color: var(--neon-green);
-    box-shadow: 0 0 15px rgba(57, 255, 20, 0.5);
-}
-
-.toggle-bg:not(.active):not(.none) {
-    background-color: var(--neon-red);
-    box-shadow: 0 0 15px rgba(255, 49, 49, 0.4);
-}
-
-.toggle-bg.none {
-    background-color: #475569;
-}
-
-.toggle-dot {
-    width: 24px;
-    height: 24px;
-    background: white;
-    border-radius: 50%;
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
-
-.toggle-bg.active .toggle-dot {
-    transform: translateX(33px);
-}
-
-/* 7. Status Text */
-.status-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-/* 8. Links (เรืองแสงเมื่อเงินออก) */
-.item-card a {
-    color: var(--neon-blue);
-    text-decoration: none;
-    font-weight: 600;
-    transition: all 0.3s;
-}
-
-.item-card a:hover {
-    color: var(--neon-green);
-    text-shadow: 0 0 10px var(--neon-green);
-}
-
-/* 10. Animations */
-@keyframes glow {
-    0% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.2); }
-    50% { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
-    100% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.2); }
-}
-
-.item-card {
-    animation: fadeIn 0.5s ease-out forwards;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-/* ระบบ Slider 3 จังหวะ สไตล์พี่ร็อบ */
-.status-slider {
-    -webkit-appearance: none;
-    width: 120px;
-    height: 4px;
-    background: #475569; /* สีเส้น */
-    border-radius: 5px;
-    outline: none;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-/* ปุ่มกลมๆ ที่ใช้ลาก */
-.status-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: white;
-    cursor: pointer;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.8);
-    transition: all 0.2s;
-}
-
-/* สีตามสถานะของ Slider */
-.slider-none::-webkit-slider-thumb { background: #64748b; }    /* เทา: ยังไม่มีข้อมูล */
-.slider-pending::-webkit-slider-thumb { background: #ef4444; } /* แดง: ยังไม่ออก */
-.slider-active::-webkit-slider-thumb { background: #10b981; }  /* เขียว: ออกแล้ว */
-
-/* ตกแต่งตัวรูด (Status Slider) */
+/* ─────────────────────────────────────────
+   6. Status Slider
+───────────────────────────────────────── */
 .status-slider {
     -webkit-appearance: none;
     width: 100%;
@@ -231,121 +120,138 @@ input#searchInput:focus {
     outline: none;
     cursor: pointer;
 }
-
-/* ปุ่มวงกลมสำหรับลาก */
 .status-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
     width: 20px;
     height: 20px;
     border-radius: 50%;
-    background: #00d4ff; /* สีฟ้า Neon */
+    background: var(--neon-blue);
     cursor: pointer;
     box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
     border: 2px solid white;
     transition: 0.2s;
 }
-
 .status-slider::-webkit-slider-thumb:hover {
     transform: scale(1.2);
     box-shadow: 0 0 15px rgba(0, 212, 255, 0.8);
 }
 
-/* แถบ Guide ใต้ช่องค้นหา */
-.guide-bar {
-    box-shadow: inset 0 0 15px rgba(0, 212, 255, 0.05);
-    animation: borderGlow 3s infinite alternate;
-}
-
-@keyframes borderGlow {
-    from { border-color: rgba(6, 182, 212, 0.2); }
-    to { border-color: rgba(6, 182, 212, 0.5); }
-}
-
+/* ─────────────────────────────────────────
+   7. Guide Bar
+───────────────────────────────────────── */
 .guide-bar {
     background: linear-gradient(145deg, rgba(30, 41, 59, 0.4), rgba(15, 23, 42, 0.6));
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(0, 212, 255, 0.05);
+    animation: borderGlow 3s infinite alternate;
+}
+@keyframes borderGlow {
+    from { border-color: rgba(6, 182, 212, 0.2); }
+    to   { border-color: rgba(6, 182, 212, 0.5); }
 }
 
-.guide-bar span {
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-
-/* =============================================
-   11. PRINT SETTINGS (ชุดสมบูรณ์ หายมั่วแน่นอน)
-   ============================================= */
-@media print {
-    /* 1. ซ่อนทุกอย่างที่ไม่ใช่เนื้อหารายงาน (รวม Live Update และ Preview Card) */
-    body > *:not(#reportSection),
-    header, 
-    .filter-container, 
-    .guide-bar, 
-    #itemList, 
-    #loading, 
-    #statusFeed,
-    #previewCard,
-    .live-updates-container,
-    button, 
-    select, 
-    input, 
-    footer { 
-        display: none !important; 
-    }
-
-    /* 2. ตั้งค่าพื้นหลังและตัวอักษรให้เป็นขาวดำสำหรับงานเอกสาร */
-    body { 
-        background: white !important; 
-        color: black !important; 
-        margin: 0 !important; 
-        padding: 0 !important;
-        -webkit-print-color-adjust: exact; /* ให้สีที่เซตในตารางยังคงอยู่ */
-    }
-
-    /* 3. บังคับให้ส่วนรายงานแสดงผลเต็มหน้ากระดาษ */
-    #reportSection { 
-        display: block !important; 
-        position: absolute !important;
-        left: 0 !important;
-        top: 0 !important;
-        width: 100% !important;
-        margin: 0 !important;
-        padding: 0 !important;
-        background: white !important;
-    }
-
-    /* 4. จัดการตารางให้เส้นขอบชัดเจนตอนพิมพ์ */
-    #reportSection table {
-        border-collapse: collapse !important;
-        width: 100% !important;
-    }
-    
-    #reportSection th, 
-    #reportSection td {
-        border: 1px solid black !important;
-        color: black !important;
-    }
-
-    /* 5. ล้างค่า Margin/Padding ของ Tailwind ที่อาจทำให้หน้าเบี้ยว */
-    .container, .mx-auto {
-        max-width: none !important;
-        margin: 0 !important;
-    }
-}
-
+/* ─────────────────────────────────────────
+   8. Pending Card — Neon Red Blink
+───────────────────────────────────────── */
 @keyframes neon-red-blink {
     0%, 100% { opacity: 1; filter: drop-shadow(0 0 10px var(--neon-red)); }
-    50% { opacity: 0.5; filter: drop-shadow(0 0 2px var(--neon-red)); }
+    50%       { opacity: 0.5; filter: drop-shadow(0 0 2px var(--neon-red)); }
 }
-
 .item-card.is-pending::before {
     background: var(--neon-red) !important;
     box-shadow: 0 0 15px var(--neon-red) !important;
     animation: neon-red-blink 1.2s infinite ease-in-out !important;
 }
-
 .item-card.is-pending h3 {
-    /* เพิ่ม !important ท้าย animation เพื่อไปสยบ animate-pulse เดิมครับ */
     animation: neon-red-blink 1.2s infinite ease-in-out !important;
     color: var(--neon-red) !important;
     text-shadow: 0 0 8px rgba(255, 49, 49, 0.4) !important;
+}
+
+/* ─────────────────────────────────────────
+   9. Links
+───────────────────────────────────────── */
+.item-card a {
+    color: var(--neon-blue);
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+.item-card a:hover {
+    color: var(--neon-green);
+    text-shadow: 0 0 10px var(--neon-green);
+}
+
+/* ─────────────────────────────────────────
+   10. Animations
+───────────────────────────────────────── */
+.item-card {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes glow {
+    0%   { box-shadow: 0 0 5px rgba(0, 212, 255, 0.2); }
+    50%  { box-shadow: 0 0 20px rgba(0, 212, 255, 0.4); }
+    100% { box-shadow: 0 0 5px rgba(0, 212, 255, 0.2); }
+}
+
+/* ─────────────────────────────────────────
+   11. Stat Card — Scanline texture overlay
+───────────────────────────────────────── */
+.stat-card {
+    background-image: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+    );
+}
+
+/* ─────────────────────────────────────────
+   12. HUD Bar — corner accent marks
+───────────────────────────────────────── */
+#hud-bar::before,
+#hud-bar::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border: 1px solid rgba(0, 212, 255, 0.4);
+    flex-shrink: 0;
+}
+#hud-bar::before { border-right: none; border-bottom: none; }
+#hud-bar::after  { border-left:  none; border-top:    none; }
+
+/* ─────────────────────────────────────────
+   13. Print Styles
+───────────────────────────────────────── */
+@media print {
+    body > *:not(#reportSection),
+    header, .filter-container, .guide-bar,
+    #itemList, #loading, #statusFeed,
+    #previewCard, #hud-bar,
+    button, select, input, footer {
+        display: none !important;
+    }
+    body {
+        background: white !important;
+        color: black !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        -webkit-print-color-adjust: exact;
+    }
+    #reportSection {
+        display: block !important;
+        position: absolute !important;
+        left: 0 !important; top: 0 !important;
+        width: 100% !important;
+        margin: 0 !important; padding: 0 !important;
+        background: white !important;
+    }
+    #reportSection table { border-collapse: collapse !important; width: 100% !important; }
+    #reportSection th, #reportSection td { border: 1px solid black !important; color: black !important; }
+    .container, .mx-auto { max-width: none !important; margin: 0 !important; }
 }
