@@ -227,8 +227,11 @@
         }
 
         // 🟢 ฟังก์ชันส่งข้อมูล
+        let isSubmitting = false;
         document.getElementById('checkinForm').onsubmit = async (e) => {
             e.preventDefault();
+            if (isSubmitting) return;          // ← กัน double tap
+            isSubmitting = true;               // ← loc
             const school = document.getElementById('schoolInput').value;
             const name = document.getElementById('userName').value;
             const pos = document.getElementById('userPosition').value;
