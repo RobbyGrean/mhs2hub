@@ -237,8 +237,11 @@ currentLogState.forEach((log, index) => {
         }
 
         // ฟังก์ชันบันทึกข้อมูล
-       document.getElementById('checkinForm').onsubmit = async (e) => {
+       let isSubmitting = false;
+document.getElementById('checkinForm').onsubmit = async (e) => {
     e.preventDefault();
+    if (isSubmitting) return;          // ← กัน double tap
+    isSubmitting = true;               // ← lock
     const school = document.getElementById('schoolSelect').value;
     const name = document.getElementById('userName').value;
     const pos = document.getElementById('userPosition').value;
@@ -266,14 +269,16 @@ currentLogState.forEach((log, index) => {
         if (result.status === "success" || result.status === "updated") {
             alert(result.status === "updated" ? "เพิ่มรายชื่อของคุณเข้าสู่ระบบเรียบร้อยแล้ว!" : "บันทึกการลงทะเบียนสำเร็จ!");
             document.getElementById('checkinForm').reset();
+            document.getElementById('amphureSelect').value = '';      // ← เพิ่มบรรทัดนี้
             document.getElementById('tambonSelect').disabled = true;
             document.getElementById('schoolSelect').disabled = true;
             await updateData(); // ดึงข้อมูลล่าสุดมาโชว์ใน Live Log ทันที
         } else if (result.status === "exists") {
             alert("คุณได้ลงทะเบียนไปแล้วครับ");
         }
-    } catch (err) { alert("❌ ล้มเหลว กรุณาลองใหม่"); }
-    btn.disabled = false; btn.innerText = "บันทึกการเช็คชื่อ";
+} catch (err) { alert("❌ ล้มเหลว กรุณาลองใหม่"); }
+btn.disabled = false; btn.innerText = "บันทึกการเช็คชื่อ";
+isSubmitting = false;
 };
 
         // เริ่มทำงาน
