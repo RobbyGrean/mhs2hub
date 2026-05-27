@@ -32,7 +32,8 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    font-size: 15px;
+    /* 🌟 ปรับขนาดตัวหนังสือพื้นฐานเพิ่มขึ้น */
+    font-size: 16px; 
     line-height: 1.6;
   }
 
@@ -44,14 +45,14 @@
     display: flex;
     align-items: center;
     gap: 12px;
-    font-size: 13px;
+    font-size: 14px;
     color: #7d6608;
   }
   #setupBanner a { color: var(--primary); font-weight: 500; }
   #setupBanner button {
     margin-left: auto;
     background: none; border: none;
-    cursor: pointer; font-size: 18px;
+    cursor: pointer; font-size: 20px;
     color: #7d6608; flex-shrink: 0;
   }
   .setup-url-row {
@@ -59,21 +60,21 @@
     margin-top: 8px;
   }
   #urlInput {
-    flex: 1; padding: 7px 10px;
+    flex: 1; padding: 8px 12px;
     border: 1px solid #f0d080;
     border-radius: 6px;
-    font-size: 13px;
+    font-size: 14px;
     font-family: 'Noto Sans Thai', sans-serif;
     background: #fff;
     outline: none;
   }
   #urlInput:focus { border-color: var(--primary-light); }
   .btn-save-url {
-    padding: 7px 14px;
+    padding: 8px 16px;
     background: var(--primary);
     color: #fff; border: none;
     border-radius: 6px; cursor: pointer;
-    font-size: 13px;
+    font-size: 14px;
     font-family: 'Noto Sans Thai', sans-serif;
     white-space: nowrap;
   }
@@ -88,11 +89,11 @@
     transition: opacity 0.5s ease, visibility 0.5s ease;
   }
   #loader.hidden { opacity: 0; visibility: hidden; }
-  .loader-logo { font-family: 'Noto Serif Thai', serif; color: #fff; font-size: 22px; font-weight: 600; text-align: center; margin-bottom: 8px; }
-  .loader-sub { color: rgba(255,255,255,0.65); font-size: 13px; text-align: center; margin-bottom: 40px; }
+  .loader-logo { font-family: 'Noto Serif Thai', serif; color: #fff; font-size: 24px; font-weight: 600; text-align: center; margin-bottom: 8px; }
+  .loader-sub { color: rgba(255,255,255,0.65); font-size: 14px; text-align: center; margin-bottom: 40px; }
   .loader-bar-wrap { width: 220px; height: 3px; background: rgba(255,255,255,0.2); border-radius: 99px; overflow: hidden; }
   .loader-bar { height: 100%; background: #fff; border-radius: 99px; width: 0%; transition: width 0.4s ease; }
-  .loader-status { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 14px; }
+  .loader-status { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 14px; }
 
   /* HEADER */
   header {
@@ -103,24 +104,27 @@
   .header-top { display: flex; align-items: center; gap: 16px; padding: 16px 20px 12px; }
   .header-emblem { width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
   .header-title { flex: 1; }
-  .header-title h1 { font-family: 'Noto Serif Thai', serif; font-size: 17px; font-weight: 600; color: #fff; line-height: 1.3; }
-  .header-title p { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  /* 🌟 เพิ่มขนาดหัวข้อแถบบนสุด */
+  .header-title h1 { font-family: 'Noto Serif Thai', serif; font-size: 19px; font-weight: 600; color: #fff; line-height: 1.3; }
+  .header-title p { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 2px; }
   .header-count { text-align: right; }
-  .header-count .num { font-size: 26px; font-weight: 600; color: #fff; line-height: 1; }
-  .header-count .lbl { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .header-count .num { font-size: 28px; font-weight: 600; color: #fff; line-height: 1; }
+  .header-count .lbl { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 2px; }
   .search-wrap { padding: 0 16px 14px; }
   .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 10px; padding: 0 14px; gap: 10px; transition: background 0.2s, border-color 0.2s; }
   .search-box:focus-within { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
-  #searchInput { flex: 1; background: none; border: none; outline: none; color: #fff; font-family: 'Noto Sans Thai', sans-serif; font-size: 15px; padding: 11px 0; }
+  /* 🌟 ปรับกล่องค้นหาให้อ่านง่ายขึ้น */
+  #searchInput { flex: 1; background: none; border: none; outline: none; color: #fff; font-family: 'Noto Sans Thai', sans-serif; font-size: 16px; padding: 12px 0; }
   #searchInput::placeholder { color: rgba(255,255,255,0.4); }
-  .search-clear { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.5); font-size: 18px; display: none; padding: 4px; line-height: 1; }
+  .search-clear { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.5); font-size: 20px; display: none; padding: 4px; line-height: 1; }
   .search-clear.visible { display: flex; }
 
   /* FILTER TABS */
   .filter-wrap { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 16px; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
   .filter-wrap::-webkit-scrollbar { display: none; }
-  .filter-tab { padding: 12px 16px; font-size: 13px; color: var(--text2); cursor: pointer; border-bottom: 2.5px solid transparent; white-space: nowrap; font-family: 'Noto Sans Thai', sans-serif; background: none; border-left: none; border-right: none; border-top: none; transition: color 0.15s, border-color 0.15s; font-weight: 400; }
-  .filter-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 500; }
+  /* 🌟 ปรับเมนูตัวเลือกอำเภอให้อ่านง่าย สบายตา */
+  .filter-tab { padding: 14px 18px; font-size: 14.5px; color: var(--text2); cursor: pointer; border-bottom: 2.5px solid transparent; white-space: nowrap; font-family: 'Noto Sans Thai', sans-serif; background: none; border-left: none; border-right: none; border-top: none; transition: color 0.15s, border-color 0.15s; font-weight: 400; }
+  .filter-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
   .filter-tab:hover:not(.active) { color: var(--text); }
 
   /* MAIN */
@@ -128,14 +132,14 @@
 
   .stats-bar { display: flex; gap: 10px; margin-bottom: 16px; }
   .stat-card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; text-align: center; }
-  .stat-card .n { font-size: 22px; font-weight: 600; color: var(--primary); }
-  .stat-card .l { font-size: 11px; color: var(--text2); margin-top: 2px; }
+  .stat-card .n { font-size: 24px; font-weight: 600; color: var(--primary); }
+  .stat-card .l { font-size: 12px; color: var(--text2); margin-top: 2px; }
 
-  .result-info { font-size: 13px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .result-info { font-size: 14px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
   .result-info strong { color: var(--primary); }
   .result-actions { display: flex; gap: 8px; align-items: center; }
 
-  .refresh-btn { display: flex; align-items: center; gap: 5px; padding: 5px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-size: 12px; cursor: pointer; font-family: 'Noto Sans Thai', sans-serif; transition: background 0.15s; }
+  .refresh-btn { display: flex; align-items: center; gap: 5px; padding: 6px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-size: 13px; cursor: pointer; font-family: 'Noto Sans Thai', sans-serif; transition: background 0.15s; }
   .refresh-btn:hover { background: var(--surface2); color: var(--primary); }
   .spinning { animation: spin 1s linear infinite; }
   @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -145,26 +149,32 @@
   .school-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); transition: border-color 0.2s, box-shadow 0.2s; position: relative; cursor: pointer; }
   .school-card:hover { border-color: var(--primary-light); box-shadow: 0 4px 20px rgba(26,82,118,0.12); }
   .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
-  .card-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--primary-pale); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; color: var(--primary); font-weight: 600; }
+  /* 🌟 เพิ่มขนาดวงกลมตัวอักษรย่อ */
+  .card-avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--primary-pale); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; color: var(--primary); font-weight: 600; }
   .card-avatar.female { background: #fde8f0; color: #8e2050; }
   .card-avatar.other { background: #eaf3de; color: #3b6d11; }
   .card-info { flex: 1; min-width: 0; }
-  .school-name { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.35; margin-bottom: 3px; }
-  .director-name { font-size: 13px; color: var(--text2); }
-  .title-prefix { color: var(--text3); font-size: 12px; }
+  /* 🌟 ชื่อโรงเรียนปรับให้ใหญ่เด่นชัด */
+  .school-name { font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.35; margin-bottom: 4px; }
+  /* 🌟 ชื่อ ผอ. ขยายขึ้นให้อ่านง่าย */
+  .director-name { font-size: 14.5px; color: var(--text2); }
+  .title-prefix { color: var(--text3); font-size: 13.5px; }
   .name-part { color: var(--primary-light); font-weight: 500; }
   .card-body { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-  .card-location { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text2); flex-wrap: wrap; }
+  /* 🌟 ข้อมูลที่ตั้งโรงเรียน */
+  .card-location { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--text2); flex-wrap: wrap; }
   .location-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
-  .badge-amphoe { display: inline-block; background: var(--primary-pale); color: var(--primary); font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .badge-amphoe { display: inline-block; background: var(--primary-pale); color: var(--primary); font-size: 12px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
   .card-phone { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  .phone-number { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; }
-  .btn-call { display: flex; align-items: center; gap: 5px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); padding: 7px 12px; font-size: 13px; cursor: pointer; text-decoration: none; font-family: 'Noto Sans Thai', sans-serif; transition: background 0.15s; white-space: nowrap; }
+  /* 🌟 ขยายขนาดเบอร์โทรศัพท์ให้ชัดเจนเต็มตา */
+  .phone-number { font-size: 16.5px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; }
+  /* 🌟 เพิ่มขนาดปุ่มคัดลอกและปุ่มโทร */
+  .btn-call { display: flex; align-items: center; gap: 5px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); padding: 8px 14px; font-size: 14px; cursor: pointer; text-decoration: none; font-family: 'Noto Sans Thai', sans-serif; transition: background 0.15s; white-space: nowrap; font-weight: 500; }
   .btn-call:hover { background: var(--primary-light); }
-  .btn-copy { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 7px 10px; cursor: pointer; font-size: 16px; color: var(--text2); transition: background 0.15s, color 0.15s; display: flex; align-items: center; line-height: 1; }
+  .btn-copy { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; cursor: pointer; font-size: 18px; color: var(--text2); transition: background 0.15s, color 0.15s; display: flex; align-items: center; line-height: 1; }
   .btn-copy:hover { background: var(--surface2); color: var(--primary); }
   .btn-copy.copied { color: #27ae60; border-color: #27ae60; }
-  .multi-school-badge { position: absolute; top: 12px; right: 12px; background: #fef9e7; border: 1px solid #f0d080; color: #7d6608; font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .multi-school-badge { position: absolute; top: 12px; right: 12px; background: #fef9e7; border: 1px solid #f0d080; color: #7d6608; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
   .hl { background: #fff3cd; border-radius: 2px; }
 
   /* SAVING OVERLAY on card */
@@ -172,41 +182,41 @@
 
   /* EMPTY */
   .empty-state { text-align: center; padding: 60px 20px; color: var(--text2); }
-  .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
-  .empty-state h3 { font-size: 16px; font-weight: 500; margin-bottom: 8px; color: var(--text); }
+  .empty-state .icon { font-size: 52px; margin-bottom: 16px; opacity: 0.4; }
+  .empty-state h3 { font-size: 17px; font-weight: 500; margin-bottom: 8px; color: var(--text); }
 
   /* MODAL */
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; visibility: hidden; transition: opacity 0.25s, visibility 0.25s; }
   .modal-overlay.open { opacity: 1; visibility: visible; }
   .modal { background: var(--surface); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; transform: translateY(16px); transition: transform 0.25s; }
   .modal-overlay.open .modal { transform: translateY(0); }
-  .modal h2 { font-size: 17px; font-weight: 600; margin-bottom: 20px; color: var(--text); }
+  .modal h2 { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: var(--text); }
   .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: 'Noto Sans Thai', sans-serif; color: var(--text); background: var(--surface); transition: border-color 0.15s, box-shadow 0.15s; outline: none; }
+  .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-group input, .form-group select { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; font-family: 'Noto Sans Thai', sans-serif; color: var(--text); background: var(--surface); transition: border-color 0.15s, box-shadow 0.15s; outline: none; }
   .form-group input:focus, .form-group select:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(36,113,163,0.15); }
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
-  .btn-secondary { padding: 9px 18px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: none; cursor: pointer; font-size: 14px; font-family: 'Noto Sans Thai', sans-serif; color: var(--text2); }
-  .btn-primary { padding: 9px 18px; border: none; border-radius: var(--radius-sm); background: var(--primary); color: #fff; cursor: pointer; font-size: 14px; font-family: 'Noto Sans Thai', sans-serif; font-weight: 500; transition: background 0.15s; }
+  .btn-secondary { padding: 10px 20px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: none; cursor: pointer; font-size: 15px; font-family: 'Noto Sans Thai', sans-serif; color: var(--text2); }
+  .btn-primary { padding: 10px 20px; border: none; border-radius: var(--radius-sm); background: var(--primary); color: #fff; cursor: pointer; font-size: 15px; font-family: 'Noto Sans Thai', sans-serif; font-weight: 500; transition: background 0.15s; }
   .btn-primary:hover { background: var(--primary-light); }
   .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-  .btn-danger { padding: 9px 18px; border: 1px solid #e74c3c; border-radius: var(--radius-sm); background: none; color: #e74c3c; cursor: pointer; font-size: 14px; font-family: 'Noto Sans Thai', sans-serif; margin-right: auto; transition: background 0.15s; }
+  .btn-danger { padding: 10px 20px; border: 1px solid #e74c3c; border-radius: var(--radius-sm); background: none; color: #e74c3c; cursor: pointer; font-size: 15px; font-family: 'Noto Sans Thai', sans-serif; margin-right: auto; transition: background 0.15s; }
   .btn-danger:hover { background: #fdf0ee; }
   .btn-danger:disabled { opacity: 0.6; cursor: not-allowed; }
 
   /* FAB */
-  .fab { position: fixed; bottom: 24px; right: 20px; width: 52px; height: 52px; background: var(--accent); color: #fff; border: none; border-radius: 50%; font-size: 22px; cursor: pointer; box-shadow: 0 4px 16px rgba(192,57,43,0.35); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.15s; z-index: 500; }
+  .fab { position: fixed; bottom: 24px; right: 20px; width: 54px; height: 54px; background: var(--accent); color: #fff; border: none; border-radius: 50%; font-size: 24px; cursor: pointer; box-shadow: 0 4px 16px rgba(192,57,43,0.35); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.15s; z-index: 500; }
   .fab:hover { background: var(--accent-light); transform: scale(1.06); }
-  .fab-group { position: fixed; bottom: 84px; right: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; z-index: 499; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.2s, visibility 0.2s, transform 0.2s; }
+  .fab-group { position: fixed; bottom: 88px; right: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; z-index: 499; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.2s, visibility 0.2s, transform 0.2s; }
   .fab-group.open { opacity: 1; visibility: visible; transform: translateY(0); }
   .fab-mini { display: flex; align-items: center; gap: 10px; }
-  .fab-mini-label { background: rgba(0,0,0,0.75); color: #fff; font-size: 12px; padding: 5px 10px; border-radius: 6px; white-space: nowrap; }
-  .fab-mini-btn { width: 42px; height: 42px; background: var(--primary); color: #fff; border: none; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: background 0.15s; flex-shrink: 0; }
+  .fab-mini-label { background: rgba(0,0,0,0.75); color: #fff; font-size: 13px; padding: 6px 12px; border-radius: 6px; white-space: nowrap; }
+  .fab-mini-btn { width: 44px; height: 44px; background: var(--primary); color: #fff; border: none; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: background 0.15s; flex-shrink: 0; }
   .fab-mini-btn:hover { background: var(--primary-light); }
 
   /* TOAST */
-  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1c2833; color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 13px; opacity: 0; transition: opacity 0.2s, transform 0.2s; z-index: 9998; white-space: nowrap; max-width: 90vw; text-align: center; }
+  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1c2833; color: #fff; padding: 11px 22px; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: opacity 0.2s, transform 0.2s; z-index: 9998; white-space: nowrap; max-width: 90vw; text-align: center; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   .toast.error { background: var(--accent); }
   .toast.success { background: var(--green); }
