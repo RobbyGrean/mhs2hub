@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>สมุดโทรศัพท์ ผอ.โรงเรียน สพป.มส.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&family=Noto+Serif+Thai:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a5276;
+    --primary-light: #2471a3;
+    --primary-pale: #d6eaf8;
+    --accent: #c0392b;
+    --accent-light: #e74c3c;
+    --bg: #f5f6fa;
+    --surface: #ffffff;
+    --surface2: #f0f3f8;
+    --text: #1c2833;
+    --text2: #5d6d7e;
+    --text3: #aab7c4;
+    --border: #dce4ec;
+    --shadow: 0 2px 12px rgba(26,82,118,0.08);
+    --radius: 12px;
+    --radius-sm: 8px;
+    --green: #1e8449;
+    --green-pale: #d5f5e3;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Noto Sans Thai', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* SETUP BANNER */
+  #setupBanner {
+    background: #fef9e7;
+    border-bottom: 1px solid #f0d080;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: #7d6608;
+  }
+  #setupBanner a { color: var(--primary); font-weight: 500; }
+  #setupBanner button {
+    margin-left: auto;
+    background: none; border: none;
+    cursor: pointer; font-size: 18px;
+    color: #7d6608; flex-shrink: 0;
+  }
+  .setup-url-row {
+    display: flex; gap: 8px; align-items: center;
+    margin-top: 8px;
+  }
+  #urlInput {
+    flex: 1; padding: 7px 10px;
+    border: 1px solid #f0d080;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: 'Noto Sans Thai', sans-serif;
+    background: #fff;
+    outline: none;
+  }
+  #urlInput:focus { border-color: var(--primary-light); }
+  .btn-save-url {
+    padding: 7px 14px;
+    background: var(--primary);
+    color: #fff; border: none;
+    border-radius: 6px; cursor: pointer;
+    font-size: 13px;
+    font-family: 'Noto Sans Thai', sans-serif;
+    white-space: nowrap;
+  }
+
+  /* LOADER */
+  #loader {
+    position: fixed; inset: 0;
+    background: linear-gradient(145deg, #0d2b45 0%, #1a5276 60%, #1f618d 100%);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 9999;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+  #loader.hidden { opacity: 0; visibility: hidden; }
+  .loader-logo { font-family: 'Noto Serif Thai', serif; color: #fff; font-size: 22px; font-weight: 600; text-align: center; margin-bottom: 8px; }
+  .loader-sub { color: rgba(255,255,255,0.65); font-size: 13px; text-align: center; margin-bottom: 40px; }
+  .loader-bar-wrap { width: 220px; height: 3px; background: rgba(255,255,255,0.2); border-radius: 99px; overflow: hidden; }
+  .loader-bar { height: 100%; background: #fff; border-radius: 99px; width: 0%; transition: width 0.4s ease; }
+  .loader-status { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 14px; }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0d2b45 0%, #1a5276 100%);
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+  }
+  .header-top { display: flex; align-items: center; gap: 16px; padding: 16px 20px 12px; }
+  .header-emblem { width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .header-title { flex: 1; }
+  .header-title h1 { font-family: 'Noto Serif Thai', serif; font-size: 17px; font-weight: 600; color: #fff; line-height: 1.3; }
+  .header-title p { font-size: 12px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+  .header-count { text-align: right; }
+  .header-count .num { font-size: 26px; font-weight: 600; color: #fff; line-height: 1; }
+  .header-count .lbl { font-size: 11px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .search-wrap { padding: 0 16px 14px; }
+  .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 10px; padding: 0 14px; gap: 10px; transition: background 0.2s, border-color 0.2s; }
+  .search-box:focus-within { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
+  #searchInput { flex: 1; background: none; border: none; outline: none; color: #fff; font-family: 'Noto Sans Thai', sans-serif; font-size: 15px; padding: 11px 0; }
+  #searchInput::placeholder { color: rgba(255,255,255,0.4); }
+  .search-clear { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.5); font-size: 18px; display: none; padding: 4px; line-height: 1; }
+  .search-clear.visible { display: flex; }
+
+  /* FILTER TABS */
+  .filter-wrap { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 16px; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  .filter-wrap::-webkit-scrollbar { display: none; }
+  .filter-tab { padding: 12px 16px; font-size: 13px; color: var(--text2); cursor: pointer; border-bottom: 2.5px solid transparent; white-space: nowrap; font-family: 'Noto Sans Thai', sans-serif; background: none; border-left: none; border-right: none; border-top: none; transition: color 0.15s, border-color 0.15s; font-weight: 400; }
+  .filter-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 500; }
+  .filter-tab:hover:not(.active) { color: var(--text); }
+
+  /* MAIN */
+  main { max-width: 720px; margin: 0 auto; padding: 16px 12px 80px; }
+
+  .stats-bar { display: flex; gap: 10px; margin-bottom: 16px; }
+  .stat-card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; text-align: center; }
+  .stat-card .n { font-size: 22px; font-weight: 600; color: var(--primary); }
+  .stat-card .l { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  .result-info { font-size: 13px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .result-info strong { color: var(--primary); }
+  .result-actions { display: flex; gap: 8px; align-items: center; }
+
+  .refresh-btn { display: flex; align-items: center; gap: 5px; padding: 5px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-size: 12px; cursor: pointer; font-family: 'Noto Sans Thai', sans-serif; transition: background 0.15s; }
+  .refresh-btn:hover { background: var(--surface2); color: var(--primary); }
+  .spinning { animation: spin 1s linear infinite; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  /* CARDS */
+  .cards-list { display: flex; flex-direction: column; gap: 10px; }
+  .school-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); transition: border-color 0.2s, box-shadow 0.2s; position: relative; cursor: pointer; }
+  .school-card:hover { border-color: var(--primary-light); box-shadow: 0 4px 20px rgba(26,82,118,0.12); }
+  .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+  .card-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--primary-pale); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; color: var(--primary); font-weight: 600; }
+  .card-avatar.female { background: #fde8f0; color: #8e2050; }
+  .card-avatar.other { background: #eaf3de; color: #3b6d11; }
+  .card-info { flex: 1; min-width: 0; }
+  .school-name { font-size: 15px; font-weight: 500; color: var(--text); line-height: 1.35; margin-bottom: 3px; }
+  .director-name { font-size: 13px; color: var(--text2); }
+  .title-prefix { color: var(--text3); font-size: 12px; }
+  .name-part { color: var(--primary-light); font-weight: 500; }
+  .card-body { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+  .card-location { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text2); flex-wrap: wrap; }
+  .location-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
+  .badge-amphoe { display: inline-block; background: var(--primary-pale); color: var(--primary); font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .card-phone { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .phone-number { font-size: 15px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; }
+  .btn-call { display: flex; align-items: center; gap: 5px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); padding: 7px 12px; font-size: 13px; cursor: pointer; text-decoration: none; font-family: 'Noto Sans Thai', sans-serif; transition: background 0.15s; white-space: nowrap; }
+  .btn-call:hover { background: var(--primary-light); }
+  .btn-copy { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 7px 10px; cursor: pointer; font-size: 16px; color: var(--text2); transition: background 0.15s, color 0.15s; display: flex; align-items: center; line-height: 1; }
+  .btn-copy:hover { background: var(--surface2); color: var(--primary); }
+  .btn-copy.copied { color: #27ae60; border-color: #27ae60; }
+  .multi-school-badge { position: absolute; top: 12px; right: 12px; background: #fef9e7; border: 1px solid #f0d080; color: #7d6608; font-size: 10px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .hl { background: #fff3cd; border-radius: 2px; }
+
+  /* SAVING OVERLAY on card */
+  .card-saving { opacity: 0.5; pointer-events: none; }
+
+  /* EMPTY */
+  .empty-state { text-align: center; padding: 60px 20px; color: var(--text2); }
+  .empty-state .icon { font-size: 48px; margin-bottom: 16px; opacity: 0.4; }
+  .empty-state h3 { font-size: 16px; font-weight: 500; margin-bottom: 8px; color: var(--text); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; visibility: hidden; transition: opacity 0.25s, visibility 0.25s; }
+  .modal-overlay.open { opacity: 1; visibility: visible; }
+  .modal { background: var(--surface); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; transform: translateY(16px); transition: transform 0.25s; }
+  .modal-overlay.open .modal { transform: translateY(0); }
+  .modal h2 { font-size: 17px; font-weight: 600; margin-bottom: 20px; color: var(--text); }
+  .form-group { margin-bottom: 16px; }
+  .form-group label { display: block; font-size: 12px; font-weight: 500; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-group input, .form-group select { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 14px; font-family: 'Noto Sans Thai', sans-serif; color: var(--text); background: var(--surface); transition: border-color 0.15s, box-shadow 0.15s; outline: none; }
+  .form-group input:focus, .form-group select:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(36,113,163,0.15); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+  .btn-secondary { padding: 9px 18px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: none; cursor: pointer; font-size: 14px; font-family: 'Noto Sans Thai', sans-serif; color: var(--text2); }
+  .btn-primary { padding: 9px 18px; border: none; border-radius: var(--radius-sm); background: var(--primary); color: #fff; cursor: pointer; font-size: 14px; font-family: 'Noto Sans Thai', sans-serif; font-weight: 500; transition: background 0.15s; }
+  .btn-primary:hover { background: var(--primary-light); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-danger { padding: 9px 18px; border: 1px solid #e74c3c; border-radius: var(--radius-sm); background: none; color: #e74c3c; cursor: pointer; font-size: 14px; font-family: 'Noto Sans Thai', sans-serif; margin-right: auto; transition: background 0.15s; }
+  .btn-danger:hover { background: #fdf0ee; }
+  .btn-danger:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* FAB */
+  .fab { position: fixed; bottom: 24px; right: 20px; width: 52px; height: 52px; background: var(--accent); color: #fff; border: none; border-radius: 50%; font-size: 22px; cursor: pointer; box-shadow: 0 4px 16px rgba(192,57,43,0.35); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.15s; z-index: 500; }
+  .fab:hover { background: var(--accent-light); transform: scale(1.06); }
+  .fab-group { position: fixed; bottom: 84px; right: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; z-index: 499; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.2s, visibility 0.2s, transform 0.2s; }
+  .fab-group.open { opacity: 1; visibility: visible; transform: translateY(0); }
+  .fab-mini { display: flex; align-items: center; gap: 10px; }
+  .fab-mini-label { background: rgba(0,0,0,0.75); color: #fff; font-size: 12px; padding: 5px 10px; border-radius: 6px; white-space: nowrap; }
+  .fab-mini-btn { width: 42px; height: 42px; background: var(--primary); color: #fff; border: none; border-radius: 50%; font-size: 20px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: background 0.15s; flex-shrink: 0; }
+  .fab-mini-btn:hover { background: var(--primary-light); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1c2833; color: #fff; padding: 10px 20px; border-radius: var(--radius-sm); font-size: 13px; opacity: 0; transition: opacity 0.2s, transform 0.2s; z-index: 9998; white-space: nowrap; max-width: 90vw; text-align: center; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { background: var(--accent); }
+  .toast.success { background: var(--green); }
+
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
+</style>
+</head>
+<body>
+
+<!-- SETUP BANNER: แสดงถ้ายังไม่ได้ตั้ง URL -->
+<div id="setupBanner" style="display:none">
+  <div style="flex:1">
+    <div>⚙️ <strong>ตั้งค่าก่อนใช้งาน:</strong> ใส่ URL ของ Google Apps Script Web App ด้านล่าง
+      <a href="https://script.google.com" target="_blank"> (วิธีทำดูใน README)</a>
+    </div>
+    <div class="setup-url-row">
+      <input type="url" id="urlInput" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" />
+      <button class="btn-save-url" onclick="saveScriptUrl()">บันทึก URL</button>
+    </div>
+  </div>
+  <button onclick="document.getElementById('setupBanner').style.display='none'">✕</button>
+</div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">สมุดโทรศัพท์ผู้อำนวยการโรงเรียน</div>
+  <div class="loader-sub">สพป.แม่ฮ่องสอน เขต 2</div>
+  <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+  <div class="loader-status" id="loaderStatus">กำลังโหลดข้อมูล...</div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-top">
+    <div class="header-emblem">🏫</div>
+    <div class="header-title">
+      <h1>สมุดโทรศัพท์ ผอ.โรงเรียน</h1>
+      <p>สำนักงานเขตพื้นที่การศึกษาประถมศึกษาแม่ฮ่องสอน เขต 2</p>
+    </div>
+    <div class="header-count">
+      <div class="num" id="headerCount">—</div>
+      <div class="lbl">โรงเรียน</div>
+    </div>
+  </div>
+  <div class="search-wrap">
+    <div class="search-box">
+      <span style="color:rgba(255,255,255,0.6);font-size:18px;flex-shrink:0">🔍</span>
+      <input type="text" id="searchInput" placeholder="ค้นหา ชื่อโรงเรียน ผอ. ตำบล อำเภอ เบอร์โทร..." autocomplete="off" />
+      <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+    </div>
+  </div>
+</header>
+
+<!-- FILTER TABS -->
+<div class="filter-wrap">
+  <button class="filter-tab active" onclick="filterAmphoe('')" id="tab-all">ทั้งหมด</button>
+  <button class="filter-tab" onclick="filterAmphoe('แม่สะเรียง')" id="tab-แม่สะเรียง">อ.แม่สะเรียง</button>
+  <button class="filter-tab" onclick="filterAmphoe('สบเมย')" id="tab-สบเมย">อ.สบเมย</button>
+  <button class="filter-tab" onclick="filterAmphoe('แม่ลาน้อย')" id="tab-แม่ลาน้อย">อ.แม่ลาน้อย</button>
+</div>
+
+<main>
+  <div class="stats-bar" id="statsBar" style="display:none">
+    <div class="stat-card"><div class="n" id="statTotal">—</div><div class="l">โรงเรียนทั้งหมด</div></div>
+    <div class="stat-card"><div class="n" id="statDirectors">—</div><div class="l">ผอ. ทั้งหมด</div></div>
+    <div class="stat-card"><div class="n" id="statMulti">—</div><div class="l">ผอ. ดูแลหลายโรงเรียน</div></div>
+  </div>
+  <div class="result-info" id="resultInfo" style="display:none">
+    <span id="resultText"></span>
+    <div class="result-actions">
+      <button class="refresh-btn" onclick="refreshData()">
+        <span id="refreshIcon">↻</span> รีเฟรช
+      </button>
+    </div>
+  </div>
+  <div class="cards-list" id="cardsList"></div>
+</main>
+
+<!-- FAB -->
+<div class="fab-group" id="fabGroup">
+  <div class="fab-mini">
+    <span class="fab-mini-label">เพิ่มโรงเรียนใหม่</span>
+    <button class="fab-mini-btn" onclick="openAddModal()">＋</button>
+  </div>
+  <div class="fab-mini">
+    <span class="fab-mini-label">ตั้งค่า Script URL</span>
+    <button class="fab-mini-btn" onclick="showSetupBanner()">⚙</button>
+  </div>
+</div>
+<button class="fab" id="fabBtn" onclick="toggleFab()">✎</button>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <h2 id="modalTitle">เพิ่มโรงเรียนใหม่</h2>
+    <div class="form-group">
+      <label>ชื่อโรงเรียน *</label>
+      <input type="text" id="fSchool" placeholder="เช่น บ้านแม่ต้อบใต้" />
+    </div>
+    <div class="form-group">
+      <label>ชื่อ ผอ. (รวมคำนำหน้า)</label>
+      <input type="text" id="fDirector" placeholder="เช่น นายประหยัด นิลมล" />
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ตำบล</label>
+        <input type="text" id="fTambon" placeholder="เช่น บ้านกาศ" />
+      </div>
+      <div class="form-group">
+        <label>อำเภอ</label>
+        <select id="fAmphoe">
+          <option value="แม่สะเรียง">แม่สะเรียง</option>
+          <option value="สบเมย">สบเมย</option>
+          <option value="แม่ลาน้อย">แม่ลาน้อย</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>หมายเลขโทรศัพท์ *</label>
+      <input type="tel" id="fPhone" placeholder="เช่น 086 183 1011" />
+    </div>
+    <div id="modalError" style="color:#e74c3c;font-size:13px;margin-top:-8px;margin-bottom:8px;display:none"></div>
+    <div class="modal-footer">
+      <button class="btn-danger" id="btnDelete" onclick="deleteRecord()" style="display:none">ลบ</button>
+      <button class="btn-secondary" onclick="closeModal()">ยกเลิก</button>
+      <button class="btn-primary" id="btnSave" onclick="saveRecord()">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ====================================================
+// CONFIG — แก้ URL นี้หลัง deploy Apps Script แล้ว
+// หรือใส่ผ่าน UI แล้วกด "บันทึก URL"
+// ====================================================
+const SCRIPT_URL_KEY = 'sppms2_script_url';
+const CACHE_KEY = 'sppms2_data_v3';
+const CACHE_TS_KEY = 'sppms2_ts_v3';
+const CACHE_TTL = 30 * 60 * 1000; // 30 นาที
+
+let allData = [];
+let filteredData = [];
+let currentAmphoe = '';
+let currentQuery = '';
+let editingRowIndex = -1;
+let fabOpen = false;
+let multiDirectors = new Set();
+let isSaving = false;
+
+function getScriptUrl() {
+  return localStorage.getItem(SCRIPT_URL_KEY) || '';
+}
+
+function saveScriptUrl() {
+  const url = document.getElementById('urlInput').value.trim();
+  if (!url.startsWith('https://script.google.com')) {
+    showToast('URL ไม่ถูกต้อง ต้องเริ่มด้วย https://script.google.com', 'error'); return;
+  }
+  localStorage.setItem(SCRIPT_URL_KEY, url);
+  document.getElementById('setupBanner').style.display = 'none';
+  showToast('บันทึก URL แล้ว กำลังโหลดข้อมูล...', 'success');
+  localStorage.removeItem(CACHE_KEY);
+  init();
+}
+
+function showSetupBanner() {
+  const b = document.getElementById('setupBanner');
+  b.style.display = 'flex';
+  document.getElementById('urlInput').value = getScriptUrl();
+  toggleFab();
+}
+
+// ====================================================
+// DATA LAYER
+// ====================================================
+function normalizePhone(p) {
+  if (!p) return '';
+  return String(p).replace(/[\u200b\u200c\u200d\ufeff​]/g,'').replace(/[^\d\s]/g,'').trim();
+}
+
+function stripTitle(name) {
+  if (!name) return { prefix: '', clean: '' };
+  const prefixes = ['นางสาว','นาง','นาย','ว่าที่ ร.ต.','ว่าที่ร.ต.','ดร.'];
+  let raw = String(name).trim();
+  for (const p of prefixes) {
+    if (raw.startsWith(p)) return { prefix: p, clean: raw.slice(p.length).trim() };
+  }
+  return { prefix: '', clean: raw };
+}
+
+function getGender(name) {
+  if (!name) return 'other';
+  if (String(name).startsWith('นางสาว') || String(name).startsWith('นาง')) return 'female';
+  if (String(name).startsWith('นาย')) return 'male';
+  return 'other';
+}
+
+function getInitials(name) {
+  if (!name) return '—';
+  const { clean } = stripTitle(name);
+  const parts = clean.split(/\s+/).filter(Boolean);
+  return parts[0]?.charAt(0) + (parts[1]?.charAt(0) || '');
+}
+
+function computeMultiDirectors(data) {
+  const cnt = {};
+  data.forEach(d => { if (d.director) cnt[d.director] = (cnt[d.director] || 0) + 1; });
+  multiDirectors = new Set(Object.entries(cnt).filter(([,v]) => v > 1).map(([k]) => k));
+}
+
+async function apiFetch(params) {
+  const url = getScriptUrl();
+  if (!url) throw new Error('ยังไม่ได้ตั้งค่า Script URL');
+  const res = await fetch(url + '?' + new URLSearchParams(params));
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  if (json.error) throw new Error(json.error);
+  return json;
+}
+
+async function apiPost(body) {
+  const url = getScriptUrl();
+  if (!url) throw new Error('ยังไม่ได้ตั้งค่า Script URL');
+  const res = await fetch(url, {
+    method: 'POST',
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) throw new Error('HTTP ' + res.status);
+  const json = await res.json();
+  if (json.error) throw new Error(json.error);
+  return json;
+}
+
+function saveCache(data) {
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+    localStorage.setItem(CACHE_TS_KEY, Date.now().toString());
+  } catch(e) {}
+}
+
+function loadCache() {
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    const ts = localStorage.getItem(CACHE_TS_KEY);
+    if (raw && ts && (Date.now() - parseInt(ts)) < CACHE_TTL) return JSON.parse(raw);
+  } catch(e) {}
+  return null;
+}
+
+function setProgress(pct, msg) {
+  document.getElementById('loaderBar').style.width = pct + '%';
+  if (msg) document.getElementById('loaderStatus').textContent = msg;
+}
+
+async function init() {
+  setProgress(5, 'กำลังเริ่มต้น...');
+  document.getElementById('loader').classList.remove('hidden');
+
+  const scriptUrl = getScriptUrl();
+  if (!scriptUrl) {
+    setProgress(100, 'ยังไม่ได้ตั้งค่า Script URL');
+    document.getElementById('setupBanner').style.display = 'flex';
+    document.getElementById('urlInput').value = '';
+    setTimeout(() => document.getElementById('loader').classList.add('hidden'), 600);
+    return;
+  }
+
+  // ลอง cache ก่อน
+  const cached = loadCache();
+  if (cached && cached.length > 0) {
+    setProgress(60, 'ใช้ข้อมูลแคช...');
+    allData = cached;
+    computeMultiDirectors(allData);
+    finishLoad();
+    // โหลดใหม่ background
+    fetchAndUpdate(true);
+    return;
+  }
+
+  await fetchAndUpdate(false);
+}
+
+async function fetchAndUpdate(silent) {
+  if (!silent) setProgress(20, 'กำลังดึงข้อมูลจาก Google Sheets...');
+  try {
+    const json = await apiFetch({ action: 'list' });
+    allData = json.records || [];
+    computeMultiDirectors(allData);
+    saveCache(allData);
+    if (!silent) {
+      setProgress(95, 'โหลดสำเร็จ');
+      finishLoad();
+    } else {
+      updateStats();
+      applyFilter();
+    }
+  } catch(e) {
+    if (!silent) {
+      const cached = loadCache();
+      if (cached && cached.length > 0) {
+        allData = cached;
+        computeMultiDirectors(allData);
+        finishLoad();
+        showToast('ใช้ข้อมูลแคช (เชื่อมต่อไม่ได้)', 'error');
+      } else {
+        setProgress(100, 'เกิดข้อผิดพลาด: ' + e.message);
+        document.getElementById('loaderStatus').style.color = '#e74c3c';
+      }
+    } else {
+      showToast('รีเฟรชล้มเหลว: ' + e.message, 'error');
+    }
+  }
+}
+
+function finishLoad() {
+  updateStats();
+  applyFilter();
+  setProgress(100, 'พร้อมใช้งาน');
+  document.getElementById('statsBar').style.display = 'flex';
+  document.getElementById('resultInfo').style.display = 'flex';
+  document.getElementById('headerCount').textContent = allData.length;
+  setTimeout(() => document.getElementById('loader').classList.add('hidden'), 400);
+}
+
+async function refreshData() {
+  const icon = document.getElementById('refreshIcon');
+  icon.classList.add('spinning');
+  try {
+    const json = await apiFetch({ action: 'list' });
+    allData = json.records || [];
+    computeMultiDirectors(allData);
+    saveCache(allData);
+    updateStats();
+    applyFilter();
+    showToast('อัปเดตข้อมูลเรียบร้อย ✓', 'success');
+  } catch(e) {
+    showToast('รีเฟรชล้มเหลว: ' + e.message, 'error');
+  }
+  icon.classList.remove('spinning');
+}
+
+// ====================================================
+// SEARCH & FILTER
+// ====================================================
+function normalize(s) {
+  return String(s || '').replace(/[\s\u200b\u200c\u200d]/g,'').toLowerCase();
+}
+
+function applyFilter() {
+  const q = normalize(currentQuery);
+  filteredData = allData.filter(d => {
+    if (currentAmphoe && d.amphoe !== currentAmphoe) return false;
+    if (!q) return true;
+    const { clean } = stripTitle(d.director);
+    return (
+      normalize(d.school).includes(q) ||
+      normalize(d.director).includes(q) ||
+      normalize(clean).includes(q) ||
+      normalize(d.tambon).includes(q) ||
+      normalize(d.amphoe).includes(q) ||
+      normalize(d.phone).includes(q)
+    );
+  });
+  renderCards();
+  const q2 = currentQuery.trim();
+  document.getElementById('resultText').innerHTML = q2
+    ? `พบ <strong>${filteredData.length}</strong> รายการ จากคำค้น "<strong>${escHtml(q2)}</strong>"`
+    : `แสดง <strong>${filteredData.length}</strong> รายการ`;
+}
+
+function filterAmphoe(amphoe) {
+  currentAmphoe = amphoe;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(amphoe ? 'tab-' + amphoe : 'tab-all').classList.add('active');
+  applyFilter();
+}
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  currentQuery = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  applyFilter();
+}
+
+document.getElementById('searchInput').addEventListener('input', function() {
+  currentQuery = this.value;
+  document.getElementById('searchClear').classList.toggle('visible', this.value.length > 0);
+  applyFilter();
+});
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = allData.length;
+  const dirs = new Set(allData.map(d => d.director).filter(Boolean));
+  document.getElementById('statDirectors').textContent = dirs.size;
+  document.getElementById('statMulti').textContent = multiDirectors.size;
+  document.getElementById('headerCount').textContent = allData.length;
+  document.getElementById('tab-all').textContent = `ทั้งหมด (${allData.length})`;
+  ['แม่สะเรียง','สบเมย','แม่ลาน้อย'].forEach(a => {
+    const el = document.getElementById('tab-' + a);
+    if (el) el.textContent = `อ.${a} (${allData.filter(d=>d.amphoe===a).length})`;
+  });
+}
+
+// ====================================================
+// RENDER
+// ====================================================
+function highlight(text, query) {
+  if (!query || !text) return escHtml(text || '');
+  const re = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'), 'gi');
+  return escHtml(text).replace(re, m => `<span class="hl">${m}</span>`);
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function renderCards() {
+  const list = document.getElementById('cardsList');
+  if (filteredData.length === 0) {
+    list.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h3>ไม่พบข้อมูล</h3><p>ลองค้นหาด้วยคำอื่น</p></div>`;
+    return;
+  }
+  const q = currentQuery.trim();
+  list.innerHTML = filteredData.map((d, i) => {
+    const gender = getGender(d.director);
+    const initials = getInitials(d.director);
+    const { prefix, clean } = stripTitle(d.director);
+    const isMulti = multiDirectors.has(d.director);
+    const phoneClean = (d.phone || '').replace(/\s/g,'');
+    return `
+      <div class="school-card" id="card-${i}" onclick="openEditModal(${JSON.stringify(d.rowIndex)})">
+        ${isMulti ? '<span class="multi-school-badge">ดูแลหลายโรงเรียน</span>' : ''}
+        <div class="card-header">
+          <div class="card-avatar ${gender}">${escHtml(initials)}</div>
+          <div class="card-info">
+            <div class="school-name">${highlight(d.school, q)}</div>
+            <div class="director-name">
+              ${prefix ? `<span class="title-prefix">${escHtml(prefix)}</span> ` : ''}
+              <span class="name-part">${highlight(clean, q)}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-location">
+            <span>${highlight(d.tambon, q)}</span>
+            ${d.tambon ? '<span class="location-dot"></span>' : ''}
+            <span class="badge-amphoe">${highlight(d.amphoe, q)}</span>
+          </div>
+          <div class="card-phone">
+            <span class="phone-number">${highlight(d.phone, q)}</span>
+            <button class="btn-copy" id="copy-${i}" onclick="copyPhone(event,'${escHtml(phoneClean)}',${i})" title="คัดลอก">⎘</button>
+            <a class="btn-call" href="tel:${escHtml(phoneClean)}" onclick="event.stopPropagation()">📞 โทร</a>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function copyPhone(e, phone, idx) {
+  e.stopPropagation();
+  navigator.clipboard.writeText(phone).then(() => {
+    const btn = document.getElementById('copy-' + idx);
+    if (btn) { btn.classList.add('copied'); btn.textContent = '✓'; }
+    showToast('คัดลอก: ' + phone, 'success');
+    setTimeout(() => { if (btn) { btn.classList.remove('copied'); btn.textContent = '⎘'; } }, 2000);
+  }).catch(() => showToast('คัดลอกไม่ได้', 'error'));
+}
+
+// ====================================================
+// MODAL — CRUD
+// ====================================================
+function openAddModal() {
+  editingRowIndex = -1;
+  document.getElementById('modalTitle').textContent = 'เพิ่มโรงเรียนใหม่';
+  ['fSchool','fDirector','fTambon','fPhone'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fAmphoe').value = 'แม่สะเรียง';
+  document.getElementById('btnDelete').style.display = 'none';
+  document.getElementById('modalError').style.display = 'none';
+  document.getElementById('modalOverlay').classList.add('open');
+  toggleFab();
+  setTimeout(() => document.getElementById('fSchool').focus(), 100);
+}
+
+function openEditModal(rowIndex) {
+  const d = allData.find(r => r.rowIndex === rowIndex);
+  if (!d) return;
+  editingRowIndex = rowIndex;
+  document.getElementById('modalTitle').textContent = 'แก้ไขข้อมูล';
+  document.getElementById('fSchool').value = d.school;
+  document.getElementById('fDirector').value = d.director;
+  document.getElementById('fTambon').value = d.tambon;
+  document.getElementById('fAmphoe').value = d.amphoe;
+  document.getElementById('fPhone').value = d.phone;
+  document.getElementById('btnDelete').style.display = 'block';
+  document.getElementById('modalError').style.display = 'none';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function closeModalOnBg(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+
+function setModalBusy(busy) {
+  isSaving = busy;
+  document.getElementById('btnSave').disabled = busy;
+  document.getElementById('btnDelete').disabled = busy;
+  document.getElementById('btnSave').textContent = busy ? 'กำลังบันทึก...' : 'บันทึก';
+}
+
+function showModalError(msg) {
+  const el = document.getElementById('modalError');
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+async function saveRecord() {
+  if (isSaving) return;
+  const school = document.getElementById('fSchool').value.trim();
+  const phone = normalizePhone(document.getElementById('fPhone').value);
+  if (!school) { document.getElementById('fSchool').focus(); showModalError('กรุณาระบุชื่อโรงเรียน'); return; }
+  if (!phone) { document.getElementById('fPhone').focus(); showModalError('กรุณาระบุเบอร์โทรศัพท์'); return; }
+  document.getElementById('modalError').style.display = 'none';
+
+  const data = {
+    school,
+    director: document.getElementById('fDirector').value.trim(),
+    tambon: document.getElementById('fTambon').value.trim(),
+    amphoe: document.getElementById('fAmphoe').value,
+    phone,
+  };
+
+  setModalBusy(true);
+  try {
+    if (editingRowIndex < 0) {
+      await apiPost({ action: 'add', data });
+      showToast('เพิ่มข้อมูลเรียบร้อย ✓', 'success');
+    } else {
+      await apiPost({ action: 'update', rowIndex: editingRowIndex, data });
+      showToast('อัปเดตข้อมูลเรียบร้อย ✓', 'success');
+    }
+    closeModal();
+    // รีเฟรชข้อมูลจาก sheet จริง
+    localStorage.removeItem(CACHE_KEY);
+    await refreshData();
+  } catch(e) {
+    showModalError('เกิดข้อผิดพลาด: ' + e.message);
+  }
+  setModalBusy(false);
+}
+
+async function deleteRecord() {
+  if (isSaving || editingRowIndex < 0) return;
+  const d = allData.find(r => r.rowIndex === editingRowIndex);
+  if (!confirm(`ลบ "${d?.school || ''}" ออกจากฐานข้อมูล?\n\nการกระทำนี้ไม่สามารถย้อนกลับได้`)) return;
+  setModalBusy(true);
+  try {
+    await apiPost({ action: 'delete', rowIndex: editingRowIndex });
+    showToast('ลบข้อมูลเรียบร้อย', 'success');
+    closeModal();
+    localStorage.removeItem(CACHE_KEY);
+    await refreshData();
+  } catch(e) {
+    showModalError('เกิดข้อผิดพลาด: ' + e.message);
+  }
+  setModalBusy(false);
+}
+
+// ====================================================
+// FAB & TOAST & KEYBOARD
+// ====================================================
+function toggleFab() {
+  fabOpen = !fabOpen;
+  document.getElementById('fabGroup').classList.toggle('open', fabOpen);
+  document.getElementById('fabBtn').style.background = fabOpen ? 'var(--primary)' : '';
+}
+
+let toastTimer;
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.className = 'toast', 2800);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); if (fabOpen) toggleFab(); }
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('searchInput').focus();
+  }
+});
+
+init();
+</script>
+</body>
+</html>
