@@ -701,12 +701,15 @@ async function apiFetch(params) {
 }
 
 async function apiPost(body) {
+  // ใช้ GET แทน POST เพื่อหลีกเลี่ยง CORS preflight ที่ Apps Script ไม่รองรับ
   const url = getScriptUrl();
   if (!url) throw new Error('ยังไม่ได้ตั้งค่า Script URL');
-  const res = await fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(body),
+  const params = new URLSearchParams({
+    action: body.action,
+    rowIndex: body.rowIndex ?? '',
+    data: JSON.stringify(body.data ?? {}),
   });
+  const res = await fetch(url + '?' + params);
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const json = await res.json();
   if (json.error) throw new Error(json.error);
