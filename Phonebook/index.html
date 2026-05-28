@@ -10,218 +10,462 @@
   :root {
     --primary: #1a5276;
     --primary-light: #2471a3;
-    --primary-pale: #d6eaf8;
-    --accent: #c0392b;
+    --primary-pale: #dbeaf8;
+    --accent: #b03a2e;
     --accent-light: #e74c3c;
-    --bg: #f5f6fa;
+    --bg: #eef1f7;
     --surface: #ffffff;
-    --surface2: #f0f3f8;
-    --text: #1c2833;
-    --text2: #5d6d7e;
-    --text3: #aab7c4;
-    --border: #dce4ec;
-    --shadow: 0 2px 12px rgba(26,82,118,0.08);
-    --radius: 12px;
-    --radius-sm: 8px;
-    --green: #1e8449;
-    --green-pale: #d5f5e3;
+    --surface2: #f2f5fb;
+    --text: #17202a;
+    --text2: #566573;
+    --text3: #a9b9c8;
+    --border: #d5e0ec;
+    --shadow-sm: 0 1px 4px rgba(26,82,118,0.07);
+    --shadow: 0 2px 14px rgba(26,82,118,0.09);
+    --shadow-md: 0 6px 24px rgba(26,82,118,0.13);
+    --radius: 14px;
+    --radius-sm: 9px;
+    --radius-xs: 6px;
+    --green: #1a7a42;
+    --green-pale: #d0f0e0;
   }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
     font-family: 'Noto Sans Thai', sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    /* 🌟 ปรับขนาดตัวหนังสือพื้นฐานเพิ่มขึ้น */
-    font-size: 16px; 
-    line-height: 1.6;
+    font-size: 16px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
   }
 
-  /* SETUP BANNER */
+  /* ── SETUP BANNER ─────────────────────────────── */
   #setupBanner {
-    background: #fef9e7;
-    border-bottom: 1px solid #f0d080;
-    padding: 12px 20px;
+    background: #fffbea;
+    border-bottom: 1px solid #e8cc6a;
+    padding: 13px 20px;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
     font-size: 14px;
-    color: #7d6608;
+    color: #6d5a08;
   }
-  #setupBanner a { color: var(--primary); font-weight: 500; }
-  #setupBanner button {
-    margin-left: auto;
-    background: none; border: none;
-    cursor: pointer; font-size: 20px;
-    color: #7d6608; flex-shrink: 0;
-  }
-  .setup-url-row {
-    display: flex; gap: 8px; align-items: center;
-    margin-top: 8px;
-  }
+  #setupBanner a { color: var(--primary); font-weight: 600; text-decoration: underline; }
+  #setupBanner > button { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 20px; color: #9a8420; flex-shrink: 0; line-height: 1; padding: 2px; }
+  .setup-url-row { display: flex; gap: 8px; align-items: center; margin-top: 10px; }
   #urlInput {
-    flex: 1; padding: 8px 12px;
-    border: 1px solid #f0d080;
-    border-radius: 6px;
+    flex: 1; padding: 9px 13px;
+    border: 1.5px solid #e0cc70;
+    border-radius: var(--radius-xs);
     font-size: 14px;
     font-family: 'Noto Sans Thai', sans-serif;
-    background: #fff;
-    outline: none;
+    background: #fff; outline: none;
+    transition: border-color 0.15s;
   }
-  #urlInput:focus { border-color: var(--primary-light); }
+  #urlInput:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(36,113,163,0.12); }
   .btn-save-url {
-    padding: 8px 16px;
-    background: var(--primary);
-    color: #fff; border: none;
-    border-radius: 6px; cursor: pointer;
-    font-size: 14px;
+    padding: 9px 18px;
+    background: var(--primary); color: #fff;
+    border: none; border-radius: var(--radius-xs);
+    cursor: pointer; font-size: 14px;
     font-family: 'Noto Sans Thai', sans-serif;
-    white-space: nowrap;
+    font-weight: 500; white-space: nowrap;
+    transition: background 0.15s;
   }
+  .btn-save-url:hover { background: var(--primary-light); }
 
-  /* LOADER */
+  /* ── LOADER ───────────────────────────────────── */
   #loader {
     position: fixed; inset: 0;
-    background: linear-gradient(145deg, #0d2b45 0%, #1a5276 60%, #1f618d 100%);
+    background: linear-gradient(150deg, #081e31 0%, #1a5276 55%, #1f6fa0 100%);
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     z-index: 9999;
     transition: opacity 0.5s ease, visibility 0.5s ease;
   }
   #loader.hidden { opacity: 0; visibility: hidden; }
-  .loader-logo { font-family: 'Noto Serif Thai', serif; color: #fff; font-size: 24px; font-weight: 600; text-align: center; margin-bottom: 8px; }
-  .loader-sub { color: rgba(255,255,255,0.65); font-size: 14px; text-align: center; margin-bottom: 40px; }
-  .loader-bar-wrap { width: 220px; height: 3px; background: rgba(255,255,255,0.2); border-radius: 99px; overflow: hidden; }
+  .loader-logo { font-family: 'Noto Serif Thai', serif; color: #fff; font-size: 24px; font-weight: 600; text-align: center; margin-bottom: 6px; letter-spacing: 0.3px; }
+  .loader-sub { color: rgba(255,255,255,0.6); font-size: 14px; text-align: center; margin-bottom: 44px; }
+  .loader-bar-wrap { width: 200px; height: 3px; background: rgba(255,255,255,0.18); border-radius: 99px; overflow: hidden; }
   .loader-bar { height: 100%; background: #fff; border-radius: 99px; width: 0%; transition: width 0.4s ease; }
-  .loader-status { color: rgba(255,255,255,0.5); font-size: 13px; margin-top: 14px; }
+  .loader-status { color: rgba(255,255,255,0.45); font-size: 13px; margin-top: 16px; letter-spacing: 0.2px; }
 
-  /* HEADER */
+  /* ── HEADER ───────────────────────────────────── */
   header {
-    background: linear-gradient(135deg, #0d2b45 0%, #1a5276 100%);
+    background: linear-gradient(135deg, #0b2034 0%, #1a5276 100%);
     position: sticky; top: 0; z-index: 100;
-    box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+    box-shadow: 0 3px 20px rgba(0,0,0,0.25);
   }
-  .header-top { display: flex; align-items: center; gap: 16px; padding: 16px 20px 12px; }
-  .header-emblem { width: 48px; height: 48px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+  .header-top { display: flex; align-items: center; gap: 14px; padding: 16px 18px 12px; }
+  .header-emblem {
+    width: 46px; height: 46px;
+    background: rgba(255,255,255,0.13);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
   .header-title { flex: 1; }
-  /* 🌟 เพิ่มขนาดหัวข้อแถบบนสุด */
-  .header-title h1 { font-family: 'Noto Serif Thai', serif; font-size: 19px; font-weight: 600; color: #fff; line-height: 1.3; }
-  .header-title p { font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 2px; }
-  .header-count { text-align: right; }
+  .header-title h1 { font-family: 'Noto Serif Thai', serif; font-size: 18px; font-weight: 600; color: #fff; line-height: 1.25; }
+  .header-title p { font-size: 12.5px; color: rgba(255,255,255,0.55); margin-top: 3px; }
+  .header-count { text-align: right; flex-shrink: 0; }
   .header-count .num { font-size: 28px; font-weight: 600; color: #fff; line-height: 1; }
-  .header-count .lbl { font-size: 12px; color: rgba(255,255,255,0.55); margin-top: 2px; }
+  .header-count .lbl { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; letter-spacing: 0.3px; }
+
   .search-wrap { padding: 0 16px 14px; }
-  .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 10px; padding: 0 14px; gap: 10px; transition: background 0.2s, border-color 0.2s; }
-  .search-box:focus-within { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.5); }
-  /* 🌟 ปรับกล่องค้นหาให้อ่านง่ายขึ้น */
+  .search-box {
+    display: flex; align-items: center;
+    background: rgba(255,255,255,0.11);
+    border: 1.5px solid rgba(255,255,255,0.22);
+    border-radius: 11px; padding: 0 14px; gap: 10px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+  .search-box:focus-within { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.5); }
   #searchInput { flex: 1; background: none; border: none; outline: none; color: #fff; font-family: 'Noto Sans Thai', sans-serif; font-size: 16px; padding: 12px 0; }
-  #searchInput::placeholder { color: rgba(255,255,255,0.4); }
-  .search-clear { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.5); font-size: 20px; display: none; padding: 4px; line-height: 1; }
+  #searchInput::placeholder { color: rgba(255,255,255,0.38); }
+  .search-clear { background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.45); font-size: 19px; display: none; padding: 4px; line-height: 1; transition: color 0.15s; }
+  .search-clear:hover { color: rgba(255,255,255,0.8); }
   .search-clear.visible { display: flex; }
 
-  /* FILTER TABS */
-  .filter-wrap { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 16px; display: flex; gap: 0; overflow-x: auto; scrollbar-width: none; }
+  /* ── FILTER TABS ──────────────────────────────── */
+  .filter-wrap {
+    background: var(--surface);
+    border-bottom: 1.5px solid var(--border);
+    padding: 0 14px;
+    display: flex; gap: 0;
+    overflow-x: auto; scrollbar-width: none;
+  }
   .filter-wrap::-webkit-scrollbar { display: none; }
-  /* 🌟 ปรับเมนูตัวเลือกอำเภอให้อ่านง่าย สบายตา */
-  .filter-tab { padding: 14px 18px; font-size: 14.5px; color: var(--text2); cursor: pointer; border-bottom: 2.5px solid transparent; white-space: nowrap; font-family: 'Noto Sans Thai', sans-serif; background: none; border-left: none; border-right: none; border-top: none; transition: color 0.15s, border-color 0.15s; font-weight: 400; }
+  .filter-tab {
+    padding: 13px 17px;
+    font-size: 14px; color: var(--text2);
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    white-space: nowrap;
+    font-family: 'Noto Sans Thai', sans-serif;
+    background: none;
+    border-left: none; border-right: none; border-top: none;
+    transition: color 0.15s, border-color 0.15s;
+    font-weight: 400;
+  }
   .filter-tab.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
   .filter-tab:hover:not(.active) { color: var(--text); }
 
-  /* MAIN */
-  main { max-width: 720px; margin: 0 auto; padding: 16px 12px 80px; }
+  /* ── MAIN ─────────────────────────────────────── */
+  main { max-width: 720px; margin: 0 auto; padding: 18px 13px 90px; }
 
+  /* stats */
   .stats-bar { display: flex; gap: 10px; margin-bottom: 16px; }
-  .stat-card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; text-align: center; }
-  .stat-card .n { font-size: 24px; font-weight: 600; color: var(--primary); }
-  .stat-card .l { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .stat-card {
+    flex: 1; background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 13px 10px; text-align: center;
+    box-shadow: var(--shadow-sm);
+  }
+  .stat-card .n { font-size: 24px; font-weight: 600; color: var(--primary); line-height: 1.1; }
+  .stat-card .l { font-size: 11.5px; color: var(--text2); margin-top: 3px; line-height: 1.3; }
 
-  .result-info { font-size: 14px; color: var(--text2); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-  .result-info strong { color: var(--primary); }
+  /* result row */
+  .result-info { font-size: 13.5px; color: var(--text2); margin-bottom: 13px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  .result-info strong { color: var(--primary); font-weight: 600; }
   .result-actions { display: flex; gap: 8px; align-items: center; }
+  .refresh-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xs);
+    color: var(--text2); font-size: 13px;
+    cursor: pointer; font-family: 'Noto Sans Thai', sans-serif;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+  }
+  .refresh-btn:hover { background: var(--primary-pale); color: var(--primary); border-color: var(--primary-light); }
+  .spinning { animation: spin 0.9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  .refresh-btn { display: flex; align-items: center; gap: 5px; padding: 6px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; color: var(--text2); font-size: 13px; cursor: pointer; font-family: 'Noto Sans Thai', sans-serif; transition: background 0.15s; }
-  .refresh-btn:hover { background: var(--surface2); color: var(--primary); }
-  .spinning { animation: spin 1s linear infinite; }
-  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  /* ── CARDS ────────────────────────────────────── */
+  .cards-list { display: flex; flex-direction: column; gap: 11px; }
 
-  /* CARDS */
-  .cards-list { display: flex; flex-direction: column; gap: 10px; }
-  .school-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); transition: border-color 0.2s, box-shadow 0.2s; position: relative; cursor: pointer; }
-  .school-card:hover { border-color: var(--primary-light); box-shadow: 0 4px 20px rgba(26,82,118,0.12); }
-  .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
-  /* 🌟 เพิ่มขนาดวงกลมตัวอักษรย่อ */
-  .card-avatar { width: 46px; height: 46px; border-radius: 50%; background: var(--primary-pale); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; color: var(--primary); font-weight: 600; }
-  .card-avatar.female { background: #fde8f0; color: #8e2050; }
-  .card-avatar.other { background: #eaf3de; color: #3b6d11; }
+  .school-card {
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 17px 16px;
+    box-shadow: var(--shadow);
+    transition: border-color 0.18s, box-shadow 0.18s, transform 0.15s;
+    position: relative; cursor: pointer;
+  }
+  .school-card:hover {
+    border-color: var(--primary-light);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+  }
+  .school-card:active { transform: translateY(0); }
+
+  .card-header { display: flex; align-items: flex-start; gap: 13px; margin-bottom: 11px; }
+
+  .card-avatar {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: var(--primary-pale);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+    color: var(--primary); font-weight: 700;
+    border: 2px solid rgba(26,82,118,0.12);
+  }
+  .card-avatar.female { background: #fde8f2; color: #8b1f50; border-color: rgba(139,31,80,0.12); }
+  .card-avatar.other  { background: #e8f5dc; color: #3a6910; border-color: rgba(58,105,16,0.12); }
+
   .card-info { flex: 1; min-width: 0; }
-  /* 🌟 ชื่อโรงเรียนปรับให้ใหญ่เด่นชัด */
-  .school-name { font-size: 17px; font-weight: 600; color: var(--text); line-height: 1.35; margin-bottom: 4px; }
-  /* 🌟 ชื่อ ผอ. ขยายขึ้นให้อ่านง่าย */
-  .director-name { font-size: 14.5px; color: var(--text2); }
-  .title-prefix { color: var(--text3); font-size: 13.5px; }
-  .name-part { color: var(--primary-light); font-weight: 500; }
-  .card-body { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-  /* 🌟 ข้อมูลที่ตั้งโรงเรียน */
-  .card-location { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--text2); flex-wrap: wrap; }
-  .location-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
-  .badge-amphoe { display: inline-block; background: var(--primary-pale); color: var(--primary); font-size: 12px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
+  .school-name { font-size: 16px; font-weight: 600; color: var(--text); line-height: 1.35; margin-bottom: 4px; }
+  .director-name { font-size: 14px; color: var(--text2); display: flex; align-items: baseline; gap: 3px; flex-wrap: wrap; }
+  .title-prefix { color: var(--text3); font-size: 13px; }
+  .name-part { color: var(--primary-light); font-weight: 600; }
+
+  .card-body {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    gap: 10px; margin-top: 11px; padding-top: 11px;
+    border-top: 1.5px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .card-location { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text2); flex-wrap: wrap; }
+  .location-dot { width: 3px; height: 3px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
+  .badge-amphoe {
+    display: inline-block;
+    background: var(--primary-pale); color: var(--primary);
+    font-size: 11.5px; padding: 2px 9px;
+    border-radius: 99px; font-weight: 600;
+    border: 1px solid rgba(26,82,118,0.15);
+  }
+
   .card-phone { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
-  /* 🌟 ขยายขนาดเบอร์โทรศัพท์ให้ชัดเจนเต็มตา */
-  .phone-number { font-size: 16.5px; font-weight: 600; color: var(--text); letter-spacing: 0.5px; }
-  /* 🌟 เพิ่มขนาดปุ่มคัดลอกและปุ่มโทร */
-  .btn-call { display: flex; align-items: center; gap: 5px; background: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); padding: 8px 14px; font-size: 14px; cursor: pointer; text-decoration: none; font-family: 'Noto Sans Thai', sans-serif; transition: background 0.15s; white-space: nowrap; font-weight: 500; }
-  .btn-call:hover { background: var(--primary-light); }
-  .btn-copy { background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 12px; cursor: pointer; font-size: 18px; color: var(--text2); transition: background 0.15s, color 0.15s; display: flex; align-items: center; line-height: 1; }
-  .btn-copy:hover { background: var(--surface2); color: var(--primary); }
-  .btn-copy.copied { color: #27ae60; border-color: #27ae60; }
-  .multi-school-badge { position: absolute; top: 12px; right: 12px; background: #fef9e7; border: 1px solid #f0d080; color: #7d6608; font-size: 11px; padding: 2px 8px; border-radius: 99px; font-weight: 500; }
-  .hl { background: #fff3cd; border-radius: 2px; }
+  .phone-number { font-size: 16px; font-weight: 700; color: var(--text); letter-spacing: 0.6px; }
 
-  /* SAVING OVERLAY on card */
-  .card-saving { opacity: 0.5; pointer-events: none; }
+  .btn-call {
+    display: flex; align-items: center; gap: 5px;
+    background: var(--primary); color: #fff;
+    border: none; border-radius: var(--radius-sm);
+    padding: 8px 14px; font-size: 14px;
+    cursor: pointer; text-decoration: none;
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-weight: 500; white-space: nowrap;
+    transition: background 0.15s, box-shadow 0.15s;
+    box-shadow: 0 2px 8px rgba(26,82,118,0.2);
+  }
+  .btn-call:hover { background: var(--primary-light); box-shadow: 0 3px 12px rgba(26,82,118,0.28); }
 
-  /* EMPTY */
-  .empty-state { text-align: center; padding: 60px 20px; color: var(--text2); }
-  .empty-state .icon { font-size: 52px; margin-bottom: 16px; opacity: 0.4; }
-  .empty-state h3 { font-size: 17px; font-weight: 500; margin-bottom: 8px; color: var(--text); }
+  .btn-copy {
+    background: none; border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 7px 10px; cursor: pointer;
+    font-size: 17px; color: var(--text2);
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+    display: flex; align-items: center; line-height: 1;
+  }
+  .btn-copy:hover { background: var(--surface2); color: var(--primary); border-color: var(--primary-light); }
+  .btn-copy.copied { color: #1a7a42; border-color: #1a7a42; background: var(--green-pale); }
 
-  /* MODAL */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; padding: 16px; opacity: 0; visibility: hidden; transition: opacity 0.25s, visibility 0.25s; }
+  .multi-school-badge {
+    position: absolute; top: 13px; right: 13px;
+    background: #fffbea; border: 1px solid #e8cc6a;
+    color: #7d6208; font-size: 10.5px;
+    padding: 2px 9px; border-radius: 99px; font-weight: 600;
+  }
+
+  .hl { background: #fff0a0; border-radius: 3px; padding: 0 1px; }
+
+  /* saving state */
+  .card-saving { opacity: 0.45; pointer-events: none; }
+
+  /* ── EMPTY STATE ──────────────────────────────── */
+  .empty-state { text-align: center; padding: 64px 20px; color: var(--text2); }
+  .empty-state .icon { font-size: 52px; margin-bottom: 18px; opacity: 0.35; }
+  .empty-state h3 { font-size: 17px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .empty-state p { font-size: 14px; }
+
+  /* ── MODAL ────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(8,20,35,0.55);
+    backdrop-filter: blur(2px);
+    z-index: 1000; display: flex;
+    align-items: center; justify-content: center;
+    padding: 16px; opacity: 0; visibility: hidden;
+    transition: opacity 0.25s, visibility 0.25s;
+  }
   .modal-overlay.open { opacity: 1; visibility: visible; }
-  .modal { background: var(--surface); border-radius: var(--radius); padding: 24px; width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; transform: translateY(16px); transition: transform 0.25s; }
+  .modal {
+    background: var(--surface);
+    border-radius: var(--radius);
+    padding: 26px 24px;
+    width: 100%; max-width: 490px;
+    max-height: 92vh; overflow-y: auto;
+    transform: translateY(18px);
+    transition: transform 0.25s;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.22);
+  }
   .modal-overlay.open .modal { transform: translateY(0); }
-  .modal h2 { font-size: 18px; font-weight: 600; margin-bottom: 20px; color: var(--text); }
-  .form-group { margin-bottom: 16px; }
-  .form-group label { display: block; font-size: 13px; font-weight: 500; color: var(--text2); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-  .form-group input, .form-group select { width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; font-family: 'Noto Sans Thai', sans-serif; color: var(--text); background: var(--surface); transition: border-color 0.15s, box-shadow 0.15s; outline: none; }
-  .form-group input:focus, .form-group select:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(36,113,163,0.15); }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
-  .btn-secondary { padding: 10px 20px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: none; cursor: pointer; font-size: 15px; font-family: 'Noto Sans Thai', sans-serif; color: var(--text2); }
-  .btn-primary { padding: 10px 20px; border: none; border-radius: var(--radius-sm); background: var(--primary); color: #fff; cursor: pointer; font-size: 15px; font-family: 'Noto Sans Thai', sans-serif; font-weight: 500; transition: background 0.15s; }
-  .btn-primary:hover { background: var(--primary-light); }
-  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
-  .btn-danger { padding: 10px 20px; border: 1px solid #e74c3c; border-radius: var(--radius-sm); background: none; color: #e74c3c; cursor: pointer; font-size: 15px; font-family: 'Noto Sans Thai', sans-serif; margin-right: auto; transition: background 0.15s; }
-  .btn-danger:hover { background: #fdf0ee; }
-  .btn-danger:disabled { opacity: 0.6; cursor: not-allowed; }
+  .modal h2 { font-size: 18px; font-weight: 700; margin-bottom: 22px; color: var(--text); }
 
-  /* FAB */
-  .fab { position: fixed; bottom: 24px; right: 20px; width: 54px; height: 54px; background: var(--accent); color: #fff; border: none; border-radius: 50%; font-size: 24px; cursor: pointer; box-shadow: 0 4px 16px rgba(192,57,43,0.35); display: flex; align-items: center; justify-content: center; transition: background 0.15s, transform 0.15s; z-index: 500; }
-  .fab:hover { background: var(--accent-light); transform: scale(1.06); }
-  .fab-group { position: fixed; bottom: 88px; right: 20px; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; z-index: 499; opacity: 0; visibility: hidden; transform: translateY(12px); transition: opacity 0.2s, visibility 0.2s, transform 0.2s; }
+  .form-group { margin-bottom: 17px; }
+  .form-group label {
+    display: block; font-size: 11.5px; font-weight: 600;
+    color: var(--text2); margin-bottom: 7px;
+    text-transform: uppercase; letter-spacing: 0.7px;
+  }
+  .form-group input, .form-group select {
+    width: 100%; padding: 11px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-size: 15px; font-family: 'Noto Sans Thai', sans-serif;
+    color: var(--text); background: var(--surface);
+    transition: border-color 0.15s, box-shadow 0.15s; outline: none;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(36,113,163,0.14);
+  }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+
+  .modal-footer {
+    display: flex; gap: 10px; justify-content: flex-end;
+    margin-top: 22px; padding-top: 18px;
+    border-top: 1.5px solid var(--border);
+  }
+  .btn-secondary {
+    padding: 10px 20px; border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm); background: none;
+    cursor: pointer; font-size: 15px;
+    font-family: 'Noto Sans Thai', sans-serif; color: var(--text2);
+    transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--surface2); }
+  .btn-primary {
+    padding: 10px 22px; border: none;
+    border-radius: var(--radius-sm); background: var(--primary);
+    color: #fff; cursor: pointer; font-size: 15px;
+    font-family: 'Noto Sans Thai', sans-serif; font-weight: 600;
+    transition: background 0.15s, box-shadow 0.15s;
+    box-shadow: 0 2px 8px rgba(26,82,118,0.2);
+  }
+  .btn-primary:hover { background: var(--primary-light); box-shadow: 0 3px 12px rgba(26,82,118,0.28); }
+  .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+  .btn-danger {
+    padding: 10px 20px; border: 1.5px solid #d9534f;
+    border-radius: var(--radius-sm); background: none;
+    color: #c0392b; cursor: pointer; font-size: 15px;
+    font-family: 'Noto Sans Thai', sans-serif;
+    margin-right: auto; transition: background 0.15s;
+  }
+  .btn-danger:hover { background: #fdf0ee; }
+  .btn-danger:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ── FAB ──────────────────────────────────────── */
+  .fab {
+    position: fixed; bottom: 24px; right: 20px;
+    width: 54px; height: 54px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 50%;
+    font-size: 22px; cursor: pointer;
+    box-shadow: 0 4px 18px rgba(176,58,46,0.38);
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+    z-index: 500;
+  }
+  .fab:hover { background: var(--accent-light); transform: scale(1.07); box-shadow: 0 6px 24px rgba(176,58,46,0.45); }
+
+  .fab-group {
+    position: fixed; bottom: 88px; right: 20px;
+    display: flex; flex-direction: column; gap: 11px;
+    align-items: flex-end; z-index: 499;
+    opacity: 0; visibility: hidden; transform: translateY(14px);
+    transition: opacity 0.2s, visibility 0.2s, transform 0.2s;
+  }
   .fab-group.open { opacity: 1; visibility: visible; transform: translateY(0); }
   .fab-mini { display: flex; align-items: center; gap: 10px; }
-  .fab-mini-label { background: rgba(0,0,0,0.75); color: #fff; font-size: 13px; padding: 6px 12px; border-radius: 6px; white-space: nowrap; }
-  .fab-mini-btn { width: 44px; height: 44px; background: var(--primary); color: #fff; border: none; border-radius: 50%; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: background 0.15s; flex-shrink: 0; }
-  .fab-mini-btn:hover { background: var(--primary-light); }
+  .fab-mini-label {
+    background: rgba(8,20,35,0.82); color: #fff;
+    font-size: 13px; padding: 6px 13px;
+    border-radius: 7px; white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  }
+  .fab-mini-btn {
+    width: 44px; height: 44px;
+    background: var(--primary); color: #fff;
+    border: none; border-radius: 50%;
+    font-size: 20px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 2px 12px rgba(26,82,118,0.3);
+    transition: background 0.15s, transform 0.12s; flex-shrink: 0;
+  }
+  .fab-mini-btn:hover { background: var(--primary-light); transform: scale(1.06); }
 
-  /* TOAST */
-  .toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1c2833; color: #fff; padding: 11px 22px; border-radius: var(--radius-sm); font-size: 14px; opacity: 0; transition: opacity 0.2s, transform 0.2s; z-index: 9998; white-space: nowrap; max-width: 90vw; text-align: center; }
+  /* ── TOAST ────────────────────────────────────── */
+  .toast {
+    position: fixed; bottom: 96px; left: 50%;
+    transform: translateX(-50%) translateY(16px);
+    background: #17202a; color: #fff;
+    padding: 11px 22px; border-radius: var(--radius-sm);
+    font-size: 14px; opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 9998; white-space: nowrap;
+    max-width: 92vw; text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+  }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-  .toast.error { background: var(--accent); }
+  .toast.error   { background: #922b21; }
   .toast.success { background: var(--green); }
 
-  ::-webkit-scrollbar { width: 6px; }
+  /* ── COPY-FROM PANEL ──────────────────────────── */
+  .copyfrom-wrap {
+    margin-bottom: 18px;
+    border: 1.5px dashed var(--border);
+    border-radius: var(--radius-sm); overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .copyfrom-wrap:focus-within { border-color: var(--primary-light); }
+  .copyfrom-toggle {
+    width: 100%; display: flex; align-items: center; gap: 9px;
+    padding: 11px 15px; background: var(--surface2);
+    border: none; cursor: pointer;
+    font-family: 'Noto Sans Thai', sans-serif;
+    font-size: 14px; color: var(--primary);
+    font-weight: 600; text-align: left;
+    transition: background 0.15s;
+  }
+  .copyfrom-toggle:hover { background: var(--primary-pale); }
+  .copyfrom-toggle .arrow { margin-left: auto; font-size: 11px; transition: transform 0.2s; color: var(--text3); }
+  .copyfrom-toggle.open .arrow { transform: rotate(180deg); }
+  .copyfrom-body { display: none; padding: 13px 14px 14px; background: var(--surface); }
+  .copyfrom-body.open { display: block; }
+  .copyfrom-search {
+    width: 100%; padding: 9px 13px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-xs);
+    font-size: 14px; font-family: 'Noto Sans Thai', sans-serif;
+    outline: none; margin-bottom: 9px;
+    transition: border-color 0.15s;
+  }
+  .copyfrom-search:focus { border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(36,113,163,0.12); }
+  .copyfrom-list { max-height: 190px; overflow-y: auto; display: flex; flex-direction: column; gap: 5px; }
+  .copyfrom-item {
+    display: flex; flex-direction: column;
+    padding: 9px 11px; border-radius: var(--radius-xs);
+    cursor: pointer; border: 1.5px solid transparent;
+    transition: background 0.12s, border-color 0.12s;
+  }
+  .copyfrom-item:hover { background: var(--primary-pale); border-color: var(--primary-light); }
+  .copyfrom-item .ci-school   { font-size: 13.5px; font-weight: 600; color: var(--text); }
+  .copyfrom-item .ci-director { font-size: 13px; color: var(--primary-light); margin-top: 1px; }
+  .copyfrom-item .ci-phone    { font-size: 12.5px; color: var(--text2); margin-top: 1px; }
+  .copyfrom-empty { font-size: 13.5px; color: var(--text3); text-align: center; padding: 14px 0; }
+
+  /* ── SCROLLBAR ────────────────────────────────── */
+  ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 99px; }
 </style>
@@ -260,7 +504,7 @@
     </div>
     <div class="header-count">
       <div class="num" id="headerCount">—</div>
-      <div class="lbl">รายการ</div>
+      <div class="lbl">โรงเรียน</div>
     </div>
   </div>
   <div class="search-wrap">
@@ -282,9 +526,9 @@
 
 <main>
   <div class="stats-bar" id="statsBar" style="display:none">
-    <div class="stat-card"><div class="n" id="statTotal">—</div><div class="l">ข้อมูลทั้งหมด</div></div>
+    <div class="stat-card"><div class="n" id="statTotal">—</div><div class="l">โรงเรียนทั้งหมด</div></div>
     <div class="stat-card"><div class="n" id="statDirectors">—</div><div class="l">ผอ. ทั้งหมด</div></div>
-    <div class="stat-card"><div class="n" id="statMulti">—</div><div class="l">ผอ. ดูแลคร่อมโรงเรียน</div></div>
+    <div class="stat-card"><div class="n" id="statMulti">—</div><div class="l">ผอ. ดูแลหลายโรงเรียน</div></div>
   </div>
   <div class="result-info" id="resultInfo" style="display:none">
     <span id="resultText"></span>
@@ -314,6 +558,21 @@
 <div class="modal-overlay" id="modalOverlay" onclick="closeModalOnBg(event)">
   <div class="modal">
     <h2 id="modalTitle">เพิ่มโรงเรียนใหม่</h2>
+
+    <!-- COPY FROM: แสดงเฉพาะตอนแก้ไข (ไม่แสดงตอนเพิ่มใหม่) -->
+    <div class="copyfrom-wrap" id="copyFromWrap" style="display:none">
+      <button class="copyfrom-toggle" id="copyFromToggle" onclick="toggleCopyFrom()">
+        📋 นำเข้าข้อมูล ผอ. จากโรงเรียนอื่น
+        <span class="arrow">▼</span>
+      </button>
+      <div class="copyfrom-body" id="copyFromBody">
+        <input type="text" class="copyfrom-search" id="copyFromSearch"
+               placeholder="พิมพ์ชื่อโรงเรียน หรือชื่อ ผอ. ..."
+               oninput="renderCopyFromList()" />
+        <div class="copyfrom-list" id="copyFromList"></div>
+      </div>
+    </div>
+
     <div class="form-group">
       <label>ชื่อโรงเรียน *</label>
       <input type="text" id="fSchool" placeholder="เช่น บ้านแม่ต้อบใต้" />
@@ -442,12 +701,15 @@ async function apiFetch(params) {
 }
 
 async function apiPost(body) {
+  // ใช้ GET แทน POST เพื่อหลีกเลี่ยง CORS preflight ที่ Apps Script ไม่รองรับ
   const url = getScriptUrl();
   if (!url) throw new Error('ยังไม่ได้ตั้งค่า Script URL');
-  const res = await fetch(url, {
-    method: 'POST',
-    body: JSON.stringify(body),
+  const params = new URLSearchParams({
+    action: body.action,
+    rowIndex: body.rowIndex ?? '',
+    data: JSON.stringify(body.data ?? {}),
   });
+  const res = await fetch(url + '?' + params);
   if (!res.ok) throw new Error('HTTP ' + res.status);
   const json = await res.json();
   if (json.error) throw new Error(json.error);
@@ -478,7 +740,8 @@ function setProgress(pct, msg) {
 async function init() {
   setProgress(5, 'กำลังเริ่มต้น...');
   const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbzQBD725osvExNQADQtRg4Jy2ar8fKRCeQPYESXJxmvr2Ang6YL9X8TdOl9LR7F4tE/exec';
-  if (!localStorage.getItem(SCRIPT_URL_KEY)) {
+  const storedUrl = localStorage.getItem(SCRIPT_URL_KEY) || '';
+  if (!storedUrl || storedUrl.includes('YOUR_ID') || !storedUrl.includes('AKfycb')) {
     localStorage.setItem(SCRIPT_URL_KEY, DEFAULT_URL);
   }
   document.getElementById('loader').classList.remove('hidden');
@@ -720,7 +983,67 @@ function openEditModal(rowIndex) {
   document.getElementById('fPhone').value = d.phone;
   document.getElementById('btnDelete').style.display = 'block';
   document.getElementById('modalError').style.display = 'none';
+  // แสดง copy-from panel เฉพาะตอน edit
+  document.getElementById('copyFromWrap').style.display = 'block';
+  // reset state
+  const toggle = document.getElementById('copyFromToggle');
+  const body = document.getElementById('copyFromBody');
+  toggle.classList.remove('open');
+  body.classList.remove('open');
+  document.getElementById('copyFromSearch').value = '';
   document.getElementById('modalOverlay').classList.add('open');
+}
+
+function toggleCopyFrom() {
+  const toggle = document.getElementById('copyFromToggle');
+  const body = document.getElementById('copyFromBody');
+  const isOpen = body.classList.contains('open');
+  toggle.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+  if (!isOpen) {
+    renderCopyFromList();
+    setTimeout(() => document.getElementById('copyFromSearch').focus(), 80);
+  }
+}
+
+function renderCopyFromList() {
+  const q = document.getElementById('copyFromSearch').value.trim().toLowerCase();
+  const currentSchool = document.getElementById('fSchool').value.trim();
+  // กรอง: ไม่แสดงโรงเรียนตัวเอง, และต้องมี director+phone
+  const candidates = allData.filter(d => {
+    if (d.school === currentSchool) return false;
+    if (!d.director && !d.phone) return false;
+    if (!q) return true;
+    return (
+      d.school.toLowerCase().includes(q) ||
+      d.director.toLowerCase().includes(q)
+    );
+  });
+
+  const list = document.getElementById('copyFromList');
+  if (candidates.length === 0) {
+    list.innerHTML = `<div class="copyfrom-empty">ไม่พบโรงเรียนที่ตรงกับคำค้น</div>`;
+    return;
+  }
+  list.innerHTML = candidates.slice(0, 30).map(d => `
+    <div class="copyfrom-item" onclick="applyDirectorFrom(${d.rowIndex})">
+      <span class="ci-school">🏫 ${escHtml(d.school)}</span>
+      <span class="ci-director">👤 ${escHtml(d.director || '—')}</span>
+      <span class="ci-phone">📞 ${escHtml(d.phone || '—')}</span>
+    </div>
+  `).join('');
+}
+
+function applyDirectorFrom(rowIndex) {
+  const src = allData.find(r => r.rowIndex === rowIndex);
+  if (!src) return;
+  document.getElementById('fDirector').value = src.director;
+  document.getElementById('fPhone').value = src.phone;
+  // ปิด panel
+  document.getElementById('copyFromToggle').classList.remove('open');
+  document.getElementById('copyFromBody').classList.remove('open');
+  document.getElementById('copyFromSearch').value = '';
+  showToast(`นำเข้าข้อมูล ผอ. จาก "${src.school}" แล้ว`, 'success');
 }
 
 function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
