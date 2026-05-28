@@ -6,11 +6,15 @@
 <title>สมุดโทรศัพท์ ผอ.โรงเรียน สพป.มส.2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&family=Noto+Serif+Thai:wght@400;600&display=swap" rel="stylesheet">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a5276'/><text y='.9em' font-size='62' x='50%' text-anchor='middle'>📞</text></svg>">
 <style>
+  /* ── THEMES ───────────────────────────────────── */
   :root {
     --primary: #1a5276;
     --primary-light: #2471a3;
     --primary-pale: #dbeaf8;
+    --header-from: #0b2034;
+    --header-to: #1a5276;
     --accent: #b03a2e;
     --accent-light: #e74c3c;
     --bg: #eef1f7;
@@ -29,6 +33,65 @@
     --green: #1a7a42;
     --green-pale: #d0f0e0;
   }
+  /* ทะเลเข้ม — default */
+  [data-theme="navy"] {
+    --primary: #1a5276; --primary-light: #2471a3; --primary-pale: #dbeaf8;
+    --header-from: #0b2034; --header-to: #1a5276;
+    --bg: #eef1f7; --surface2: #f2f5fb; --border: #d5e0ec;
+    --shadow-sm: 0 1px 4px rgba(26,82,118,0.07);
+    --shadow: 0 2px 14px rgba(26,82,118,0.09);
+    --shadow-md: 0 6px 24px rgba(26,82,118,0.13);
+  }
+  /* ป่าเขียว */
+  [data-theme="forest"] {
+    --primary: #1e6b3c; --primary-light: #27ae60; --primary-pale: #d5f5e3;
+    --header-from: #0b2e1a; --header-to: #1e6b3c;
+    --bg: #eef5f0; --surface2: #f0f8f2; --border: #cce8d5;
+    --shadow-sm: 0 1px 4px rgba(30,107,60,0.07);
+    --shadow: 0 2px 14px rgba(30,107,60,0.09);
+    --shadow-md: 0 6px 24px rgba(30,107,60,0.13);
+  }
+  /* พลบค่ำม่วง */
+  [data-theme="purple"] {
+    --primary: #6c3483; --primary-light: #9b59b6; --primary-pale: #f0e6f8;
+    --header-from: #2c1254; --header-to: #6c3483;
+    --bg: #f3eef8; --surface2: #f7f2fb; --border: #e0cef0;
+    --shadow-sm: 0 1px 4px rgba(108,52,131,0.07);
+    --shadow: 0 2px 14px rgba(108,52,131,0.09);
+    --shadow-md: 0 6px 24px rgba(108,52,131,0.13);
+  }
+  /* พระอาทิตย์ตก */
+  [data-theme="sunset"] {
+    --primary: #b7460a; --primary-light: #e67e22; --primary-pale: #fde8d8;
+    --header-from: #4a1a04; --header-to: #b7460a;
+    --bg: #faf0ec; --surface2: #fdf5f1; --border: #f0d5c5;
+    --shadow-sm: 0 1px 4px rgba(183,70,10,0.07);
+    --shadow: 0 2px 14px rgba(183,70,10,0.09);
+    --shadow-md: 0 6px 24px rgba(183,70,10,0.13);
+  }
+
+  /* ── THEME PICKER ─────────────────────────────── */
+  .theme-picker {
+    display: flex; gap: 8px; align-items: center;
+    padding: 10px 18px 12px;
+  }
+  .theme-picker-label {
+    font-size: 11px; color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px; margin-right: 2px;
+    white-space: nowrap;
+  }
+  .theme-dot {
+    width: 22px; height: 22px; border-radius: 50%;
+    border: 2.5px solid transparent;
+    cursor: pointer; transition: transform 0.15s, border-color 0.15s;
+    flex-shrink: 0;
+  }
+  .theme-dot:hover { transform: scale(1.15); }
+  .theme-dot.active { border-color: #fff; transform: scale(1.1); }
+  .theme-dot[data-t="navy"]   { background: #2471a3; }
+  .theme-dot[data-t="forest"] { background: #27ae60; }
+  .theme-dot[data-t="purple"] { background: #9b59b6; }
+  .theme-dot[data-t="sunset"] { background: #e67e22; }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -80,7 +143,7 @@
   /* ── LOADER ───────────────────────────────────── */
   #loader {
     position: fixed; inset: 0;
-    background: linear-gradient(150deg, #081e31 0%, #1a5276 55%, #1f6fa0 100%);
+    background: linear-gradient(150deg, var(--header-from) 0%, var(--header-to) 100%);
     display: flex; flex-direction: column;
     align-items: center; justify-content: center;
     z-index: 9999;
@@ -95,7 +158,7 @@
 
   /* ── HEADER ───────────────────────────────────── */
   header {
-    background: linear-gradient(135deg, #0b2034 0%, #1a5276 100%);
+    background: linear-gradient(135deg, var(--header-from) 0%, var(--header-to) 100%);
     position: sticky; top: 0; z-index: 100;
     box-shadow: 0 3px 20px rgba(0,0,0,0.25);
   }
@@ -472,20 +535,6 @@
 </head>
 <body>
 
-<!-- SETUP BANNER: แสดงถ้ายังไม่ได้ตั้ง URL -->
-<div id="setupBanner" style="display:none">
-  <div style="flex:1">
-    <div>⚙️ <strong>ตั้งค่าก่อนใช้งาน:</strong> ใส่ URL ของ Google Apps Script Web App ด้านล่าง
-      <a href="https://script.google.com" target="_blank"> (วิธีทำดูใน README)</a>
-    </div>
-    <div class="setup-url-row">
-      <input type="url" id="urlInput" placeholder="https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec" />
-      <button class="btn-save-url" onclick="saveScriptUrl()">บันทึก URL</button>
-    </div>
-  </div>
-  <button onclick="document.getElementById('setupBanner').style.display='none'">✕</button>
-</div>
-
 <!-- LOADER -->
 <div id="loader">
   <div class="loader-logo">สมุดโทรศัพท์ผู้อำนวยการโรงเรียน</div>
@@ -513,6 +562,13 @@
       <input type="text" id="searchInput" placeholder="ค้นหา ชื่อโรงเรียน ผอ. ตำบล อำเภอ เบอร์โทร..." autocomplete="off" />
       <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
     </div>
+  </div>
+  <div class="theme-picker">
+    <span class="theme-picker-label">ธีม</span>
+    <div class="theme-dot active" data-t="navy"   onclick="setTheme('navy')"   title="น้ำเงินเข้ม"></div>
+    <div class="theme-dot"        data-t="forest" onclick="setTheme('forest')" title="ป่าเขียว"></div>
+    <div class="theme-dot"        data-t="purple" onclick="setTheme('purple')" title="ม่วง"></div>
+    <div class="theme-dot"        data-t="sunset" onclick="setTheme('sunset')" title="พระอาทิตย์ตก"></div>
   </div>
 </header>
 
@@ -546,10 +602,6 @@
   <div class="fab-mini">
     <span class="fab-mini-label">เพิ่มโรงเรียนใหม่</span>
     <button class="fab-mini-btn" onclick="openAddModal()">＋</button>
-  </div>
-  <div class="fab-mini">
-    <span class="fab-mini-label">ตั้งค่า Script URL</span>
-    <button class="fab-mini-btn" onclick="showSetupBanner()">⚙</button>
   </div>
 </div>
 <button class="fab" id="fabBtn" onclick="toggleFab()">✎</button>
@@ -1123,6 +1175,19 @@ function toggleFab() {
   document.getElementById('fabBtn').style.background = fabOpen ? 'var(--primary)' : '';
 }
 
+function setTheme(t) {
+  document.documentElement.setAttribute('data-theme', t);
+  localStorage.setItem('sppms2_theme', t);
+  document.querySelectorAll('.theme-dot').forEach(d => {
+    d.classList.toggle('active', d.dataset.t === t);
+  });
+}
+
+function initTheme() {
+  const saved = localStorage.getItem('sppms2_theme') || 'navy';
+  setTheme(saved);
+}
+
 let toastTimer;
 function showToast(msg, type = '') {
   const t = document.getElementById('toast');
@@ -1140,6 +1205,7 @@ document.addEventListener('keydown', e => {
   }
 });
 
+initTheme();
 init();
 </script>
 </body>
