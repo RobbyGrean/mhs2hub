@@ -1,1 +1,398 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ระบบจัดการเอกสาร 🌸</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<?!= HtmlService.createHtmlOutputFromFile('style').getContent(); ?>
+</head>
+<body>
 
+<!-- LOADING -->
+<div id="loading" class="center-screen">
+  <div class="spinner"></div>
+  <div class="loading-text">กำลังโหลด... 🌸</div>
+</div>
+
+<!-- ERROR -->
+<div id="error-screen" class="center-screen" style="display:none">
+  <div class="text-5xl mb-3">🚫</div>
+  <div id="error-msg" class="text-lg font-bold" style="color:#dc2626"></div>
+  <div class="text-sm mt-1" style="color:var(--text-sub)">กรุณาติดต่อผู้ดูแลระบบ</div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-title">
+      <span class="star-deco">🌸</span>
+      ระบบจัดการเอกสาร
+      <span class="star-deco" style="animation-delay:0.5s">✨</span>
+    </div>
+    <div class="hdr-user">
+      <span class="text-lg">👤</span>
+      <span class="hdr-name" id="user-name"></span>
+      <span id="role-badge" class="role-badge"></span>
+    </div>
+  </div>
+
+  <!-- TABS (admin only) -->
+  <div class="tabs" id="tabs" style="display:none">
+    <button class="tab active" onclick="switchTab('supply')" id="tab-supply">
+      🗂️ พัสดุ
+    </button>
+    <button class="tab" onclick="switchTab('finance')" id="tab-finance">
+      💰 การเงิน
+    </button>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="search-bar">
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input
+        type="text"
+        id="search-input"
+        placeholder="ค้นหาชื่อ หรือโรงเรียน..."
+        oninput="renderRows()"
+      >
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+    <div id="rows-container"></div>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ==================== STATE ====================
+let profile  = null;
+let allRows  = [];
+let options  = [];
+let activeTab = "supply";
+
+// ==================== INIT ====================
+google.script.run
+  .withSuccessHandler(init)
+  .withFailureHandler(e => showError(e.message))
+  .getInitialData();
+
+function init(data) {
+  document.getElementById("loading").style.display = "none";
+  if (data.error) { showError(data.error); return; }
+
+  profile = data.profile;
+  allRows = data.rows;
+  options = data.options;
+
+  document.getElementById("app").style.display = "block";
+  document.getElementById("user-name").textContent = profile.name;
+
+  const roleMap = { "พัสดุ": "supply", "การเงิน": "finance", "admin": "admin" };
+  const badge   = document.getElementById("role-badge");
+  badge.textContent = profile.role;
+  badge.className   = "role-badge role-" + (roleMap[profile.role] || "supply");
+
+  if (profile.role === "admin") {
+    document.getElementById("tabs").style.display = "flex";
+  }
+  activeTab = profile.role === "การเงิน" ? "finance" : "supply";
+  renderRows();
+}
+
+function showError(msg) {
+  document.getElementById("loading").style.display = "none";
+  document.getElementById("error-screen").style.display = "flex";
+  document.getElementById("error-msg").textContent = msg;
+}
+
+// ==================== TABS ====================
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById("tab-supply").classList.toggle("active",  tab === "supply");
+  document.getElementById("tab-finance").classList.toggle("active", tab === "finance");
+  document.getElementById("search-input").value = "";
+  renderRows();
+}
+
+// ==================== RENDER ====================
+function renderRows() {
+  const q   = document.getElementById("search-input").value.trim().toLowerCase();
+  const con = document.getElementById("rows-container");
+
+  const filtered = allRows.filter(r => {
+    if (!q) return true;
+    return (r.firstName + r.lastName).toLowerCase().includes(q) ||
+            r.school.toLowerCase().includes(q);
+  });
+
+  if (!filtered.length) {
+    con.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🌸</div>
+        <p class="font-semibold" style="color:var(--text-sub)">ไม่พบรายการที่ค้นหา</p>
+      </div>`;
+    return;
+  }
+
+  con.innerHTML = filtered.map(r => buildCard(r)).join("");
+}
+
+// ==================== CARD ====================
+function buildCard(r) {
+  const id   = "card-" + r.rowIndex;
+  const chip = getChip(r);
+  const init = r.firstName ? r.firstName.charAt(0) : "?";
+
+  return `
+    <div class="card" id="${id}">
+      <div class="card-hdr" onclick="toggleCard('${id}')">
+        <div class="card-left">
+          <div class="avatar">${init}</div>
+          <div>
+            <div class="row-name">${esc(r.prefix)}${esc(r.firstName)} ${esc(r.lastName)}</div>
+            <div class="row-school">🏫 ${esc(r.school)}</div>
+          </div>
+        </div>
+        <div class="card-right">
+          ${chip}
+          <div class="chevron">▼</div>
+        </div>
+      </div>
+      <div class="form-panel">
+        ${activeTab === "finance" ? buildFinanceForm(r) : buildSupplyForm(r)}
+      </div>
+    </div>`;
+}
+
+function getChip(r) {
+  if (activeTab === "finance") {
+    if (r.transferDate)        return '<span class="chip chip-money">💸 โอนแล้ว</span>';
+    if (r.status === "ตรวจแล้ว") return '<span class="chip chip-done">✅ รอโอน</span>';
+    return '<span class="chip chip-wait">⏳ ยังไม่ตรวจ</span>';
+  }
+  if (r.status === "ตรวจแล้ว")  return '<span class="chip chip-done">✅ ตรวจแล้ว</span>';
+  if (r.status === "ต้องแก้ไข") return '<span class="chip chip-fix">❌ ต้องแก้ไข</span>';
+  return '<span class="chip chip-wait">⏳ รอตรวจ</span>';
+}
+
+// ==================== SUPPLY FORM ====================
+function buildSupplyForm(r) {
+  const ri         = r.rowIndex;
+  const isOk       = r.status === "ตรวจแล้ว";
+  const isFix      = r.status === "ต้องแก้ไข";
+  const docNoClean = r.docNo.replace(/^ศธ\s?04116\./, "");
+
+  const inspOpts = options.map(o =>
+    `<option value="${esc(o)}" ${r.inspector === o ? "selected" : ""}>${esc(o)}</option>`
+  ).join("");
+
+  // info row
+  let infoHtml = "";
+  if (r.docDateDisplay || r.docNo || r.inspector || r.verifyDate) {
+    infoHtml += `<div class="info-row">`;
+    if (r.docDateDisplay) infoHtml += `<div class="info-item">📅 เอกสารถึงมือ: <span>${esc(r.docDateDisplay)}</span></div>`;
+    if (r.docNo)          infoHtml += `<div class="info-item">📄 เลขที่: <span>${esc(r.docNo)}</span></div>`;
+    if (r.inspector)      infoHtml += `<div class="info-item">👤 ผู้ตรวจ: <span>${esc(r.inspector)}</span></div>`;
+    if (r.verifyDate)     infoHtml += `<div class="info-item">✅ วันตรวจ: <span>${esc(r.verifyDate)}</span></div>`;
+    infoHtml += `</div>`;
+  }
+  if (r.remark) {
+    infoHtml += `<div class="info-remark">⚠️ หมายเหตุเดิม: ${esc(r.remark)}</div>`;
+  }
+
+  return `
+    ${infoHtml}
+    <div class="form-grid">
+
+      <div class="fg">
+        <label>📅 F — วันที่เอกสารถึงมือพัสดุ</label>
+        <input type="date" id="f-${ri}" value="${esc(r.docDate)}">
+      </div>
+
+      <div class="fg">
+        <label>📄 G — เลขที่เอกสาร</label>
+        <div class="pfx-wrap">
+          <div class="pfx-lbl">ศธ 04116.</div>
+          <input type="text" class="pfx-inp" id="g-${ri}"
+            placeholder="เช่น 119/57" value="${esc(docNoClean)}">
+        </div>
+      </div>
+
+      <div class="fg">
+        <label>👤 H — ชื่อผู้ตรวจ</label>
+        <select id="h-${ri}">
+          <option value="">-- เลือก --</option>
+          ${inspOpts}
+        </select>
+      </div>
+
+      <div class="fg">
+        <label>📋 I — สถานะเอกสาร</label>
+        <div class="radio-grp">
+          <label class="r-opt ${isOk ? "r-ok" : ""}" id="opt-ok-${ri}"
+            onclick="selectStatus(${ri}, 'ตรวจแล้ว')">
+            <input type="radio" name="st-${ri}" value="ตรวจแล้ว" ${isOk ? "checked" : ""}>
+            ✅ ตรวจแล้ว
+          </label>
+          <label class="r-opt ${isFix ? "r-fix" : ""}" id="opt-fix-${ri}"
+            onclick="selectStatus(${ri}, 'ต้องแก้ไข')">
+            <input type="radio" name="st-${ri}" value="ต้องแก้ไข" ${isFix ? "checked" : ""}>
+            ❌ ต้องแก้ไข
+          </label>
+        </div>
+      </div>
+
+      <div class="fg full" id="remark-grp-${ri}" style="${isFix ? "" : "display:none"}">
+        <label>⚠️ J — รายละเอียดที่ต้องแก้ไข</label>
+        <textarea id="j-${ri}"
+          placeholder="ระบุรายการที่ต้องแก้ไข...">${esc(r.remark)}</textarea>
+      </div>
+
+    </div>
+    <button class="btn-submit" id="btn-${ri}" onclick="submitSupply(${ri})">
+      💾 บันทึกข้อมูล
+    </button>`;
+}
+
+// ==================== FINANCE FORM ====================
+function buildFinanceForm(r) {
+  const ri = r.rowIndex;
+  const finOpts = options.map(o =>
+    `<option value="${esc(o)}" ${r.financeOfficer === o ? "selected" : ""}>${esc(o)}</option>`
+  ).join("");
+
+  const infoHtml = `
+    <div class="info-row">
+      <div class="info-item">📋 สถานะพัสดุ: <span>${esc(r.status || "ยังไม่ตรวจ")}</span></div>
+      ${r.verifyDate          ? `<div class="info-item">✅ วันตรวจ: <span>${esc(r.verifyDate)}</span></div>` : ""}
+      ${r.transferDateDisplay ? `<div class="info-item">💸 โอนแล้ว: <span>${esc(r.transferDateDisplay)}</span></div>` : ""}
+    </div>`;
+
+  return `
+    ${infoHtml}
+    <div class="form-grid">
+      <div class="fg">
+        <label>👩‍💼 L — เจ้าหน้าที่การเงิน</label>
+        <select id="l-${ri}">
+          <option value="">-- เลือก --</option>
+          ${finOpts}
+        </select>
+      </div>
+      <div class="fg">
+        <label>💸 M — วันที่โอนเงิน</label>
+        <input type="date" id="m-${ri}" value="${esc(r.transferDate)}">
+      </div>
+    </div>
+    <button class="btn-submit" id="btn-${ri}" onclick="submitFinance(${ri})">
+      💸 บันทึกการโอนเงิน
+    </button>`;
+}
+
+// ==================== TOGGLE CARD ====================
+function toggleCard(id) {
+  document.getElementById(id).classList.toggle("open");
+}
+
+// ==================== STATUS RADIO ====================
+function selectStatus(ri, val) {
+  document.getElementById("opt-ok-"  + ri).className = "r-opt" + (val === "ตรวจแล้ว"  ? " r-ok"  : "");
+  document.getElementById("opt-fix-" + ri).className = "r-opt" + (val === "ต้องแก้ไข" ? " r-fix" : "");
+  const grp = document.getElementById("remark-grp-" + ri);
+  if (grp) grp.style.display = val === "ต้องแก้ไข" ? "" : "none";
+  document.querySelectorAll(`input[name="st-${ri}"]`)
+    .forEach(r => r.checked = r.value === val);
+}
+
+// ==================== SUBMIT SUPPLY ====================
+function submitSupply(ri) {
+  const status = document.querySelector(`input[name="st-${ri}"]:checked`)?.value || "";
+  if (!status) { showToast("⚠️ กรุณาเลือกสถานะก่อน", "err"); return; }
+
+  const btn  = document.getElementById("btn-" + ri);
+  setLoading(btn, true, "💾 บันทึกข้อมูล");
+
+  const data = {
+    docDate:   document.getElementById("f-" + ri)?.value || "",
+    docNo:     document.getElementById("g-" + ri)?.value || "",
+    inspector: document.getElementById("h-" + ri)?.value || "",
+    status,
+    remark:    status === "ต้องแก้ไข"
+                 ? (document.getElementById("j-" + ri)?.value || "") : ""
+  };
+
+  google.script.run
+    .withSuccessHandler(res => {
+      setLoading(btn, false, "💾 บันทึกข้อมูล");
+      res.ok ? (showToast("✅ บันทึกสำเร็จ 🌸", "ok"), refreshData())
+             : showToast("❌ " + res.error, "err");
+    })
+    .withFailureHandler(() => {
+      setLoading(btn, false, "💾 บันทึกข้อมูล");
+      showToast("❌ เกิดข้อผิดพลาด", "err");
+    })
+    .submitSupplyForm(ri, data);
+}
+
+// ==================== SUBMIT FINANCE ====================
+function submitFinance(ri) {
+  const btn  = document.getElementById("btn-" + ri);
+  setLoading(btn, true, "💸 บันทึกการโอนเงิน");
+
+  const data = {
+    financeOfficer: document.getElementById("l-" + ri)?.value || "",
+    transferDate:   document.getElementById("m-" + ri)?.value || ""
+  };
+
+  google.script.run
+    .withSuccessHandler(res => {
+      setLoading(btn, false, "💸 บันทึกการโอนเงิน");
+      res.ok ? (showToast("✅ บันทึกสำเร็จ 💸", "ok"), refreshData())
+             : showToast("❌ " + res.error, "err");
+    })
+    .withFailureHandler(() => {
+      setLoading(btn, false, "💸 บันทึกการโอนเงิน");
+      showToast("❌ เกิดข้อผิดพลาด", "err");
+    })
+    .submitFinanceForm(ri, data);
+}
+
+// ==================== REFRESH ====================
+function refreshData() {
+  google.script.run
+    .withSuccessHandler(data => {
+      if (!data.error) { allRows = data.rows; renderRows(); }
+    })
+    .getInitialData();
+}
+
+// ==================== HELPERS ====================
+function setLoading(btn, loading, label) {
+  btn.disabled    = loading;
+  btn.textContent = loading ? "⏳ กำลังบันทึก..." : label;
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.className   = "toast " + (type || "");
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2800);
+}
+
+function esc(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+</script>
+</body>
+</html>
