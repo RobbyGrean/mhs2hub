@@ -4,53 +4,464 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ศูนย์รวมคู่มือด้านงานพัสดุ</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
- <style>
-    * { font-family: 'Prompt', sans-serif; -webkit-tap-highlight-color: transparent; }
-    body { background: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%); min-height: 100vh; }
-    .float-animation { animation: float 3s ease-in-out infinite; }
-    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
-    .glow-cyan { box-shadow: 0 0 15px rgba(6, 182, 212, 0.3); border: 1px solid rgba(6, 182, 212, 0.4); }
-    .glow-purple { box-shadow: 0 0 15px rgba(168, 85, 247, 0.3); border: 1px solid rgba(168, 85, 247, 0.4); }
-    .glow-orange { box-shadow: 0 0 15px rgba(249, 115, 22, 0.3); border: 1px solid rgba(249, 115, 22, 0.4); }
-    .glow-green { box-shadow: 0 0 15px rgba(34, 197, 94, 0.3); border: 1px solid rgba(34, 197, 94, 0.4); }
-    .glow-indigo { box-shadow: 0 0 15px rgba(99, 102, 241, 0.3); border: 1px solid rgba(99, 102, 241, 0.4); }
-    .btn-card { transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; position: relative; }
-    .btn-card:hover { transform: translateY(-5px); filter: brightness(1.1); }
-    .dropdown-content { max-height: 0; opacity: 0; overflow: hidden; transition: all 0.4s ease-in-out; }
-    .dropdown-active .dropdown-content { max-height: 400px; opacity: 1; margin-top: 1.25rem; }
-    .dropdown-active .arrow-icon { transform: rotate(180deg); color: white; }
-    .arrow-icon { transition: transform 0.3s; }
-    
-    .shine-box { position: relative; overflow: hidden; border-radius: 1.5rem; }
-    .shine-box::after {
-      content: ''; position: absolute; top: -50%; left: -100%; width: 50%; height: 200%;
-      background: linear-gradient(to right, transparent, rgba(255,255,255,0.15), transparent);
-      transform: rotate(30deg); animation: shine-logic 5s infinite;
-    }
-    
-    @keyframes shine-logic { 0% { left: -100%; } 20% { left: 150%; } 100% { left: 150%; } }
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
-    /* --- แยกโค้ดไฟวิ่งออกมาข้างนอกแบบนี้ครับ --- */
-    @keyframes border-beam {
-      0%, 100% { clip-path: inset(0 0 95% 0); }
-      25% { clip-path: inset(0 95% 0 0); }
-      50% { clip-path: inset(95% 0 0 0); }
-      75% { clip-path: inset(0 0 0 95%); }
+    :root {
+      --pink:    #f472b6;
+      --pink-s:  #ec4899;
+      --lilac:   #c084fc;
+      --sky:     #7dd3fc;
+      --mint:    #6ee7b7;
+      --peach:   #fca5a5;
+      --lemon:   #fde68a;
+      --white15: rgba(255,255,255,0.15);
+      --white08: rgba(255,255,255,0.08);
+      --white04: rgba(255,255,255,0.04);
     }
 
-    .animate-border-beam::after {
-      content: "";
-      position: absolute;
-      inset: -4px; 
-      border: 4px solid #a855f7; 
-      border-radius: 2rem; 
-      animation: border-beam 4s linear infinite;
-      box-shadow: 0 0 20px #a855f7; 
-      z-index: 1; /* ปรับ z-index ให้มาอยู่หน้าพื้นหลังนิดนึง */
+    body {
+      font-family: 'Prompt', sans-serif;
+      background: #0e0618;
+      color: #fff;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-</style>
+
+    /* ── Deep kawaii background ── */
+    .bg-layer {
+      position: fixed; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 75% 55% at 10% 15%,  rgba(244,114,182,0.22) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 90% 80%,  rgba(192,132,252,0.2)  0%, transparent 55%),
+        radial-gradient(ellipse 50% 45% at 55%  5%,  rgba(125,211,252,0.15) 0%, transparent 50%),
+        radial-gradient(ellipse 40% 40% at 80% 30%,  rgba(252,165,165,0.12) 0%, transparent 50%),
+        radial-gradient(ellipse 35% 35% at 20% 80%,  rgba(110,231,183,0.1)  0%, transparent 50%);
+      animation: bg-breathe 10s ease-in-out infinite alternate;
+    }
+    @keyframes bg-breathe {
+      0%   { filter: hue-rotate(0deg)   brightness(1);   }
+      100% { filter: hue-rotate(20deg)  brightness(1.08); }
+    }
+
+    /* soft orbs */
+    .orb {
+      position: fixed; border-radius: 50%;
+      filter: blur(90px); pointer-events: none; z-index: 0;
+      animation: orb-drift ease-in-out infinite alternate;
+    }
+    .o1 { width:520px; height:520px; background:rgba(244,114,182,0.14); top:-120px; left:-80px;  animation-duration:14s; }
+    .o2 { width:420px; height:420px; background:rgba(192,132,252,0.12); bottom:-80px; right:-60px; animation-duration:18s; }
+    .o3 { width:280px; height:280px; background:rgba(125,211,252,0.1);  top:40%; left:55%; animation-duration:12s; }
+    @keyframes orb-drift {
+      from { transform: translate(0,0) scale(1); }
+      to   { transform: translate(25px,-35px) scale(1.06); }
+    }
+
+    /* ── Stars canvas ── */
+    #stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
+
+    /* ── Glassmorphism base ── */
+    .glass {
+      background: rgba(255,255,255,0.07);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.16);
+      box-shadow:
+        0 8px 32px rgba(0,0,0,0.3),
+        inset 0 1.5px 0 rgba(255,255,255,0.22),
+        inset 0 -1px 0 rgba(0,0,0,0.08);
+    }
+
+    /* ── Page wrapper ── */
+    .wrap { position:relative; z-index:10; max-width:980px; margin:0 auto; padding:4.5rem 1.25rem 5rem; }
+
+    /* ── Sparkle elements (static decorative) ── */
+    .sparkle {
+      position: absolute; pointer-events: none;
+      animation: sparkle-twinkle ease-in-out infinite;
+    }
+    @keyframes sparkle-twinkle {
+      0%,100% { opacity:0.3; transform: scale(0.8) rotate(0deg); }
+      50%      { opacity:1;   transform: scale(1.2) rotate(20deg); }
+    }
+
+    /* ── Float ── */
+    .float { animation: float 4s ease-in-out infinite; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+
+    /* ── HEADER ── */
+    .header { text-align: center; margin-bottom: 3.5rem; position: relative; }
+
+    .header-icon {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 88px; height: 88px; border-radius: 28px;
+      background: linear-gradient(135deg, rgba(244,114,182,0.25), rgba(192,132,252,0.25));
+      border: 1.5px solid rgba(255,255,255,0.25);
+      box-shadow: 0 0 50px rgba(244,114,182,0.3), 0 0 100px rgba(192,132,252,0.15), inset 0 1.5px 0 rgba(255,255,255,0.3);
+      margin-bottom: 1.5rem;
+    }
+
+    .title-main {
+      font-size: clamp(2.4rem, 7vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #fce7f3 0%, #f9a8d4 25%, #c084fc 55%, #93c5fd 85%, #a5f3fc 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.4rem;
+    }
+
+    .title-sub {
+      font-size: 1.4rem; font-weight: 300;
+      color: rgba(255,255,255,0.55);
+      margin-bottom: 0.6rem;
+    }
+
+    .tagline {
+      font-size: 0.9rem; color: rgba(255,255,255,0.35);
+      letter-spacing: 0.12em; margin-bottom: 2rem;
+    }
+
+    /* dot divider */
+    .dot-divider {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.5rem; margin: 1.25rem auto 1.75rem;
+    }
+    .dot-divider span {
+      width: 5px; height: 5px; border-radius: 50%;
+      animation: dot-pulse 2s ease-in-out infinite;
+    }
+    .dot-divider span:nth-child(1){ background: var(--pink);  animation-delay: 0s; }
+    .dot-divider span:nth-child(2){ background: var(--lilac); animation-delay: 0.2s; width:7px; height:7px; }
+    .dot-divider span:nth-child(3){ background: var(--sky);   animation-delay: 0.4s; }
+    @keyframes dot-pulse { 0%,100%{transform:scale(1);opacity:0.5} 50%{transform:scale(1.5);opacity:1} }
+
+    /* ── Pill nav ── */
+    .pill-nav { display:flex; flex-wrap:wrap; justify-content:center; gap:0.75rem; }
+
+    .pill {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      padding: 0.6rem 1.4rem;
+      border-radius: 99px;
+      font-size: 0.875rem; font-weight: 500;
+      text-decoration: none;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s cubic-bezier(0.23,1,0.32,1);
+      border: 1px solid;
+    }
+    .pill:hover { transform: translateY(-3px) scale(1.03); }
+
+    .pill-pink  { background:rgba(244,114,182,0.12); border-color:rgba(244,114,182,0.35); color:#fce7f3;
+                  box-shadow: 0 0 20px rgba(244,114,182,0.15); }
+    .pill-pink:hover { background:rgba(244,114,182,0.22); box-shadow: 0 0 35px rgba(244,114,182,0.3); }
+
+    .pill-sky   { background:rgba(125,211,252,0.1); border-color:rgba(125,211,252,0.35); color:#e0f2fe;
+                  box-shadow: 0 0 20px rgba(125,211,252,0.12); }
+    .pill-sky:hover { background:rgba(125,211,252,0.2); box-shadow: 0 0 35px rgba(125,211,252,0.25); }
+
+    .pill svg { width:15px; height:15px; transition: transform 0.25s; }
+    .pill:hover svg { transform: translateX(3px); }
+
+    /* ── Workshop Banner ── */
+    .workshop-wrap {
+      margin-bottom: 2.5rem;
+      border-radius: 1.5rem;
+      padding: 2px;
+      background: linear-gradient(135deg, var(--pink), var(--lilac), var(--sky), var(--lilac), var(--pink));
+      background-size: 300% 300%;
+      animation: gradient-shift 5s ease infinite;
+      box-shadow: 0 0 40px rgba(244,114,182,0.25), 0 0 80px rgba(192,132,252,0.15);
+    }
+    @keyframes gradient-shift {
+      0%   { background-position: 0% 50%; }
+      50%  { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .workshop-inner {
+      display: flex; flex-wrap: wrap;
+      align-items: center; justify-content: space-between;
+      gap: 1.25rem;
+      padding: 1.5rem 1.75rem;
+      border-radius: calc(1.5rem - 2px);
+      background: rgba(14,6,24,0.85);
+      backdrop-filter: blur(20px);
+    }
+
+    .workshop-left { display:flex; align-items:center; gap:1.1rem; }
+
+    .workshop-icon {
+      width:52px; height:52px; border-radius:1rem; flex-shrink:0;
+      display:flex; align-items:center; justify-content:center; font-size:1.4rem;
+      background: linear-gradient(135deg, rgba(244,114,182,0.2), rgba(192,132,252,0.2));
+      border: 1px solid rgba(255,255,255,0.18);
+      box-shadow: 0 0 20px rgba(244,114,182,0.2);
+    }
+
+    .workshop-title { font-size:1.1rem; font-weight:700; color:#fff; }
+    .workshop-sub   { font-size:0.8rem; color:rgba(255,255,255,0.45); margin-top:0.2rem; font-style:italic; }
+
+    .workshop-cta {
+      padding: 0.65rem 1.6rem;
+      border-radius: 0.75rem;
+      font-weight: 700; font-size: 0.875rem;
+      color: #fff; white-space: nowrap;
+      background: linear-gradient(135deg, var(--pink-s), var(--lilac));
+      box-shadow: 0 0 25px rgba(236,72,153,0.4);
+      transition: filter 0.25s, transform 0.25s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .workshop-wrap:hover .workshop-cta { filter:brightness(1.1); transform:scale(1.03); }
+
+    /* ── Section label ── */
+    .sec-label {
+      display: flex; align-items: center; gap: 0.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .sec-label-text {
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      color: rgba(244,114,182,0.8);
+      white-space: nowrap;
+    }
+    .sec-rule { flex:1; height:1px; background: linear-gradient(to right, rgba(244,114,182,0.3), transparent); }
+
+    /* ── Menu Grid ── */
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.875rem;
+      margin-bottom: 3.5rem;
+    }
+    @media(max-width:640px) { .menu-grid { grid-template-columns: 1fr; } }
+
+    /* ── Menu Card ── */
+    .card {
+      border-radius: 1.25rem;
+      padding: 1.35rem 1.4rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      box-shadow: 0 6px 24px rgba(0,0,0,0.3), inset 0 1.5px 0 rgba(255,255,255,0.18);
+      transition: all 0.35s cubic-bezier(0.23,1,0.32,1);
+      position: relative; overflow: hidden;
+    }
+
+    /* shine sweep */
+    .card::before {
+      content: ''; position: absolute;
+      top: -60%; left: -80%; width: 35%; height: 220%;
+      background: linear-gradient(to right, transparent, rgba(255,255,255,0.07), transparent);
+      transform: skewX(-20deg);
+      transition: left 0.6s ease;
+      pointer-events: none;
+    }
+    .card:hover::before { left: 160%; }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,255,255,0.28);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.4), inset 0 1.5px 0 rgba(255,255,255,0.28);
+    }
+
+    /* color glow per card */
+    .card-pink   { box-shadow: 0 6px 24px rgba(0,0,0,0.3), inset 0 1.5px 0 rgba(255,255,255,0.18), 0 0 0 1px rgba(244,114,182,0.18); }
+    .card-lilac  { box-shadow: 0 6px 24px rgba(0,0,0,0.3), inset 0 1.5px 0 rgba(255,255,255,0.18), 0 0 0 1px rgba(192,132,252,0.18); }
+    .card-peach  { box-shadow: 0 6px 24px rgba(0,0,0,0.3), inset 0 1.5px 0 rgba(255,255,255,0.18), 0 0 0 1px rgba(252,165,165,0.18); }
+    .card-mint   { box-shadow: 0 6px 24px rgba(0,0,0,0.3), inset 0 1.5px 0 rgba(255,255,255,0.18), 0 0 0 1px rgba(110,231,183,0.18); }
+    .card-sky    { box-shadow: 0 6px 24px rgba(0,0,0,0.3), inset 0 1.5px 0 rgba(255,255,255,0.18), 0 0 0 1px rgba(125,211,252,0.18); }
+
+    .card-pink:hover  { box-shadow: 0 18px 50px rgba(0,0,0,0.4), inset 0 1.5px 0 rgba(255,255,255,0.28), 0 0 0 1px rgba(244,114,182,0.5), 0 0 50px rgba(244,114,182,0.12); }
+    .card-lilac:hover { box-shadow: 0 18px 50px rgba(0,0,0,0.4), inset 0 1.5px 0 rgba(255,255,255,0.28), 0 0 0 1px rgba(192,132,252,0.5), 0 0 50px rgba(192,132,252,0.12); }
+    .card-peach:hover { box-shadow: 0 18px 50px rgba(0,0,0,0.4), inset 0 1.5px 0 rgba(255,255,255,0.28), 0 0 0 1px rgba(252,165,165,0.5), 0 0 50px rgba(252,165,165,0.12); }
+    .card-mint:hover  { box-shadow: 0 18px 50px rgba(0,0,0,0.4), inset 0 1.5px 0 rgba(255,255,255,0.28), 0 0 0 1px rgba(110,231,183,0.5), 0 0 50px rgba(110,231,183,0.12); }
+    .card-sky:hover   { box-shadow: 0 18px 50px rgba(0,0,0,0.4), inset 0 1.5px 0 rgba(255,255,255,0.28), 0 0 0 1px rgba(125,211,252,0.5), 0 0 50px rgba(125,211,252,0.12); }
+
+    .card.span2 { grid-column: 1 / -1; }
+
+    /* card icon */
+    .card-ico {
+      width: 44px; height: 44px; border-radius: 0.75rem; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem;
+      border: 1px solid rgba(255,255,255,0.14);
+    }
+    .ico-pink   { background: rgba(244,114,182,0.15); }
+    .ico-lilac  { background: rgba(192,132,252,0.15); }
+    .ico-peach  { background: rgba(252,165,165,0.15); }
+    .ico-mint   { background: rgba(110,231,183,0.15); }
+    .ico-sky    { background: rgba(125,211,252,0.15); }
+
+    .card-head { display:flex; align-items:center; justify-content:space-between; gap:0.875rem; }
+    .card-left { display:flex; align-items:center; gap:0.875rem; }
+    .card-title { font-size:1rem; font-weight:600; color:#fff; line-height:1.3; }
+
+    .chevron {
+      width:18px; height:18px; flex-shrink:0;
+      color:rgba(255,255,255,0.35);
+      transition: transform 0.3s ease, color 0.3s;
+    }
+    .card.open .chevron { transform:rotate(180deg); color:var(--pink); }
+
+    /* dropdown */
+    .dd { max-height:0; overflow:hidden; opacity:0; transition: max-height 0.4s ease, opacity 0.3s, margin-top 0.3s; }
+    .card.open .dd { max-height:380px; opacity:1; margin-top:1rem; }
+
+    .dd-link {
+      display: flex; align-items: center; gap: 0.65rem;
+      padding: 0.75rem 0.875rem;
+      border-radius: 0.75rem; margin-bottom: 0.35rem;
+      text-decoration: none; font-size: 0.875rem;
+      color: rgba(255,255,255,0.6);
+      border: 1px solid rgba(255,255,255,0.06);
+      transition: all 0.2s;
+    }
+    .dd-link:last-child { margin-bottom:0; }
+    .dd-link:hover { background:rgba(255,255,255,0.07); color:#fff; border-color:rgba(255,255,255,0.15); }
+
+    .dd-dot { width:6px; height:6px; border-radius:50%; flex-shrink:0; }
+    .dd-dot-pink  { background:var(--pink); }
+    .dd-dot-peach { background:var(--peach); }
+
+    .dd-arr { width:13px; height:13px; margin-left:auto; flex-shrink:0; transition:transform 0.2s; }
+    .dd-link:hover .dd-arr { transform:translateX(3px); }
+
+    /* automation link */
+    .dd-special {
+      background: rgba(244,114,182,0.06);
+      border: 1px dashed rgba(244,114,182,0.3) !important;
+      color: rgba(252,231,243,0.8) !important;
+    }
+    .dd-special:hover { background: rgba(244,114,182,0.12) !important; border-color:rgba(244,114,182,0.55) !important; color:#fff !important; }
+
+    .pulse-dot { width:7px; height:7px; border-radius:50%; background:var(--pink); animation:pulse 1.6s ease infinite; flex-shrink:0; }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.5);opacity:0.5} }
+
+    /* ── Spotlight highlight strip ── */
+    .spotlight {
+      position: absolute; top:0; left:0; right:0; height:1px;
+      background: linear-gradient(to right, transparent 0%, rgba(244,114,182,0.6) 30%, rgba(192,132,252,0.6) 50%, rgba(125,211,252,0.6) 70%, transparent 100%);
+      border-radius: 1.25rem 1.25rem 0 0;
+    }
+
+    /* ── Workflow ── */
+    .workflow-box {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 1.25rem; padding: 1rem;
+      backdrop-filter: blur(12px);
+    }
+    .workflow-img-wrap { position:relative; border-radius:1rem; overflow:hidden; display:block; text-decoration:none; }
+    .workflow-img-wrap img { width:100%; height:auto; border-radius:1rem; display:block; transition: transform 0.5s ease, filter 0.4s; }
+    .workflow-img-wrap:hover img { transform:scale(1.03); filter:brightness(0.4); }
+    .workflow-overlay { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.3s; }
+    .workflow-img-wrap:hover .workflow-overlay { opacity:1; }
+    .workflow-overlay span {
+      padding:0.7rem 1.75rem; border-radius:99px; font-weight:700; font-size:0.875rem; color:#fff;
+      background: linear-gradient(135deg, var(--pink-s), var(--lilac));
+      box-shadow: 0 0 30px rgba(236,72,153,0.4);
+    }
+
+    /* ── Game section ── */
+    .game-badge {
+      display:inline-flex; align-items:center; gap:0.5rem;
+      padding:0.4rem 1.25rem; border-radius:99px;
+      font-size:0.85rem; font-weight:500;
+      background:rgba(253,230,138,0.1); border:1px solid rgba(253,230,138,0.25); color:#fde68a;
+    }
+
+    .game-wrap {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(253,230,138,0.2);
+      border-radius: 1.25rem; overflow: hidden;
+      box-shadow: 0 0 40px rgba(253,230,138,0.05);
+    }
+    .game-wrap iframe { display:block; width:100%; height:420px; }
+
+    .ctrl-row { display:grid; grid-template-columns:1fr 1fr; }
+    .ctrl-cell { padding:1rem 1.25rem; border-top:1px solid rgba(255,255,255,0.06); }
+    .ctrl-cell:first-child { border-right:1px solid rgba(255,255,255,0.06); }
+    .ctrl-player { font-size:0.8rem; font-weight:600; color:var(--lemon); margin-bottom:0.4rem; }
+    .ctrl-keys { font-size:0.78rem; color:rgba(255,255,255,0.4); line-height:1.8; }
+    kbd { display:inline-block; padding:0.1rem 0.45rem; border-radius:0.3rem; font-size:0.72rem; font-family:monospace; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.14); color:rgba(255,255,255,0.8); }
+
+    /* ── Footer ── */
+    .footer { text-align:center; padding:3rem 1rem; border-top:1px solid rgba(255,255,255,0.06); }
+    .footer-card {
+      display:inline-block;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 2.5rem;
+      padding: 2.5rem 3rem;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 0 60px rgba(244,114,182,0.08), inset 0 1.5px 0 rgba(255,255,255,0.18);
+    }
+    .footer-cta { font-size:1.05rem; color:rgba(255,255,255,0.55); margin-bottom:2rem; font-style:italic; }
+
+    /* QR animated border */
+    @keyframes qr-beam {
+      0%,100%{ clip-path:inset(0 0 96% 0); }
+      25%     { clip-path:inset(0 96% 0 0); }
+      50%     { clip-path:inset(96% 0 0 0); }
+      75%     { clip-path:inset(0 0 0 96%); }
+    }
+    .qr-outer { position:relative; display:inline-block; }
+    .qr-outer::after {
+      content:''; position:absolute; inset:-4px; border-radius:1.5rem;
+      border:3px solid var(--pink);
+      box-shadow: 0 0 20px rgba(244,114,182,0.6), 0 0 40px rgba(192,132,252,0.3);
+      animation: qr-beam 3s linear infinite;
+    }
+    .qr-inner {
+      background:#fff; padding:1.1rem; border-radius:1.25rem; display:inline-block;
+      transition:transform 0.3s; position:relative; z-index:1;
+      box-shadow: 0 0 30px rgba(244,114,182,0.25);
+    }
+    .qr-inner:hover { transform:scale(1.06); }
+    .qr-inner img { width:152px; height:152px; object-fit:contain; display:block; }
+
+    .footer-copy { margin-top:1.5rem; font-size:0.75rem; color:rgba(255,255,255,0.2); letter-spacing:0.05em; }
+
+    /* ── Music player ── */
+    .music-player {
+      position:fixed; bottom:1.5rem; right:1.5rem;
+      display:flex; align-items:center; gap:0.5rem;
+      z-index:50; border-radius:99px; padding:0.4rem;
+      background:rgba(14,6,24,0.85);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(244,114,182,0.25);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(244,114,182,0.1);
+    }
+    .music-play {
+      width:46px; height:46px; border-radius:50%; border:none; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; font-size:1.15rem;
+      background: linear-gradient(135deg, var(--pink-s), var(--lilac));
+      box-shadow: 0 0 18px rgba(236,72,153,0.35);
+      transition: transform 0.25s, filter 0.25s;
+    }
+    .music-play:hover { transform:scale(1.08); filter:brightness(1.1); }
+    .music-play.on { animation:music-pulse 2s ease infinite; }
+    @keyframes music-pulse {
+      0%,100%{ box-shadow:0 0 18px rgba(236,72,153,0.35); }
+      50%     { box-shadow:0 0 35px rgba(236,72,153,0.65), 0 0 60px rgba(192,132,252,0.2); }
+    }
+
+    .music-next {
+      width:34px; height:34px; border-radius:50%; border:1px solid rgba(255,255,255,0.1);
+      background:rgba(255,255,255,0.05); cursor:pointer; font-size:0.8rem;
+      display:flex; align-items:center; justify-content:center; color:#fff;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .music-next:hover { background:rgba(255,255,255,0.1); transform:scale(1.05); }
+  </style>
   <script>
     if (navigator.userAgent.includes("Line")) {
       const url = window.location.href;
@@ -58,259 +469,300 @@
     }
   </script>
 </head>
-<body class="text-slate-200">
-  <div class="max-w-6xl mx-auto px-4 py-16">
-    
-    <header class="text-center mb-16">
-      <div class="inline-flex items-center justify-center w-24 h-24 mb-6 rounded-3xl bg-gradient-to-br from-indigo-500 to-purple-700 shadow-2xl float-animation">
-        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-      </div>
-      <h1 class="text-4xl md:text-6xl font-extrabold text-white mb-4 tracking-tight">ศูนย์รวมคู่มือด้านงานพัสดุ</h1>
-      <p class="text-slate-400 text-xl font-light italic">งานพัสดุหนีให้ไกล หนีไม่ได้ค่อยมาหาเรา</p>
-<div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-4">
-  <a href="checkin2.html" class="inline-flex items-center px-6 py-2.5 bg-slate-800/60 backdrop-blur-md border border-indigo-500/50 rounded-full text-indigo-400 hover:bg-indigo-500 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(99,102,241,0.2)] group w-full sm:w-auto justify-center">
-    <span class="mr-2">📍</span>
-    <span class="text-sm font-medium tracking-wide">ระบบเช็คชื่อออนไลน์</span>
-    <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-    </svg>
-  </a>
+<body>
 
-  <a href="Phonebook/" class="inline-flex items-center px-6 py-2.5 bg-slate-800/60 backdrop-blur-md border border-cyan-500/50 rounded-full text-cyan-400 hover:bg-cyan-500 hover:text-white transition-all duration-300 shadow-[0_0_15px_rgba(6,182,212,0.2)] group w-full sm:w-auto justify-center">
-    <span class="mr-2">📞</span>
-    <span class="text-sm font-medium tracking-wide">สมุดโทรศัพท์ ผอ.โรงเรียน</span>
-    <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-    </svg>
-  </a>
-</div>
-    </header>
-<!-- START: WORKSHOP DATA COLLECTION BUTTON -->
-<div class="max-w-6xl mx-auto px-4 mb-12">
-    <a href="https://sites.google.com/view/krunet69/" 
-       target="_blank" 
-       class="group relative block overflow-hidden rounded-3xl bg-slate-900 p-[2px] transition-all hover:scale-[1.01] active:scale-95 shadow-[0_0_30px_rgba(79,70,229,0.4)]">
-        
-        <span class="absolute inset-[-1000%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_90deg_at_50%_50%,#4F46E5_0%,#9333EA_50%,#4F46E5_100%)]"></span>
-        
-        <div class="flex flex-col md:flex-row items-center justify-between gap-6 rounded-[22px] bg-slate-900/90 backdrop-blur-xl px-8 py-8 md:py-6">
-            <div class="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-                <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 shadow-lg shadow-indigo-500/50">
-                    <svg class="h-10 w-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                    </svg>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-black text-white tracking-tight md:text-3xl">📝 บันทึกข้อมูล Workshop</h3>
-                    <p class="mt-1 text-indigo-300 font-medium italic">กรอกชื่อ-โรงเรียน / ปัญหา (Q1) / วิชาที่สนใจ (Q2)</p>
-                </div>
-            </div>
-            
-            <div class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-8 py-4 rounded-2xl font-bold text-xl transition-colors shadow-lg">
-                <span>เริ่มกรอกข้อมูล</span>
-            </div>
-        </div>
-    </a>
-</div>
+<!-- Background layers -->
+<div class="bg-layer"></div>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+<canvas id="stars"></canvas>
 
-<style>
-@keyframes bounce-x { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
-.animate-bounce-x { animation: bounce-x 1s infinite; }
-</style>
-<!-- END: WORKSHOP DATA COLLECTION BUTTON -->
-   <!-- ส่วน Grid เมนูที่ปรับให้เปิด Tab ใหม่ทั้งหมด -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-24">
-      
-      <!-- 1. คู่มือการตั้งเบิก -->
-      <div onclick="this.classList.toggle('dropdown-active')" class="btn-card shine-box glow-cyan bg-slate-800/80 backdrop-blur-md p-8">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-5">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/40 text-2xl">📄</div>
-            <h3 class="text-2xl font-bold text-white tracking-wide">คู่มือการตั้งเบิก</h3>
-          </div>
-          <svg class="arrow-icon w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-        </div>
-        <div class="dropdown-content space-y-3">
-          <!-- เติม target="_blank" ตรงนี้ -->
-          <a href="https://drive.google.com/file/d/1YLlkxb7_P5ZItuLOorpb1yNzKTUUwctO/view?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
-            <span class="w-2 h-2 rounded-full bg-cyan-400"></span> 1.1 คู่มือการส่งเบิก
-          </a>
-          <a href="https://drive.google.com/drive/folders/1rd-2zcOPMJZDo1UbYEcmCaMPVvYHZ5wu?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
-            <span class="w-2 h-2 rounded-full bg-cyan-400"></span> 1.2 แบบฟอร์มใบเบิก / ทะเบียนคุม
-          </a>
-        </div>
-      </div>
+<div class="wrap">
 
-      <!-- 2. คู่มือตรวจสอบพัสดุประจำปี -->
-      <a href="https://drive.google.com/file/d/1Mk_KzDl6d91KcbM2U2D4rK77ujxhzp6k/view?usp=sharing" target="_blank" class="btn-card shine-box glow-purple bg-slate-800/80 backdrop-blur-md p-8 block">
-        <div class="flex items-center gap-5">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/40 text-2xl">📋</div>
-          <h3 class="text-2xl font-bold text-white tracking-wide text-left">คู่มือตรวจสอบพัสดุประจำปี</h3>
-        </div>
-      </a>
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <!-- decorative sparkles -->
+    <div class="sparkle" style="top:2%;left:8%;width:18px;height:18px;animation-duration:3s;animation-delay:0s">✦</div>
+    <div class="sparkle" style="top:15%;left:90%;font-size:12px;animation-duration:4s;animation-delay:0.7s;color:var(--lilac)">✧</div>
+    <div class="sparkle" style="top:5%;left:75%;font-size:22px;animation-duration:5s;animation-delay:0.3s;color:var(--sky)">✦</div>
+    <div class="sparkle" style="top:60%;left:3%;font-size:14px;animation-duration:3.5s;animation-delay:1s;color:var(--mint)">✧</div>
+    <div class="sparkle" style="top:40%;left:94%;font-size:16px;animation-duration:4.5s;animation-delay:0.5s;color:var(--pink)">✦</div>
+    <div class="sparkle" style="top:80%;left:88%;font-size:10px;animation-duration:3s;animation-delay:1.5s;color:var(--lemon)">★</div>
 
-      <!-- 3. งานจ้างเหมาบริการ -->
-      <div onclick="this.classList.toggle('dropdown-active')" class="btn-card shine-box glow-orange bg-slate-800/80 backdrop-blur-md p-8">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-5">
-            <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-400 to-amber-600 flex items-center justify-center shadow-lg shadow-orange-500/40 text-2xl">👥</div>
-            <h3 class="text-2xl font-bold text-white tracking-wide">งานจ้างเหมาบริการ</h3>
-          </div>
-          <svg class="arrow-icon w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-        </div>
-        <div class="dropdown-content space-y-3">
-          <a href="https://drive.google.com/drive/folders/1sQtmmxb74I0Z6MRiX3A94mElyph-scYJ?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="block p-4 bg-slate-900/60 rounded-xl hover:bg-orange-500/30 text-slate-300">3.1 Template กระบวนการจัดซื้อจัดจ้าง</a>
-          <a href="https://drive.google.com/drive/folders/1So9BayVwMEnDkHTWDbYKN_3YcoruCDfj?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="block p-4 bg-slate-900/60 rounded-xl hover:bg-orange-500/30 text-slate-300">3.2 เอกสารเบิกเงินเดือน</a>
-          <a href="https://sites.google.com/view/jmdoc" target="_blank" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-orange-500/40 text-white border border-dashed border-orange-500/50 group/item">
-            <span class="flex h-2 w-2 rounded-full bg-orange-500 animate-pulse"></span>
-            <div class="flex flex-col">
-               <span class="font-bold">3.3 ระบบสร้างเอกสารเบิกเงินเดือน (Automation)</span>
-               <span class="text-xs text-orange-300/80 italic">✨ คลิกเพื่อเข้าสู่ระบบสร้างเอกสารอัตโนมัติ</span>
-            </div>
-            <svg class="w-4 h-4 ml-auto group-hover/item:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 7l5 5m0 0l-5 5m5-5H6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-          </a>
-        </div>
-      </div>
-
-      <!-- 4. คู่มือระบบ EGP -->
-      <a href="https://drive.google.com/drive/folders/1ycDaO_xA6caj04mJgURbOajlq93hkjtk?usp=sharing" target="_blank" class="btn-card shine-box glow-green bg-slate-800/80 backdrop-blur-md p-8 block">
-        <div class="flex items-center gap-5">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-emerald-400 to-green-600 flex items-center justify-center shadow-lg shadow-green-500/40 text-2xl">💻</div>
-          <h3 class="text-2xl font-bold text-white tracking-wide text-left">คู่มือระบบ EGP</h3>
-        </div>
-      </a>
-
-      <!-- 5. หนังสือเวียน -->
-      <a href="https://drive.google.com/drive/folders/1RqBlTaetk0uJFzkGP5R84fyLjDNJB_pa?usp=sharing" target="_blank" class="btn-card shine-box glow-indigo bg-slate-800/80 backdrop-blur-md p-8 block md:col-span-2">
-        <div class="flex items-center gap-5">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-400 to-cyan-600 flex items-center justify-center shadow-lg shadow-indigo-500/40 text-2xl">📂</div>
-          <h3 class="text-2xl font-bold text-white tracking-wide text-left">ศูนย์รวมหนังสือเวียนกรมบัญชีกลาง</h3>
-        </div>
-      </a>
+    <div class="header-icon float">
+      <svg width="38" height="38" fill="none" stroke="rgba(252,231,243,0.9)" stroke-width="1.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+      </svg>
     </div>
 
-    <!-- ส่วนภาพรวมการทำงาน (Preview Image) -->
-    <div class="mb-24">
-      <h2 class="text-3xl font-bold text-center mb-10 text-white">ภาพรวมการทำงาน</h2>
-      <div class="bg-slate-800/40 backdrop-blur-sm rounded-3xl p-6 border border-slate-700/30 shadow-2xl overflow-hidden">
-        <!-- เติม target="_blank" ตรงนี้ด้วย -->
-        <a href="https://drive.google.com/file/d/1ypFXawAq2kC_2z9-XzZyGHEJ_HQGDsbQ/view?usp=sharing" target="_blank" class="block group relative">
-          <img src="PVworkflow.jpg" alt="Preview" class="w-full h-auto rounded-2xl transition-all duration-700 group-hover:scale-105 group-hover:brightness-50">
-          <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-slate-900/40 rounded-2xl">
-            <span class="px-8 py-4 bg-cyan-500 text-white rounded-full font-bold shadow-2xl">คลิกเพื่อดูฉบับเต็ม (Tab ใหม่)</span>
+    <h1 class="title-main">ศูนย์รวมคู่มือ</h1>
+    <p class="title-sub">ด้านงานพัสดุ</p>
+    <p class="tagline">งานพัสดุหนีให้ไกล · หนีไม่ได้ค่อยมาหาเรา ✨</p>
+
+    <div class="dot-divider">
+      <span></span><span></span><span></span>
+    </div>
+
+    <nav class="pill-nav">
+      <a href="checkin2.html" class="pill pill-pink">
+        <span>📍</span> ระบบเช็คชื่อออนไลน์
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+      <a href="Phonebook/" class="pill pill-sky">
+        <span>📞</span> สมุดโทรศัพท์ ผอ.โรงเรียน
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+    </nav>
+  </header>
+
+  <!-- ── WORKSHOP BANNER ── -->
+  <div class="workshop-wrap">
+    <a href="https://sites.google.com/view/krunet69/" target="_blank" style="text-decoration:none;">
+      <div class="workshop-inner">
+        <div class="workshop-left">
+          <div class="workshop-icon">📝</div>
+          <div>
+            <div class="workshop-title">บันทึกข้อมูล Workshop</div>
+            <div class="workshop-sub">กรอกชื่อ-โรงเรียน / ปัญหา (Q1) / วิชาที่สนใจ (Q2)</div>
           </div>
+        </div>
+        <div class="workshop-cta">เริ่มกรอกข้อมูล →</div>
+      </div>
+    </a>
+  </div>
+
+  <!-- ── SECTION LABEL ── -->
+  <div class="sec-label">
+    <span class="sec-label-text">✦ เมนูหลัก</span>
+    <div class="sec-rule"></div>
+  </div>
+
+  <!-- ── MENU GRID ── -->
+  <div class="menu-grid">
+
+    <!-- 1. คู่มือการตั้งเบิก -->
+    <div class="card card-pink" onclick="this.classList.toggle('open')">
+      <div class="spotlight"></div>
+      <div class="card-head">
+        <div class="card-left">
+          <div class="card-ico ico-pink">📄</div>
+          <span class="card-title">คู่มือการตั้งเบิก</span>
+        </div>
+        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </div>
+      <div class="dd">
+        <a href="https://drive.google.com/file/d/1YLlkxb7_P5ZItuLOorpb1yNzKTUUwctO/view?usp=sharing"
+           target="_blank" onclick="event.stopPropagation()" class="dd-link">
+          <span class="dd-dot dd-dot-pink"></span> 1.1 คู่มือการส่งเบิก
+          <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+        <a href="https://drive.google.com/drive/folders/1rd-2zcOPMJZDo1UbYEcmCaMPVvYHZ5wu?usp=sharing"
+           target="_blank" onclick="event.stopPropagation()" class="dd-link">
+          <span class="dd-dot dd-dot-pink"></span> 1.2 แบบฟอร์มใบเบิก / ทะเบียนคุม
+          <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
         </a>
       </div>
     </div>
-<div class="max-w-4xl mx-auto mb-24 text-center">
-    <h2 class="text-2xl font-bold mb-6 text-yellow-400">⚡ โหมดพักสายตา: ปิกาจูวอลเลย์บอล กด [PLAY] โลด ⚡</h2>
-    <div class="bg-slate-900 rounded-3xl p-4 border-4 border-yellow-500 shadow-[0_0_30px_rgba(234,179,8,0.3)] overflow-hidden">
-        <iframe src="https://gorisanson.github.io/pikachu-volleyball/" width="100%" height="450px" frameborder="0" scrolling="no" class="rounded-xl"></iframe>
-        
-        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-left bg-slate-800 p-6 rounded-2xl border border-slate-700">
-            <div>
-                <h4 class="text-yellow-400 font-bold mb-2">👤 ผู้เล่น 1 (ซ้าย):</h4>
-                <p class="text-slate-300 text-sm">● บังคับ: <span class="bg-slate-600 px-2 rounded">D</span> <span class="bg-slate-600 px-2 rounded">R</span> <span class="bg-slate-600 px-2 rounded">G</span> <span class="bg-slate-600 px-2 rounded">F</span> | ตบ: <span class="bg-slate-600 px-2 rounded">Z</span></p>
-            </div>
-            <div>
-                <h4 class="text-yellow-400 font-bold mb-2">🤖 ผู้เล่น 2 (ขวา):</h4>
-                <p class="text-slate-300 text-sm">● บังคับ: <span class="bg-slate-600 px-2 rounded">ปุ่มลูกศร</span> | ตบ: <span class="bg-slate-600 px-2 rounded">Enter</span></p>
-            </div>
+
+    <!-- 2. คู่มือตรวจสอบพัสดุ -->
+    <a href="https://drive.google.com/file/d/1Mk_KzDl6d91KcbM2U2D4rK77ujxhzp6k/view?usp=sharing"
+       target="_blank" class="card card-lilac">
+      <div class="spotlight"></div>
+      <div class="card-head">
+        <div class="card-left">
+          <div class="card-ico ico-lilac">📋</div>
+          <span class="card-title">คู่มือตรวจสอบพัสดุประจำปี</span>
         </div>
+        <svg style="width:18px;height:18px;color:rgba(192,132,252,0.6);flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+      </div>
+    </a>
+
+    <!-- 3. งานจ้างเหมาบริการ -->
+    <div class="card card-peach" onclick="this.classList.toggle('open')">
+      <div class="spotlight"></div>
+      <div class="card-head">
+        <div class="card-left">
+          <div class="card-ico ico-peach">👥</div>
+          <span class="card-title">งานจ้างเหมาบริการ</span>
+        </div>
+        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </div>
+      <div class="dd">
+        <a href="https://drive.google.com/drive/folders/1sQtmmxb74I0Z6MRiX3A94mElyph-scYJ?usp=sharing"
+           target="_blank" onclick="event.stopPropagation()" class="dd-link">
+          <span class="dd-dot dd-dot-peach"></span> 3.1 Template กระบวนการจัดซื้อจัดจ้าง
+          <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+        <a href="https://drive.google.com/drive/folders/1So9BayVwMEnDkHTWDbYKN_3YcoruCDfj?usp=sharing"
+           target="_blank" onclick="event.stopPropagation()" class="dd-link">
+          <span class="dd-dot dd-dot-peach"></span> 3.2 เอกสารเบิกเงินเดือน
+          <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+        <a href="https://sites.google.com/view/jmdoc"
+           target="_blank" onclick="event.stopPropagation()" class="dd-link dd-special">
+          <span class="pulse-dot"></span>
+          3.3 ระบบสร้างเอกสารเบิกเงินเดือน (Automation)
+          <span style="font-size:0.72rem;opacity:0.6;font-style:italic;margin-left:0.3rem">✨</span>
+          <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+      </div>
     </div>
-</div>
-    <footer class="text-center">
-      <div class="inline-block bg-slate-800/40 backdrop-blur-md rounded-[3rem] p-12 border border-slate-700/50 glow-purple">
-        <p class="text-2xl text-slate-200 mb-8 font-medium italic text-center">พบปัญหา/สอบถามเพิ่มเติม ติดต่อผ่าน QR Code นี้</p>
-        <div class="relative group">
-          <div class="absolute inset-0 rounded-3xl animate-border-beam blur-sm"></div> 
-          
-          <div class="bg-white p-6 rounded-3xl inline-block shadow-2xl hover:scale-110 transition-transform relative z-10 glow-purple">
-            <img src="messageImage_1772459948844.jpg" alt="QR Code" class="w-48 h-48 object-contain">
-          </div>
+
+    <!-- 4. คู่มือระบบ EGP -->
+    <a href="https://drive.google.com/drive/folders/1ycDaO_xA6caj04mJgURbOajlq93hkjtk?usp=sharing"
+       target="_blank" class="card card-mint">
+      <div class="spotlight"></div>
+      <div class="card-head">
+        <div class="card-left">
+          <div class="card-ico ico-mint">💻</div>
+          <span class="card-title">คู่มือระบบ EGP</span>
         </div>
-        <div class="mt-10 text-slate-500 text-sm">
-           <p>© 2026 งานพัสดุ @Robbygrean | มั่นใจ โปร่งใส ตรวจสอบได้ แต๊เน้อ</p>
+        <svg style="width:18px;height:18px;color:rgba(110,231,183,0.6);flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+      </div>
+    </a>
+
+    <!-- 5. หนังสือเวียน (full width) -->
+    <a href="https://drive.google.com/drive/folders/1RqBlTaetk0uJFzkGP5R84fyLjDNJB_pa?usp=sharing"
+       target="_blank" class="card card-sky span2">
+      <div class="spotlight"></div>
+      <div class="card-head">
+        <div class="card-left">
+          <div class="card-ico ico-sky">📂</div>
+          <span class="card-title">ศูนย์รวมหนังสือเวียนกรมบัญชีกลาง</span>
+        </div>
+        <svg style="width:18px;height:18px;color:rgba(125,211,252,0.6);flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        </svg>
+      </div>
+    </a>
+
+  </div>
+
+  <!-- ── WORKFLOW ── -->
+  <div style="margin-bottom:3.5rem">
+    <div class="sec-label">
+      <span class="sec-label-text">✦ ภาพรวมการทำงาน</span>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="workflow-box">
+      <a href="https://drive.google.com/file/d/1ypFXawAq2kC_2z9-XzZyGHEJ_HQGDsbQ/view?usp=sharing"
+         target="_blank" class="workflow-img-wrap">
+        <img src="PVworkflow.jpg" alt="ภาพรวมการทำงาน">
+        <div class="workflow-overlay"><span>ดูฉบับเต็ม →</span></div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── PIKACHU GAME ── -->
+  <div style="margin-bottom:3.5rem">
+    <div style="text-align:center;margin-bottom:1.1rem">
+      <span class="game-badge">⚡ โหมดพักสายตา · ปิกาจูวอลเลย์บอล ⚡</span>
+    </div>
+    <div class="game-wrap">
+      <iframe src="https://gorisanson.github.io/pikachu-volleyball/" frameborder="0" scrolling="no" title="Pikachu Volleyball"></iframe>
+      <div class="ctrl-row">
+        <div class="ctrl-cell">
+          <div class="ctrl-player">👤 ผู้เล่น 1 (ซ้าย)</div>
+          <div class="ctrl-keys">บังคับ: <kbd>D</kbd> <kbd>R</kbd> <kbd>G</kbd> <kbd>F</kbd> · ตบ: <kbd>Z</kbd></div>
+        </div>
+        <div class="ctrl-cell">
+          <div class="ctrl-player">🤖 ผู้เล่น 2 (ขวา)</div>
+          <div class="ctrl-keys">บังคับ: <kbd>ลูกศร</kbd> · ตบ: <kbd>Enter</kbd></div>
         </div>
       </div>
-    </footer>
+    </div>
   </div>
-<audio id="bgMusic"></audio>
 
-<!-- 2. แถบควบคุมเพลง (2 ปุ่ม: Play/Pause และ Next) -->
-<div class="fixed bottom-6 right-6 flex items-center bg-slate-900/90 backdrop-blur-md border-2 border-white/20 rounded-full p-2 shadow-2xl z-[100] gap-3">
-    <!-- ปุ่มเล่น/หยุด -->
-    <button onclick="toggleMusic()" id="musicBtn" class="w-14 h-14 flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg hover:scale-105 active:scale-95 transition-all">
-        <span id="musicIcon" class="text-2xl">🎵</span>
-    </button>
-    <!-- ปุ่มสุ่มเพลงถัดไป (Next) -->
-    <button onclick="nextSong()" title="สุ่มเพลงใหม่" class="w-10 h-10 flex items-center justify-center bg-slate-800 text-white rounded-full hover:bg-slate-700 active:scale-90 transition-all">
-        <span class="text-sm">⏭️</span>
-    </button>
+  <!-- ── FOOTER ── -->
+  <footer class="footer">
+    <div class="footer-card">
+      <p class="footer-cta">พบปัญหา / สอบถามเพิ่มเติม ติดต่อผ่าน QR Code นี้</p>
+      <div class="qr-outer">
+        <div class="qr-inner">
+          <img src="messageImage_1772459948844.jpg" alt="QR Code">
+        </div>
+      </div>
+      <p class="footer-copy">© 2026 งานพัสดุ @Robbygrean · มั่นใจ โปร่งใส ตรวจสอบได้ แต๊เน้อ ✨</p>
+    </div>
+  </footer>
+
 </div>
+
+<!-- ── MUSIC PLAYER ── -->
+<audio id="bgMusic"></audio>
+<div class="music-player">
+  <button class="music-play" id="musicBtn" onclick="toggleMusic()">
+    <span id="musicIcon">🎵</span>
+  </button>
+  <button class="music-next" onclick="nextSong()" title="สุ่มเพลงถัดไป">⏭️</button>
+</div>
+
 <script>
-    const music = document.getElementById('bgMusic');
-    const mIcon = document.getElementById('musicIcon');
-    const mBtn = document.getElementById('musicBtn');
+/* ── Stars ── */
+(function(){
+  const c = document.getElementById('stars');
+  const ctx = c.getContext('2d');
+  let w, h, stars = [];
 
-    // รายชื่อเพลง 1-12 (เช็คให้ชัวร์ว่าใน GitHub มีไฟล์ 1.mp3 จนถึง 12.mp3 นะครับ)
-    const playlist = [
-        '1.mp3', '2.mp3', '3.mp3', '4.mp3', '5.mp3', 
-        '6.mp3', '7.mp3', '8.mp3', '9.mp3', '10.mp3', 
-        '11.mp3', '12.mp3'
-    ];
+  function resize(){ w = c.width = window.innerWidth; h = c.height = window.innerHeight; }
+  resize(); window.addEventListener('resize', resize);
 
-    let currentTrackIndex = -1;
+  const COLORS = ['rgba(244,114,182,', 'rgba(192,132,252,', 'rgba(125,211,252,', 'rgba(110,231,183,', 'rgba(255,255,255,'];
 
-    function loadTrack(index) {
-        // เติม ?v= เพื่อล้าง Cache เก่า บังคับโหลดไฟล์ใหม่เสมอ
-        const cacheBuster = "?v=" + Math.random();
-        music.src = playlist[index] + cacheBuster;
-        music.load();
-        console.log("Next track loaded: " + playlist[index]);
-    }
+  for(let i=0;i<120;i++){
+    stars.push({
+      x: Math.random()*2000, y: Math.random()*1200,
+      r: Math.random()*1.5+0.3,
+      alpha: Math.random()*0.6+0.2,
+      speed: Math.random()*0.008+0.002,
+      color: COLORS[Math.floor(Math.random()*COLORS.length)]
+    });
+  }
 
-    function getRandomIndex() {
-        let newIndex;
-        // สุ่มใหม่ถ้าได้เพลงเดิม เพื่อให้เพลงไม่เล่นซ้ำที่เดิม
-        do {
-            newIndex = Math.floor(Math.random() * playlist.length);
-        } while (newIndex === currentTrackIndex);
-        return newIndex;
-    }
+  function draw(){
+    ctx.clearRect(0,0,w,h);
+    const t = Date.now()*0.001;
+    stars.forEach(s=>{
+      const a = s.alpha * (0.5 + 0.5*Math.sin(t*s.speed*60 + s.x));
+      ctx.beginPath();
+      ctx.arc(s.x % w, s.y % h, s.r, 0, Math.PI*2);
+      ctx.fillStyle = s.color + a + ')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
 
-    // เริ่มต้น: สุ่มเตรียมไว้ 1 เพลง
-    currentTrackIndex = getRandomIndex();
-    loadTrack(currentTrackIndex);
+/* ── Music ── */
+const music     = document.getElementById('bgMusic');
+const musicIcon = document.getElementById('musicIcon');
+const musicBtn  = document.getElementById('musicBtn');
+const playlist  = ['1.mp3','2.mp3','3.mp3','4.mp3','5.mp3','6.mp3',
+                   '7.mp3','8.mp3','9.mp3','10.mp3','11.mp3','12.mp3'];
+let cur = -1;
 
-    function toggleMusic() {
-        if (music.paused) {
-            music.play().then(() => {
-                mIcon.innerText = '⏸️';
-                mBtn.classList.add('animate-pulse');
-            }).catch(e => {
-                // ถ้าติดกฎ Browser (Autoplay Block) ให้ลองกด Next เพื่อกระตุ้น
-                console.log("User interaction required");
-                nextSong();
-            });
-        } else {
-            music.pause();
-            mIcon.innerText = '🎵';
-            mBtn.classList.remove('animate-pulse');
-        }
-    }
+function rnd(){ let i; do{ i=Math.floor(Math.random()*playlist.length); }while(i===cur); return i; }
+function load(i){ music.src = playlist[i]+'?v='+Math.random(); music.load(); }
 
-    function nextSong() {
-        currentTrackIndex = getRandomIndex();
-        loadTrack(currentTrackIndex);
-        music.play().then(() => {
-            mIcon.innerText = '⏸️';
-            mBtn.classList.add('animate-pulse');
-        }).catch(err => console.log("Waiting for play click..."));
-    }
+cur = rnd(); load(cur);
 
-    // เมื่อจบเพลง ให้สุ่มเพลงถัดไปทันที
-    music.onended = nextSong;
+function setOn(on){
+  musicIcon.textContent = on ? '⏸️' : '🎵';
+  on ? musicBtn.classList.add('on') : musicBtn.classList.remove('on');
+}
+function toggleMusic(){ music.paused ? music.play().then(()=>setOn(true)).catch(()=>nextSong()) : (music.pause(), setOn(false)); }
+function nextSong(){ cur=rnd(); load(cur); music.play().then(()=>setOn(true)).catch(()=>{}); }
+music.onended = nextSong;
 </script>
 </body>
 </html>
