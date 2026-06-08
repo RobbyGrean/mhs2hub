@@ -461,6 +461,25 @@
       transition: background 0.2s, transform 0.2s;
     }
     .music-next:hover { background:rgba(255,255,255,0.1); transform:scale(1.05); }
+
+    /* ── Table preview accordion ── */
+.tbl-preview {
+  max-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  opacity: 0;
+  transition: max-height 0.4s ease, opacity 0.3s, margin-top 0.3s;
+  border-radius: 0.5rem;
+}
+.tbl-open .tbl-preview {
+  max-height: 420px;
+  opacity: 1;
+  margin-top: 0.75rem;
+}
+.tbl-open .tbl-arr {
+  transform: rotate(180deg);
+  color: var(--sky) !important;
+}
   </style>
   <script>
     if (navigator.userAgent.includes("Line")) {
@@ -647,54 +666,88 @@
 
   </div>
 <!-- START: จัดซื้อจัดจ้าง วงเงินเล็กน้อย -->
-<div class="mb-8">
-  <h2 class="text-lg font-semibold text-slate-400 mb-4 flex items-center gap-2">
-    <span class="text-pink-400">✦</span> จัดซื้อจัดจ้าง วงเงินเล็กน้อย
-  </h2>
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="sec-label">
+  <span class="sec-label-text">✦ จัดซื้อจัดจ้าง วงเงินเล็กน้อย</span>
+  <div class="sec-rule"></div>
+</div>
 
-    <!-- ว119 -->
-    <div onclick="this.classList.toggle('dropdown-active')" class="btn-card shine-box glow-cyan bg-slate-800/80 backdrop-blur-md p-8">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-5">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg shadow-cyan-500/40 text-2xl">📝</div>
-          <h3 class="text-xl font-bold text-white tracking-wide">ว119 : ฝึกอบรม จัดงาน ประชุม<br><span class="text-cyan-300 text-base font-normal">วงเงินไม่เกิน 10,000 บาท</span></h3>
+<div class="menu-grid" style="margin-bottom:3.5rem">
+
+  <!-- ว119 -->
+  <div class="card card-sky" onclick="this.classList.toggle('open')">
+    <div class="spotlight"></div>
+    <div class="card-head">
+      <div class="card-left">
+        <div class="card-ico ico-sky">📝</div>
+        <span class="card-title">ว119 : ฝึกอบรม จัดงาน ประชุม<br>
+          <span style="font-size:0.8rem;font-weight:400;color:rgba(125,211,252,0.7)">วงเงินไม่เกิน 10,000 บาท</span>
+        </span>
+      </div>
+      <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
+    </div>
+    <div class="dd">
+      <a href="https://drive.google.com/drive/folders/1m8Rn_kVdM2GBRIKe-XePjoOT85d6VXxA?usp=sharing"
+         target="_blank" onclick="event.stopPropagation()" class="dd-link">
+        <span class="dd-dot" style="background:var(--sky)"></span> คู่มือการจัดซื้อ ว 119
+        <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+
+      <!-- ตาราง 1 -->
+      <div onclick="event.stopPropagation(); this.classList.toggle('tbl-open')" class="dd-link" style="cursor:pointer;flex-direction:column;align-items:stretch;gap:0">
+        <div style="display:flex;align-items:center;gap:0.65rem;width:100%">
+          <span class="dd-dot" style="background:var(--sky)"></span>
+          <span style="flex:1"> ตาราง 1</span>
+          <svg style="width:13px;height:13px;flex-shrink:0;transition:transform 0.3s;color:rgba(255,255,255,0.35)" class="tbl-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </div>
-        <svg class="arrow-icon w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        <div class="tbl-preview">
+          <img src="table1.png" alt="ตาราง 1" style="width:100%;border-radius:0.5rem;display:block">
+        </div>
       </div>
-      <div class="dropdown-content space-y-3">
-        <a href="https://drive.google.com/drive/folders/1m8Rn_kVdM2GBRIKe-XePjoOT85d6VXxA?usp=sharing" target="_blank" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
-          <span class="w-2 h-2 rounded-full bg-cyan-400"></span> คู่มือการจัดซื้อ ว 119
-        </a>
-        <a href="table1.png" target="_blank" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
-          <span class="w-2 h-2 rounded-full bg-cyan-400"></span> ตาราง 1
-        </a>
-        <a href="table2.png" target="_blank" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-cyan-500/30 text-slate-300 border border-transparent hover:border-cyan-500/50">
-          <span class="w-2 h-2 rounded-full bg-cyan-400"></span> ตาราง 2
-        </a>
+
+      <!-- ตาราง 2 -->
+      <div onclick="event.stopPropagation(); this.classList.toggle('tbl-open')" class="dd-link" style="cursor:pointer;flex-direction:column;align-items:stretch;gap:0">
+        <div style="display:flex;align-items:center;gap:0.65rem;width:100%">
+          <span class="dd-dot" style="background:var(--sky)"></span>
+          <span style="flex:1"> ตาราง 2</span>
+          <svg style="width:13px;height:13px;flex-shrink:0;transition:transform 0.3s;color:rgba(255,255,255,0.35)" class="tbl-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+        <div class="tbl-preview">
+          <img src="table2.png" alt="ตาราง 2" style="width:100%;border-radius:0.5rem;display:block">
+        </div>
       </div>
+
     </div>
 
-    <!-- ว804 -->
-    <div onclick="this.classList.toggle('dropdown-active')" class="btn-card shine-box glow-purple bg-slate-800/80 backdrop-blur-md p-8">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center gap-5">
-          <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-600 flex items-center justify-center shadow-lg shadow-purple-500/40 text-2xl">🗂️</div>
-          <h3 class="text-xl font-bold text-white tracking-wide">ว804 : งานจัด<br><span class="text-purple-300 text-base font-normal">วงเงินไม่เกิน 50,000 บาท</span></h3>
-        </div>
-        <svg class="arrow-icon w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+  <!-- ว804 -->
+  <div class="card card-lilac" onclick="this.classList.toggle('open')">
+    <div class="spotlight"></div>
+    <div class="card-head">
+      <div class="card-left">
+        <div class="card-ico ico-lilac">🗂️</div>
+        <span class="card-title">ว804 : งานจัด<br>
+          <span style="font-size:0.8rem;font-weight:400;color:rgba(192,132,252,0.7)">วงเงินไม่เกิน 50,000 บาท</span>
+        </span>
       </div>
-      <div class="dropdown-content space-y-3">
-        <a href="https://drive.google.com/drive/folders/1GqqBgKgF7MFXsT2NSF46sNrhKPcSPWaW" target="_blank" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-purple-500/30 text-slate-300 border border-transparent hover:border-purple-500/50">
-          <span class="w-2 h-2 rounded-full bg-purple-400"></span> คู่มือการจัดซื้อ ว804
-        </a>
-        <a href="https://drive.google.com/drive/folders/12D4ezexHwAprClF22JNiwOmbcPlCoivb" target="_blank" onclick="event.stopPropagation()" class="flex items-center gap-3 p-4 bg-slate-900/60 rounded-xl hover:bg-purple-500/30 text-slate-300 border border-transparent hover:border-purple-500/50">
-          <span class="w-2 h-2 rounded-full bg-purple-400"></span> ตัวอย่างเอกสาร ว804
-        </a>
-      </div>
+      <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+      </svg>
     </div>
-
+    <div class="dd">
+      <a href="https://drive.google.com/drive/folders/1GqqBgKgF7MFXsT2NSF46sNrhKPcSPWaW"
+         target="_blank" onclick="event.stopPropagation()" class="dd-link">
+        <span class="dd-dot" style="background:var(--lilac)"></span> คู่มือการจัดซื้อ ว804
+        <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+      <a href="https://drive.google.com/drive/folders/12D4ezexHwAprClF22JNiwOmbcPlCoivb"
+         target="_blank" onclick="event.stopPropagation()" class="dd-link">
+        <span class="dd-dot" style="background:var(--lilac)"></span> ตัวอย่างเอกสาร ว804
+        <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+    </div>
   </div>
+
 </div>
 <!-- END: จัดซื้อจัดจ้าง วงเงินเล็กน้อย -->
   <!-- ── WORKFLOW ── -->
