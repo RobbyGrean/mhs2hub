@@ -462,24 +462,30 @@
     }
     .music-next:hover { background:rgba(255,255,255,0.1); transform:scale(1.05); }
 
-    /* ── Table preview accordion ── */
+/* ── Table preview accordion ── */
+.tbl-item { flex-direction:column; align-items:stretch; gap:0; cursor:pointer; }
+.tbl-row  { display:flex; align-items:center; gap:0.65rem; width:100%; }
+.tbl-arr  { width:13px; height:13px; flex-shrink:0; transition:transform 0.3s; color:rgba(255,255,255,0.35); }
+
 .tbl-preview {
   max-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
   opacity: 0;
-  transition: max-height 0.4s ease, opacity 0.3s, margin-top 0.3s;
+  transition: max-height 0.45s ease, opacity 0.3s, margin-top 0.3s;
   border-radius: 0.5rem;
 }
+.tbl-preview img { width:100%; display:block; border-radius:0.5rem; }
+
 .tbl-open .tbl-preview {
-  max-height: 420px;
+  max-height: 80vh;
   opacity: 1;
-  margin-top: 0.75rem;
+  margin-top: 0.875rem;
 }
-.tbl-open .tbl-arr {
-  transform: rotate(180deg);
-  color: var(--sky) !important;
-}
+.tbl-open .tbl-arr { transform:rotate(180deg); color:var(--sky); }
+
+/* fix: dd ต้องรองรับ max-height ที่ใหญ่ขึ้นเมื่อมี tbl-open */
+.card.open .dd { max-height: 9999px; }
   </style>
   <script>
     if (navigator.userAgent.includes("Line")) {
@@ -671,7 +677,7 @@
   <div class="sec-rule"></div>
 </div>
 
-<div class="menu-grid" style="margin-bottom:3.5rem">
+<div style="display:flex;flex-direction:column;gap:0.875rem;margin-bottom:3.5rem">
 
   <!-- ว119 -->
   <div class="card card-sky" onclick="this.classList.toggle('open')">
@@ -695,30 +701,30 @@
       </a>
 
       <!-- ตาราง 1 -->
-      <div onclick="event.stopPropagation(); this.classList.toggle('tbl-open')" class="dd-link" style="cursor:pointer;flex-direction:column;align-items:stretch;gap:0">
-        <div style="display:flex;align-items:center;gap:0.65rem;width:100%">
+      <div onclick="event.stopPropagation();this.classList.toggle('tbl-open')" class="dd-link tbl-item">
+        <div class="tbl-row">
           <span class="dd-dot" style="background:var(--sky)"></span>
-          <span style="flex:1"> ตาราง 1</span>
-          <svg style="width:13px;height:13px;flex-shrink:0;transition:transform 0.3s;color:rgba(255,255,255,0.35)" class="tbl-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <span style="flex:1">ตาราง 1</span>
+          <svg class="tbl-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </div>
         <div class="tbl-preview">
-          <img src="table1.png" alt="ตาราง 1" style="width:100%;border-radius:0.5rem;display:block">
+          <img src="table1.png" alt="ตาราง 1">
         </div>
       </div>
 
       <!-- ตาราง 2 -->
-      <div onclick="event.stopPropagation(); this.classList.toggle('tbl-open')" class="dd-link" style="cursor:pointer;flex-direction:column;align-items:stretch;gap:0">
-        <div style="display:flex;align-items:center;gap:0.65rem;width:100%">
+      <div onclick="event.stopPropagation();this.classList.toggle('tbl-open')" class="dd-link tbl-item">
+        <div class="tbl-row">
           <span class="dd-dot" style="background:var(--sky)"></span>
-          <span style="flex:1"> ตาราง 2</span>
-          <svg style="width:13px;height:13px;flex-shrink:0;transition:transform 0.3s;color:rgba(255,255,255,0.35)" class="tbl-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <span style="flex:1">ตาราง 2</span>
+          <svg class="tbl-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </div>
         <div class="tbl-preview">
-          <img src="table2.png" alt="ตาราง 2" style="width:100%;border-radius:0.5rem;display:block">
+          <img src="table2.png" alt="ตาราง 2">
         </div>
       </div>
-
     </div>
+  </div>
 
   <!-- ว804 -->
   <div class="card card-lilac" onclick="this.classList.toggle('open')">
