@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.31.0/dist/tabler-icons.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<link rel="stylesheet" href="presentation.css">
 <style>
 :root{
   --navy:#1E3A5F;--navy2:#142845;--teal:#0D7377;--teal2:#1D9E75;
@@ -163,6 +164,11 @@ input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;heigh
   <a class="nav-item" onclick="goSec('glos');return false" href="#"><i class="ti ti-book"></i><span>คำศัพท์</span></a>
   <a class="nav-item" onclick="goSec('ref');return false" href="#"><i class="ti ti-files"></i><span>อ้างอิง</span></a>
 </nav>
+<button id="pres-toggle" onclick="togglePres()" title="สลับโหมดนำเสนอ">
+  <i class="ti ti-presentation"></i>
+  <span class="lbl-normal">โหมดนำเสนอ</span>
+  <span class="lbl-pres">โหมดปกติ</span>
+</button>  
 <main class="main" id="mainArea">
   <!-- OVERVIEW -->
 <section class="section active" id="sec-overview">
@@ -502,6 +508,9 @@ function togAcc(id){document.getElementById(id).classList.toggle('acc-open');}
 function togStep(i){const el=document.getElementById('st-'+i);el.classList.toggle('step-open');const arr=document.getElementById('sarr-'+i);if(arr)arr.style.transform=el.classList.contains('step-open')?'rotate(180deg)':'';}
 function togSc(i){const el=document.getElementById('sc-'+i);el.classList.toggle('sc-open');const arr=document.getElementById('sca-'+i);if(arr)arr.style.transform=el.classList.contains('sc-open')?'rotate(180deg)':'';}
 function swVat(idx){document.querySelectorAll('.toggle-btn').forEach((b,i)=>b.classList.toggle('on',i===idx));document.querySelectorAll('.t-panel').forEach((p,i)=>p.classList.toggle('on',i===idx));}
+function togglePres() {
+document.body.classList.toggle('pres-mode');
+}
 </script>
 </body>
 </html>
