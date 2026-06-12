@@ -1,0 +1,65 @@
+/* presentation.css — โหมดนำเสนอ 16:9 สำหรับ ว 804
+   ใช้ zoom แทน font-size override — ขยายทุกอย่างพร้อมกัน
+*/
+
+/* ─── Toggle Button ───────────────────────────────────── */
+#pres-toggle {
+  position: fixed;
+  top: 12px;
+  right: 16px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 14px;
+  border-radius: 20px;
+  border: 1.5px solid var(--bdr2);
+  background: var(--surface);
+  color: var(--txt2);
+  font-size: 12px;
+  font-weight: 600;
+  font-family: 'IBM Plex Sans Thai', sans-serif;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,.10);
+  transition: background .2s, color .2s, border-color .2s;
+  letter-spacing: .3px;
+}
+#pres-toggle:hover {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+#pres-toggle i { font-size: 15px; }
+
+body.pres-mode #pres-toggle {
+  background: var(--navy);
+  color: #fff;
+  border-color: var(--navy);
+}
+#pres-toggle .lbl-normal { display: inline; }
+#pres-toggle .lbl-pres   { display: none;   }
+body.pres-mode #pres-toggle .lbl-normal { display: none;   }
+body.pres-mode #pres-toggle .lbl-pres   { display: inline; }
+
+
+/* ─── Presentation Mode ────────────────────────────────── */
+
+/* ซ่อน nav + footer */
+body.pres-mode .nav-rail   { display: none; }
+body.pres-mode .footer-bar { display: none; }
+
+/* main เต็มจอ */
+body.pres-mode .main {
+  margin-left: 0;
+  max-width: 100%;
+  padding: 28px 48px 60px;
+}
+
+/* zoom ทั้งหน้า — ขยายทุก element รวมถึง inline style */
+body.pres-mode .main {
+  zoom: 1.55;
+}
+
+/* ปุ่ม toggle ต้องไม่ถูก zoom ด้วย — คง fixed position ไว้ */
+body.pres-mode #pres-toggle {
+  zoom: 1;
+}
