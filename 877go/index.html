@@ -742,11 +742,19 @@
 </head>
 <body>
 
+<!-- ── Emerald Pres Background (hidden in normal mode) ── -->
+<div class="bg-layer" aria-hidden="true"></div>
+<div class="orb o1" aria-hidden="true"></div>
+<div class="orb o2" aria-hidden="true"></div>
+<div class="orb o3" aria-hidden="true"></div>
+<canvas id="pres-stars" aria-hidden="true"></canvas>
+
 <button id="pres-toggle" onclick="togglePres()" title="สลับโหมดนำเสนอ">
   <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
   <span class="lbl-normal">โหมดนำเสนอ</span>
   <span class="lbl-pres">โหมดปกติ</span>
 </button>
+
 
 <!-- SIDEBAR -->
 <nav class="sidebar">
@@ -1009,7 +1017,7 @@
         <div class="card" style="border-top:4px solid var(--gold)">
           <div class="card-title">สัญญาที่ลงนามก่อน 8 ธค 68</div>
           <ul class="allowed-list">
-            <li><span class="icon">✏️</span><div><strong>แก้ไขสัญญา</strong> ให้สอดคล้อง<br><span style="font-size:13px;color:var(--gray3)">อาศัย มาตรา 97 แห่ง พรบ.ฯ + ระเบียบกระทรวงการคลังฯ ข้อ 165</span></div></li>
+            <li><span class="icon">✏️</span><div><strong>แก้ไขสัญญา</strong> ให้สอดคล้อง<br><span style="font-size:13px;color:var(--gray3)">อาศัย มาตรา 47 แห่ง พรบ.ฯ + ระเบียบกระทรวงการคลังฯ ข้อ 165</span></div></li>
           </ul>
         </div>
       </div>
@@ -1349,7 +1357,7 @@
         </div>
         <div class="checklist-item" onclick="toggleCheck(this)">
           <div class="check-box">✓</div>
-          <div class="check-text">สัญญาเก่าก่อน 8 ธค 68 → แก้ไขให้สอดคล้อง มาตรา 97</div>
+          <div class="check-text">สัญญาเก่าก่อน 8 ธค 68 → แก้ไขให้สอดคล้อง มาตรา 47</div>
         </div>
       </div>
 
@@ -1382,7 +1390,7 @@
           <div><strong>อำนาจคณะกรรมการวินิจฉัย</strong> ออกแนวทางปฏิบัติ<p>อำนาจในการซ้อมความเข้าใจและออกแนวทางปฏิบัติให้หน่วยงานของรัฐถือปฏิบัติ</p></div>
         </div>
         <div class="law-item">
-          <span class="law-tag">มาตรา 97</span>
+          <span class="law-tag">มาตรา 47</span>
           <div><strong>การแก้ไขสัญญา</strong><p>หลักเกณฑ์และเงื่อนไขในการแก้ไขสัญญาที่ลงนามแล้ว</p></div>
         </div>
         <div class="law-item">
@@ -1399,7 +1407,7 @@
         <div class="card-title">ระเบียบและประมวลกฎหมาย</div>
         <div class="law-item">
           <span class="law-tag">ระเบียบ ข้อ 165</span>
-          <div><strong>ระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างฯ พ.ศ. 2560</strong><p>หลักเกณฑ์การแก้ไขสัญญา ใช้คู่กับ มาตรา 97 แห่ง พรบ.ฯ</p></div>
+          <div><strong>ระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างฯ พ.ศ. 2560</strong><p>หลักเกณฑ์การแก้ไขสัญญา ใช้คู่กับ มาตรา 47 แห่ง พรบ.ฯ</p></div>
         </div>
         <div class="law-item">
           <span class="law-tag">ปพพ. ม.193/6</span>
@@ -1429,8 +1437,81 @@
 
 <script>
   function togglePres() {
-    document.body.classList.toggle('pres-mode');
+    const body = document.body;
+    body.classList.toggle('pres-mode');
+    if (body.classList.contains('pres-mode')) {
+      startStars();
+    } else {
+      stopStars();
+    }
   }
+
+  // ── Emerald Star Field ──────────────────────────────────
+  let starAnimId = null;
+  const starCanvas = document.getElementById('pres-stars');
+  const starCtx = starCanvas ? starCanvas.getContext('2d') : null;
+  const STARS = [];
+  const STAR_COUNT = 120;
+  const COLORS = [
+    'rgba(16,185,129,',
+    'rgba(52,211,153,',
+    'rgba(45,212,191,',
+    'rgba(134,239,172,',
+    'rgba(167,243,208,',
+  ];
+
+  function initStars() {
+    if (!starCanvas) return;
+    starCanvas.width  = window.innerWidth;
+    starCanvas.height = window.innerHeight;
+    STARS.length = 0;
+    for (let i = 0; i < STAR_COUNT; i++) {
+      STARS.push({
+        x: Math.random() * starCanvas.width,
+        y: Math.random() * starCanvas.height,
+        r: Math.random() * 1.5 + 0.3,
+        base: Math.random(),
+        speed: Math.random() * 0.008 + 0.003,
+        color: COLORS[Math.floor(Math.random() * COLORS.length)],
+        phase: Math.random() * Math.PI * 2,
+      });
+    }
+  }
+
+  function drawStars(t) {
+    if (!starCtx) return;
+    starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height);
+    for (const s of STARS) {
+      const alpha = (Math.sin(t * s.speed + s.phase) * 0.4 + 0.6) * (s.base * 0.5 + 0.3);
+      starCtx.beginPath();
+      starCtx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      starCtx.fillStyle = s.color + alpha.toFixed(2) + ')';
+      starCtx.fill();
+    }
+  }
+
+  function startStars() {
+    if (!starCanvas || starAnimId) return;
+    initStars();
+    starCanvas.style.display = 'block';
+    let t = 0;
+    function loop() {
+      t += 1;
+      drawStars(t);
+      starAnimId = requestAnimationFrame(loop);
+    }
+    loop();
+  }
+
+  function stopStars() {
+    if (starAnimId) { cancelAnimationFrame(starAnimId); starAnimId = null; }
+    if (starCanvas) { starCtx.clearRect(0, 0, starCanvas.width, starCanvas.height); starCanvas.style.display = 'none'; }
+  }
+
+  window.addEventListener('resize', () => {
+    if (document.body.classList.contains('pres-mode')) initStars();
+  });
+  // ─────────────────────────────────────────────────────────
 
   function show(id, el) {
     document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));

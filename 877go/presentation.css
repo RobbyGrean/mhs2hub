@@ -1,7 +1,10 @@
 /* ════════════════════════════════════════════════════════════
    presentation.css — Projector Mode · ว 877 Learning
-   Dark-Cinematic theme · Deep Navy × Gold × Glowing Teal
+   Emerald Starlight theme · Jade × Teal × Mint Glow
    ════════════════════════════════════════════════════════════ */
+
+/* ─── Hidden in normal mode ──────────────────────────────── */
+.bg-layer, .orb, #pres-stars { display: none; pointer-events: none; }
 
 /* ─── Toggle Button ──────────────────────────────────────── */
 #pres-toggle {
@@ -14,41 +17,39 @@
   gap: 8px;
   padding: 9px 16px;
   border-radius: 24px;
-  border: 1.5px solid rgba(201,146,42,0.35);
-  background: rgba(27,58,107,0.92);
-  color: rgba(232,176,74,0.9);
+  border: 1.5px solid rgba(16,185,129,0.35);
+  background: rgba(255,255,255,0.88);
+  color: rgba(5,150,105,0.9);
   font-size: 12px;
   font-weight: 700;
   font-family: 'Sarabun', sans-serif;
   cursor: pointer;
-  box-shadow: 0 0 0 0 rgba(201,146,42,0);
   transition: all 0.25s cubic-bezier(0.34,1.56,0.64,1);
   letter-spacing: .5px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 2px 12px rgba(16,185,129,0.12);
 }
 #pres-toggle:hover {
-  border-color: rgba(201,146,42,0.9);
-  color: #E8B04A;
-  box-shadow: 0 0 18px rgba(201,146,42,0.35);
+  border-color: rgba(16,185,129,0.8);
+  color: #059669;
+  box-shadow: 0 0 18px rgba(16,185,129,0.28);
   transform: translateY(-1px) scale(1.03);
 }
-#pres-toggle svg,
-#pres-toggle i { font-size: 15px; }
 
 body.pres-mode #pres-toggle {
-  background: rgba(201,146,42,0.18);
-  color: #E8B04A;
-  border-color: rgba(201,146,42,0.7);
+  background: rgba(16,185,129,0.18);
+  color: #34d399;
+  border-color: rgba(52,211,153,0.65);
   box-shadow:
-    0 0 12px rgba(201,146,42,0.3),
-    0 0 40px rgba(201,146,42,0.12);
+    0 0 12px rgba(16,185,129,0.35),
+    0 0 40px rgba(16,185,129,0.12);
 }
 body.pres-mode #pres-toggle:hover {
-  background: rgba(201,146,42,0.28);
+  background: rgba(16,185,129,0.28);
   box-shadow:
-    0 0 20px rgba(201,146,42,0.5),
-    0 0 60px rgba(201,146,42,0.2);
+    0 0 22px rgba(16,185,129,0.5),
+    0 0 60px rgba(45,212,191,0.2);
 }
 
 #pres-toggle .lbl-normal { display: inline; }
@@ -58,41 +59,60 @@ body.pres-mode #pres-toggle .lbl-pres   { display: inline; }
 
 
 /* ═══════════════════════════════════════════════════════════
-   PRESENTATION MODE — Full Projector Experience
+   PRESENTATION MODE — Emerald Starlight
    ═══════════════════════════════════════════════════════════ */
 
-/* ── Base body transform ─────────────────────────────────── */
+/* ── Show background elements ────────────────────────────── */
+body.pres-mode .bg-layer { display: block; }
+body.pres-mode .orb      { display: block; }
+body.pres-mode #pres-stars {
+  display: block;
+  position: fixed; inset: 0;
+  z-index: 0;
+  width: 100%; height: 100%;
+}
+
+/* ── bg-layer — emerald aurora radial glow ───────────────── */
+.bg-layer {
+  position: fixed; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 75% 55% at 10% 15%,  rgba(16,185,129,0.22) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at 90% 80%,  rgba(45,212,191,0.18) 0%, transparent 55%),
+    radial-gradient(ellipse 50% 45% at 55%  5%,  rgba(52,211,153,0.14) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 40% at 80% 30%,  rgba(134,239,172,0.10) 0%, transparent 50%),
+    radial-gradient(ellipse 35% 35% at 20% 80%,  rgba(163,230,53,0.08) 0%, transparent 50%);
+  animation: em-breathe 10s ease-in-out infinite alternate;
+}
+@keyframes em-breathe {
+  0%   { filter: hue-rotate(0deg)   brightness(1);    }
+  100% { filter: hue-rotate(18deg)  brightness(1.06); }
+}
+
+/* ── Orbs ────────────────────────────────────────────────── */
+.orb {
+  position: fixed; border-radius: 50%;
+  filter: blur(90px); z-index: 0;
+  animation: orb-drift ease-in-out infinite alternate;
+}
+.o1 { width:520px; height:520px; background:rgba(16,185,129,0.14);  top:-120px; left:-80px;   animation-duration:14s; }
+.o2 { width:420px; height:420px; background:rgba(45,212,191,0.11);  bottom:-80px; right:-60px; animation-duration:18s; }
+.o3 { width:280px; height:280px; background:rgba(52,211,153,0.09);  top:40%; left:55%;         animation-duration:12s; }
+@keyframes orb-drift {
+  from { transform: translate(0,0) scale(1); }
+  to   { transform: translate(20px,-30px) scale(1.06); }
+}
+
+/* ── Base body ───────────────────────────────────────────── */
 body.pres-mode {
   background:
-    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(36,80,143,0.45) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 110% 80%, rgba(201,146,42,0.12) 0%, transparent 60%),
-    linear-gradient(160deg, #080d1a 0%, #0d1526 40%, #0a1020 100%);
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(16,185,129,0.18) 0%, transparent 65%),
+    radial-gradient(ellipse 60% 40% at 110% 80%, rgba(45,212,191,0.10) 0%, transparent 60%),
+    linear-gradient(160deg, #030d09 0%, #071812 40%, #050e0a 100%);
   min-height: 100vh;
 }
 
-/* Ambient star-field layer behind everything */
-body.pres-mode::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  background-image:
-    radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,0.4) 0%, transparent 100%),
-    radial-gradient(1px 1px at 34% 72%, rgba(255,255,255,0.25) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 56% 9%, rgba(255,255,255,0.35) 0%, transparent 100%),
-    radial-gradient(1px 1px at 78% 44%, rgba(255,255,255,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 91% 87%, rgba(255,255,255,0.2) 0%, transparent 100%),
-    radial-gradient(1.5px 1.5px at 22% 91%, rgba(232,176,74,0.3) 0%, transparent 100%),
-    radial-gradient(1px 1px at 67% 33%, rgba(232,176,74,0.2) 0%, transparent 100%),
-    radial-gradient(1px 1px at 45% 56%, rgba(255,255,255,0.15) 0%, transparent 100%),
-    radial-gradient(2px 2px at 88% 12%, rgba(201,146,42,0.25) 0%, transparent 100%);
-}
-
-/* ── Hide sidebar ─────────────────────────────────────────── */
-body.pres-mode .sidebar {
-  display: none;
-}
+/* ── Hide sidebar ────────────────────────────────────────── */
+body.pres-mode .sidebar { display: none; }
 
 /* ── Main canvas ─────────────────────────────────────────── */
 body.pres-mode .main {
@@ -101,369 +121,375 @@ body.pres-mode .main {
   padding: 0;
   position: relative;
   z-index: 1;
-}
-
-/* ── Hero section — full cinematic header ────────────────── */
-body.pres-mode .hero {
-  background:
-    radial-gradient(ellipse 90% 80% at 50% 0%, rgba(36,80,143,0.8) 0%, transparent 65%),
-    linear-gradient(135deg,
-      rgba(8,13,26,0.95) 0%,
-      rgba(27,58,107,0.85) 45%,
-      rgba(36,80,143,0.75) 70%,
-      rgba(15,22,45,0.95) 100%);
-  padding: 72px 80px 56px;
-  border-bottom: 1px solid rgba(201,146,42,0.2);
-  position: relative;
-  overflow: hidden;
-}
-
-/* Cinematic top-light beam */
-body.pres-mode .hero::before {
-  content: '';
-  position: absolute;
-  top: -80px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  height: 300px;
-  background: radial-gradient(ellipse at 50% 0%, rgba(201,146,42,0.18) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-/* Gold shimmer line at top */
-body.pres-mode .hero::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(201,146,42,0.4) 20%,
-    rgba(232,176,74,0.9) 50%,
-    rgba(201,146,42,0.4) 80%,
-    transparent 100%);
-  animation: shimmerLine 3s ease-in-out infinite alternate;
-}
-
-@keyframes shimmerLine {
-  from { opacity: 0.6; }
-  to   { opacity: 1;   }
-}
-
-body.pres-mode .hero h2 {
-  font-size: 52px;
-  text-shadow: 0 4px 40px rgba(232,176,74,0.2);
-  color: #fff;
-}
-
-body.pres-mode .hero h2 span {
-  color: #E8B04A;
-  text-shadow: 0 0 30px rgba(232,176,74,0.5);
-}
-
-body.pres-mode .hero p {
-  color: rgba(255,255,255,0.75);
-  font-size: 17px;
-  max-width: 640px;
-}
-
-body.pres-mode .hero-tag {
-  background: rgba(201,146,42,0.15);
-  border-color: rgba(201,146,42,0.6);
-  color: #E8B04A;
-  font-size: 13px;
-  letter-spacing: 1.2px;
-  box-shadow: 0 0 16px rgba(201,146,42,0.2);
-}
-
-body.pres-mode .hero-meta-item .label {
-  color: rgba(255,255,255,0.4);
-  font-size: 12px;
-  letter-spacing: 1px;
-}
-body.pres-mode .hero-meta-item .value {
-  color: #E8B04A;
-  font-size: 17px;
-  text-shadow: 0 0 12px rgba(232,176,74,0.35);
-}
-
-/* ── Content area ─────────────────────────────────────────── */
-body.pres-mode .content {
-  padding: 52px 80px 100px;
-}
-
-/* ── Section titles ───────────────────────────────────────── */
-body.pres-mode .section-title {
-  font-size: 32px;
-  color: #fff;
-  border-bottom-color: #E8B04A;
-  text-shadow: 0 0 30px rgba(232,176,74,0.2);
-}
-
-body.pres-mode .section-subtitle {
-  color: rgba(255,255,255,0.5);
-  font-size: 15px;
-}
-
-/* ── Cards — glassmorphism dark ───────────────────────────── */
-body.pres-mode .card {
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
-  box-shadow:
-    0 8px 32px rgba(0,0,0,0.4),
-    inset 0 1px 0 rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-body.pres-mode .card:hover {
-  border-color: rgba(201,146,42,0.3);
-  box-shadow:
-    0 8px 40px rgba(0,0,0,0.5),
-    0 0 0 1px rgba(201,146,42,0.1),
-    inset 0 1px 0 rgba(255,255,255,0.1);
-}
-
-body.pres-mode .card-title {
-  color: #E8B04A;
-  font-size: 16px;
-}
-body.pres-mode .card-title::before {
-  background: #E8B04A;
-  box-shadow: 0 0 8px rgba(232,176,74,0.6);
-}
-
-/* ── Tables — dark glass ──────────────────────────────────── */
-body.pres-mode table {
-  background: rgba(255,255,255,0.03);
-  border-color: rgba(255,255,255,0.1);
-  border-radius: 12px;
-  overflow: hidden;
-}
-body.pres-mode th {
-  background: rgba(27,58,107,0.9);
-  color: #E8B04A;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  border-bottom: 1px solid rgba(201,146,42,0.3);
-}
-body.pres-mode td {
-  color: rgba(255,255,255,0.85);
-  border-bottom-color: rgba(255,255,255,0.06);
-  font-size: 14px;
-}
-body.pres-mode tr:nth-child(even) td {
-  background: rgba(255,255,255,0.025);
-}
-body.pres-mode tr:hover td {
-  background: rgba(201,146,42,0.07);
-}
-
-/* ── Callouts ─────────────────────────────────────────────── */
-body.pres-mode .callout {
-  background: rgba(36,80,143,0.25);
-  border-left-color: rgba(36,80,143,0.9);
-  color: rgba(255,255,255,0.85);
-  border-radius: 0 12px 12px 0;
-  backdrop-filter: blur(6px);
-}
-body.pres-mode .callout.warn {
-  background: rgba(201,146,42,0.15);
-  border-left-color: #E8B04A;
-  box-shadow: inset 0 0 24px rgba(201,146,42,0.05);
-}
-body.pres-mode .callout.danger {
-  background: rgba(192,57,43,0.18);
-  border-left-color: #e74c3c;
-}
-body.pres-mode .callout.ok {
-  background: rgba(30,123,75,0.2);
-  border-left-color: #27ae60;
-}
-
-/* ── Badges ───────────────────────────────────────────────── */
-body.pres-mode .badge-ok {
-  background: rgba(30,123,75,0.25);
-  color: #5ddb8e;
-  border: 1px solid rgba(39,174,96,0.3);
-}
-body.pres-mode .badge-no {
-  background: rgba(192,57,43,0.25);
-  color: #ff7b6b;
-  border: 1px solid rgba(231,76,60,0.3);
-}
-body.pres-mode .badge-gold {
-  background: rgba(201,146,42,0.2);
-  color: #E8B04A;
-  border: 1px solid rgba(201,146,42,0.4);
-  box-shadow: 0 0 8px rgba(201,146,42,0.15);
-}
-
-/* ── Law items ────────────────────────────────────────────── */
-body.pres-mode .law-item {
-  border-color: rgba(255,255,255,0.08);
-  padding: 14px 0;
-}
-body.pres-mode .law-item .law-tag {
-  background: rgba(27,58,107,0.8);
-  color: #E8B04A;
-  border: 1px solid rgba(201,146,42,0.35);
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 12px;
-  font-weight: 700;
-  white-space: nowrap;
-  box-shadow: 0 0 10px rgba(201,146,42,0.15);
-}
-body.pres-mode .law-item div { color: rgba(255,255,255,0.82); }
-body.pres-mode .law-item div p { color: rgba(255,255,255,0.55); font-size: 13px; }
-
-/* ── Flow boxes ───────────────────────────────────────────── */
-body.pres-mode .flow-box {
-  background: rgba(255,255,255,0.04);
-  border-color: rgba(255,255,255,0.1);
-  border-radius: 12px;
-}
-body.pres-mode .flow-box .flow-head { color: rgba(255,255,255,0.9); }
-body.pres-mode .flow-box.highlight {
-  background: rgba(201,146,42,0.1);
-  border-color: rgba(201,146,42,0.45);
-  box-shadow: 0 0 20px rgba(201,146,42,0.12);
-}
-body.pres-mode .flow-box.highlight .flow-head {
-  color: #E8B04A;
-  text-shadow: 0 0 10px rgba(232,176,74,0.4);
-}
-
-/* ── Formula block ────────────────────────────────────────── */
-body.pres-mode .formula {
-  background: linear-gradient(135deg,
-    rgba(27,58,107,0.9) 0%,
-    rgba(36,80,143,0.85) 100%);
-  border: 1px solid rgba(201,146,42,0.3);
-  box-shadow:
-    0 8px 32px rgba(0,0,0,0.4),
-    0 0 0 1px rgba(201,146,42,0.08),
-    inset 0 1px 0 rgba(255,255,255,0.08);
-  border-radius: 14px;
-  color: #fff;
-}
-body.pres-mode .formula .num {
-  color: #E8B04A;
-  text-shadow: 0 0 20px rgba(232,176,74,0.6);
-}
-
-/* ── Forbidden / Allowed lists ────────────────────────────── */
-body.pres-mode .forbidden-list li {
-  background: rgba(192,57,43,0.1);
-  border-color: rgba(231,76,60,0.25);
-  border-left-color: #e74c3c;
-  color: rgba(255,255,255,0.85);
-  border-radius: 0 10px 10px 0;
-}
-body.pres-mode .allowed-list li {
-  background: rgba(30,123,75,0.1);
-  border-color: rgba(39,174,96,0.25);
-  border-left-color: #27ae60;
-  color: rgba(255,255,255,0.85);
-  border-radius: 0 10px 10px 0;
-}
-
-/* ── Checklist ────────────────────────────────────────────── */
-body.pres-mode .checklist-section {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 14px;
-  padding: 16px 20px;
-  margin-bottom: 16px;
-}
-body.pres-mode .checklist-group-title {
-  color: rgba(255,255,255,0.7);
-  font-weight: 700;
-  font-size: 13px;
-  letter-spacing: 0.5px;
-}
-body.pres-mode .checklist-group-title .dot {
-  background: #E8B04A;
-  box-shadow: 0 0 8px rgba(232,176,74,0.6);
-}
-body.pres-mode .checklist-item {
-  background: rgba(255,255,255,0.03);
-  border-color: rgba(255,255,255,0.07);
-  color: rgba(255,255,255,0.82);
-}
-body.pres-mode .checklist-item:hover {
-  background: rgba(201,146,42,0.08);
-  border-color: rgba(201,146,42,0.2);
-}
-body.pres-mode .checklist-item.checked {
-  background: rgba(30,123,75,0.15);
-  border-color: rgba(39,174,96,0.3);
-}
-body.pres-mode .checklist-item.checked .check-box {
-  background: #27ae60;
-  box-shadow: 0 0 10px rgba(39,174,96,0.4);
-  color: #fff;
-}
-body.pres-mode .check-box {
-  background: rgba(255,255,255,0.06);
-  border: 1.5px solid rgba(255,255,255,0.15);
-  color: rgba(255,255,255,0.3);
-}
-
-/* ── Progress bar ─────────────────────────────────────────── */
-body.pres-mode .checklist-progress {
-  background: rgba(255,255,255,0.08);
-  border-radius: 99px;
-}
-body.pres-mode .checklist-progress-bar {
-  background: linear-gradient(90deg, #1E7B4B, #27ae60, #5ddb8e);
-  box-shadow: 0 0 12px rgba(39,174,96,0.5);
-}
-body.pres-mode .progress-label {
-  color: rgba(255,255,255,0.6);
-}
-
-/* ── TOR Steps ────────────────────────────────────────────── */
-body.pres-mode .tor-step {
-  background: rgba(255,255,255,0.04);
-  border-color: rgba(255,255,255,0.1);
-  color: rgba(255,255,255,0.85);
-  border-radius: 12px;
-}
-body.pres-mode .tor-step .step-num {
-  background: rgba(27,58,107,0.9);
-  color: #E8B04A;
-  border: 1px solid rgba(201,146,42,0.4);
-}
-
-/* ── General text in pres mode ────────────────────────────── */
-body.pres-mode .main strong { color: rgba(255,255,255,0.95); }
-body.pres-mode .main p,
-body.pres-mode .main li     { color: rgba(255,255,255,0.80); }
-body.pres-mode td strong    { color: #fff; }
-
-/* ── Scrollbar in pres mode ───────────────────────────────── */
-body.pres-mode ::-webkit-scrollbar       { width: 6px; background: rgba(255,255,255,0.04); }
-body.pres-mode ::-webkit-scrollbar-thumb { background: rgba(201,146,42,0.35); border-radius: 3px; }
-body.pres-mode ::-webkit-scrollbar-thumb:hover { background: rgba(201,146,42,0.6); }
-
-/* ── ZOOM — scale the content for projector ───────────────── */
-body.pres-mode .hero,
-body.pres-mode .content {
-  zoom: 1.55;
-}
-
-/* Toggle button must NOT be zoomed */
-body.pres-mode #pres-toggle { zoom: 1; }
-
-/* ── Enter animation for pres-mode ───────────────────────── */
-body.pres-mode .main {
   animation: presEnter 0.45s cubic-bezier(0.22,1,0.36,1) both;
 }
 @keyframes presEnter {
   from { opacity: 0; transform: scale(0.99); }
   to   { opacity: 1; transform: scale(1);    }
 }
+
+/* ── Hero — emerald cinematic ────────────────────────────── */
+body.pres-mode .hero {
+  background:
+    radial-gradient(ellipse 90% 80% at 50% 0%, rgba(16,185,129,0.25) 0%, transparent 65%),
+    linear-gradient(135deg,
+      rgba(3,13,9,0.97)   0%,
+      rgba(7,35,20,0.92)  45%,
+      rgba(10,45,28,0.88) 70%,
+      rgba(5,14,10,0.97)  100%);
+  padding: 72px 80px 56px;
+  border-bottom: 1px solid rgba(16,185,129,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Top-light beam — emerald */
+body.pres-mode .hero::before {
+  content: '';
+  position: absolute;
+  top: -80px; left: 50%;
+  transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.2) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* Shimmer line — jade */
+body.pres-mode .hero::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(16,185,129,0.4) 20%,
+    rgba(52,211,153,0.95) 50%,
+    rgba(16,185,129,0.4) 80%,
+    transparent 100%);
+  animation: shimmerLine 3s ease-in-out infinite alternate;
+}
+@keyframes shimmerLine {
+  from { opacity: 0.55; }
+  to   { opacity: 1; }
+}
+
+body.pres-mode .hero h2 {
+  font-size: 52px;
+  color: #fff;
+  text-shadow: 0 4px 40px rgba(52,211,153,0.2);
+}
+body.pres-mode .hero h2 span {
+  color: #34d399;
+  text-shadow: 0 0 30px rgba(52,211,153,0.55);
+}
+body.pres-mode .hero p {
+  color: rgba(255,255,255,0.72);
+  font-size: 17px;
+  max-width: 640px;
+}
+body.pres-mode .hero-tag {
+  background: rgba(16,185,129,0.15);
+  border-color: rgba(52,211,153,0.55);
+  color: #34d399;
+  font-size: 13px;
+  letter-spacing: 1.2px;
+  box-shadow: 0 0 16px rgba(16,185,129,0.2);
+}
+body.pres-mode .hero-meta-item .label {
+  color: rgba(255,255,255,0.4);
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+body.pres-mode .hero-meta-item .value {
+  color: #34d399;
+  font-size: 17px;
+  text-shadow: 0 0 12px rgba(52,211,153,0.4);
+}
+
+/* ── Content area ────────────────────────────────────────── */
+body.pres-mode .content { padding: 52px 80px 100px; }
+
+/* ── Section titles ──────────────────────────────────────── */
+body.pres-mode .section-title {
+  font-size: 32px;
+  color: #fff;
+  border-bottom-color: #34d399;
+  text-shadow: 0 0 30px rgba(52,211,153,0.22);
+}
+body.pres-mode .section-subtitle {
+  color: rgba(255,255,255,0.48);
+  font-size: 15px;
+}
+
+/* ── Cards — jade glass ──────────────────────────────────── */
+body.pres-mode .card {
+  background: rgba(16,185,129,0.06);
+  border: 1px solid rgba(52,211,153,0.15);
+  border-radius: 16px;
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(52,211,153,0.1);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+body.pres-mode .card:hover {
+  border-color: rgba(52,211,153,0.35);
+  box-shadow:
+    0 10px 42px rgba(0,0,0,0.5),
+    0 0 0 1px rgba(52,211,153,0.12),
+    inset 0 1px 0 rgba(52,211,153,0.15);
+}
+body.pres-mode .card-title {
+  color: #34d399;
+  font-size: 16px;
+}
+body.pres-mode .card-title::before {
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52,211,153,0.65);
+}
+
+/* ── Tables ──────────────────────────────────────────────── */
+body.pres-mode table {
+  background: rgba(16,185,129,0.04);
+  border-color: rgba(52,211,153,0.12);
+  border-radius: 12px;
+  overflow: hidden;
+}
+body.pres-mode th {
+  background: rgba(7,35,20,0.9);
+  color: #34d399;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(52,211,153,0.25);
+}
+body.pres-mode td {
+  color: rgba(255,255,255,0.83);
+  border-bottom-color: rgba(52,211,153,0.07);
+  font-size: 14px;
+}
+body.pres-mode tr:nth-child(even) td { background: rgba(16,185,129,0.04); }
+body.pres-mode tr:hover td { background: rgba(52,211,153,0.07); }
+
+/* ── Callouts ────────────────────────────────────────────── */
+body.pres-mode .callout {
+  background: rgba(16,185,129,0.1);
+  border-left-color: rgba(16,185,129,0.7);
+  color: rgba(255,255,255,0.85);
+  border-radius: 0 12px 12px 0;
+  backdrop-filter: blur(6px);
+}
+body.pres-mode .callout.warn {
+  background: rgba(251,191,36,0.12);
+  border-left-color: #fbbf24;
+}
+body.pres-mode .callout.danger {
+  background: rgba(239,68,68,0.14);
+  border-left-color: #ef4444;
+}
+body.pres-mode .callout.ok {
+  background: rgba(16,185,129,0.18);
+  border-left-color: #10b981;
+  box-shadow: inset 0 0 24px rgba(16,185,129,0.06);
+}
+
+/* ── Badges ──────────────────────────────────────────────── */
+body.pres-mode .badge-ok {
+  background: rgba(16,185,129,0.22);
+  color: #6ee7b7;
+  border: 1px solid rgba(52,211,153,0.35);
+}
+body.pres-mode .badge-no {
+  background: rgba(239,68,68,0.2);
+  color: #fca5a5;
+  border: 1px solid rgba(239,68,68,0.3);
+}
+body.pres-mode .badge-gold {
+  background: rgba(251,191,36,0.18);
+  color: #fde68a;
+  border: 1px solid rgba(251,191,36,0.35);
+  box-shadow: 0 0 8px rgba(251,191,36,0.15);
+}
+
+/* ── Law items ───────────────────────────────────────────── */
+body.pres-mode .law-item {
+  border-color: rgba(52,211,153,0.1);
+  padding: 14px 0;
+  background: transparent;
+}
+body.pres-mode .law-item .law-tag {
+  background: rgba(7,35,20,0.85);
+  color: #34d399;
+  border: 1px solid rgba(52,211,153,0.35);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  box-shadow: 0 0 10px rgba(16,185,129,0.18);
+}
+body.pres-mode .law-item div { color: rgba(255,255,255,0.82); }
+body.pres-mode .law-item div p { color: rgba(255,255,255,0.5); font-size: 13px; }
+
+/* ── Flow boxes ──────────────────────────────────────────── */
+body.pres-mode .flow-box {
+  background: rgba(16,185,129,0.06);
+  border-color: rgba(52,211,153,0.14);
+  border-radius: 12px;
+}
+body.pres-mode .flow-box .flow-head { color: rgba(255,255,255,0.9); }
+body.pres-mode .flow-box.highlight {
+  background: rgba(16,185,129,0.14);
+  border-color: rgba(52,211,153,0.45);
+  box-shadow: 0 0 20px rgba(16,185,129,0.14);
+}
+body.pres-mode .flow-box.highlight .flow-head {
+  color: #34d399;
+  text-shadow: 0 0 10px rgba(52,211,153,0.45);
+}
+
+/* ── Formula ─────────────────────────────────────────────── */
+body.pres-mode .formula {
+  background: linear-gradient(135deg,
+    rgba(7,35,20,0.92) 0%,
+    rgba(10,45,28,0.88) 100%);
+  border: 1px solid rgba(52,211,153,0.3);
+  box-shadow:
+    0 8px 32px rgba(0,0,0,0.4),
+    0 0 0 1px rgba(52,211,153,0.08),
+    inset 0 1px 0 rgba(52,211,153,0.1);
+  border-radius: 14px;
+  color: #fff;
+}
+body.pres-mode .formula .num {
+  color: #34d399;
+  text-shadow: 0 0 22px rgba(52,211,153,0.65);
+}
+
+/* ── Forbidden / Allowed lists ───────────────────────────── */
+body.pres-mode .forbidden-list li {
+  background: rgba(239,68,68,0.1);
+  border-color: rgba(239,68,68,0.2);
+  border-left-color: #ef4444;
+  color: rgba(255,255,255,0.85);
+  border-radius: 0 10px 10px 0;
+}
+body.pres-mode .allowed-list li {
+  background: rgba(16,185,129,0.1);
+  border-color: rgba(52,211,153,0.2);
+  border-left-color: #10b981;
+  color: rgba(255,255,255,0.85);
+  border-radius: 0 10px 10px 0;
+}
+
+/* ── Checklist ───────────────────────────────────────────── */
+body.pres-mode .checklist-section {
+  background: rgba(16,185,129,0.05);
+  border: 1px solid rgba(52,211,153,0.12);
+  border-radius: 14px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+}
+body.pres-mode .checklist-group-title {
+  color: rgba(255,255,255,0.72);
+  font-weight: 700;
+  font-size: 13px;
+}
+body.pres-mode .checklist-group-title .dot {
+  background: #34d399;
+  box-shadow: 0 0 8px rgba(52,211,153,0.65);
+}
+body.pres-mode .checklist-item {
+  background: rgba(16,185,129,0.04);
+  border-color: rgba(52,211,153,0.1);
+  color: rgba(255,255,255,0.82);
+}
+body.pres-mode .checklist-item:hover {
+  background: rgba(16,185,129,0.1);
+  border-color: rgba(52,211,153,0.3);
+}
+body.pres-mode .checklist-item.checked {
+  background: rgba(16,185,129,0.18);
+  border-color: rgba(52,211,153,0.35);
+}
+body.pres-mode .checklist-item.checked .check-box {
+  background: #10b981;
+  border-color: #10b981;
+  box-shadow: 0 0 10px rgba(16,185,129,0.45);
+  color: #fff;
+}
+body.pres-mode .check-box {
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(52,211,153,0.2);
+  color: rgba(255,255,255,0.3);
+}
+
+/* ── Progress bar ────────────────────────────────────────── */
+body.pres-mode .checklist-progress {
+  background: rgba(52,211,153,0.1);
+  border-radius: 99px;
+}
+body.pres-mode .checklist-progress-bar {
+  background: linear-gradient(90deg, #059669, #10b981, #34d399);
+  box-shadow: 0 0 12px rgba(16,185,129,0.5);
+}
+body.pres-mode .progress-label { color: rgba(255,255,255,0.55); }
+
+/* ── TOR Steps ───────────────────────────────────────────── */
+body.pres-mode .tor-step {
+  background: rgba(16,185,129,0.06);
+  border-color: rgba(52,211,153,0.14);
+  color: rgba(255,255,255,0.85);
+  border-radius: 12px;
+}
+body.pres-mode .tor-step .num {
+  background: rgba(7,35,20,0.9);
+  color: #34d399;
+  border: 1px solid rgba(52,211,153,0.4);
+}
+body.pres-mode .tor-step.required .num {
+  background: rgba(16,185,129,0.35);
+  color: #fff;
+  border-color: #10b981;
+  box-shadow: 0 0 8px rgba(16,185,129,0.4);
+}
+
+/* ── Timeline ────────────────────────────────────────────── */
+body.pres-mode .timeline::before { background: rgba(52,211,153,0.2); }
+body.pres-mode .timeline-item::before {
+  background: #34d399;
+  box-shadow: 0 0 0 2px #34d399, 0 0 10px rgba(52,211,153,0.4);
+  border-color: rgba(5,14,10,0.9);
+}
+body.pres-mode .timeline-item .t-title { color: #34d399; }
+body.pres-mode .timeline-item .t-body {
+  background: rgba(16,185,129,0.08);
+  border-color: rgba(52,211,153,0.15);
+  color: rgba(255,255,255,0.82);
+}
+
+/* ── Compare cells ───────────────────────────────────────── */
+body.pres-mode .compare-header.ok { background: #059669; }
+body.pres-mode .compare-header.no { background: #dc2626; }
+body.pres-mode .compare-cell {
+  background: rgba(16,185,129,0.05);
+  border-bottom-color: rgba(52,211,153,0.08);
+  color: rgba(255,255,255,0.82);
+}
+body.pres-mode .compare-cell.ok-bg { background: rgba(16,185,129,0.12); }
+body.pres-mode .compare-cell.no-bg { background: rgba(239,68,68,0.08); }
+
+/* ── General text ────────────────────────────────────────── */
+body.pres-mode .main strong { color: rgba(255,255,255,0.95); }
+body.pres-mode .main p,
+body.pres-mode .main li     { color: rgba(255,255,255,0.80); }
+body.pres-mode td strong    { color: #fff; }
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+body.pres-mode ::-webkit-scrollbar       { width: 5px; background: rgba(16,185,129,0.05); }
+body.pres-mode ::-webkit-scrollbar-thumb { background: rgba(16,185,129,0.3); border-radius: 3px; }
+body.pres-mode ::-webkit-scrollbar-thumb:hover { background: rgba(52,211,153,0.55); }
+
+/* ── ZOOM ────────────────────────────────────────────────── */
+body.pres-mode .hero,
+body.pres-mode .content { zoom: 1.55; }
+body.pres-mode #pres-toggle { zoom: 1; }
