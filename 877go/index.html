@@ -1,1 +1,1457 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ว 877 — จ้างเหมาบริการ (บุคคลธรรมดา)</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="presentation.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+  :root {
+    --navy:   #1B3A6B;
+    --navy2:  #24508F;
+    --gold:   #C9922A;
+    --gold2:  #E8B04A;
+    --red:    #C0392B;
+    --green:  #1E7B4B;
+    --bg:     #F5F6FA;
+    --white:  #FFFFFF;
+    --gray1:  #EEF0F5;
+    --gray2:  #D1D5E0;
+    --gray3:  #8892A4;
+    --text:   #1A1F2E;
+    --sidebar-w: 260px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Sarabun', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1.7;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR ── */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-height: 100vh;
+    background: var(--navy);
+    position: fixed;
+    top: 0; left: 0;
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-brand {
+    padding: 24px 20px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+
+  .sidebar-brand .badge {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-bottom: 8px;
+  }
+
+  .sidebar-brand h1 {
+    color: var(--white);
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1.3;
+  }
+
+  .sidebar-brand p {
+    color: rgba(255,255,255,0.55);
+    font-size: 12px;
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  .nav-label {
+    color: rgba(255,255,255,0.4);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 16px 20px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: rgba(255,255,255,0.72);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    border-left: 3px solid transparent;
+    transition: all 0.18s;
+    cursor: pointer;
+  }
+
+  .nav-item:hover, .nav-item.active {
+    background: rgba(255,255,255,0.08);
+    color: var(--white);
+    border-left-color: var(--gold);
+  }
+
+  .nav-item .nav-num {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.6);
+    font-size: 11px;
+    font-weight: 700;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .nav-item.active .nav-num {
+    background: var(--gold);
+    color: var(--white);
+  }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 16px 20px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.35);
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  /* ── MAIN ── */
+  .main {
+    margin-left: var(--sidebar-w);
+    flex: 1;
+    min-height: 100vh;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy2) 60%, #1a4a8a 100%);
+    padding: 56px 60px 48px;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    right: -60px; top: -60px;
+    width: 340px; height: 340px;
+    border-radius: 50%;
+    border: 40px solid rgba(201,146,42,0.15);
+    pointer-events: none;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    right: 60px; bottom: -80px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 30px solid rgba(255,255,255,0.06);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201,146,42,0.2);
+    border: 1px solid rgba(201,146,42,0.5);
+    color: var(--gold2);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .hero h2 {
+    font-size: 36px;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .hero h2 span {
+    color: var(--gold2);
+  }
+
+  .hero p {
+    color: rgba(255,255,255,0.72);
+    font-size: 15px;
+    max-width: 560px;
+    position: relative;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+    position: relative;
+  }
+
+  .hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .hero-meta-item .label {
+    color: rgba(255,255,255,0.45);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  .hero-meta-item .value {
+    color: var(--white);
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  /* ── CONTENT AREA ── */
+  .content {
+    padding: 40px 60px 80px;
+  }
+
+  /* ── SECTIONS ── */
+  .section {
+    display: none;
+    animation: fadeIn 0.25s ease;
+  }
+
+  .section.active { display: block; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-title {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 6px;
+    padding-bottom: 14px;
+    border-bottom: 3px solid var(--gold);
+    display: inline-block;
+  }
+
+  .section-subtitle {
+    color: var(--gray3);
+    font-size: 14px;
+    margin-bottom: 28px;
+    margin-top: 4px;
+  }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    border: 1px solid var(--gray2);
+    box-shadow: 0 2px 8px rgba(27,58,107,0.06);
+  }
+
+  .card-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title::before {
+    content: '';
+    width: 4px;
+    height: 18px;
+    background: var(--gold);
+    border-radius: 2px;
+    display: block;
+    flex-shrink: 0;
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  /* ── TABLES ── */
+  .tbl-wrap { overflow-x: auto; margin-bottom: 20px; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: var(--white);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--gray2);
+  }
+
+  th {
+    background: var(--navy);
+    color: var(--white);
+    font-weight: 700;
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+  }
+
+  td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--gray1);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:nth-child(even) td { background: #F8F9FC; }
+
+  /* ── BADGES ── */
+  .badge-ok {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #E8F5EE; color: var(--green);
+    font-size: 12px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+  }
+
+  .badge-no {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #FDECEA; color: var(--red);
+    font-size: 12px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+  }
+
+  .badge-gold {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #FDF3E3; color: var(--gold);
+    font-size: 12px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+  }
+
+  /* ── CALLOUT ── */
+  .callout {
+    border-left: 4px solid var(--navy);
+    background: #EEF2FA;
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  .callout.warn {
+    border-color: var(--gold);
+    background: #FDF3E3;
+  }
+
+  .callout.danger {
+    border-color: var(--red);
+    background: #FDECEA;
+  }
+
+  .callout.ok {
+    border-color: var(--green);
+    background: #E8F5EE;
+  }
+
+  .callout strong { font-weight: 700; }
+
+  /* ── FORBIDDEN LIST ── */
+  .forbidden-list { list-style: none; }
+
+  .forbidden-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--white);
+    border: 1px solid #F5D0CD;
+    border-left: 4px solid var(--red);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .forbidden-list li .icon {
+    font-size: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .forbidden-list li .detail {
+    color: var(--gray3);
+    font-size: 12px;
+    margin-top: 3px;
+  }
+
+  .allowed-list { list-style: none; }
+
+  .allowed-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--white);
+    border: 1px solid #C3E6D4;
+    border-left: 4px solid var(--green);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .allowed-list li .icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  /* ── FLOW BOXES ── */
+  .flow {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+
+  .flow-box {
+    flex: 1;
+    min-width: 180px;
+    background: var(--white);
+    border: 1px solid var(--gray2);
+    border-radius: 10px;
+    padding: 16px;
+    position: relative;
+    font-size: 13px;
+  }
+
+  .flow-box .flow-head {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .flow-box.highlight { border-color: var(--gold); background: #FDF3E3; }
+  .flow-box.highlight .flow-head { color: var(--gold); }
+
+  /* ── FORMULA ── */
+  .formula {
+    background: var(--navy);
+    color: var(--white);
+    border-radius: 10px;
+    padding: 20px 24px;
+    font-size: 15px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  .formula .num { color: var(--gold2); font-size: 22px; font-weight: 800; }
+  .formula small { font-size: 12px; color: rgba(255,255,255,0.55); font-weight: 400; display: block; margin-top: 4px; }
+
+  /* ── TOR STEPS ── */
+  .tor-steps { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 20px; }
+
+  .tor-step {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--white);
+    border: 1px solid var(--gray2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+  }
+
+  .tor-step .num {
+    background: var(--navy);
+    color: var(--white);
+    font-weight: 800;
+    font-size: 12px;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .tor-step.required .num { background: var(--gold); }
+
+  /* ── CHECKLIST ── */
+  .checklist-section { margin-bottom: 24px; }
+
+  .checklist-group-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .checklist-group-title .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+
+  .checklist-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 11px 14px;
+    background: var(--white);
+    border: 1px solid var(--gray2);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.18s;
+    font-size: 14px;
+  }
+
+  .checklist-item:hover { background: #F0F3FA; border-color: var(--navy2); }
+
+  .checklist-item.checked {
+    background: #E8F5EE;
+    border-color: #A3D9B8;
+  }
+
+  .checklist-item.checked .check-text { color: var(--green); text-decoration: line-through; }
+
+  .check-box {
+    width: 20px; height: 20px;
+    border: 2px solid var(--gray2);
+    border-radius: 5px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+    transition: all 0.18s;
+    font-size: 12px;
+  }
+
+  .checklist-item.checked .check-box {
+    background: var(--green);
+    border-color: var(--green);
+    color: var(--white);
+  }
+
+  .checklist-progress {
+    background: var(--gray1);
+    border-radius: 20px;
+    height: 6px;
+    margin-bottom: 20px;
+    overflow: hidden;
+  }
+
+  .checklist-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--green), #27ae60);
+    border-radius: 20px;
+    transition: width 0.4s ease;
+  }
+
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--gray3);
+    margin-bottom: 6px;
+  }
+
+  /* ── COMPARE ── */
+  .compare-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    background: var(--gray2);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+
+  .compare-col { background: var(--white); }
+
+  .compare-header {
+    padding: 16px 20px;
+    font-size: 15px;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .compare-header.ok { background: var(--green); color: var(--white); }
+  .compare-header.no { background: var(--red); color: var(--white); }
+
+  .compare-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+  }
+
+  .compare-cell {
+    padding: 12px 18px;
+    font-size: 13px;
+    background: var(--white);
+    border-bottom: 1px solid var(--gray1);
+  }
+
+  .compare-cell .label {
+    color: var(--gray3);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 3px;
+  }
+
+  .compare-cell.ok-bg { background: #F0FAF4; }
+  .compare-cell.no-bg { background: #FDF2F1; }
+
+  /* ── LAW REFS ── */
+  .law-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--white);
+    border: 1px solid var(--gray2);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+  }
+
+  .law-item .law-tag {
+    background: var(--navy);
+    color: var(--white);
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .law-item p { color: var(--gray3); font-size: 13px; margin-top: 3px; }
+
+  /* ── PAYMENT TIMELINE ── */
+  .timeline { position: relative; padding-left: 28px; }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 6px; top: 0; bottom: 0;
+    width: 2px;
+    background: var(--gray2);
+  }
+
+  .timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+  }
+
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -25px;
+    top: 6px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--gold);
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 2px var(--gold);
+  }
+
+  .timeline-item .t-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+
+  .timeline-item .t-body {
+    font-size: 13px;
+    color: var(--text);
+    background: var(--white);
+    border: 1px solid var(--gray2);
+    border-radius: 8px;
+    padding: 10px 14px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    body { flex-direction: column; }
+    .sidebar { position: relative; width: 100%; min-height: auto; flex-direction: row; flex-wrap: wrap; }
+    .main { margin-left: 0; }
+    .hero { padding: 32px 24px; }
+    .content { padding: 24px 20px 60px; }
+    .grid-2, .tor-steps, .compare-grid { grid-template-columns: 1fr; }
+    .compare-row { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media print {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .section { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<button id="pres-toggle" onclick="togglePres()" title="สลับโหมดนำเสนอ">
+  <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+  <span class="lbl-normal">โหมดนำเสนอ</span>
+  <span class="lbl-pres">โหมดปกติ</span>
+</button>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-brand">
+    <div class="badge">ด่วนที่สุด</div>
+    <h1>ว 877<br>จ้างเหมาบริการ</h1>
+    <p>กค (กวจ) 0405.2/ว 877<br>8 ธันวาคม 2568</p>
+  </div>
+
+  <div class="nav-label">เนื้อหา</div>
+  <a class="nav-item active" onclick="show('s1',this)">
+    <span class="nav-num">1</span> ที่มาและบริบท
+  </a>
+  <a class="nav-item" onclick="show('s2',this)">
+    <span class="nav-num">2</span> นิยามที่ถูกต้อง
+  </a>
+  <a class="nav-item" onclick="show('s3',this)">
+    <span class="nav-num">3</span> การจัดทำ TOR
+  </a>
+  <a class="nav-item" onclick="show('s4',this)">
+    <span class="nav-num">4</span> การทำสัญญา
+  </a>
+  <a class="nav-item" onclick="show('s5',this)">
+    <span class="nav-num">5</span> เงื่อนไขห้ามมี ❌
+  </a>
+  <a class="nav-item" onclick="show('s6',this)">
+    <span class="nav-num">6</span> เงื่อนไขทำได้ ✅
+  </a>
+  <a class="nav-item" onclick="show('s7',this)">
+    <span class="nav-num">7</span> ส่งมอบงานและการจ่ายเงิน
+  </a>
+  <a class="nav-item" onclick="show('s8',this)">
+    <span class="nav-num">8</span> การคิดค่าปรับ
+  </a>
+  <a class="nav-item" onclick="show('s9',this)">
+    <span class="nav-num">9</span> การรายงานรายงวด
+  </a>
+  <a class="nav-item" onclick="show('s10',this)">
+    <span class="nav-num">10</span> เปรียบเทียบ
+  </a>
+  <a class="nav-item" onclick="show('s11',this)">
+    <span class="nav-num">11</span> Checklist พัสดุ
+  </a>
+  <a class="nav-item" onclick="show('s12',this)">
+    <span class="nav-num">12</span> อ้างอิงกฎหมาย
+  </a>
+
+  <div class="sidebar-footer">
+    จัดทำจาก ว 877<br>และสไลด์ประกอบการอบรม
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-tag">📋 หนังสือเวียนกรมบัญชีกลาง</div>
+    <h2>ซ้อมความเข้าใจ<br><span>งานจ้างเหมาบริการ</span> (บุคคลธรรมดา)</h2>
+    <p>ภายใต้ พรบ.จัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560<br>แนวทางปฏิบัติสำหรับหน่วยงานของรัฐทุกประเภท</p>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <span class="label">เลขที่</span>
+        <span class="value">กค (กวจ) 0405.2/ว 877</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">วันที่</span>
+        <span class="value">8 ธันวาคม 2568</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">ผู้ลงนาม</span>
+        <span class="value">นางแพตริเซีย มงคลวนิช</span>
+      </div>
+      <div class="hero-meta-item">
+        <span class="label">ผลบังคับ</span>
+        <span class="value">ตั้งแต่วันที่ลงนาม</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content">
+
+    <!-- S1: ที่มา -->
+    <div id="s1" class="section active">
+      <div class="section-title">ที่มาและบริบท</div>
+      <p class="section-subtitle">เหตุผลที่กรมบัญชีกลางออกหนังสือเวียนฉบับนี้</p>
+
+      <div class="callout warn">
+        <strong>สาเหตุหลัก:</strong> TOR และสัญญาจำนวนมากกำหนดเงื่อนไขที่มีลักษณะ "จ้างแรงงาน" แทนที่จะเป็น "จ้างเหมาบริการ" อย่างถูกต้อง ทำให้เกิดความไม่ชัดเจนในทางปฏิบัติ
+      </div>
+
+      <div class="card">
+        <div class="card-title">ปัญหาที่นำมาสู่การออก ว 877</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>ประเด็น</th><th>รายละเอียด</th></tr></thead>
+            <tbody>
+              <tr><td><strong>กลุ่มบุคคล</strong></td><td>ลูกจ้างที่จ้างจากงบจัดสรร สพฐ. ซึ่งไม่เคยถูกบรรจุในกรอบอัตรากำลัง ก.พ. แต่ต้น</td></tr>
+              <tr><td><strong>ปัญหางบประมาณ</strong></td><td>สพฐ. แบกรับงบประกันสังคมและค่าจ้างผ่าน พรบ.งบประมาณ หมวดงบอื่นมาตลอด</td></tr>
+              <tr><td><strong>ปัญหาเชิงกฎหมาย</strong></td><td>การจ้างเหมาบริการภายใต้ พรบ. 2560 <strong>ไม่เข้าหลักการคุ้มครองแรงงาน</strong> ฉบับที่ 9 ปี 2568 มาตรา 4/1</td></tr>
+              <tr><td><strong>สาเหตุออกหนังสือ</strong></td><td>กำหนดขอบเขตงานไม่ตรงกับเจตนารมณ์ของการจ้างเหมาบริการ และเงื่อนไขสัญญาคลุมเครือ</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ข้อมูลหนังสือเวียน ว 877</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>รายการ</th><th>รายละเอียด</th></tr></thead>
+            <tbody>
+              <tr><td>เลขที่</td><td>กค (กวจ) 0405.2/<strong>ว 877</strong></td></tr>
+              <tr><td>วันที่</td><td>8 ธันวาคม 2568</td></tr>
+              <tr><td>ผู้ออก</td><td>คณะกรรมการวินิจฉัยปัญหาการจัดซื้อจัดจ้างฯ กรมบัญชีกลาง</td></tr>
+              <tr><td>ผู้ลงนาม</td><td>นางแพตริเซีย มงคลวนิช (อธิบดีกรมบัญชีกลาง ปฏิบัติราชการแทนปลัดกระทรวงการคลัง)</td></tr>
+              <tr><td>อำนาจ</td><td>มาตรา 29 วรรคหนึ่ง (3) แห่ง พรบ.จัดซื้อจัดจ้างฯ 2560</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- S2: นิยาม -->
+    <div id="s2" class="section">
+      <div class="section-title">นิยาม: งานจ้างเหมาบริการที่ถูกต้อง</div>
+      <p class="section-subtitle">หลักการสำคัญที่แยกแยะ "จ้างเหมาบริการ" ออกจาก "จ้างแรงงาน"</p>
+
+      <div class="callout ok">
+        <strong>หลักการสำคัญ:</strong> มุ่งเน้น <strong>ผลสำเร็จของงาน</strong> ไม่ใช่การควบคุมตัวบุคคล — ผู้รับจ้างมีอิสระในการทำงาน ผู้ว่าจ้างตรวจตราได้แต่สั่งการไม่ได้
+      </div>
+
+      <div class="card">
+        <div class="card-title">ลักษณะที่ต้องมี — จ้างเหมาบริการที่ถูกต้อง</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>องค์ประกอบ</th><th>รายละเอียด</th></tr></thead>
+            <tbody>
+              <tr><td><strong>วัตถุประสงค์</strong></td><td>ให้ผู้รับจ้างทำงานสิ่งใดสิ่งหนึ่งจนสำเร็จ</td></tr>
+              <tr><td><strong>สินจ้าง</strong></td><td>พิจารณาจากเนื้องานที่ทำ (ผลสำเร็จ) — ไม่ใช่เวลา</td></tr>
+              <tr><td><strong>ความสัมพันธ์</strong></td><td>ผู้ว่าจ้าง ↔ ผู้รับจ้าง (ไม่ใช่นายจ้าง-ลูกจ้าง)</td></tr>
+              <tr><td><strong>อิสระ</strong></td><td>ผู้รับจ้างมีอิสระในการทำงานตามสัญญา</td></tr>
+              <tr><td><strong>อำนาจผู้ว่าจ้าง</strong></td><td>ตรวจตราและสั่งให้แก้ไขงานที่บกพร่องเท่านั้น</td></tr>
+              <tr><td><strong>การจ่ายเงิน</strong></td><td>จ่ายเมื่อส่งมอบงานและคณะกรรมการตรวจรับพัสดุเห็นว่าถูกต้องครบถ้วน</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="callout danger">
+        <strong>ไม่เป็น:</strong> การจ้างแรงงานตามประมวลกฎหมายแพ่งและพาณิชย์ และไม่ใช่การจ้างลูกจ้างของหน่วยงานรัฐ
+      </div>
+    </div>
+
+    <!-- S3: TOR -->
+    <div id="s3" class="section">
+      <div class="section-title">การจัดทำ TOR</div>
+      <p class="section-subtitle">ตาม ว 159 (กค (กวจ) 0405.4/ว 159 ลงวันที่ 20 มีนาคม 2566)</p>
+
+      <div class="callout">
+        <strong>ขั้นต่ำที่ต้องมี:</strong> ร่างขอบเขตของงานที่จะดำเนินการจ้าง + หลักเกณฑ์การพิจารณาคัดเลือกข้อเสนอ
+      </div>
+
+      <div class="card">
+        <div class="card-title">มาตรฐาน TOR 10 หัวข้อ</div>
+        <div class="tor-steps">
+          <div class="tor-step required">
+            <span class="num">1</span>
+            <div>ความเป็นมา</div>
+          </div>
+          <div class="tor-step required">
+            <span class="num">2</span>
+            <div>วัตถุประสงค์</div>
+          </div>
+          <div class="tor-step">
+            <span class="num">3</span>
+            <div>คุณสมบัติของผู้ยื่นข้อเสนอ</div>
+          </div>
+          <div class="tor-step">
+            <span class="num">4</span>
+            <div>รายละเอียดคุณลักษณะเฉพาะ / ขอบเขตของงานจ้าง</div>
+          </div>
+          <div class="tor-step">
+            <span class="num">5</span>
+            <div>กำหนดเวลาส่งมอบพัสดุ</div>
+          </div>
+          <div class="tor-step required">
+            <span class="num">6</span>
+            <div>หลักเกณฑ์การพิจารณาคัดเลือกข้อเสนอ</div>
+          </div>
+          <div class="tor-step">
+            <span class="num">7</span>
+            <div>วงเงินงบประมาณ / วงเงินที่ได้รับจัดสรร</div>
+          </div>
+          <div class="tor-step">
+            <span class="num">8</span>
+            <div>งวดงานและการจ่ายเงิน</div>
+          </div>
+          <div class="tor-step">
+            <span class="num">9</span>
+            <div>อัตราค่าปรับ</div>
+          </div>
+          <div class="tor-step">
+            <span class="num">10</span>
+            <div>ระยะเวลารับประกันความชำรุดบกพร่อง (ถ้ามี)</div>
+          </div>
+        </div>
+        <p style="font-size:12px;color:var(--gray3)">🟡 สีทอง = บังคับขั้นต่ำ  ⬜ ขาว = มาตรฐานครบถ้วน</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">ต้องเน้น ✅</div>
+          <ul class="allowed-list">
+            <li><span class="icon">📦</span><div>ผลผลิต / ชิ้นงาน ที่ต้องส่งมอบ</div></li>
+            <li><span class="icon">🔢</span><div>จำนวนงาน (เชิงปริมาณที่วัดได้)</div></li>
+            <li><span class="icon">✍️</span><div>กำหนดให้ "จัดทำ..." หรือ "จำนวนผลงาน..."</div></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">ห้ามใช้ ❌</div>
+          <ul class="forbidden-list">
+            <li><span class="icon">🚫</span><div>ลักษณะการปฏิบัติงานของบุคคลประจำ</div></li>
+            <li><span class="icon">🚫</span><div>ภาษาที่สื่อถึงการควบคุมตัวบุคคล</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ตัวอย่างขอบเขตงาน — งานธุรการ (ข้อ 4 ของ TOR)</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>ข้อ</th><th>ขอบเขตงาน</th></tr></thead>
+            <tbody>
+              <tr><td>4.1</td><td>จัดทำบัญชีทะเบียนลงรับ-ส่ง หนังสือราชการจากหน่วยงานภายนอกและภายใน ผ่านระบบสารบรรณอิเล็กทรอนิกส์</td></tr>
+              <tr><td>4.2</td><td>จัดพิมพ์ร่างหนังสือราชการ บันทึกข้อความ และเอกสารทางราชการทั่วไป</td></tr>
+              <tr><td>4.3</td><td>จัดทำเอกสาร สิ่งพิมพ์ สื่อ ให้สอดคล้องกับภารกิจของหน่วยงาน</td></tr>
+              <tr><td>4.4</td><td>จัดเก็บเอกสารเข้าแฟ้ม หรือสแกนจัดเก็บในรูปแบบดิจิทัล (E-filing)</td></tr>
+              <tr><td>4.5</td><td>จัดทำ ออกแบบ ดูแล ปรับปรุงข้อมูลบนเว็บไซต์กลุ่มกฎหมายและคดี</td></tr>
+              <tr><td>4.6</td><td>จัดทำบัญชีรายงานข้อมูลเชิงสถิติและสรุปผลการดำเนินงาน</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- S4: สัญญา -->
+    <div id="s4" class="section">
+      <div class="section-title">การทำสัญญา</div>
+      <p class="section-subtitle">แนวทางปฏิบัติแยกตามวันที่ลงนาม โดยมีจุดตัดที่ 8 ธันวาคม 2568</p>
+
+      <div class="grid-2">
+        <div class="card" style="border-top:4px solid var(--navy)">
+          <div class="card-title">สัญญาที่เกิดขึ้นภายหลัง 8 ธค 68</div>
+          <ul class="allowed-list">
+            <li><span class="icon">📝</span><div><strong>ยกร่างสัญญาใหม่</strong><br><span style="font-size:13px;color:var(--gray3)">ส่งให้สำนักงานอัยการสูงสุดเห็นชอบก่อน<br>ยกเว้น: แบบที่อัยการสูงสุดเคยให้ความเห็นชอบแล้ว</span></div></li>
+          </ul>
+        </div>
+        <div class="card" style="border-top:4px solid var(--gold)">
+          <div class="card-title">สัญญาที่ลงนามก่อน 8 ธค 68</div>
+          <ul class="allowed-list">
+            <li><span class="icon">✏️</span><div><strong>แก้ไขสัญญา</strong> ให้สอดคล้อง<br><span style="font-size:13px;color:var(--gray3)">อาศัย มาตรา 47 แห่ง พรบ.ฯ + ระเบียบกระทรวงการคลังฯ ข้อ 165</span></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="callout warn">
+        <strong>⚡ ข้อยกเว้นสำคัญ:</strong> สัญญาลดรูปตาม พรบ. มาตรา 96 (1) เช่น <strong>ใบสั่งจ้าง / ข้อตกลงการจ้าง ไม่ต้องขอความเห็นชอบจากอัยการสูงสุด</strong> — ใช้สำหรับกรณีเฉพาะเจาะจงวงเงิน<strong>ต่ำกว่า 500,000 บาท</strong>
+      </div>
+    </div>
+
+    <!-- S5: ห้ามมี -->
+    <div id="s5" class="section">
+      <div class="section-title">เงื่อนไขในสัญญา — ต้องไม่มี ❌</div>
+      <p class="section-subtitle">เงื่อนไขที่มีลักษณะใช้อำนาจควบคุม บังคับบัญชา หรือสั่งการนอกเหนือจากขอบเขตงาน</p>
+
+      <div class="callout danger">
+        <strong>หลักการ:</strong> สัญญาจ้างเหมาบริการต้องไม่มีลักษณะของการจ้างแรงงาน 4 ข้อต่อไปนี้โดยเด็ดขาด
+      </div>
+
+      <ul class="forbidden-list">
+        <li>
+          <span class="icon">🕐</span>
+          <div>
+            <strong>กำหนดเวลาปฏิบัติงาน + สถานที่เฉพาะ</strong>
+            <div class="detail">ตัวอย่างที่ห้ามระบุ: "ปฏิบัติงานตั้งแต่เวลา 08.30-16.30 น. โดยต้องปฏิบัติงานเฉพาะ ณ สถานที่ทำการของผู้ว่าจ้างเท่านั้น"</div>
+          </div>
+        </li>
+        <li>
+          <span class="icon">💸</span>
+          <div>
+            <strong>หักเงินค่าจ้างกรณีไม่มาหรือมาสาย</strong>
+            <div class="detail">ตัวอย่างที่ห้ามระบุ: "หักเงินวันละ X บาท กรณีไม่มาปฏิบัติงาน" หรือ "หักเงินกรณีมาสาย"</div>
+          </div>
+        </li>
+        <li>
+          <span class="icon">💰</span>
+          <div>
+            <strong>คิดค่าปรับในวันที่ไม่มาปฏิบัติงาน</strong>
+            <div class="detail">ต่างจากค่าปรับกรณีส่งมอบงานล่าช้า — ค่าปรับต้องคิดจากการส่งงาน ไม่ใช่การมาทำงาน</div>
+          </div>
+        </li>
+        <li>
+          <span class="icon">🏖️</span>
+          <div>
+            <strong>กำหนดให้มีการลา (ลาป่วย ลากิจ ลาพักผ่อน)</strong>
+            <div class="detail">ระบบการลาเป็นคุณสมบัติของการจ้างแรงงาน ไม่ใช่จ้างเหมาบริการ</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- S6: ทำได้ -->
+    <div id="s6" class="section">
+      <div class="section-title">เงื่อนไขในสัญญา — ทำได้ ✅</div>
+      <p class="section-subtitle">เงื่อนไขที่ถูกต้องตามเจตนารมณ์ของงานจ้างเหมาบริการ</p>
+
+      <div class="card">
+        <div class="card-title">ขอบเขตงานและการส่งมอบ</div>
+        <ul class="allowed-list">
+          <li><span class="icon">📦</span><div>กำหนด <strong>ชิ้นงาน</strong> ตามภารกิจที่เกิดขึ้นในแต่ละวัน/งวด</div></li>
+          <li><span class="icon">✅</span><div>ผู้รับจ้างส่งมอบ <strong>ชิ้นงานให้สมบูรณ์แทน</strong> (ไม่ใช่รายงานการมาทำงาน)</div></li>
+          <li><span class="icon">👤</span><div>กรณีงานคงค้าง: ผู้รับจ้างจัดหา <strong>บุคคลทดแทน</strong> ได้ โดยผ่านความเห็นชอบผู้ว่าจ้าง</div></li>
+        </ul>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">สถานที่และอุปกรณ์</div>
+          <ul class="forbidden-list" style="margin-bottom:10px">
+            <li><span class="icon">🚫</span><div>กำหนดสถานที่เป็นสำนักงานที่ต้องปฏิบัติประจำ</div></li>
+          </ul>
+          <ul class="allowed-list">
+            <li><span class="icon">✅</span><div>กำหนดพื้นที่ / อุปกรณ์ที่ต้องใช้ประกอบการทำงาน</div></li>
+            <li><span class="icon">🔧</span><div>จัดหา/เช่า/ใช้อุปกรณ์ทดแทนได้ แจ้งล่วงหน้า ≥ 1 วันทำการ</div></li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title">การเดินทางไปราชการ</div>
+          <ul class="allowed-list">
+            <li><span class="icon">✈️</span><div>เบิกค่าเดินทาง ค่าอาหาร ค่าที่พัก ได้ตามระเบียบกระทรวงการคลัง</div></li>
+            <li><span class="icon">👥</span><div>ถือว่าอยู่ในฐานะ <strong>บุคคลภายนอก</strong> (ไม่ใช่ข้าราชการ)</div></li>
+            <li><span class="icon">💳</span><div>อัตราค่าเบิกจ่ายตามประเภทบุคคลภายนอก โดยอนุโลม</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">สิทธิบอกเลิกสัญญา (มาตรา 103)</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>กรณี</th><th>มาตรา</th><th>รายละเอียด</th></tr></thead>
+            <tbody>
+              <tr><td>ส่งมอบงานไม่ได้ภายในเวลา</td><td><span class="badge-no">103 (2)</span></td><td>ถือว่ากระทำการอันมีลักษณะเป็นการทิ้งงาน</td></tr>
+              <tr><td>เหตุอื่นตามที่กำหนดในสัญญา</td><td><span class="badge-gold">103 (3)</span></td><td>—</td></tr>
+              <tr><td>ภารกิจสิ้นสุด/หมดความจำเป็น</td><td><span class="badge-ok">บอกเลิกก่อนครบ</span></td><td>ไม่ถือว่าทิ้งงาน</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- S7: ส่งมอบ -->
+    <div id="s7" class="section">
+      <div class="section-title">การส่งมอบงวดงานและการจ่ายเงิน</div>
+      <p class="section-subtitle">กำหนดการส่งมอบ กรณีพิเศษ และสิทธิสงวนของแต่ละฝ่าย</p>
+
+      <div class="grid-2">
+        <div class="callout ok">
+          <strong>ส่งมอบวันครบกำหนด (16.30 น.) หรือเช้าวันทำการถัดไป — ไม่ผิดทั้งคู่</strong>
+        </div>
+        <div class="callout ok">
+          <strong>วันครบกำหนดตรงวันหยุด — ส่งวันทำการถัดไป ไม่ถือว่าล่าช้า</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">กรณีพิเศษในการจ่ายเงิน (สงวนสิทธิ์)</div>
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="t-title">7.1 — หน่วยงานได้รับอนุมัติเงินงวดช้ากว่ากำหนดส่งมอบ</div>
+            <div class="t-body">สงวนสิทธิ์เบิกเงินล่าช้า — จ่ายเมื่อได้รับอนุมัติเรียบร้อยแล้ว</div>
+          </div>
+          <div class="timeline-item">
+            <div class="t-title">7.2 — งบประมาณจัดสรรไม่เพียงพอ</div>
+            <div class="t-body">สงวนสิทธิ์ยกเลิกสัญญา — จ้างเพียงเท่าที่ได้รับแจ้งอนุมัติเงินงวด</div>
+          </div>
+          <div class="timeline-item">
+            <div class="t-title">7.3 — มีเหตุเลิกสัญญาก่อนครบกำหนด</div>
+            <div class="t-body">คำนวณค่าจ้างตาม <strong>ปพพ. ลักษณะ 5 มาตรา 193/6 วรรค 3</strong> — เดือนหนึ่งมีสามสิบวัน</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S8: ค่าปรับ -->
+    <div id="s8" class="section">
+      <div class="section-title">การคิดค่าปรับ</div>
+      <p class="section-subtitle">ค่าปรับคิดจากการส่งมอบงานล่าช้า ไม่ใช่การขาดงาน</p>
+
+      <div class="formula">
+        <div>ค่าปรับ = <span class="num">0.10%</span> ต่อวัน × ราคางานจ้างทั้งหมด</div>
+        <small>แต่ไม่น้อยกว่า 100 บาทต่อวัน</small>
+      </div>
+
+      <div class="card">
+        <div class="card-title">กรณีที่ 1 — ส่งมอบงานล่าช้าในงวดงาน</div>
+        <div class="callout">
+          หากผู้รับจ้างไม่สามารถปฏิบัติงานให้เป็นไปตามข้อตกลง และเกินกำหนดระยะเวลาที่ต้องส่งมอบงานให้เรียบร้อย ผู้ว่าจ้างจะหักค่าจ้างออกจากการจ่ายเงินงวดงานเดียวกัน
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">กรณีที่ 2 — งานต่อเนื่องคร่อมระหว่างงวด</div>
+        <div class="callout warn">
+          <strong>ตัวอย่าง:</strong> ภารกิจ 27 ม.ค. – 5 ก.พ. 2569 (ระยะเวลาสมควร = 10 วัน)<br>
+          → ส่งมอบวันที่ <strong>6 ก.พ. 2569</strong> = ล่าช้า <strong>1 วัน</strong> = ค่าปรับ <strong>1 วัน</strong><br><br>
+          กรณีมีเนื้องานคงค้างจากงวดก่อน: คิดค่าปรับต่อเนื่องและหักจากค่าจ้างงวดถัดไป<br>
+          <strong>ยกเว้นงวดสุดท้าย:</strong> ให้แจ้งผู้รับจ้างเข้ามาชดใช้ค่าปรับแทน
+        </div>
+      </div>
+    </div>
+
+    <!-- S9: รายงาน -->
+    <div id="s9" class="section">
+      <div class="section-title">การรายงานผลการปฏิบัติรายงวดงาน</div>
+      <p class="section-subtitle">หลักการรายงาน ต้องเน้นปริมาณงานที่ผลิตส่งมอบได้ ไม่ใช่กิจกรรมการมาทำงาน</p>
+
+      <div class="card">
+        <div class="card-title">หลักการรายงาน 5 ข้อ</div>
+        <div class="tbl-wrap">
+          <table>
+            <thead><tr><th>ข้อ</th><th>หลักการ</th></tr></thead>
+            <tbody>
+              <tr><td>1</td><td>จำนวนตารางสอดรับกับจำนวนข้อขอบเขตงานใน TOR</td></tr>
+              <tr><td>2</td><td>หากงานมีหลายประเภทในหมวดเดียวกัน ให้สร้างข้อย่อยเพิ่ม</td></tr>
+              <tr><td>3</td><td>หมายเหตุ: ระบุรายละเอียดเพิ่มเติมให้ชัดเจน</td></tr>
+              <tr><td>4</td><td>การส่งมอบเน้นระบุ <strong>จำนวนปริมาณงานที่ผลิต</strong> — ไม่ใช่กิจกรรม</td></tr>
+              <tr><td>5</td><td>หากไม่มีภารกิจในงวดนั้น → รายงานตามจริงว่า <em>"ไม่มีเนื้องานนั้นๆ ในงวดนี้"</em></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ตัวอย่างแบบรายงานส่งมอบงาน</div>
+        <div style="background:#F8F9FC;border-radius:8px;padding:16px 20px;font-size:13px;border:1px solid var(--gray2);margin-bottom:16px;font-family:monospace;line-height:2">
+          <strong>แบบรายงานส่งมอบงานจ้างเหมาบริการ (บุคคลธรรมดา)</strong><br>
+          ประจำงวดงานที่ _____ ครบกำหนดส่งมอบวันที่ _____ เดือน __________ พ.ศ. _____<br>
+          โครงการ: จ้างเหมาบริการปฏิบัติงานด้าน...(ตามชื่อตำแหน่งใน TOR/สัญญา)
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>รายละเอียดงานที่ส่งมอบ</th>
+                <th style="text-align:center">ปริมาณงาน<br>(เรื่อง/ฉบับ/แฟ้ม)</th>
+                <th>หมายเหตุ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1.1 ลงรับหนังสือราชการภายนอก</td><td style="text-align:center"><strong>78</strong></td><td>รับจากสพป./เทศบาลตำบล</td></tr>
+              <tr><td>1.2 ลงส่งหนังสือราชการภายนอก</td><td style="text-align:center"><strong>85</strong></td><td>ส่งสำนักงานเขตพื้นที่/กรมป่าไม้</td></tr>
+              <tr><td style="font-weight:700">รวม</td><td style="text-align:center;font-weight:700">163</td><td></td></tr>
+              <tr><td>2.1 จัดเก็บเอกสารเข้าแฟ้ม</td><td style="text-align:center"><strong>85</strong></td><td>จัดแบ่งหมวดหมู่เอกสารปฏิบัติ/เสร็จแล้ว/ใช้ในการตรวจสอบ</td></tr>
+              <tr><td>2.2 ลงทะเบียนยืมหนังสือ</td><td style="text-align:center"><strong>1</strong></td><td>กลุ่มงานการเงินและสินทรัพย์ ขอยืมหนังสือราชการ</td></tr>
+              <tr><td>2.3 ทำลายเอกสาร</td><td style="text-align:center"><strong>0</strong></td><td>ไม่มีการทำลายเอกสาร ตามระเบียบสารบรรณฯ ในงวดนี้</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ส่วนคณะกรรมการตรวจรับพัสดุ</div>
+        <div class="callout ok" style="margin-bottom:8px">
+          ☑ งานถูกต้องครบถ้วนตามขอบเขตงานและใบสั่งจ้าง → เห็นควรอนุมัติจ่ายเงินค่าจ้างประจำงวดงาน
+        </div>
+        <div class="callout danger">
+          ☐ งานไม่ครบถ้วนตาม TOR ข้อ 6.1 / ต้องแก้ไข
+        </div>
+      </div>
+    </div>
+
+    <!-- S10: เปรียบเทียบ -->
+    <div id="s10" class="section">
+      <div class="section-title">สรุปเปรียบเทียบ</div>
+      <p class="section-subtitle">จ้างเหมาบริการ vs จ้างแรงงาน — ความแตกต่างที่สำคัญ</p>
+
+      <div style="overflow-x:auto;margin-bottom:20px">
+        <table style="min-width:600px">
+          <thead>
+            <tr>
+              <th>ประเด็น</th>
+              <th style="background:var(--green)">จ้างเหมาบริการ ✅</th>
+              <th style="background:var(--red)">จ้างแรงงาน ❌ (ห้ามทำ)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>วัตถุประสงค์</strong></td>
+              <td style="background:#F0FAF4">ผลสำเร็จของงาน</td>
+              <td style="background:#FDF2F1">การบริการของบุคคล</td>
+            </tr>
+            <tr>
+              <td><strong>ความสัมพันธ์</strong></td>
+              <td style="background:#F0FAF4">ผู้ว่าจ้าง ↔ ผู้รับจ้าง</td>
+              <td style="background:#FDF2F1">นายจ้าง ↔ ลูกจ้าง</td>
+            </tr>
+            <tr>
+              <td><strong>อำนาจสั่งการ</strong></td>
+              <td style="background:#F0FAF4">ตรวจตราและสั่งแก้ไขงานเท่านั้น</td>
+              <td style="background:#FDF2F1">สั่งการได้ทุกด้าน</td>
+            </tr>
+            <tr>
+              <td><strong>เวลาทำงาน</strong></td>
+              <td style="background:#F0FAF4">ไม่กำหนดเวลาเข้า-ออก</td>
+              <td style="background:#FDF2F1">กำหนด 08.30-16.30 น.</td>
+            </tr>
+            <tr>
+              <td><strong>สถานที่</strong></td>
+              <td style="background:#F0FAF4">ไม่บังคับสถานที่เฉพาะ</td>
+              <td style="background:#FDF2F1">ต้องมา ณ ที่ทำการ</td>
+            </tr>
+            <tr>
+              <td><strong>การจ่ายเงิน</strong></td>
+              <td style="background:#F0FAF4">จ่ายเมื่อส่งมอบงานและตรวจรับผ่าน</td>
+              <td style="background:#FDF2F1">จ่ายตามเวลา (รายเดือน)</td>
+            </tr>
+            <tr>
+              <td><strong>การขาด/ลา</strong></td>
+              <td style="background:#F0FAF4">ไม่มีระบบลา (ส่งงานแทน)</td>
+              <td style="background:#FDF2F1">มีลาป่วย/ลากิจ/ลาพักผ่อน</td>
+            </tr>
+            <tr>
+              <td><strong>ค่าปรับ</strong></td>
+              <td style="background:#F0FAF4">ปรับกรณีงานล่าช้า/ไม่ครบถ้วน</td>
+              <td style="background:#FDF2F1">ปรับกรณีขาดงาน</td>
+            </tr>
+            <tr>
+              <td><strong>ความคุ้มครองแรงงาน</strong></td>
+              <td style="background:#F0FAF4">ไม่เข้า พรบ.คุ้มครองแรงงาน</td>
+              <td style="background:#FDF2F1">เข้า พรบ.คุ้มครองแรงงาน</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- S11: Checklist -->
+    <div id="s11" class="section">
+      <div class="section-title">Checklist เจ้าหน้าที่พัสดุ</div>
+      <p class="section-subtitle">คลิกรายการเพื่อทำเครื่องหมายเสร็จสิ้น — ติดตามความคืบหน้าได้</p>
+
+      <div class="progress-label">
+        <span>ความคืบหน้า</span>
+        <span id="prog-label">0 / 11 รายการ</span>
+      </div>
+      <div class="checklist-progress">
+        <div class="checklist-progress-bar" id="prog-bar" style="width:0%"></div>
+      </div>
+
+      <div class="checklist-section">
+        <div class="checklist-group-title"><span class="dot"></span> ก่อนทำ TOR</div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">กำหนดขอบเขตงานเป็น "ชิ้นงาน" ไม่ใช่ "กิจกรรมประจำ"</div>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">ระบุปริมาณงานที่วัดได้ (จำนวน / เรื่อง / ฉบับ)</div>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">ไม่ระบุเวลา 08.30-16.30 น. ในขอบเขตงาน</div>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">ใช้ภาษา "จัดทำ..." หรือ "กำหนดจำนวนผลงาน..." ไม่ใช่ "ปฏิบัติงาน..."</div>
+        </div>
+      </div>
+
+      <div class="checklist-section">
+        <div class="checklist-group-title"><span class="dot"></span> ก่อนทำสัญญา</div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">ตรวจสอบว่าไม่มีข้อกำหนดเวลาปฏิบัติงานในสัญญา</div>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">ตรวจสอบว่าไม่มีระบบลาป่วย / ลากิจ / ลาพักผ่อน</div>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">ตรวจสอบว่าไม่มีการหักเงินกรณีขาดงาน / มาสาย</div>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">สัญญาใหม่หลัง 8 ธค 68 → ส่งอัยการสูงสุดเห็นชอบ (ยกเว้นต่ำกว่า 5 แสน ใช้ใบสั่งจ้าง)</div>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">สัญญาเก่าก่อน 8 ธค 68 → แก้ไขให้สอดคล้อง มาตรา 47</div>
+        </div>
+      </div>
+
+      <div class="checklist-section">
+        <div class="checklist-group-title"><span class="dot"></span> ระหว่างดำเนินการจ้าง</div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">รับรายงานผลการปฏิบัติรายงวดงาน (ปริมาณงาน) ไม่ใช่การรายงานการมาทำงาน</div>
+        </div>
+        <div class="checklist-item" onclick="toggleCheck(this)">
+          <div class="check-box">✓</div>
+          <div class="check-text">คิดค่าปรับกรณีงานล่าช้าเกินกำหนดส่งมอบ (0.10%/วัน, ขั้นต่ำ 100 บาท/วัน)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- S12: กฎหมาย -->
+    <div id="s12" class="section">
+      <div class="section-title">อ้างอิงกฎหมายและหนังสือเวียน</div>
+      <p class="section-subtitle">บทบัญญัติและหนังสือเวียนที่เกี่ยวข้องทั้งหมด</p>
+
+      <div class="card">
+        <div class="card-title">พระราชบัญญัติการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560</div>
+        <div class="law-item">
+          <span class="law-tag">มาตรา 4</span>
+          <div><strong>นิยาม "งานบริการ"</strong> และ "งานจ้างเหมาบริการ" — บัญญัตินิยามงานบริการที่เข้าข่ายการจัดซื้อจัดจ้าง<p>รวมถึงงานจ้างเหมาบริการ, งานจ้างทำของ, และการรับขน จากบุคคลธรรมดาหรือนิติบุคคล</p></div>
+        </div>
+        <div class="law-item">
+          <span class="law-tag">มาตรา 29 (3)</span>
+          <div><strong>อำนาจคณะกรรมการวินิจฉัย</strong> ออกแนวทางปฏิบัติ<p>อำนาจในการซ้อมความเข้าใจและออกแนวทางปฏิบัติให้หน่วยงานของรัฐถือปฏิบัติ</p></div>
+        </div>
+        <div class="law-item">
+          <span class="law-tag">มาตรา 47</span>
+          <div><strong>การแก้ไขสัญญา</strong><p>หลักเกณฑ์และเงื่อนไขในการแก้ไขสัญญาที่ลงนามแล้ว</p></div>
+        </div>
+        <div class="law-item">
+          <span class="law-tag">มาตรา 96 (1)</span>
+          <div><strong>สัญญาลดรูป</strong> — ใบสั่งจ้าง / ข้อตกลงการจ้าง<p>กรณีเฉพาะเจาะจง วงเงินต่ำกว่า 500,000 บาท ไม่ต้องผ่านความเห็นชอบแบบสัญญาจากอัยการสูงสุด</p></div>
+        </div>
+        <div class="law-item">
+          <span class="law-tag">มาตรา 103</span>
+          <div><strong>การบอกเลิกสัญญา</strong><p>(2) ส่งมอบงานไม่ได้ภายในเวลา — ถือว่าทิ้งงาน | (3) เหตุอื่นตามที่กำหนดในสัญญา</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">ระเบียบและประมวลกฎหมาย</div>
+        <div class="law-item">
+          <span class="law-tag">ระเบียบ ข้อ 165</span>
+          <div><strong>ระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างฯ พ.ศ. 2560</strong><p>หลักเกณฑ์การแก้ไขสัญญา ใช้คู่กับ มาตรา 47 แห่ง พรบ.ฯ</p></div>
+        </div>
+        <div class="law-item">
+          <span class="law-tag">ปพพ. ม.193/6</span>
+          <div><strong>ประมวลกฎหมายแพ่งและพาณิชย์ ลักษณะ 5 มาตรา 193/6 วรรค 3</strong><p>การคำนวณค่าจ้างกรณีเลิกสัญญาก่อนกำหนด — เดือนหนึ่งมีสามสิบวัน</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">หนังสือเวียนที่เกี่ยวข้อง</div>
+        <div class="law-item">
+          <span class="law-tag">ว 159</span>
+          <div><strong>กค (กวจ) 0405.4/ว 159 ลงวันที่ 20 มีนาคม 2566</strong><p>แนวทางปฏิบัติในการจัดทำร่างรายละเอียดขอบเขตของงานทั้งโครงการ (Terms of Reference : TOR)</p></div>
+        </div>
+        <div class="law-item" style="border-left-color:var(--gold);border-left-width:4px">
+          <span class="law-tag" style="background:var(--gold)">ว 877</span>
+          <div><strong>กค (กวจ) 0405.2/ว 877 ลงวันที่ 8 ธันวาคม 2568</strong><p>ซ้อมความเข้าใจงานจ้างเหมาบริการ (บุคคลธรรมดา) ตามพระราชบัญญัติการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560 — <strong>หนังสือเวียนฉบับนี้</strong></p></div>
+        </div>
+      </div>
+
+      <div class="callout" style="margin-top:8px;font-size:13px">
+        จัดทำจากสไลด์ประกอบการอบรม + หนังสือเวียน กค (กวจ) 0405.2/ว 877 ลงวันที่ 8 ธันวาคม 2568
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+
+<script>
+  function togglePres() {
+    document.body.classList.toggle('pres-mode');
+  }
+
+  function show(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function toggleCheck(el) {
+    el.classList.toggle('checked');
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('.checklist-item');
+    const done = document.querySelectorAll('.checklist-item.checked');
+    const pct = all.length ? (done.length / all.length * 100) : 0;
+    document.getElementById('prog-bar').style.width = pct + '%';
+    document.getElementById('prog-label').textContent = done.length + ' / ' + all.length + ' รายการ';
+  }
+</script>
+</body>
+</html>
