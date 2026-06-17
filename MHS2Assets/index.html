@@ -101,7 +101,7 @@
 <button class="fab" id="fabBtn" onclick="toggleFab()">✎</button>
 
 <!-- ── MODAL ADD/EDIT ── -->
-<div class="modal-overlay" id="modalOverlay" onclick="closeModalBg(event)">
+<div class="modal-overlay" id="modalOverlay">
   <div class="modal modal-lg">
     <h2 id="modalTitle">เพิ่มรายการ</h2>
     <div id="multiAddBar" class="add-row-bar">
@@ -194,10 +194,21 @@ function startApp(displayName) {
   document.getElementById('tabsWrap').style.display   = '';
   document.getElementById('appMain').style.display    = '';
   buildTabs();
+  updateStickyOffsets();
+  window.addEventListener('resize', updateStickyOffsets);
   loadSheet('นิเทศน์').then(() => {
     setProgress(100, 'พร้อมใช้งาน');
     setTimeout(() => document.getElementById('loader').classList.add('hidden'), 400);
   });
+}
+
+function updateStickyOffsets() {
+  const headerEl = document.getElementById('appHeader');
+  const tabsEl   = document.getElementById('tabsWrap');
+  const headerH  = headerEl ? headerEl.offsetHeight : 0;
+  const tabsH    = tabsEl   ? tabsEl.offsetHeight   : 0;
+  document.documentElement.style.setProperty('--header-h', headerH + 'px');
+  document.documentElement.style.setProperty('--tabs-h', tabsH + 'px');
 }
 
 function buildTabs() {
@@ -243,6 +254,7 @@ async function switchTab(sheet) {
   document.getElementById('fabGroup').style.display = (isDispose || isSummary) ? 'none' : '';
   document.getElementById('btnSync').style.display         = isSummary ? '' : 'none';
   document.getElementById('btnPullDisposed').style.display = isDispose ? '' : 'none';
+  updateStickyOffsets();
   await loadSheet(sheet);
 }
 
@@ -369,7 +381,7 @@ function renderTable() {
       <td>${escHtml(r.brand||'')}</td><td>${escHtml(r.model||'')}</td>
       <td><span class="td-code">${escHtml(r.serial||'')}</span></td>
       <td class="td-price">${priceStr}</td>
-      <td>${escHtml(r.date||'')}</td><td>${escHtml(r.method||'')}</td>
+      <td>${escHtml(cleanDateDisplay(r.date))}</td><td>${escHtml(r.method||'')}</td>
       <td><span class="td-code">${escHtml(r.code||'')}</span></td>
       <td>${escHtml(r.group||'')}</td>
       <td class="td-status">${statusBadge}</td>
@@ -443,7 +455,7 @@ function buildRowForm(data, idx, isEdit=false) {
       <div class="form-group"><label>รุ่น</label><input type="text" id="model-${idx}" value="${escHtml(d.model||'')}"/></div>
       <div class="form-group"><label>Serial Number</label><input type="text" id="serial-${idx}" value="${escHtml(d.serial||'')}"/></div>
       <div class="form-group"><label>ราคา/หน่วย (บาท)</label><input type="text" id="price-${idx}" value="${escHtml(String(d.price||''))}" placeholder="0.00"/></div>
-      <div class="form-group"><label>วันที่ได้มา</label><input type="text" id="date-${idx}" value="${escHtml(d.date||'')}" placeholder="เช่น 22/01/61"/></div>
+      <div class="form-group"><label>วันที่ได้มา</label><input type="text" id="date-${idx}" value="${escHtml(cleanDateDisplay(d.date))}" placeholder="พิมพ์เองได้เลย เช่น 22/01/61 หรือ 10 มิย 69"/></div>
       <div class="form-group"><label>วิธีได้มา</label><select id="method-${idx}"><option value="">-- เลือก --</option>${methodOpts}</select></div>
       <div class="form-group"><label>รหัสครุภัณฑ์ *</label><input type="text" id="code-${idx}" value="${escHtml(d.code||'')}" placeholder="เช่น มส2/1/100/61-1"/></div>
       <div class="form-group"><label>กลุ่มงาน</label><select id="group-${idx}">${groupOpts}</select></div>
@@ -596,7 +608,7 @@ function renderReport() {
     const priceStr = r.price && !isNaN(r.price) ? Number(r.price).toLocaleString('th-TH') : (r.price||'');
     const cells = isDispose
       ? [i+1,r.item,r.brand,r.model,r.serial,priceStr,r.code,r.group,r.status,r.user,r.dispDate,r.dispBy]
-      : [i+1,r.item,r.brand,r.model,r.serial,priceStr,r.date,r.method,r.code,r.group,r.status,r.user];
+      : [i+1,r.item,r.brand,r.model,r.serial,priceStr,cleanDateDisplay(r.date),r.method,r.code,r.group,r.status,r.user];
     return `<tr style="border-bottom:1px solid var(--border)">${cells.map(c=>`<td style="padding:7px 12px">${escHtml(String(c||''))}</td>`).join('')}</tr>`;
   }).join('');
 }
@@ -608,7 +620,7 @@ function exportCSV() {
     : ['ลำดับ','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','วันที่ได้มา','วิธีได้มา','รหัสครุภัณฑ์','กลุ่มงาน','สภาพ','ใช้ประจำที่'];
   const rows = reportData.map((r,i) => isDispose
     ? [i+1,r.item,r.brand,r.model,r.serial,r.price,r.code,r.group,r.status,r.user,r.dispDate,r.dispBy]
-    : [i+1,r.item,r.brand,r.model,r.serial,r.price,r.date,r.method,r.code,r.group,r.status,r.user]);
+    : [i+1,r.item,r.brand,r.model,r.serial,r.price,cleanDateDisplay(r.date),r.method,r.code,r.group,r.status,r.user]);
   const csv = '\uFEFF' + [hdr,...rows].map(r=>r.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
   const a = Object.assign(document.createElement('a'), {
     href: URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),
@@ -650,6 +662,17 @@ function showToast(msg, type='') {
   toastTimer = setTimeout(() => t.className = 'toast', 3000);
 }
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function cleanDateDisplay(v) {
+  // Google Sheets sometimes returns date cells as ISO datetime strings
+  // (e.g. "2568-09-19T00:00:00.000Z"). The field is free-text, so if we
+  // detect that pattern, strip it down to just the date part instead of
+  // showing the raw timestamp. Anything the user typed as plain text
+  // (e.g. "22/01/61", "10 มิย 69") passes through untouched.
+  const s = String(v||'').trim();
+  const m = s.match(/^(\d{4})-(\d{2})-(\d{2})T\d{2}:\d{2}:\d{2}/);
+  if (m) return `${m[3]}/${m[2]}/${m[1]}`;
+  return s;
+}
 function escAttr(s) { return String(s||'').replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
 async function sha256(str) {
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
