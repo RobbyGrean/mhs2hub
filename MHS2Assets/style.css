@@ -538,12 +538,17 @@ main { width: 100%; padding: 22px 28px 110px; }
   background: var(--glass-strong);
   backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255,255,255,.7);
-  border-radius: var(--r-lg); overflow: hidden;
+  border-radius: var(--r-lg);
   box-shadow: var(--shadow);
 }
-.table-scroll { overflow-x: auto; }
+.table-scroll { overflow-x: auto; overflow-y: hidden; overflow-y: clip; border-radius: var(--r-lg); }
 
 table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+thead tr:first-child th:first-child { border-top-left-radius: var(--r-lg); }
+thead tr:first-child th:last-child  { border-top-right-radius: var(--r-lg); }
+tbody tr:last-child td:first-child  { border-bottom-left-radius: var(--r-lg); }
+tbody tr:last-child td:last-child   { border-bottom-right-radius: var(--r-lg); }
 
 thead tr { background: var(--header-grad); }
 thead th {
