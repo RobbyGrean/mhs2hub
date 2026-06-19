@@ -90,6 +90,7 @@ const supplyGame = {
   time: 45,
   x: 50,
   dir: 0,
+  touchActive: false,
   items: [],
   lastSpawn: 0,
   lastTick: 0,
@@ -108,6 +109,18 @@ function holdSupplyDir(dir) {
   supplyGame.dir = dir;
 }
 
+function setSupplyXFromPoint(clientX) {
+  const stage = document.getElementById('supplyGame');
+  const basket = document.getElementById('supplyBasket');
+  if (!stage || !basket) return;
+  const rect = stage.getBoundingClientRect();
+  const basketWidth = basket.offsetWidth || 92;
+  const edgePad = (basketWidth / rect.width) * 50;
+  const percent = ((clientX - rect.left) / rect.width) * 100;
+  supplyGame.x = Math.max(edgePad, Math.min(100 - edgePad, percent));
+  basket.style.left = `${supplyGame.x}%`;
+}
+
 function startSupplyGame() {
   const stage = document.getElementById('supplyGame');
   const msg = document.getElementById('supplyMessage');
@@ -118,6 +131,7 @@ function startSupplyGame() {
   supplyGame.time = 45;
   supplyGame.x = 50;
   supplyGame.dir = 0;
+  supplyGame.touchActive = false;
   supplyGame.items.forEach(item => item.el.remove());
   supplyGame.items = [];
   supplyGame.lastSpawn = 0;
@@ -162,7 +176,9 @@ function updateSupplyGame(now) {
   const dt = Math.min(0.032, (now - supplyGame.lastTick) / 1000 || 0);
   supplyGame.lastTick = now;
 
-  supplyGame.x = Math.max(7, Math.min(93, supplyGame.x + supplyGame.dir * dt * 58));
+  if (!supplyGame.touchActive) {
+    supplyGame.x = Math.max(7, Math.min(93, supplyGame.x + supplyGame.dir * dt * 58));
+  }
   basket.style.left = `${supplyGame.x}%`;
 
   if (now - supplyGame.lastSpawn > 720) {
@@ -219,6 +235,41 @@ document.addEventListener('keydown', e => {
 document.addEventListener('keyup', e => {
   if (['ArrowLeft', 'ArrowRight', 'a', 'A', 'd', 'D'].includes(e.key)) holdSupplyDir(0);
 });
+
+(function initSupplyTouchControls() {
+  const stage = document.getElementById('supplyGame');
+  const controls = document.querySelector('.game-mobile-controls');
+  if (!stage) return;
+
+  stage.addEventListener('pointerdown', e => {
+    if (e.pointerType === 'mouse') return;
+    e.preventDefault();
+    stage.focus();
+    supplyGame.touchActive = true;
+    holdSupplyDir(0);
+    setSupplyXFromPoint(e.clientX);
+    stage.setPointerCapture?.(e.pointerId);
+  });
+
+  stage.addEventListener('pointermove', e => {
+    if (!supplyGame.touchActive || e.pointerType === 'mouse') return;
+    e.preventDefault();
+    setSupplyXFromPoint(e.clientX);
+  });
+
+  function releasePointer(e) {
+    if (e.pointerType === 'mouse') return;
+    supplyGame.touchActive = false;
+    stage.releasePointerCapture?.(e.pointerId);
+  }
+
+  stage.addEventListener('pointerup', releasePointer);
+  stage.addEventListener('pointercancel', releasePointer);
+
+  controls?.querySelectorAll('button').forEach(button => {
+    button.addEventListener('contextmenu', e => e.preventDefault());
+  });
+})();
 
 const music     = document.getElementById('bgMusic');
 const musicIcon = document.getElementById('musicIcon');
