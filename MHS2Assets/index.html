@@ -194,10 +194,14 @@ function startApp(displayName) {
   document.getElementById('tabsWrap').style.display   = '';
   document.getElementById('appMain').style.display    = '';
   buildTabs();
-  updateStickyOffsets();
+  requestAnimationFrame(() => requestAnimationFrame(updateStickyOffsets));
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(updateStickyOffsets);
+  }
   window.addEventListener('resize', updateStickyOffsets);
   loadSheet('นิเทศน์').then(() => {
     setProgress(100, 'พร้อมใช้งาน');
+    requestAnimationFrame(() => requestAnimationFrame(updateStickyOffsets));
     setTimeout(() => document.getElementById('loader').classList.add('hidden'), 400);
   });
 }
@@ -559,22 +563,38 @@ function setBusy(busy) {
 async function deleteRecord() {
   if (!editingRecord) return;
   if (!confirm(`ลบ "${editingRecord.item}" ?\nไม่สามารถย้อนกลับได้`)) return;
+  const snapshot = { ...editingRecord };
   setBusy(true);
   try {
     await api({ action: 'delete', rowIndex: editingRecord.rowIndex, group: editingRecord.group||currentSheet });
-    showToast('ลบเรียบร้อย ✓', 'success');
+    showUndoToast('ลบเรียบร้อย ✓', () => restoreDeleted(snapshot));
     closeModal(); await loadSheet(currentSheet);
   } catch(e) { showModalErr(e.message); }
   setBusy(false);
 }
 async function quickDelete(rowIndex, group) {
   const r = allRecords.find(x => x.rowIndex === rowIndex);
-  if (!confirm(`ลบ "${r?.item||'รายการนี้'}" ?`)) return;
+  if (!r) return;
+  if (!confirm(`ลบ "${r.item||'รายการนี้'}" ?`)) return;
+  const snapshot = { ...r };
   try {
     await api({ action: 'delete', rowIndex, group });
-    showToast('ลบเรียบร้อย ✓', 'success');
+    showUndoToast('ลบเรียบร้อย ✓', () => restoreDeleted(snapshot));
     await loadSheet(currentSheet);
   } catch(e) { showToast('ลบล้มเหลว: ' + e.message, 'error'); }
+}
+async function restoreDeleted(snapshot) {
+  try {
+    const d = {
+      item: snapshot.item, brand: snapshot.brand||'', model: snapshot.model||'',
+      serial: snapshot.serial||'', price: snapshot.price||'', date: snapshot.date||'',
+      method: snapshot.method||'', code: snapshot.code||'', group: snapshot.group||currentSheet,
+      status: snapshot.status||'ใช้ได้', user: snapshot.user||'', isBundle: false, bundle: null,
+    };
+    await api({ action: 'add', data: JSON.stringify(d) });
+    showToast('เรียกคืนรายการแล้ว ✓', 'success');
+    await loadSheet(currentSheet);
+  } catch(e) { showToast('เรียกคืนล้มเหลว: ' + e.message, 'error'); }
 }
 
 // ── REPORT ────────────────────────────────────────────────
@@ -656,10 +676,23 @@ function setProgress(pct, msg) {
 let toastTimer;
 function showToast(msg, type='') {
   const t = document.getElementById('toast');
-  t.textContent = msg;
+  t.innerHTML = escHtml(msg);
   t.className = 'toast show' + (type ? ' ' + type : '');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.className = 'toast', 3000);
+}
+function showUndoToast(msg, onUndo) {
+  const t = document.getElementById('toast');
+  const btnId = 'undoBtn_' + Date.now();
+  t.innerHTML = `${escHtml(msg)} <button id="${btnId}" class="toast-undo-btn">เรียกคืน</button>`;
+  t.className = 'toast show success';
+  clearTimeout(toastTimer);
+  document.getElementById(btnId).onclick = () => {
+    clearTimeout(toastTimer);
+    t.className = 'toast';
+    onUndo();
+  };
+  toastTimer = setTimeout(() => { t.className = 'toast'; }, 5000);
 }
 function escHtml(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function cleanDateDisplay(v) {
