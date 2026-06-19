@@ -47,11 +47,13 @@ let basicSlideIndex = 0;
 function renderBasicSlide() {
   const img = document.getElementById('basicSlideImg');
   const count = document.getElementById('basicSlideCount');
+  const progress = document.getElementById('basicSlideProgress');
   const dots = document.querySelectorAll('.slide-dot');
   if (!img || !count) return;
   img.src = basicSlides[basicSlideIndex];
   img.alt = `ภาพรวมกฎหมายพัสดุ หน้า ${basicSlideIndex + 1}`;
   count.textContent = `${basicSlideIndex + 1} / ${basicSlides.length}`;
+  if (progress) progress.style.width = `${((basicSlideIndex + 1) / basicSlides.length) * 100}%`;
   dots.forEach((dot, i) => dot.classList.toggle('active', i === basicSlideIndex));
 }
 
@@ -237,3 +239,12 @@ function setOn(on){
 function toggleMusic(){ music.paused ? music.play().then(()=>setOn(true)).catch(()=>nextSong()) : (music.pause(), setOn(false)); }
 function nextSong(){ cur=rnd(); load(cur); music.play().then(()=>setOn(true)).catch(()=>{}); }
 music.onended = nextSong;
+
+Object.assign(window, {
+  changeBasicSlide,
+  goBasicSlide,
+  holdSupplyDir,
+  startSupplyGame,
+  toggleMusic,
+  nextSong
+});

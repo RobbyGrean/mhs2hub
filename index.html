@@ -17,6 +17,13 @@
 <div class="orb o3"></div>
 <canvas id="stars"></canvas>
 
+<nav class="top-mini-nav" aria-label="เมนูย่อย">
+  <a href="#guides">คู่มือ</a>
+  <a href="#overview">ภาพรวม</a>
+  <a href="#break">พักสมอง</a>
+  <a href="#contact">ติดต่อ</a>
+</nav>
+
 <div class="wrap">
 
   <!-- ── HEADER ── -->
@@ -43,6 +50,21 @@
       <span></span><span></span><span></span>
     </div>
 
+    <div class="portal-stats" aria-label="สรุปศูนย์รวมคู่มือ">
+      <div>
+        <strong>11</strong>
+        <span>สไลด์พื้นฐาน</span>
+      </div>
+      <div>
+        <strong>6</strong>
+        <span>หมวดคู่มือหลัก</span>
+      </div>
+      <div>
+        <strong>24/7</strong>
+        <span>เปิดใช้ผ่านเว็บ</span>
+      </div>
+    </div>
+
     <nav class="pill-nav">
       <a href="checkin2.html" class="pill pill-pink">
         <span>📍</span> ระบบเช็คชื่อออนไลน์
@@ -50,6 +72,10 @@
       </a>
       <a href="Phonebook/" class="pill pill-sky">
         <span>📞</span> สมุดโทรศัพท์ ผอ.โรงเรียน
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+      </a>
+      <a href="MHS2Assets/" class="pill pill-orange">
+        <span>🏷️</span> ระบบทะเบียนครุภัณฑ์
         <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
       </a>
     </nav>
@@ -78,7 +104,7 @@
   </div>
 
   <!-- ── MENU GRID ── -->
-  <div class="menu-grid">
+  <div class="menu-grid" id="guides">
 
     <!-- 1. คู่มือการตั้งเบิก -->
     <div class="card card-pink" onclick="this.classList.toggle('open')">
@@ -287,12 +313,19 @@
 </div>
 <!-- END: จัดซื้อจัดจ้าง วงเงินเล็กน้อย -->
   <!-- ── WORKFLOW ── -->
-  <div style="margin-bottom:3.5rem">
+  <div id="overview" class="featured-guide-section">
     <div class="sec-label">
       <span class="sec-label-text">✦ ภาพรวมการทำงาน</span>
       <div class="sec-rule"></div>
     </div>
-    <div class="workflow-box">
+    <div class="workflow-box featured-guide">
+      <div class="featured-guide-head">
+        <div>
+          <p class="featured-eyebrow">Featured Guide</p>
+          <h2>ภาพรวมกฎหมายและระเบียบพัสดุ</h2>
+        </div>
+        <span class="featured-chip">Basic Series</span>
+      </div>
       <div class="slide-viewer" id="basicSlideViewer">
         <div class="slide-frame">
           <img id="basicSlideImg" src="pictureassets/basic1.png" alt="ภาพรวมกฎหมายพัสดุ หน้า 1">
@@ -308,16 +341,19 @@
           <button class="slide-btn" type="button" onclick="changeBasicSlide(1)" aria-label="สไลด์ถัดไป">›</button>
         </div>
       </div>
+      <div class="slide-progress" aria-hidden="true"><span id="basicSlideProgress"></span></div>
       <div class="slide-dots" id="basicSlideDots" aria-label="เลือกหน้าสไลด์"></div>
     </div>
   </div>
 
   <!-- Break game -->
-  <div style="margin-bottom:3.5rem">
-    <div style="text-align:center;margin-bottom:1.1rem">
-      <span class="game-badge">พักสมอง · เก็บเอกสารพัสดุ</span>
-    </div>
-    <div class="game-wrap">
+  <section id="break" class="break-section">
+    <details class="break-panel">
+      <summary>
+        <span class="game-badge">พักสมอง · เก็บเอกสารพัสดุ</span>
+        <span class="break-summary-text">เปิดเกมสั้น ๆ เมื่ออยากพักสายตา</span>
+      </summary>
+      <div class="game-wrap">
       <div class="game-stage" id="supplyGame" tabindex="0" aria-label="เกมเก็บเอกสารพัสดุ">
         <div class="game-hud">
           <div class="game-score">คะแนน <span id="supplyScore">0</span></div>
@@ -344,10 +380,11 @@
           <div class="ctrl-keys">เอกสารเหลือง +10 · เอกสารแดง -15 · หลุดพื้น -5</div>
         </div>
       </div>
-    </div>
-  </div>
+      </div>
+    </details>
+  </section>
   <!-- ── FOOTER ── -->
-  <footer class="footer">
+  <footer class="footer" id="contact">
     <div class="footer-card">
       <p class="footer-cta">พบปัญหา / สอบถามเพิ่มเติม ติดต่อผ่าน QR Code นี้</p>
       <div class="qr-outer">
