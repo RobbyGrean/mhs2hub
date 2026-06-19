@@ -424,7 +424,61 @@
       border-radius: 1.25rem; overflow: hidden;
       box-shadow: 0 0 40px rgba(253,230,138,0.05);
     }
-    .game-wrap iframe { display:block; width:100%; height:420px; }
+    .game-stage {
+      position:relative; min-height:420px; overflow:hidden;
+      background:
+        radial-gradient(circle at 20% 25%, rgba(253,230,138,0.16), transparent 28%),
+        radial-gradient(circle at 80% 30%, rgba(125,211,252,0.16), transparent 26%),
+        linear-gradient(180deg, rgba(14,6,24,0.92), rgba(35,13,46,0.94));
+    }
+    .game-hud {
+      position:absolute; inset:1rem 1rem auto; display:flex; align-items:center; justify-content:space-between;
+      gap:0.75rem; z-index:3; pointer-events:none;
+    }
+    .game-score, .game-time {
+      min-width:78px; padding:0.5rem 0.8rem; border-radius:99px; text-align:center;
+      color:#fff; font-weight:800; font-size:0.85rem; background:rgba(14,6,24,0.72);
+      border:1px solid rgba(255,255,255,0.14); backdrop-filter:blur(12px);
+    }
+    .game-message {
+      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:4;
+      display:flex; flex-direction:column; align-items:center; gap:0.8rem; text-align:center;
+      width:min(88%, 420px); color:#fff; pointer-events:none;
+    }
+    .game-message strong { font-size:clamp(1.25rem, 4vw, 2rem); color:#fde68a; }
+    .game-message span { font-size:0.9rem; color:rgba(255,255,255,0.58); line-height:1.6; }
+    .game-start {
+      pointer-events:auto; border:0; border-radius:99px; padding:0.75rem 1.5rem; color:#fff; font-weight:800; cursor:pointer;
+      background:linear-gradient(135deg, var(--pink-s), var(--lilac)); box-shadow:0 0 28px rgba(236,72,153,0.38);
+      transition:transform 0.2s, filter 0.2s;
+    }
+    .game-start:hover { transform:translateY(-2px); filter:brightness(1.1); }
+    .game-basket {
+      position:absolute; left:50%; bottom:22px; width:92px; height:34px; transform:translateX(-50%);
+      border-radius:0 0 18px 18px; background:linear-gradient(135deg, #f472b6, #c084fc);
+      box-shadow:0 12px 30px rgba(0,0,0,0.38), inset 0 2px 0 rgba(255,255,255,0.28);
+      z-index:2;
+    }
+    .game-basket::before {
+      content:''; position:absolute; left:12px; right:12px; top:-16px; height:24px; border:4px solid rgba(253,230,138,0.9);
+      border-bottom:0; border-radius:24px 24px 0 0;
+    }
+    .fall-item {
+      position:absolute; width:42px; height:50px; border-radius:8px; display:flex; align-items:center; justify-content:center;
+      font-size:1.28rem; font-weight:800; z-index:1; box-shadow:0 8px 18px rgba(0,0,0,0.28);
+      will-change:transform;
+    }
+    .fall-good { background:linear-gradient(180deg, #fff7ed, #fde68a); border:1px solid rgba(253,230,138,0.8); }
+    .fall-bad { background:linear-gradient(180deg, #fee2e2, #fca5a5); border:1px solid rgba(252,165,165,0.8); }
+    .game-mobile-controls { display:none; grid-template-columns:1fr 1fr; border-top:1px solid rgba(255,255,255,0.06); }
+    .game-mobile-controls button {
+      border:0; padding:0.95rem; color:#fff; font-weight:800; background:rgba(255,255,255,0.05); cursor:pointer;
+    }
+    .game-mobile-controls button:first-child { border-right:1px solid rgba(255,255,255,0.06); }
+    @media (max-width:640px) {
+      .game-stage { min-height:360px; }
+      .game-mobile-controls { display:grid; }
+    }
 
     .ctrl-row { display:grid; grid-template-columns:1fr 1fr; }
     .ctrl-cell { padding:1rem 1.25rem; border-top:1px solid rgba(255,255,255,0.06); }
@@ -840,26 +894,40 @@
     </div>
   </div>
 
-  <!-- ── PIKACHU GAME ── -->
+  <!-- Break game -->
   <div style="margin-bottom:3.5rem">
     <div style="text-align:center;margin-bottom:1.1rem">
-      <span class="game-badge">⚡ โหมดพักสายตา · ปิกาจูวอลเลย์บอล ⚡</span>
+      <span class="game-badge">พักสมอง · เก็บเอกสารพัสดุ</span>
     </div>
     <div class="game-wrap">
-      <iframe src="https://gorisanson.github.io/pikachu-volleyball/" frameborder="0" scrolling="no" title="Pikachu Volleyball"></iframe>
+      <div class="game-stage" id="supplyGame" tabindex="0" aria-label="เกมเก็บเอกสารพัสดุ">
+        <div class="game-hud">
+          <div class="game-score">คะแนน <span id="supplyScore">0</span></div>
+          <div class="game-time">เวลา <span id="supplyTime">45</span></div>
+        </div>
+        <div class="game-message" id="supplyMessage">
+          <strong>เก็บเอกสารให้ทัน</strong>
+          <span>เลื่อนตะกร้ารับเอกสารสีเหลือง หลบเอกสารแดง เล่น 45 วินาที</span>
+          <button class="game-start" type="button" onclick="startSupplyGame()">เริ่มเกม</button>
+        </div>
+        <div class="game-basket" id="supplyBasket"></div>
+      </div>
+      <div class="game-mobile-controls">
+        <button type="button" onpointerdown="holdSupplyDir(-1)" onpointerup="holdSupplyDir(0)" onpointerleave="holdSupplyDir(0)" onpointercancel="holdSupplyDir(0)">← ซ้าย</button>
+        <button type="button" onpointerdown="holdSupplyDir(1)" onpointerup="holdSupplyDir(0)" onpointerleave="holdSupplyDir(0)" onpointercancel="holdSupplyDir(0)">ขวา →</button>
+      </div>
       <div class="ctrl-row">
         <div class="ctrl-cell">
-          <div class="ctrl-player">👤 ผู้เล่น 1 (ซ้าย)</div>
-          <div class="ctrl-keys">บังคับ: <kbd>D</kbd> <kbd>R</kbd> <kbd>G</kbd> <kbd>F</kbd> · ตบ: <kbd>Z</kbd></div>
+          <div class="ctrl-player">คีย์บอร์ด</div>
+          <div class="ctrl-keys">บังคับ: <kbd>←</kbd> <kbd>→</kbd> หรือ <kbd>A</kbd> <kbd>D</kbd> · เริ่มใหม่: <kbd>Space</kbd></div>
         </div>
         <div class="ctrl-cell">
-          <div class="ctrl-player">🤖 ผู้เล่น 2 (ขวา)</div>
-          <div class="ctrl-keys">บังคับ: <kbd>ลูกศร</kbd> · ตบ: <kbd>Enter</kbd></div>
+          <div class="ctrl-player">กติกา</div>
+          <div class="ctrl-keys">เอกสารเหลือง +10 · เอกสารแดง -15 · หลุดพื้น -5</div>
         </div>
       </div>
     </div>
   </div>
-
   <!-- ── FOOTER ── -->
   <footer class="footer">
     <div class="footer-card">
@@ -962,6 +1030,143 @@ function goBasicSlide(index) {
     if (Math.abs(dx) > 45) changeBasicSlide(dx < 0 ? 1 : -1);
   }, { passive:true });
 })();
+
+/* Supply break game */
+const supplyGame = {
+  running: false,
+  score: 0,
+  time: 45,
+  x: 50,
+  dir: 0,
+  items: [],
+  lastSpawn: 0,
+  lastTick: 0,
+  timer: 0,
+  raf: 0
+};
+
+function setSupplyMessage(title, body, button = 'เริ่มเกม') {
+  const msg = document.getElementById('supplyMessage');
+  if (!msg) return;
+  msg.innerHTML = `<strong>${title}</strong><span>${body}</span><button class="game-start" type="button" onclick="startSupplyGame()">${button}</button>`;
+  msg.style.display = 'flex';
+}
+
+function holdSupplyDir(dir) {
+  supplyGame.dir = dir;
+}
+
+function startSupplyGame() {
+  const stage = document.getElementById('supplyGame');
+  const msg = document.getElementById('supplyMessage');
+  if (!stage || !msg) return;
+  stage.focus();
+  supplyGame.running = true;
+  supplyGame.score = 0;
+  supplyGame.time = 45;
+  supplyGame.x = 50;
+  supplyGame.dir = 0;
+  supplyGame.items.forEach(item => item.el.remove());
+  supplyGame.items = [];
+  supplyGame.lastSpawn = 0;
+  supplyGame.lastTick = performance.now();
+  document.getElementById('supplyScore').textContent = '0';
+  document.getElementById('supplyTime').textContent = '45';
+  msg.style.display = 'none';
+  clearInterval(supplyGame.timer);
+  supplyGame.timer = setInterval(() => {
+    if (!supplyGame.running) return;
+    supplyGame.time -= 1;
+    document.getElementById('supplyTime').textContent = supplyGame.time;
+    if (supplyGame.time <= 0) endSupplyGame();
+  }, 1000);
+  cancelAnimationFrame(supplyGame.raf);
+  supplyGame.raf = requestAnimationFrame(updateSupplyGame);
+}
+
+function spawnSupplyItem(stage) {
+  const good = Math.random() > 0.24;
+  const el = document.createElement('div');
+  el.className = `fall-item ${good ? 'fall-good' : 'fall-bad'}`;
+  el.textContent = good ? '✓' : '!';
+  const maxX = Math.max(0, stage.clientWidth - 46);
+  const item = {
+    el,
+    good,
+    x: Math.random() * maxX,
+    y: -55,
+    speed: 120 + Math.random() * 95 + Math.max(0, 45 - supplyGame.time) * 2
+  };
+  el.style.transform = `translate(${item.x}px, ${item.y}px)`;
+  stage.appendChild(el);
+  supplyGame.items.push(item);
+}
+
+function updateSupplyGame(now) {
+  if (!supplyGame.running) return;
+  const stage = document.getElementById('supplyGame');
+  const basket = document.getElementById('supplyBasket');
+  if (!stage || !basket) return;
+  const dt = Math.min(0.032, (now - supplyGame.lastTick) / 1000 || 0);
+  supplyGame.lastTick = now;
+
+  supplyGame.x = Math.max(7, Math.min(93, supplyGame.x + supplyGame.dir * dt * 58));
+  basket.style.left = `${supplyGame.x}%`;
+
+  if (now - supplyGame.lastSpawn > 720) {
+    spawnSupplyItem(stage);
+    supplyGame.lastSpawn = now;
+  }
+
+  const basketBox = basket.getBoundingClientRect();
+  supplyGame.items = supplyGame.items.filter(item => {
+    item.y += item.speed * dt;
+    item.el.style.transform = `translate(${item.x}px, ${item.y}px)`;
+    const box = item.el.getBoundingClientRect();
+    const hit = box.left < basketBox.right && box.right > basketBox.left && box.bottom > basketBox.top && box.top < basketBox.bottom;
+    if (hit) {
+      supplyGame.score += item.good ? 10 : -15;
+      document.getElementById('supplyScore').textContent = supplyGame.score;
+      item.el.remove();
+      return false;
+    }
+    if (item.y > stage.clientHeight + 60) {
+      if (item.good) {
+        supplyGame.score -= 5;
+        document.getElementById('supplyScore').textContent = supplyGame.score;
+      }
+      item.el.remove();
+      return false;
+    }
+    return true;
+  });
+
+  supplyGame.raf = requestAnimationFrame(updateSupplyGame);
+}
+
+function endSupplyGame() {
+  supplyGame.running = false;
+  clearInterval(supplyGame.timer);
+  cancelAnimationFrame(supplyGame.raf);
+  supplyGame.items.forEach(item => item.el.remove());
+  supplyGame.items = [];
+  const verdict = supplyGame.score >= 180 ? 'มือไวมาก' : supplyGame.score >= 90 ? 'ผ่านงานพัสดุวันนี้' : 'พักอีกตา';
+  setSupplyMessage(verdict, `คะแนนรวม ${supplyGame.score} แต้ม`, 'เล่นอีกครั้ง');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') holdSupplyDir(-1);
+  if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') holdSupplyDir(1);
+  const active = document.activeElement;
+  const gameFocused = active && (active.id === 'supplyGame' || active.closest?.('.game-wrap'));
+  if (e.code === 'Space' && gameFocused) {
+    e.preventDefault();
+    if (!supplyGame.running) startSupplyGame();
+  }
+});
+document.addEventListener('keyup', e => {
+  if (['ArrowLeft', 'ArrowRight', 'a', 'A', 'd', 'D'].includes(e.key)) holdSupplyDir(0);
+});
 
 const music     = document.getElementById('bgMusic');
 const musicIcon = document.getElementById('musicIcon');
