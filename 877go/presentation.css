@@ -493,3 +493,143 @@ body.pres-mode ::-webkit-scrollbar-thumb:hover { background: rgba(52,211,153,0.5
 body.pres-mode .hero,
 body.pres-mode .content { zoom: 1.55; }
 body.pres-mode #pres-toggle { zoom: 1; }
+
+/* ════════════════════════════════════════════════════════════
+   Mobile Sidebar Fix — ว 877
+   Keep navigation as a fixed left rail on mobile, matching ว 804.
+   ════════════════════════════════════════════════════════════ */
+@media (max-width: 900px) {
+  :root {
+    --mobile-sidebar-w: 96px;
+  }
+
+  body {
+    flex-direction: row;
+    min-width: 0;
+  }
+
+  .sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: var(--mobile-sidebar-w);
+    min-height: 100dvh;
+    max-height: 100dvh;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sidebar-brand {
+    padding: 16px 10px 14px;
+    text-align: center;
+  }
+
+  .sidebar-brand .badge {
+    min-width: 48px;
+    margin-bottom: 0;
+    padding: 7px 8px;
+    border-radius: 14px;
+    font-size: 0;
+    line-height: 1;
+  }
+
+  .sidebar-brand .badge::before {
+    content: "877";
+    font-size: 18px;
+  }
+
+  .sidebar-brand h1,
+  .sidebar-brand p,
+  .nav-label,
+  .sidebar-footer {
+    display: none;
+  }
+
+  .nav-item {
+    justify-content: center;
+    gap: 0;
+    min-height: 54px;
+    padding: 10px 6px;
+    border-left-width: 4px;
+    font-size: 0;
+  }
+
+  .nav-item .nav-num {
+    width: 34px;
+    height: 34px;
+    font-size: 14px;
+    color: rgba(255,255,255,0.78);
+  }
+
+  .nav-item.active .nav-num {
+    color: var(--white);
+  }
+
+  .main {
+    margin-left: var(--mobile-sidebar-w);
+    width: calc(100% - var(--mobile-sidebar-w));
+    min-width: 0;
+  }
+
+  .hero {
+    padding: 30px 22px 34px;
+  }
+
+  .hero h2 {
+    font-size: clamp(28px, 9vw, 42px);
+    line-height: 1.22;
+  }
+
+  .content {
+    padding: 24px 18px 60px;
+  }
+
+  #pres-toggle {
+    top: 18px;
+    right: 14px;
+    max-width: calc(100vw - var(--mobile-sidebar-w) - 28px);
+  }
+
+  .grid-2,
+  .tor-steps,
+  .compare-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-row {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  :root {
+    --mobile-sidebar-w: 84px;
+  }
+
+  .sidebar-brand .badge {
+    min-width: 42px;
+    padding: 6px;
+  }
+
+  .sidebar-brand .badge::before {
+    font-size: 16px;
+  }
+
+  .nav-item {
+    min-height: 50px;
+  }
+
+  .nav-item .nav-num {
+    width: 30px;
+    height: 30px;
+    font-size: 13px;
+  }
+
+  .hero,
+  .content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
