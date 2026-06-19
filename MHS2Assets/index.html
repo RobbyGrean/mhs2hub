@@ -21,23 +21,39 @@
 
 <!-- ── LOGIN ── -->
 <div id="loginScreen">
-  <div class="login-box">
-    <div class="login-logo">
-      <span class="icon">📋</span>
-      <h1>ระบบทะเบียนครุภัณฑ์</h1>
-      <p>สำนักงานเขตพื้นที่การศึกษาประถมศึกษาแม่ฮ่องสอน เขต 2</p>
+  <div class="login-stage">
+    <section class="login-showcase" aria-hidden="true">
+      <div class="login-kicker">MHS2 Asset Command</div>
+      <div class="login-showcase-title">Premium Asset Registry</div>
+      <div class="login-showcase-copy">Secure workspace for inventory, reporting, and asset lifecycle control.</div>
+      <div class="login-metrics">
+        <div><strong>9</strong><span>Work groups</span></div>
+        <div><strong>24/7</strong><span>Live access</span></div>
+        <div><strong>SHA</strong><span>Protected sign in</span></div>
+      </div>
+      <div class="login-orbit orbit-a"></div>
+      <div class="login-orbit orbit-b"></div>
+    </section>
+    <div class="login-box">
+      <div class="login-logo">
+        <span class="icon">📋</span>
+        <div class="login-badge">Secure Workspace</div>
+        <h1>ระบบทะเบียนครุภัณฑ์</h1>
+        <p>สำนักงานเขตพื้นที่การศึกษาประถมศึกษาแม่ฮ่องสอน เขต 2</p>
+      </div>
+      <div class="login-divider"></div>
+      <div class="login-field">
+        <label>ชื่อผู้ใช้</label>
+        <input type="text" id="loginUser" placeholder="username" autocomplete="username"/>
+      </div>
+      <div class="login-field">
+        <label>รหัสผ่าน</label>
+        <input type="password" id="loginPass" placeholder="password" autocomplete="current-password"/>
+      </div>
+      <div class="login-err" id="loginErr"></div>
+      <button class="btn-login" id="btnLogin" onclick="doLogin()">เข้าสู่ระบบ</button>
+      <div class="login-footnote">Encrypted access gateway</div>
     </div>
-    <div class="login-divider"></div>
-    <div class="login-field">
-      <label>ชื่อผู้ใช้</label>
-      <input type="text" id="loginUser" placeholder="username" autocomplete="username"/>
-    </div>
-    <div class="login-field">
-      <label>รหัสผ่าน</label>
-      <input type="password" id="loginPass" placeholder="password" autocomplete="current-password"/>
-    </div>
-    <div class="login-err" id="loginErr"></div>
-    <button class="btn-login" id="btnLogin" onclick="doLogin()">เข้าสู่ระบบ</button>
   </div>
 </div>
 
