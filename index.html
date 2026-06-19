@@ -370,6 +370,45 @@
       background: linear-gradient(135deg, var(--pink-s), var(--lilac));
       box-shadow: 0 0 30px rgba(236,72,153,0.4);
     }
+    .slide-viewer { position:relative; overflow:hidden; border-radius:1rem; background:rgba(0,0,0,0.18); }
+    .slide-frame { display:block; width:100%; aspect-ratio:16/9; border:0; background:rgba(255,255,255,0.04); }
+    .slide-frame img { width:100%; height:100%; object-fit:contain; display:block; }
+    .slide-controls {
+      position:absolute; left:1rem; right:1rem; bottom:1rem; display:flex; align-items:center; justify-content:space-between;
+      gap:0.75rem; pointer-events:none;
+    }
+    .slide-btn, .slide-full {
+      border:1px solid rgba(255,255,255,0.18); color:#fff; cursor:pointer; pointer-events:auto;
+      background:rgba(14,6,24,0.78); backdrop-filter:blur(12px); box-shadow:0 8px 24px rgba(0,0,0,0.35);
+      transition:transform 0.2s, background 0.2s, border-color 0.2s;
+    }
+    .slide-btn {
+      width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+      font-size:1.35rem; line-height:1;
+    }
+    .slide-btn:hover, .slide-full:hover { transform:translateY(-1px); background:rgba(244,114,182,0.85); border-color:rgba(244,114,182,0.9); }
+    .slide-mid { display:flex; align-items:center; justify-content:center; gap:0.6rem; flex-wrap:wrap; pointer-events:auto; }
+    .slide-count {
+      min-width:70px; text-align:center; padding:0.58rem 0.85rem; border-radius:99px; color:#fff; font-size:0.82rem; font-weight:700;
+      background:rgba(14,6,24,0.78); border:1px solid rgba(255,255,255,0.16); backdrop-filter:blur(12px);
+    }
+    .slide-full {
+      display:inline-flex; align-items:center; gap:0.35rem; text-decoration:none; border-radius:99px; padding:0.6rem 1rem;
+      font-size:0.82rem; font-weight:700;
+      background:linear-gradient(135deg, rgba(236,72,153,0.9), rgba(192,132,252,0.9));
+    }
+    .slide-dots { display:flex; gap:0.35rem; justify-content:center; margin-top:0.9rem; flex-wrap:wrap; }
+    .slide-dot {
+      width:8px; height:8px; border:0; border-radius:50%; background:rgba(255,255,255,0.22); cursor:pointer; padding:0;
+      transition:transform 0.2s, background 0.2s;
+    }
+    .slide-dot.active { background:var(--pink); transform:scale(1.35); }
+    @media (max-width:640px) {
+      .slide-controls { left:0.55rem; right:0.55rem; bottom:0.55rem; gap:0.35rem; }
+      .slide-btn { width:36px; height:36px; font-size:1.1rem; }
+      .slide-count { min-width:58px; padding:0.48rem 0.6rem; font-size:0.76rem; }
+      .slide-full { padding:0.5rem 0.72rem; font-size:0.76rem; }
+    }
 
     /* ── Game section ── */
     .game-badge {
@@ -782,11 +821,22 @@
       <div class="sec-rule"></div>
     </div>
     <div class="workflow-box">
-      <a href="https://drive.google.com/file/d/1ypFXawAq2kC_2z9-XzZyGHEJ_HQGDsbQ/view?usp=sharing"
-         target="_blank" class="workflow-img-wrap">
-        <img src="PVworkflow.jpg" alt="ภาพรวมการทำงาน">
-        <div class="workflow-overlay"><span>ดูฉบับเต็ม →</span></div>
-      </a>
+      <div class="slide-viewer" id="basicSlideViewer">
+        <div class="slide-frame">
+          <img id="basicSlideImg" src="pictureassets/basic1.png" alt="ภาพรวมกฎหมายพัสดุ หน้า 1">
+        </div>
+        <div class="slide-controls">
+          <button class="slide-btn" type="button" onclick="changeBasicSlide(-1)" aria-label="สไลด์ก่อนหน้า">‹</button>
+          <div class="slide-mid">
+            <span class="slide-count" id="basicSlideCount">1 / 11</span>
+            <a class="slide-full"
+               href="https://drive.google.com/file/d/1ypFXawAq2kC_2z9-XzZyGHEJ_HQGDsbQ/view?usp=sharing"
+               target="_blank" rel="noopener">ดูฉบับเต็ม →</a>
+          </div>
+          <button class="slide-btn" type="button" onclick="changeBasicSlide(1)" aria-label="สไลด์ถัดไป">›</button>
+        </div>
+      </div>
+      <div class="slide-dots" id="basicSlideDots" aria-label="เลือกหน้าสไลด์"></div>
     </div>
   </div>
 
@@ -872,6 +922,47 @@
 })();
 
 /* ── Music ── */
+/* Basic law slideshow */
+const basicSlides = Array.from({ length: 11 }, (_, i) => `pictureassets/basic${i + 1}.png`);
+let basicSlideIndex = 0;
+
+function renderBasicSlide() {
+  const img = document.getElementById('basicSlideImg');
+  const count = document.getElementById('basicSlideCount');
+  const dots = document.querySelectorAll('.slide-dot');
+  if (!img || !count) return;
+  img.src = basicSlides[basicSlideIndex];
+  img.alt = `ภาพรวมกฎหมายพัสดุ หน้า ${basicSlideIndex + 1}`;
+  count.textContent = `${basicSlideIndex + 1} / ${basicSlides.length}`;
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === basicSlideIndex));
+}
+
+function changeBasicSlide(step) {
+  basicSlideIndex = (basicSlideIndex + step + basicSlides.length) % basicSlides.length;
+  renderBasicSlide();
+}
+
+function goBasicSlide(index) {
+  basicSlideIndex = index;
+  renderBasicSlide();
+}
+
+(function initBasicSlides() {
+  const dots = document.getElementById('basicSlideDots');
+  const viewer = document.getElementById('basicSlideViewer');
+  if (!dots || !viewer) return;
+  dots.innerHTML = basicSlides.map((_, i) =>
+    `<button class="slide-dot${i === 0 ? ' active' : ''}" type="button" onclick="goBasicSlide(${i})" aria-label="ไปหน้าที่ ${i + 1}"></button>`
+  ).join('');
+
+  let startX = 0;
+  viewer.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive:true });
+  viewer.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 45) changeBasicSlide(dx < 0 ? 1 : -1);
+  }, { passive:true });
+})();
+
 const music     = document.getElementById('bgMusic');
 const musicIcon = document.getElementById('musicIcon');
 const musicBtn  = document.getElementById('musicBtn');
