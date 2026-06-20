@@ -703,6 +703,8 @@ body::after {
 .header { margin-bottom:2.8rem; }
 .header-icon {
   position:relative;
+  overflow:hidden;
+  isolation:isolate;
   width:88px;
   height:88px;
   border-radius:28px;
@@ -723,16 +725,22 @@ body::after {
   pointer-events:none;
 }
 .header-icon::before {
-  inset:-10px;
+  inset:0;
+  z-index:0;
   border:1px solid rgba(244,114,182,0.22);
   box-shadow:0 0 24px rgba(244,114,182,0.25), inset 0 0 20px rgba(125,211,252,0.08);
   animation:icon-aura 2.8s ease-in-out infinite;
 }
 .header-icon::after {
   inset:9px;
+  z-index:1;
   background:linear-gradient(120deg, transparent 0 35%, rgba(255,255,255,0.28) 46%, transparent 58% 100%);
   transform:translateX(-120%) rotate(8deg);
   animation:icon-shine 3.8s ease-in-out infinite;
+}
+.header-icon svg {
+  position:relative;
+  z-index:2;
 }
 .title-main { font-size:clamp(3rem, 6.5vw, 4.15rem); letter-spacing:0; margin-bottom:0.35rem; }
 .title-sub { font-size:1.25rem; color:rgba(255,255,255,0.68); }
