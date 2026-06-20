@@ -717,8 +717,7 @@ body::after {
     0 24px 70px rgba(0,0,0,0.34),
     inset 0 1.5px 0 rgba(255,255,255,0.34);
 }
-.header-icon::before,
-.header-icon::after {
+.header-icon::before {
   content:'';
   position:absolute;
   border-radius:inherit;
@@ -730,13 +729,6 @@ body::after {
   border:1px solid rgba(244,114,182,0.22);
   box-shadow:0 0 24px rgba(244,114,182,0.25), inset 0 0 20px rgba(125,211,252,0.08);
   animation:icon-aura 2.8s ease-in-out infinite;
-}
-.header-icon::after {
-  inset:9px;
-  z-index:1;
-  background:linear-gradient(120deg, transparent 0 35%, rgba(255,255,255,0.28) 46%, transparent 58% 100%);
-  transform:translateX(-120%) rotate(8deg);
-  animation:icon-shine 3.8s ease-in-out infinite;
 }
 .header-icon svg {
   position:relative;
@@ -751,12 +743,6 @@ body::after {
   0%,100% { opacity:0.45; transform:scale(0.96); }
   50% { opacity:1; transform:scale(1.04); }
 }
-@keyframes icon-shine {
-  0%, 45% { transform:translateX(-120%) rotate(8deg); opacity:0; }
-  62% { opacity:1; }
-  100% { transform:translateX(125%) rotate(8deg); opacity:0; }
-}
-
 .portal-stats {
   display:grid;
   grid-template-columns:repeat(3, minmax(0, 1fr));
