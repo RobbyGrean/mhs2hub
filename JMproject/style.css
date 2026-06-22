@@ -247,22 +247,37 @@ input#searchInput,
     background: #fff !important;
     color: #d84f8f !important;
     border: 2px solid rgba(255, 143, 189, 0.55) !important;
+    gap: 8px !important;
 }
 
 #btn-export::before {
-    content: "Bow";
-    width: 36px;
-    height: 22px;
-    display: inline-grid;
-    place-items: center;
-    color: #fff;
-    font-size: 10px;
-    background: #ff8fbd;
-    clip-path: polygon(0 50%, 35% 8%, 50% 38%, 65% 8%, 100% 50%, 65% 92%, 50% 62%, 35% 92%);
+    content: none !important;
 }
 
 #btn-export .eject-icon {
     display: none !important;
+}
+
+.report-icon {
+    display: inline-grid;
+    place-items: center;
+    min-width: 30px;
+    height: 20px;
+    padding: 0 6px;
+    border-radius: 999px;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0 !important;
+}
+
+.pdf-icon {
+    background: #ff6f91;
+}
+
+.xlsx-icon {
+    background: #65c9a8;
 }
 
 select#regionFilter,
@@ -342,6 +357,28 @@ input#searchInput:focus {
     color: var(--kitty-red) !important;
     animation: none !important;
     text-shadow: none !important;
+}
+
+.item-card::before {
+    display: none !important;
+}
+
+#previewCard > div {
+    background: rgba(255, 248, 238, 0.96) !important;
+}
+
+#previewCard .bg-gradient-to-t {
+    background: linear-gradient(to top, rgba(111, 69, 98, 0.68), transparent) !important;
+}
+
+#prevName {
+    color: #6f4562 !important;
+    text-shadow: none !important;
+}
+
+#prevLink {
+    background: #f47fb5 !important;
+    color: #fff !important;
 }
 
 @keyframes sweetBlink {

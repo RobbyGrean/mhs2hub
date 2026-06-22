@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="style.css?v=kawaii-20260623-1">
+    <link rel="stylesheet" href="style.css?v=kawaii-20260623-3">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         .scrollbar-hide::-webkit-scrollbar { display: none; }
@@ -316,9 +316,9 @@
                     </div>
                 </div>
                 <div style="font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 1px; line-height: 2.2;">
-                    <div><span style="color:#39ff14;">■</span> <span style="color:rgba(255,255,255,0.4);">ออกแล้ว</span></div>
-                    <div><span style="color:#ff3131;">■</span> <span style="color:rgba(255,255,255,0.4);">ค้างจ่าย</span></div>
-                    <div><span style="color:#334155;">■</span> <span style="color:rgba(255,255,255,0.4);">ไม่มีข้อมูล</span></div>
+                    <div><span style="color:#65c9a8;">■</span> <span style="color:#6f4562;font-weight:700;">ออกแล้ว</span></div>
+                    <div><span style="color:#ff6f91;">■</span> <span style="color:#6f4562;font-weight:700;">ค้างจ่าย</span></div>
+                    <div><span style="color:#8d7ab8;">■</span> <span style="color:#6f4562;font-weight:700;">ไม่มีข้อมูล</span></div>
                 </div>
             </div>
         </div>
@@ -350,10 +350,11 @@
                 <!-- TOOLBAR -->
                 <div class="flex flex-wrap items-center gap-3 mb-6">
                     <button id="btn-print" onclick="openPrintMenu()">
-                        ⬡ ออกรายงาน PDF
+                        <span class="report-icon pdf-icon" aria-hidden="true">PDF</span>
+                        ออกรายงาน PDF
                     </button>
                     <button id="btn-export" onclick="exportExcel()">
-                        <span class="eject-icon"></span>
+                        <span class="report-icon xlsx-icon" aria-hidden="true">XLS</span>
                         EXPORT XLSX
                     </button>
                     <span id="result-count" class="ml-auto">SHOWING 0 DISTRICTS</span>
@@ -429,7 +430,7 @@
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent"></div>
             </div>
             <div class="p-6">
-                <h4 id="prevName" class="text-2xl font-bold text-white mb-2 leading-tight">ชื่อเขตพื้นที่</h4>
+                <h4 id="prevName" class="text-2xl font-bold mb-2 leading-tight">ชื่อเขตพื้นที่</h4>
                 <a id="prevLink" href="#" target="_blank"
                    class="inline-block w-full text-center py-3 bg-blue-600 hover:bg-blue-400 text-white rounded-xl font-bold transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)]">
                     🌐 เข้าสู่เว็บไซต์เขต
