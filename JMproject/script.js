@@ -17,7 +17,7 @@ const summaryChart = new Chart(summaryCtx, {
         labels: ['ออกแล้ว', 'ค้างจ่าย', 'ไม่มีข้อมูล'],
         datasets: [{
             data: [0, 0, 1],
-            backgroundColor: ['#39ff14', '#ff3131', '#1e293b'],
+            backgroundColor: ['#65c9a8', '#ff6f91', '#c9b9ff'],
             borderWidth: 0,
             hoverOffset: 4
         }]
@@ -176,10 +176,11 @@ function renderList(data) {
 
         let sliderValue = (status === 'ออกแล้ว') ? 2 : (status === 'ยังไม่ออก' || status === 'ค้างจ่าย') ? 1 : 0;
         const isPending  = (status === 'ค้างจ่าย');
+        const isSuccess  = (status === 'ออกแล้ว');
 
         let statusColor = isPending ? 'text-rose-400' : sliderValue === 2 ? 'text-emerald-400' : 'text-slate-500';
         let nameColor   = isPending ? 'text-rose-400' : sliderValue === 2 ? 'text-emerald-400' : 'text-slate-200';
-        let pendingClass = isPending ? 'is-pending' : '';
+        let pendingClass = isPending ? 'is-pending' : isSuccess ? 'is-success' : 'is-nodata';
 
         const card = document.createElement('div');
         card.className = `item-card p-6 rounded-2xl flex justify-between items-center ${pendingClass}`;
