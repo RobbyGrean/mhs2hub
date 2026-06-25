@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Admin คลังพัสดุ</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-mode="admin">
+    <section id="loginView" class="login-view">
+      <form class="login-card" id="loginForm">
+        <h1>Admin คลังพัสดุ</h1>
+        <label>ID
+          <input id="loginUser" autocomplete="username" required>
+        </label>
+        <label>Password
+          <input id="loginPassword" type="password" autocomplete="current-password" required>
+        </label>
+        <button class="primary" type="submit">เข้าสู่ระบบ</button>
+        <p id="loginMessage" class="message"></p>
+      </form>
+    </section>
+
+    <section id="appView" class="app-view hidden">
+      <header class="app-header">
+        <div>
+          <h1>Admin คลังพัสดุ</h1>
+          <p id="userBadge"></p>
+        </div>
+        <button title="ออกจากระบบ" onclick="logout()">ออก</button>
+      </header>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="withdraw" onclick="showTab('withdraw')">บันทึกใบเบิก</button>
+        <button class="tab" data-tab="history" onclick="showTab('history')">ประวัติรวม</button>
+        <button class="tab" data-tab="admin" onclick="showTab('admin')">คลังพัสดุ</button>
+        <button class="tab" data-tab="dashboard" onclick="showTab('dashboard')">Dashboard</button>
+      </nav>
+
+      <main>
+        <section id="withdraw" class="panel active">
+          <div class="grid two">
+            <label>ฝ่าย
+              <select id="withdrawDept"></select>
+            </label>
+            <label>ชื่อผู้เบิก
+              <input id="withdrawRequester" placeholder="ชื่อ-สกุล">
+            </label>
+          </div>
+          <div id="withdrawLines"></div>
+          <button onclick="addWithdrawLine()">+ เพิ่มรายการ</button>
+          <button class="primary" onclick="submitWithdrawal()">บันทึกเบิก</button>
+          <p id="withdrawMessage" class="message"></p>
+        </section>
+
+        <section id="history" class="panel">
+          <div id="historyList" class="history-list"></div>
+        </section>
+
+        <section id="admin" class="panel">
+          <div class="admin-grid">
+            <div>
+              <h2>ประเภท</h2>
+              <div id="categoryTree" class="tree"></div>
+              <div class="form-box">
+                <label>ชื่อประเภท
+                  <input id="categoryName" placeholder="เช่น กระดาษ">
+                </label>
+                <label>อยู่ใต้ประเภท
+                  <select id="categoryParent"></select>
+                </label>
+                <button onclick="saveCategoryFromForm()">บันทึกประเภท</button>
+              </div>
+            </div>
+
+            <div>
+              <h2>รายการพัสดุ</h2>
+              <div class="form-box">
+                <label>ชื่อรายการ
+                  <input id="itemName" placeholder="เช่น กระดาษ A4 80 แกรม">
+                </label>
+                <label>ประเภท
+                  <select id="itemCategory"></select>
+                </label>
+                <div class="grid two">
+                  <label>หน่วยนับ
+                    <input id="itemUnit" placeholder="รีม / อัน / เล่ม">
+                  </label>
+                  <label>ขั้นต่ำ
+                    <input id="itemMinStock" type="number" min="0" value="0">
+                  </label>
+                </div>
+                <button onclick="saveItemFromForm()">บันทึกรายการ</button>
+              </div>
+
+              <h2>รับเข้า</h2>
+              <div class="form-box">
+                <label>รายการ
+                  <select id="receiptItem"></select>
+                </label>
+                <div class="grid two">
+                  <label>จำนวน
+                    <input id="receiptQty" type="number" min="0" step="1">
+                  </label>
+                  <label>ราคาต่อหน่วย
+                    <input id="receiptUnitPrice" type="number" min="0" step="0.01">
+                  </label>
+                </div>
+                <label>เลขเอกสาร/หมายเหตุ
+                  <input id="receiptDocRef">
+                </label>
+                <button onclick="saveReceiptFromForm()">บันทึกรับเข้า</button>
+              </div>
+
+              <h2>ปรับยอด</h2>
+              <div class="form-box">
+                <label>รายการ
+                  <select id="adjustItem"></select>
+                </label>
+                <label>จำนวนเปลี่ยนแปลง
+                  <input id="adjustQty" type="number" step="1" placeholder="-2 หรือ 5">
+                </label>
+                <label>เหตุผล
+                  <input id="adjustReason" placeholder="ตรวจนับพบไม่ตรง">
+                </label>
+                <button onclick="saveAdjustmentFromForm()">บันทึกปรับยอด</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="dashboard" class="panel">
+          <div id="dashboardCards" class="cards"></div>
+          <h2>รายการใกล้หมด</h2>
+          <div id="lowStockList" class="stock-list"></div>
+        </section>
+      </main>
+    </section>
+
+    <dialog id="editDialog">
+      <form method="dialog" class="dialog-body">
+        <h2>แก้ไขใบเบิก</h2>
+        <input type="hidden" id="editWithdrawId">
+        <label>ฝ่าย
+          <select id="editDept"></select>
+        </label>
+        <label>ชื่อผู้เบิก
+          <input id="editRequester">
+        </label>
+        <div id="editLines"></div>
+        <button type="button" onclick="addEditLine()">+ เพิ่มรายการ</button>
+        <label>เหตุผลการแก้ไข
+          <input id="editReason" required>
+        </label>
+        <div class="dialog-actions">
+          <button type="button" onclick="closeEditDialog()">ปิด</button>
+          <button type="button" class="primary" onclick="submitEditWithdrawal()">บันทึกแก้ไข</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>

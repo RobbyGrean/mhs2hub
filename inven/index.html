@@ -1,1 +1,38 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>เบิกพัสดุ</title>
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+  <body data-mode="requester">
+    <header class="app-header">
+      <div>
+        <h1>เบิกพัสดุ</h1>
+        <p>เลือกฝ่าย กรอกชื่อ แล้วบันทึกการเบิก</p>
+      </div>
+      <a class="link-button" href="./admin.html">Admin</a>
+    </header>
 
+    <main>
+      <section id="withdraw" class="panel active">
+        <div class="grid two">
+          <label>ฝ่าย
+            <select id="withdrawDept"></select>
+          </label>
+          <label>ชื่อผู้เบิก
+            <input id="withdrawRequester" placeholder="ชื่อ-สกุล">
+          </label>
+        </div>
+        <div id="withdrawLines"></div>
+        <button onclick="addWithdrawLine()">+ เพิ่มรายการ</button>
+        <button class="primary" onclick="submitWithdrawal()">บันทึกเบิก</button>
+        <p id="withdrawMessage" class="message"></p>
+      </section>
+    </main>
+
+    <script src="./config.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
