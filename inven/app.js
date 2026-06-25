@@ -141,6 +141,7 @@ function renderAll() {
   fillDepartments('editDept');
   fillDepartments('reportDepartment');
   fillDepartments('staffAdminDept');
+  fillDepartments('staffFilterDept');
   bindDepartmentStaffFilter();
   fillRequesterStaff();
   fillCategories('categoryParent', true);
@@ -162,8 +163,8 @@ function fillDepartments(id) {
   if (!select) return;
   const emptyLabel = id === 'reportDepartment'
     ? 'ทุกฝ่าย'
-    : id === 'staffAdminDept'
-      ? 'ส่วนกลาง/ไม่ระบุ'
+    : ['staffAdminDept', 'staffFilterDept'].includes(id)
+      ? id === 'staffFilterDept' ? 'ทุกกลุ่มงาน' : 'ส่วนกลาง/ไม่ระบุ'
       : id === 'withdrawDept'
         ? 'เลือกกลุ่มงาน'
         : '';
@@ -547,7 +548,16 @@ async function saveStaffFromForm() {
 function renderStaffAdmin() {
   const list = document.getElementById('staffAdminList');
   if (!list) return;
-  list.innerHTML = state.staff.map((staff) => `
+  const query = valueOf('staffSearch').trim().toLowerCase();
+  const deptId = valueOf('staffFilterDept');
+  const role = valueOf('staffFilterRole');
+  const rows = state.staff.filter((staff) => {
+    const haystack = `${staff.name} ${staff.position_label} ${departmentName(staff.dept_id)} ${roleLabel(staff.role)}`.toLowerCase();
+    return (!query || haystack.includes(query))
+      && (!deptId || staff.dept_id === deptId)
+      && (!role || staff.role === role);
+  });
+  list.innerHTML = rows.map((staff) => `
     <div class="item-row">
       <div>
         <strong>${escapeHtml(staff.name)}</strong>

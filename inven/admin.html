@@ -189,6 +189,25 @@
             </div>
             <div>
               <h2>รายชื่อเจ้าหน้าที่</h2>
+              <div class="form-box compact-filter">
+                <label>ค้นหา
+                  <input id="staffSearch" placeholder="ค้นหาชื่อ ตำแหน่ง หรือกลุ่มงาน" oninput="renderStaffAdmin()">
+                </label>
+                <div class="grid two">
+                  <label>กลุ่มงาน
+                    <select id="staffFilterDept" onchange="renderStaffAdmin()"></select>
+                  </label>
+                  <label>บทบาท
+                    <select id="staffFilterRole" onchange="renderStaffAdmin()">
+                      <option value="">ทุกบทบาท</option>
+                      <option value="department_staff">เจ้าหน้าที่กลุ่มงาน</option>
+                      <option value="department_head">ผอ. กลุ่ม</option>
+                      <option value="supply_officer">เจ้าหน้าที่พัสดุ</option>
+                      <option value="chief_supply_officer">หัวหน้าเจ้าหน้าที่พัสดุ</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
               <div id="staffAdminList" class="item-list"></div>
             </div>
           </div>
