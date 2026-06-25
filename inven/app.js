@@ -360,8 +360,9 @@ async function submitNewDepartmentStaff() {
     const created = await api('saveDepartmentStaff', payload);
     closeStaffDialog();
     ['staffFirstName', 'staffLastName', 'staffPosition'].forEach(clearValue);
-    await reloadData();
+    upsertStaff(created);
     fillRequesterStaff(created.staff_id);
+    renderStaffAdmin();
     showToast(`เพิ่มรายชื่อ "${created.name}" แล้ว`);
   });
 }
@@ -499,9 +500,11 @@ async function saveStaffFromForm() {
     return;
   }
   await withBusy('กำลังบันทึกเจ้าหน้าที่...', async () => {
-    await api('saveStaff', payload);
+    const saved = await api('saveStaff', payload);
+    upsertStaff(saved);
     resetStaffForm();
-    await loadAdminData();
+    fillRequesterStaff(saved.staff_id);
+    renderStaffAdmin();
     showToast('บันทึกเจ้าหน้าที่เสร็จสิ้น!');
   });
 }
@@ -539,7 +542,9 @@ async function deactivateStaff(staffId) {
   if (!staff || !confirm(`ปิดใช้งาน ${staff.name}?`)) return;
   await withBusy('กำลังปิดใช้งานเจ้าหน้าที่...', async () => {
     await api('saveStaff', { ...staff, active: false, reason: 'ปิดใช้งานผ่านหน้า admin' });
-    await loadAdminData();
+    state.staff = state.staff.filter((row) => row.staff_id !== staff.staff_id);
+    fillRequesterStaff();
+    renderStaffAdmin();
     showToast('ปิดใช้งานแล้ว');
   });
 }
@@ -772,6 +777,15 @@ function findItem(itemId) {
 
 function StaffById(staffId) {
   return state.staff.find((staff) => staff.staff_id === staffId) || null;
+}
+
+function upsertStaff(staff) {
+  const index = state.staff.findIndex((row) => row.staff_id === staff.staff_id);
+  if (index >= 0) {
+    state.staff[index] = staff;
+  } else {
+    state.staff.push(staff);
+  }
 }
 
 function departmentName(deptId) {
