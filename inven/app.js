@@ -5,12 +5,22 @@ let state = {
   items: [],
   departments: [],
   withdrawals: [],
-  dashboard: {}
+  dashboard: {},
+  reports: {}
 };
 
 document.addEventListener('DOMContentLoaded', () => {
   const loginForm = document.getElementById('loginForm');
   if (loginForm) loginForm.addEventListener('submit', login);
+  const loginPassword = document.getElementById('loginPassword');
+  if (loginPassword) {
+    loginPassword.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        loginForm.requestSubmit();
+      }
+    });
+  }
 
   if (state.mode === 'admin') {
     if (state.auth) bootAdmin();
@@ -18,6 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   bootRequester();
+});
+
+document.addEventListener('click', (event) => {
+  document.querySelectorAll('.combo-results.show').forEach((box) => {
+    if (!box.closest('.combo').contains(event.target)) box.classList.remove('show');
+  });
 });
 
 async function api(action, payload = {}) {
@@ -37,6 +53,7 @@ async function api(action, payload = {}) {
 
 async function login(event) {
   event.preventDefault();
+  setBusy(true, 'กำลังเข้าสู่ระบบ...');
   try {
     const data = await api('login', {
       user_id: valueOf('loginUser'),
@@ -48,11 +65,20 @@ async function login(event) {
     await bootAdmin();
   } catch (error) {
     setMessage('loginMessage', error.message);
+  } finally {
+    setBusy(false);
   }
 }
 
 async function bootRequester() {
-  await loadRequesterData();
+  setBusy(true, 'กำลังโหลดข้อมูล...');
+  try {
+    await loadRequesterData();
+  } catch (error) {
+    showToast(error.message || String(error));
+  } finally {
+    setBusy(false);
+  }
 }
 
 async function bootAdmin() {
@@ -60,7 +86,18 @@ async function bootAdmin() {
   document.getElementById('appView').classList.remove('hidden');
   document.getElementById('userBadge').textContent = `${state.auth.name} (${state.auth.user_id})`;
   showTab('withdraw');
-  await loadAdminData();
+  setBusy(true, 'กำลังโหลดข้อมูล...');
+  try {
+    await loadAdminData();
+  } catch (error) {
+    localStorage.removeItem('inventory_auth');
+    state.auth = null;
+    document.getElementById('appView').classList.add('hidden');
+    document.getElementById('loginView').classList.remove('hidden');
+    setMessage('loginMessage', error.message || String(error));
+  } finally {
+    setBusy(false);
+  }
 }
 
 function logout() {
@@ -101,22 +138,27 @@ function showTab(tabName) {
 function renderAll() {
   fillDepartments('withdrawDept');
   fillDepartments('editDept');
+  fillDepartments('reportDepartment');
   fillCategories('categoryParent', true);
   fillCategories('itemCategory', false);
   fillItems('receiptItem');
   fillItems('adjustItem');
   renderCategoryTree();
+  renderItemList();
   renderHistory();
   renderDashboard();
+  renderReports();
+  renderGuide();
   if (!document.querySelector('#withdrawLines .line-row')) addWithdrawLine();
 }
 
 function fillDepartments(id) {
   const select = document.getElementById(id);
   if (!select) return;
-  select.innerHTML = state.departments
+  const includeAll = id === 'reportDepartment';
+  select.innerHTML = `${includeAll ? '<option value="">ทุกฝ่าย</option>' : ''}${state.departments
     .map((department) => `<option value="${department.dept_id}">${escapeHtml(department.name)}</option>`)
-    .join('');
+    .join('')}`;
 }
 
 function fillCategories(id, includeEmpty) {
@@ -137,12 +179,6 @@ function fillItems(id) {
     .join('');
 }
 
-function itemOptions() {
-  return state.items
-    .map((item) => `<option value="${item.item_id}">${escapeHtml(item.name)} | คงเหลือ ${item.stock} ${escapeHtml(item.unit)}</option>`)
-    .join('');
-}
-
 function addWithdrawLine(values = {}) {
   addLine('withdrawLines', values);
 }
@@ -155,10 +191,20 @@ function addLine(containerId, values = {}) {
   const container = document.getElementById(containerId);
   if (!container) return;
   const row = document.createElement('div');
-  row.className = 'line-row';
+  row.className = 'line-row searchable-line';
   row.innerHTML = `
-    <label>รายการ
-      <select class="line-item">${itemOptions()}</select>
+    <label>ประเภท
+      <select class="line-category">
+        <option value="">ทั้งหมด</option>
+        ${categoryOptions()}
+      </select>
+    </label>
+    <label>ค้นหารายการ
+      <div class="combo">
+        <input class="line-search" autocomplete="off" placeholder="พิมพ์ชื่อรายการ หรือคลิกเพื่อดูทั้งหมด">
+        <input class="line-item" type="hidden">
+        <div class="combo-results"></div>
+      </div>
     </label>
     <label>จำนวน
       <input class="line-qty" type="number" min="1" step="1" value="${values.requested_qty || 1}">
@@ -168,10 +214,51 @@ function addLine(containerId, values = {}) {
     <button type="button" title="ลบรายการ" onclick="this.closest('.line-row').remove()">x</button>
   `;
   container.appendChild(row);
-  const select = row.querySelector('.line-item');
-  if (values.item_id) select.value = values.item_id;
+
+  row.querySelector('.line-category').addEventListener('change', () => {
+    row.querySelector('.line-item').value = '';
+    row.querySelector('.line-search').value = '';
+    updateLineInfo(row);
+  });
+  row.querySelector('.line-search').addEventListener('focus', () => renderComboResults(row));
+  row.querySelector('.line-search').addEventListener('input', () => renderComboResults(row));
   row.querySelector('.line-qty').addEventListener('input', () => updateLineInfo(row));
-  select.addEventListener('change', () => updateLineInfo(row));
+
+  if (values.item_id) selectItemForRow(row, values.item_id);
+  updateLineInfo(row);
+}
+
+function categoryOptions() {
+  return state.categories.map((category) => {
+    const depth = categoryDepth(category.category_id);
+    return `<option value="${category.category_id}">${'-- '.repeat(depth)}${escapeHtml(category.name)}</option>`;
+  }).join('');
+}
+
+function renderComboResults(row) {
+  const query = row.querySelector('.line-search').value.trim().toLowerCase();
+  const categoryId = row.querySelector('.line-category').value;
+  const results = itemsForCategory(categoryId)
+    .filter((item) => {
+      const haystack = `${item.name} ${categoryPath(item.category_id)} ${item.unit}`.toLowerCase();
+      return !query || haystack.includes(query);
+    })
+    .slice(0, 30);
+  const box = row.querySelector('.combo-results');
+  box.innerHTML = results.map((item) => `
+    <button type="button" class="combo-option" onclick="selectItemForRow(this.closest('.line-row'), '${item.item_id}')">
+      <strong>${escapeHtml(item.name)}</strong>
+      <small>${escapeHtml(categoryPath(item.category_id))} · คงเหลือ ${item.stock} ${escapeHtml(item.unit)}</small>
+    </button>
+  `).join('') || '<div class="combo-empty">ไม่พบรายการ</div>';
+  box.classList.add('show');
+}
+
+function selectItemForRow(row, itemId) {
+  const item = findItem(itemId);
+  row.querySelector('.line-item').value = item.item_id || '';
+  row.querySelector('.line-search').value = item.name || '';
+  row.querySelector('.combo-results').classList.remove('show');
   updateLineInfo(row);
 }
 
@@ -179,8 +266,12 @@ function updateLineInfo(row) {
   const item = findItem(row.querySelector('.line-item').value);
   const qty = Number(row.querySelector('.line-qty').value || 0);
   const shortage = Math.max(qty - Number(item.stock || 0), 0);
-  row.querySelector('.line-stock').textContent = `คงเหลือ ${item.stock} ${item.unit}`;
-  row.querySelector('.line-shortage').textContent = shortage > 0 ? `ขาด ${shortage} ${item.unit}` : 'พอจ่าย';
+  row.querySelector('.line-stock').textContent = item.item_id ? `คงเหลือ ${item.stock} ${item.unit}` : 'ยังไม่เลือกรายการ';
+  row.querySelector('.line-shortage').textContent = !item.item_id
+    ? ''
+    : Number(item.stock || 0) < 1
+      ? 'ไม่มีของในคลัง'
+      : shortage > 0 ? `ขาด ${shortage} ${item.unit}` : 'พอจ่าย';
 }
 
 async function submitWithdrawal() {
@@ -190,14 +281,26 @@ async function submitWithdrawal() {
     items: collectLines('withdrawLines')
   };
   if (!payload.requester_name || payload.items.length === 0) {
-    setMessage('withdrawMessage', 'กรอกชื่อผู้เบิกและรายการอย่างน้อย 1 รายการ');
+    setMessage('withdrawMessage', 'กรอกชื่อผู้เบิกและเลือกรายการอย่างน้อย 1 รายการ');
     return;
   }
-  const result = await api('createWithdrawal', payload);
-  setMessage('withdrawMessage', `บันทึกแล้ว: ${result.withdrawal.withdraw_no}`);
-  document.getElementById('withdrawLines').innerHTML = '';
-  addWithdrawLine();
-  await reloadData();
+  const unavailable = payload.items
+    .map((line) => findItem(line.item_id))
+    .filter((item) => Number(item.stock || 0) < 1);
+  if (unavailable.length > 0) {
+    const names = unavailable.map((item) => item.name).join(', ');
+    setMessage('withdrawMessage', `บันทึกไม่ได้: ${names} ไม่มีของในคลัง`);
+    showToast(`บันทึกไม่ได้: ${names} ไม่มีของในคลัง`);
+    return;
+  }
+  await withBusy('กำลังบันทึกใบเบิก...', async () => {
+    const result = await api('createWithdrawal', payload);
+    setMessage('withdrawMessage', `บันทึกแล้ว: ${result.withdrawal.withdraw_no}`);
+    showToast(`บันทึกใบเบิกเสร็จสิ้น: ${result.withdrawal.withdraw_no}`);
+    document.getElementById('withdrawLines').innerHTML = '';
+    addWithdrawLine();
+    await reloadData();
+  });
 }
 
 function collectLines(containerId) {
@@ -209,47 +312,107 @@ function collectLines(containerId) {
     .filter((line) => line.item_id && line.requested_qty > 0);
 }
 
+function renderGuide(selectedCategoryId = '') {
+  const guide = document.getElementById('itemGuide');
+  if (!guide) return;
+  const rootCategories = state.categories.filter((category) => !category.parent_id);
+  const activeCategoryId = selectedCategoryId || (rootCategories[0] && rootCategories[0].category_id) || '';
+  const previewLimit = window.matchMedia('(max-width: 760px)').matches ? 5 : 8;
+  const items = itemsForCategory(activeCategoryId).slice(0, previewLimit);
+  const total = itemsForCategory(activeCategoryId).length;
+  guide.innerHTML = `
+    <h2>รายการพัสดุตามประเภท</h2>
+    <div class="guide-tabs">
+      ${rootCategories.map((category) => `
+        <button type="button" class="${category.category_id === activeCategoryId ? 'active' : ''}" onclick="renderGuide('${category.category_id}')">
+          ${escapeHtml(category.name)}
+        </button>
+      `).join('')}
+    </div>
+    <div class="guide-list">
+      ${items.map((item) => guideItemButton(item)).join('') || '<p>ยังไม่มีรายการในประเภทนี้</p>'}
+    </div>
+    ${total > previewLimit ? `<button type="button" onclick="renderGuideAll('${activeCategoryId}')">แสดงรายการทั้งหมด (${total})</button>` : ''}
+  `;
+}
+
+function renderGuideAll(categoryId) {
+  const guide = document.getElementById('itemGuide');
+  const items = itemsForCategory(categoryId);
+  guide.querySelector('.guide-list').innerHTML = items.map((item) => guideItemButton(item)).join('');
+}
+
+function guideItemButton(item) {
+  return `
+    <button type="button" class="guide-item" onclick="addItemFromGuide('${item.item_id}')">
+      <strong>${escapeHtml(item.name)}</strong>
+      <small>${escapeHtml(categoryPath(item.category_id))} · คงเหลือ ${item.stock} ${escapeHtml(item.unit)}</small>
+    </button>
+  `;
+}
+
+function addItemFromGuide(itemId) {
+  addWithdrawLine({ item_id: itemId, requested_qty: 1 });
+  showToast(`เพิ่ม "${findItem(itemId).name}" ในใบเบิกแล้ว`);
+}
+
 async function saveCategoryFromForm() {
-  await api('saveCategory', {
-    name: valueOf('categoryName'),
-    parent_id: valueOf('categoryParent'),
-    reason: 'บันทึกผ่านหน้า HTML'
+  const name = valueOf('categoryName');
+  await withBusy('กำลังบันทึกประเภท...', async () => {
+    await api('saveCategory', {
+      name,
+      parent_id: valueOf('categoryParent'),
+      reason: 'บันทึกผ่านหน้า HTML'
+    });
+    clearValue('categoryName');
+    await loadAdminData();
+    showToast(`ประเภท "${name}" เสร็จสิ้น!`);
   });
-  clearValue('categoryName');
-  await loadAdminData();
 }
 
 async function saveItemFromForm() {
-  await api('saveItem', {
-    name: valueOf('itemName'),
-    category_id: valueOf('itemCategory'),
-    unit: valueOf('itemUnit'),
-    min_stock: Number(valueOf('itemMinStock') || 0),
-    reason: 'บันทึกผ่านหน้า HTML'
+  const itemId = valueOf('itemId');
+  const name = valueOf('itemName');
+  await withBusy(itemId ? 'กำลังแก้ไขรายการพัสดุ...' : 'กำลังบันทึกรายการพัสดุ...', async () => {
+    await api('saveItem', {
+      item_id: itemId,
+      name,
+      category_id: valueOf('itemCategory'),
+      unit: valueOf('itemUnit'),
+      min_stock: Number(valueOf('itemMinStock') || 0),
+      reason: itemId ? 'แก้ไขผ่านหน้า HTML' : 'บันทึกผ่านหน้า HTML'
+    });
+    resetItemForm();
+    await loadAdminData();
+    showToast(`รายการ "${name}" เสร็จสิ้น!`);
   });
-  ['itemName', 'itemUnit'].forEach(clearValue);
-  await loadAdminData();
 }
 
 async function saveReceiptFromForm() {
-  await api('saveReceipt', {
-    item_id: valueOf('receiptItem'),
-    qty: Number(valueOf('receiptQty') || 0),
-    unit_price: Number(valueOf('receiptUnitPrice') || 0),
-    doc_ref: valueOf('receiptDocRef')
+  await withBusy('กำลังบันทึกรับเข้า...', async () => {
+    await api('saveReceipt', {
+      item_id: valueOf('receiptItem'),
+      qty: Number(valueOf('receiptQty') || 0),
+      unit_price: Number(valueOf('receiptUnitPrice') || 0),
+      doc_ref: valueOf('receiptDocRef')
+    });
+    ['receiptQty', 'receiptUnitPrice', 'receiptDocRef'].forEach(clearValue);
+    await loadAdminData();
+    showToast('รับเข้าเสร็จสิ้น!');
   });
-  ['receiptQty', 'receiptUnitPrice', 'receiptDocRef'].forEach(clearValue);
-  await loadAdminData();
 }
 
 async function saveAdjustmentFromForm() {
-  await api('saveAdjustment', {
-    item_id: valueOf('adjustItem'),
-    qty_change: Number(valueOf('adjustQty') || 0),
-    reason: valueOf('adjustReason')
+  await withBusy('กำลังบันทึกปรับยอด...', async () => {
+    await api('saveAdjustment', {
+      item_id: valueOf('adjustItem'),
+      qty_change: Number(valueOf('adjustQty') || 0),
+      reason: valueOf('adjustReason')
+    });
+    ['adjustQty', 'adjustReason'].forEach(clearValue);
+    await loadAdminData();
+    showToast('ปรับยอดเสร็จสิ้น!');
   });
-  ['adjustQty', 'adjustReason'].forEach(clearValue);
-  await loadAdminData();
 }
 
 function renderCategoryTree() {
@@ -267,6 +430,39 @@ function renderCategoryNode(category) {
       ${children.map(renderCategoryNode).join('')}
     </div>
   `;
+}
+
+function renderItemList() {
+  const list = document.getElementById('itemList');
+  if (!list) return;
+  list.innerHTML = state.items.map((item) => `
+    <div class="item-row">
+      <div>
+        <strong>${escapeHtml(item.name)}</strong>
+        <small>${escapeHtml(categoryPath(item.category_id))} · ${escapeHtml(item.unit)} · คงเหลือ ${item.stock}</small>
+      </div>
+      <small>เตือนต่ำกว่า ${item.min_stock || 0}</small>
+      <button type="button" onclick="editItem('${item.item_id}')">แก้ไข</button>
+    </div>
+  `).join('') || '<p>ยังไม่มีรายการพัสดุ</p>';
+}
+
+function editItem(itemId) {
+  const item = state.items.find((row) => row.item_id === itemId);
+  if (!item) return;
+  document.getElementById('itemId').value = item.item_id;
+  document.getElementById('itemName').value = item.name;
+  document.getElementById('itemCategory').value = item.category_id;
+  document.getElementById('itemUnit').value = item.unit;
+  document.getElementById('itemMinStock').value = item.min_stock || 0;
+  document.getElementById('itemName').focus();
+  showToast(`กำลังแก้ไข "${item.name}"`);
+}
+
+function resetItemForm() {
+  ['itemId', 'itemName', 'itemUnit'].forEach(clearValue);
+  const minStock = document.getElementById('itemMinStock');
+  if (minStock) minStock.value = 0;
 }
 
 function renderHistory() {
@@ -308,23 +504,29 @@ function closeEditDialog() {
 }
 
 async function submitEditWithdrawal() {
-  await api('updateWithdrawal', {
-    withdraw_id: valueOf('editWithdrawId'),
-    dept_id: valueOf('editDept'),
-    requester_name: valueOf('editRequester'),
-    items: collectLines('editLines'),
-    reason: valueOf('editReason')
+  await withBusy('กำลังบันทึกการแก้ไข...', async () => {
+    await api('updateWithdrawal', {
+      withdraw_id: valueOf('editWithdrawId'),
+      dept_id: valueOf('editDept'),
+      requester_name: valueOf('editRequester'),
+      items: collectLines('editLines'),
+      reason: valueOf('editReason')
+    });
+    clearValue('editReason');
+    closeEditDialog();
+    await loadAdminData();
+    showToast('แก้ไขใบเบิกเสร็จสิ้น!');
   });
-  clearValue('editReason');
-  closeEditDialog();
-  await loadAdminData();
 }
 
 async function cancelWithdrawalFromHistory(withdrawId) {
   const reason = prompt('เหตุผลการยกเลิก');
   if (!reason) return;
-  await api('cancelWithdrawal', { withdraw_id: withdrawId, reason });
-  await loadAdminData();
+  await withBusy('กำลังยกเลิกใบเบิก...', async () => {
+    await api('cancelWithdrawal', { withdraw_id: withdrawId, reason });
+    await loadAdminData();
+    showToast('ยกเลิกใบเบิกเสร็จสิ้น!');
+  });
 }
 
 function renderDashboard() {
@@ -343,10 +545,105 @@ function renderDashboard() {
       <strong>${item.stock} ${escapeHtml(item.unit)}</strong>
     </div>
   `).join('') || '<p>ยังไม่มีรายการใกล้หมด</p>';
+  renderRanking('topItems', dashboard.topItems || []);
+  renderRanking('topDepartments', dashboard.topDepartments || []);
+  renderRanking('topCategories', dashboard.topCategories || []);
+  renderRanking('deptCategoryRanking', dashboard.departmentCategory || []);
+}
+
+function renderRanking(id, rows) {
+  const box = document.getElementById(id);
+  if (!box) return;
+  const max = Math.max(...rows.map((row) => Number(row.qty || row.count || 0)), 1);
+  box.innerHTML = rows.map((row, index) => {
+    const value = Number(row.qty || row.count || 0);
+    return `
+      <div class="rank-row">
+        <span>${index + 1}. ${escapeHtml(row.name || row.label)}</span>
+        <strong>${value}</strong>
+        <div class="bar"><i style="width:${Math.round((value / max) * 100)}%"></i></div>
+      </div>
+    `;
+  }).join('') || '<p>ยังไม่มีข้อมูล</p>';
+}
+
+function renderReports() {
+  const reports = state.reports || {};
+  renderCurrentStockReport(reports.currentStock || []);
+  renderReportRows('yearReportRows', reports.yearly || []);
+  renderReportRows('monthReportRows', filterBySelectedMonth(reports.monthly || []));
+  renderReportRows('weekReportRows', filterBySelectedWeek(reports.weekly || []));
+  renderReportRows('departmentReportRows', filterBySelectedDepartment(reports.department || []));
+}
+
+function renderCurrentStockReport(rows) {
+  const box = document.getElementById('currentStockReportRows');
+  if (!box) return;
+  box.innerHTML = rows.map((row) => `
+    <tr>
+      <td>${escapeHtml(row.category)}</td>
+      <td>${escapeHtml(row.item_name)}</td>
+      <td>${escapeHtml(row.unit)}</td>
+      <td>${row.received}</td>
+      <td>${row.issued}</td>
+      <td>${row.adjusted}</td>
+      <td><strong>${row.stock}</strong></td>
+    </tr>
+  `).join('');
+}
+
+function renderReportRows(id, rows) {
+  const box = document.getElementById(id);
+  if (!box) return;
+  box.innerHTML = rows.map((row) => `
+    <tr>
+      <td>${escapeHtml(row.date)}</td>
+      <td>${escapeHtml(row.department_name)}</td>
+      <td>${escapeHtml(row.requester_name)}</td>
+      <td>${escapeHtml(row.item_name)}</td>
+      <td>${row.issued_qty}</td>
+      <td>${escapeHtml(row.unit)}</td>
+      <td>${escapeHtml(row.withdraw_no)}</td>
+    </tr>
+  `).join('') || '<tr><td colspan="7">ไม่มีข้อมูล</td></tr>';
+}
+
+function filterBySelectedMonth(rows) {
+  const month = valueOf('reportMonth');
+  if (!month) return rows;
+  return rows.filter((row) => row.month === month);
+}
+
+function filterBySelectedWeek(rows) {
+  const week = valueOf('reportWeek');
+  if (!week) return rows;
+  return rows.filter((row) => row.week === week);
+}
+
+function filterBySelectedDepartment(rows) {
+  const deptId = valueOf('reportDepartment');
+  if (!deptId) return rows;
+  return rows.filter((row) => row.dept_id === deptId);
+}
+
+function refreshReports() {
+  renderReports();
+  showToast('กรองรายงานแล้ว');
 }
 
 function findItem(itemId) {
-  return state.items.find((item) => item.item_id === itemId) || { stock: 0, unit: '' };
+  return state.items.find((item) => item.item_id === itemId) || { item_id: '', name: '', stock: 0, unit: '' };
+}
+
+function itemsForCategory(categoryId) {
+  if (!categoryId) return state.items;
+  const ids = new Set([categoryId, ...descendantCategoryIds(categoryId)]);
+  return state.items.filter((item) => ids.has(item.category_id));
+}
+
+function descendantCategoryIds(categoryId) {
+  const children = state.categories.filter((category) => category.parent_id === categoryId);
+  return children.flatMap((category) => [category.category_id, ...descendantCategoryIds(category.category_id)]);
 }
 
 function categoryDepth(categoryId, depth = 0) {
@@ -355,8 +652,16 @@ function categoryDepth(categoryId, depth = 0) {
   return categoryDepth(category.parent_id, depth + 1);
 }
 
+function categoryPath(categoryId) {
+  const category = state.categories.find((row) => row.category_id === categoryId);
+  if (!category) return 'ไม่ระบุประเภท';
+  if (!category.parent_id) return category.name;
+  return `${categoryPath(category.parent_id)} > ${category.name}`;
+}
+
 function valueOf(id) {
-  return document.getElementById(id).value;
+  const el = document.getElementById(id);
+  return el ? el.value : '';
 }
 
 function clearValue(id) {
@@ -367,6 +672,38 @@ function clearValue(id) {
 function setMessage(id, message) {
   const el = document.getElementById(id);
   if (el) el.textContent = message;
+}
+
+async function withBusy(message, task) {
+  setBusy(true, message);
+  try {
+    return await task();
+  } catch (error) {
+    showToast(error.message || String(error));
+    throw error;
+  } finally {
+    setBusy(false);
+  }
+}
+
+function setBusy(isBusy, message = 'กำลังทำงาน...') {
+  const overlay = document.getElementById('loadingOverlay');
+  const text = document.getElementById('loadingText');
+  if (text) text.textContent = message;
+  if (overlay) overlay.classList.toggle('active', isBusy);
+  document.querySelectorAll('button, input, select').forEach((el) => {
+    if (el.closest('#loadingOverlay')) return;
+    el.disabled = isBusy;
+  });
+}
+
+function showToast(message) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove('show'), 3200);
 }
 
 function statusLabel(status) {
