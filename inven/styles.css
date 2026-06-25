@@ -325,6 +325,11 @@ input, select {
 }
 .form-box { margin-bottom: 20px; }
 .form-box.compact-filter { padding-bottom: 8px; }
+.list-summary {
+  color: #607080;
+  font-size: 14px;
+  padding: 2px 0 4px;
+}
 .field-help {
   margin: -4px 0 12px;
   color: #607080;
@@ -357,6 +362,7 @@ input, select {
   margin-bottom: 10px;
 }
 .combo { position: relative; }
+.admin-combo { width: 100%; }
 .combo-results {
   position: absolute;
   z-index: 30;

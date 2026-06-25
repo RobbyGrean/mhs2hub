@@ -143,11 +143,13 @@ function renderAll() {
   fillDepartments('staffAdminDept');
   fillDepartments('staffFilterDept');
   bindDepartmentStaffFilter();
+  bindAdminItemPickers();
   fillRequesterStaff();
   fillCategories('categoryParent', true);
   fillCategories('itemCategory', false);
-  fillItems('receiptItem');
-  fillItems('adjustItem');
+  fillCategories('itemFilterCategory', true);
+  const itemFilterCategory = document.getElementById('itemFilterCategory');
+  if (itemFilterCategory && itemFilterCategory.options[0]) itemFilterCategory.options[0].textContent = 'ทุกประเภท';
   renderCategoryTree();
   renderItemList();
   renderStaffAdmin();
@@ -218,6 +220,49 @@ function fillItems(id) {
   select.innerHTML = state.items
     .map((item) => `<option value="${item.item_id}">${escapeHtml(item.name)} (${item.stock} ${escapeHtml(item.unit)})</option>`)
     .join('');
+}
+
+function bindAdminItemPickers() {
+  [
+    { searchId: 'receiptSearch', itemId: 'receiptItem', resultsId: 'receiptResults' },
+    { searchId: 'adjustSearch', itemId: 'adjustItem', resultsId: 'adjustResults' }
+  ].forEach((picker) => {
+    const search = document.getElementById(picker.searchId);
+    if (!search || search.dataset.bound === 'true') return;
+    search.dataset.bound = 'true';
+    search.addEventListener('focus', () => renderAdminItemResults(picker));
+    search.addEventListener('input', () => {
+      document.getElementById(picker.itemId).value = '';
+      renderAdminItemResults(picker);
+    });
+  });
+}
+
+function renderAdminItemResults(picker) {
+  const search = document.getElementById(picker.searchId);
+  const resultsBox = document.getElementById(picker.resultsId);
+  if (!search || !resultsBox) return;
+  const query = search.value.trim().toLowerCase();
+  const rows = state.items
+    .filter((item) => {
+      const haystack = `${item.name} ${categoryPath(item.category_id)} ${item.unit}`.toLowerCase();
+      return !query || haystack.includes(query);
+    })
+    .slice(0, 30);
+  resultsBox.innerHTML = rows.map((item) => `
+    <button type="button" class="combo-option" onclick="selectAdminItem('${picker.searchId}', '${picker.itemId}', '${picker.resultsId}', '${item.item_id}')">
+      <strong>${escapeHtml(item.name)}</strong>
+      <small>${escapeHtml(categoryPath(item.category_id))} · คงเหลือ ${item.stock} ${escapeHtml(item.unit)}</small>
+    </button>
+  `).join('') || '<div class="combo-empty">ไม่พบรายการ</div>';
+  resultsBox.classList.add('show');
+}
+
+function selectAdminItem(searchId, itemInputId, resultsId, itemId) {
+  const item = findItem(itemId);
+  document.getElementById(itemInputId).value = item.item_id || '';
+  document.getElementById(searchId).value = item.item_id ? `${item.name} (${item.stock} ${item.unit})` : '';
+  document.getElementById(resultsId).classList.remove('show');
 }
 
 function addWithdrawLine(values = {}) {
@@ -486,6 +531,7 @@ async function saveReceiptFromForm() {
   await withBusy('กำลังบันทึกรับเข้า...', async () => {
     const itemId = valueOf('receiptItem');
     const qty = Number(valueOf('receiptQty') || 0);
+    if (!itemId) throw new Error('เลือกรายการรับเข้าก่อน');
     await api('saveReceipt', {
       item_id: itemId,
       qty,
@@ -493,7 +539,7 @@ async function saveReceiptFromForm() {
       doc_ref: valueOf('receiptDocRef')
     });
     adjustLocalStock(itemId, qty);
-    ['receiptQty', 'receiptUnitPrice', 'receiptDocRef'].forEach(clearValue);
+    ['receiptItem', 'receiptSearch', 'receiptQty', 'receiptUnitPrice', 'receiptDocRef'].forEach(clearValue);
     refreshInventoryViews();
     showToast('รับเข้าเสร็จสิ้น!');
   });
@@ -503,13 +549,14 @@ async function saveAdjustmentFromForm() {
   await withBusy('กำลังบันทึกปรับยอด...', async () => {
     const itemId = valueOf('adjustItem');
     const qtyChange = Number(valueOf('adjustQty') || 0);
+    if (!itemId) throw new Error('เลือกรายการปรับยอดก่อน');
     await api('saveAdjustment', {
       item_id: itemId,
       qty_change: qtyChange,
       reason: valueOf('adjustReason')
     });
     adjustLocalStock(itemId, qtyChange);
-    ['adjustQty', 'adjustReason'].forEach(clearValue);
+    ['adjustItem', 'adjustSearch', 'adjustQty', 'adjustReason'].forEach(clearValue);
     refreshInventoryViews();
     showToast('ปรับยอดเสร็จสิ้น!');
   });
@@ -620,7 +667,26 @@ function renderCategoryNode(category) {
 function renderItemList() {
   const list = document.getElementById('itemList');
   if (!list) return;
-  list.innerHTML = state.items.map((item) => `
+  const query = valueOf('itemSearch').trim().toLowerCase();
+  const categoryId = valueOf('itemFilterCategory');
+  const categoryItemIds = categoryId ? new Set(itemsForCategory(categoryId).map((item) => item.item_id)) : null;
+  const stockFilter = valueOf('itemFilterStock');
+  const limitValue = valueOf('itemListLimit') || '10';
+  const rows = state.items.filter((item) => {
+    const stock = Number(item.stock || 0);
+    const minStock = Number(item.min_stock || 0);
+    const haystack = `${item.name} ${categoryPath(item.category_id)} ${item.unit}`.toLowerCase();
+    return (!query || haystack.includes(query))
+      && (!categoryItemIds || categoryItemIds.has(item.item_id))
+      && (!stockFilter
+        || (stockFilter === 'available' && stock > 0)
+        || (stockFilter === 'zero' && stock === 0)
+        || (stockFilter === 'low' && minStock > 0 && stock <= minStock));
+  });
+  const visibleRows = limitValue === 'all' ? rows : rows.slice(0, Number(limitValue || 10));
+  list.innerHTML = `
+    <div class="list-summary">แสดง ${visibleRows.length} จาก ${rows.length} รายการ</div>
+    ${visibleRows.map((item) => `
     <div class="item-row">
       <div>
         <strong>${escapeHtml(item.name)}</strong>
@@ -629,7 +695,15 @@ function renderItemList() {
       <small>เตือนต่ำกว่า ${item.min_stock || 0}</small>
       <button type="button" onclick="editItem('${item.item_id}')">แก้ไข</button>
     </div>
-  `).join('') || '<p>ยังไม่มีรายการพัสดุ</p>';
+  `).join('') || '<p>ยังไม่มีรายการพัสดุ</p>'}
+    ${limitValue !== 'all' && rows.length > visibleRows.length ? '<button type="button" onclick="showAllItems()">แสดงรายการทั้งหมด</button>' : ''}
+  `;
+}
+
+function showAllItems() {
+  const limit = document.getElementById('itemListLimit');
+  if (limit) limit.value = 'all';
+  renderItemList();
 }
 
 function editItem(itemId) {
@@ -851,8 +925,9 @@ function applyIssuedStock(lines) {
 function refreshInventoryViews() {
   fillCategories('categoryParent', true);
   fillCategories('itemCategory', false);
-  fillItems('receiptItem');
-  fillItems('adjustItem');
+  fillCategories('itemFilterCategory', true);
+  const itemFilterCategory = document.getElementById('itemFilterCategory');
+  if (itemFilterCategory && itemFilterCategory.options[0]) itemFilterCategory.options[0].textContent = 'ทุกประเภท';
   renderCategoryTree();
   renderItemList();
   renderGuide();

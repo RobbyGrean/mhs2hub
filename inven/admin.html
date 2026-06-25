@@ -108,12 +108,42 @@
                 <button onclick="saveItemFromForm()">บันทึกรายการ</button>
                 <button type="button" onclick="resetItemForm()">ล้างฟอร์ม</button>
               </div>
+              <div class="form-box compact-filter">
+                <label>ค้นหารายการ
+                  <input id="itemSearch" placeholder="ค้นหาชื่อรายการ หน่วยนับ หรือประเภท" oninput="renderItemList()">
+                </label>
+                <div class="grid three">
+                  <label>ประเภท
+                    <select id="itemFilterCategory" onchange="renderItemList()"></select>
+                  </label>
+                  <label>สถานะ
+                    <select id="itemFilterStock" onchange="renderItemList()">
+                      <option value="">ทุกสถานะ</option>
+                      <option value="available">ยังมีของ</option>
+                      <option value="zero">คงเหลือ 0</option>
+                      <option value="low">ต่ำกว่าแจ้งเตือน</option>
+                    </select>
+                  </label>
+                  <label>จำนวนที่แสดง
+                    <select id="itemListLimit" onchange="renderItemList()">
+                      <option value="10">10 รายการ</option>
+                      <option value="20">20 รายการ</option>
+                      <option value="50">50 รายการ</option>
+                      <option value="all">ทั้งหมด</option>
+                    </select>
+                  </label>
+                </div>
+              </div>
               <div id="itemList" class="item-list"></div>
 
               <h2>รับเข้า</h2>
               <div class="form-box">
                 <label>รายการ
-                  <select id="receiptItem"></select>
+                  <div class="combo admin-combo">
+                    <input id="receiptSearch" autocomplete="off" placeholder="พิมพ์ค้นหารายการ หรือคลิกเพื่อดูรายการ">
+                    <input id="receiptItem" type="hidden">
+                    <div id="receiptResults" class="combo-results"></div>
+                  </div>
                 </label>
                 <div class="grid two">
                   <label>จำนวน
@@ -132,7 +162,11 @@
               <h2>ปรับยอด</h2>
               <div class="form-box">
                 <label>รายการ
-                  <select id="adjustItem"></select>
+                  <div class="combo admin-combo">
+                    <input id="adjustSearch" autocomplete="off" placeholder="พิมพ์ค้นหารายการ หรือคลิกเพื่อดูรายการ">
+                    <input id="adjustItem" type="hidden">
+                    <div id="adjustResults" class="combo-results"></div>
+                  </div>
                 </label>
                 <label>จำนวนเปลี่ยนแปลง
                   <input id="adjustQty" type="number" step="1" placeholder="-2 หรือ 5">
