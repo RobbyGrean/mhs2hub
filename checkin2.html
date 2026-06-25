@@ -145,6 +145,20 @@
         let currentLogState = [];
         let schoolListLoaded = false;
 
+        function normalizeText(value) {
+            return String(value || '').replace(/\s+/g, ' ').trim();
+        }
+
+        function escapeHtml(value) {
+            return String(value || '').replace(/[&<>"']/g, ch => ({
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            }[ch]));
+        }
+
         function openSummary(type) { window.open(`${WEB_APP_URL}?page=${type}`, '_blank'); }
 
         const ctx = document.getElementById('myChart').getContext('2d');
@@ -175,7 +189,7 @@
                     const border = document.getElementById('neonBorder');
 
                     // ดึงชื่อโรงเรียน (สมมติว่า API ส่ง schoolData ที่มี .name มาให้)
-                    const schools = [...new Set(data.schoolData.map(d => d.name))].sort();
+                    const schools = [...new Set(data.schoolData.map(d => normalizeText(d.name)).filter(Boolean))].sort();
                     schools.forEach(s => {
                         let opt = document.createElement('option');
                         opt.value = s;
@@ -194,31 +208,38 @@
                 }
 
                 // อัปเดตกราฟและตัวเลข
-                myChart.data.datasets[0].data = [data.attendedCount, data.missingCount];
+                const totalCount = Number(data.totalCount) || 0;
+                const attendedCount = Number(data.attendedCount) || 0;
+                const missingCount = Math.max(0, Number(data.missingCount) || 0);
+                const percent = totalCount > 0 ? ((attendedCount / totalCount) * 100).toFixed(0) : "0";
+                myChart.data.datasets[0].data = [attendedCount, missingCount];
                 myChart.update();
-                document.getElementById('percentDisplay').innerText = ((data.attendedCount / data.totalCount) * 100).toFixed(0) + "%";
+                document.getElementById('percentDisplay').innerText = percent + "%";
                 document.getElementById('countDisplay').innerHTML = `
                     <div class="text-sm space-y-2">
-                        <div class="px-4 py-2 bg-indigo-500/20 rounded-full text-indigo-400 font-bold border border-indigo-500/30">มาแล้ว: ${data.attendedCount}</div>
-                        <div class="px-4 py-2 bg-rose-500/10 rounded-full text-rose-400 font-medium border border-rose-500/20">ยังไม่มา: ${data.missingCount}</div>
+                        <div class="px-4 py-2 bg-indigo-500/20 rounded-full text-indigo-400 font-bold border border-indigo-500/30">มาแล้ว: ${attendedCount}</div>
+                        <div class="px-4 py-2 bg-rose-500/10 rounded-full text-rose-400 font-medium border border-rose-500/20">ยังไม่มา: ${missingCount}</div>
                     </div>`;
 
                 // อัปเดต Live Log
                 const logContainer = document.getElementById('activityLog');
                 if (data.recentLogs) {
                     const newEntries = data.recentLogs.filter(n => 
-                        !currentLogState.some(old => old.school === n.school && old.details === n.details)
+                        !currentLogState.some(old => old.school === normalizeText(n.school) && old.details === normalizeText(n.details))
                     );
                     if (newEntries.length > 0) {
                         if (logContainer.innerHTML.includes("รอข้อมูล")) logContainer.innerHTML = "";
-                        currentLogState = [...newEntries, ...currentLogState].slice(0, 20);
+                        currentLogState = [...newEntries.map(log => ({
+                            school: normalizeText(log.school),
+                            details: normalizeText(log.details)
+                        })).filter(log => log.school), ...currentLogState].slice(0, 20);
                         logContainer.innerHTML = '';
                         currentLogState.forEach((log, index) => {
                             const isNew = index < newEntries.length;
                             logContainer.innerHTML += `
                                 <div class="p-4 rounded-2xl text-white border-l-8 transition-all duration-700 ${isNew ? 'border-emerald-400 bg-indigo-600 animate-pulse' : 'border-indigo-500 bg-slate-800/60'}">
-                                    <div class="text-lg font-medium ${isNew ? 'text-indigo-200' : 'text-slate-400'}">🏫 ${log.school}</div>
-                                    <div class="text-xl font-bold">👤 ${log.details}</div>
+                                    <div class="text-lg font-medium ${isNew ? 'text-indigo-200' : 'text-slate-400'}">🏫 ${escapeHtml(log.school)}</div>
+                                    <div class="text-xl font-bold">👤 ${escapeHtml(log.details)}</div>
                                 </div>`;
                         });
                     }
@@ -232,16 +253,23 @@
             e.preventDefault();
             if (isSubmitting) return;          // ← กัน double tap
             isSubmitting = true;               // ← loc
-            const school = document.getElementById('schoolInput').value;
-            const name = document.getElementById('userName').value;
-            const pos = document.getElementById('userPosition').value;
+            const school = normalizeText(document.getElementById('schoolInput').value);
+            const name = normalizeText(document.getElementById('userName').value);
+            const pos = normalizeText(document.getElementById('userPosition').value);
+
+            if (!school || !name || !pos) {
+                alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+                isSubmitting = false;
+                return;
+            }
 
             // ตรวจสอบความถูกต้องของชื่อโรงเรียน
             const options = document.getElementById('schoolOptions').options;
-            const isValid = Array.from(options).some(opt => opt.value === school);
+            const isValid = Array.from(options).some(opt => normalizeText(opt.value) === school);
             
             if (!isValid) {
                 alert("⚠️ กรุณาเลือกโรงเรียนจากรายการที่ระบบแนะนำเท่านั้นครับ");
+                isSubmitting = false;
                 return;
             }
 
@@ -263,6 +291,7 @@
                 }
             } catch (err) { alert("❌ บันทึกล้มเหลว"); }
             btn.disabled = false; btn.innerText = "บันทึกการเช็คชื่อ";
+            isSubmitting = false;
         };
 
         updateData();
