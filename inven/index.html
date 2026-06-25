@@ -7,12 +7,18 @@
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body data-mode="requester">
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <strong id="loadingText">กำลังโหลดข้อมูล...</strong>
+      </div>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <header class="app-header">
       <div>
         <h1>เบิกพัสดุ</h1>
         <p>เลือกฝ่าย กรอกชื่อ แล้วบันทึกการเบิก</p>
       </div>
-      <a class="link-button" href="./admin.html">Admin</a>
     </header>
 
     <main>
@@ -29,6 +35,7 @@
         <button onclick="addWithdrawLine()">+ เพิ่มรายการ</button>
         <button class="primary" onclick="submitWithdrawal()">บันทึกเบิก</button>
         <p id="withdrawMessage" class="message"></p>
+        <div id="itemGuide" class="item-guide"></div>
       </section>
     </main>
 
