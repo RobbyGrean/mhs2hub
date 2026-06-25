@@ -235,6 +235,7 @@ h2 { font-size: 18px; margin: 0 0 12px; }
   color: #17202a;
   border-radius: 8px;
   cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
 }
 .link-button {
   min-height: 40px;
@@ -248,9 +249,19 @@ h2 { font-size: 18px; margin: 0 0 12px; }
   text-decoration: none;
 }
 .tab.active, .primary {
-  background: #176b87;
-  border-color: #176b87;
+  background: linear-gradient(100deg, #176b87, #1e8a8f);
+  border-color: #1e8a8f;
   color: #ffffff;
+  box-shadow: 0 10px 24px rgba(23, 107, 135, 0.20);
+}
+button:hover, .link-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(23, 32, 42, 0.10);
+}
+button:focus-visible, .link-button:focus-visible, input:focus-visible, select:focus-visible {
+  outline: 0;
+  border-color: #35a7c9;
+  box-shadow: 0 0 0 4px rgba(53, 167, 201, 0.16);
 }
 main { padding: 20px; }
 .panel {
@@ -295,12 +306,22 @@ input, select {
   gap: 20px;
 }
 .form-box, .history-card, .line-row, .tree, .cards > div, .stock-row {
+  position: relative;
   background: rgba(255, 255, 255, 0.94);
   border: 1px solid rgba(205, 214, 224, 0.9);
   border-radius: 8px;
   padding: 14px;
   box-shadow: 0 10px 28px rgba(23, 32, 42, 0.06);
   backdrop-filter: blur(6px);
+}
+.form-box::before, .history-card::before, .cards > div::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  border-radius: 8px 8px 0 0;
+  background: linear-gradient(90deg, #176b87, #73e6ff, #8ff0a4);
+  opacity: 0.72;
 }
 .form-box { margin-bottom: 20px; }
 .field-help {
@@ -435,6 +456,7 @@ input, select {
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 10px; border-bottom: 1px solid #eef1f4; text-align: left; white-space: nowrap; }
 th { background: #f8fafb; }
+tr:hover td { background: rgba(115, 230, 255, 0.08); }
 dialog {
   width: min(760px, calc(100% - 24px));
   border: 0;
