@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="./styles.css">
   </head>
   <body data-mode="admin">
+    <div id="loadingOverlay" class="loading-overlay">
+      <div class="loading-box">
+        <div class="spinner"></div>
+        <strong id="loadingText">กำลังโหลดข้อมูล...</strong>
+      </div>
+    </div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
     <section id="loginView" class="login-view">
       <form class="login-card" id="loginForm">
         <h1>Admin คลังพัสดุ</h1>
@@ -16,7 +23,7 @@
         <label>Password
           <input id="loginPassword" type="password" autocomplete="current-password" required>
         </label>
-        <button class="primary" type="submit">เข้าสู่ระบบ</button>
+        <button class="primary" id="loginButton" type="submit">เข้าสู่ระบบ</button>
         <p id="loginMessage" class="message"></p>
       </form>
     </section>
@@ -35,6 +42,7 @@
         <button class="tab" data-tab="history" onclick="showTab('history')">ประวัติรวม</button>
         <button class="tab" data-tab="admin" onclick="showTab('admin')">คลังพัสดุ</button>
         <button class="tab" data-tab="dashboard" onclick="showTab('dashboard')">Dashboard</button>
+        <button class="tab" data-tab="reports" onclick="showTab('reports')">รายงาน</button>
       </nav>
 
       <main>
@@ -51,6 +59,7 @@
           <button onclick="addWithdrawLine()">+ เพิ่มรายการ</button>
           <button class="primary" onclick="submitWithdrawal()">บันทึกเบิก</button>
           <p id="withdrawMessage" class="message"></p>
+          <div id="itemGuide" class="item-guide"></div>
         </section>
 
         <section id="history" class="panel">
@@ -76,6 +85,7 @@
             <div>
               <h2>รายการพัสดุ</h2>
               <div class="form-box">
+                <input id="itemId" type="hidden">
                 <label>ชื่อรายการ
                   <input id="itemName" placeholder="เช่น กระดาษ A4 80 แกรม">
                 </label>
@@ -86,12 +96,15 @@
                   <label>หน่วยนับ
                     <input id="itemUnit" placeholder="รีม / อัน / เล่ม">
                   </label>
-                  <label>ขั้นต่ำ
+                  <label>แจ้งเตือนเมื่อคงเหลือต่ำกว่า
                     <input id="itemMinStock" type="number" min="0" value="0">
                   </label>
                 </div>
+                <p class="field-help">ใช้สำหรับ Dashboard รายการใกล้หมด เช่น ตั้ง 5 แล้วถ้าเหลือ 5 หรือน้อยกว่า ระบบจะแสดงเตือน</p>
                 <button onclick="saveItemFromForm()">บันทึกรายการ</button>
+                <button type="button" onclick="resetItemForm()">ล้างฟอร์ม</button>
               </div>
+              <div id="itemList" class="item-list"></div>
 
               <h2>รับเข้า</h2>
               <div class="form-box">
@@ -131,8 +144,83 @@
 
         <section id="dashboard" class="panel">
           <div id="dashboardCards" class="cards"></div>
+          <div class="rank-grid">
+            <div class="form-box">
+              <h2>รายการที่ถูกเบิกมากที่สุด</h2>
+              <div id="topItems"></div>
+            </div>
+            <div class="form-box">
+              <h2>ฝ่ายที่เบิกมากที่สุด</h2>
+              <div id="topDepartments"></div>
+            </div>
+            <div class="form-box">
+              <h2>ประเภทที่ถูกเบิกมากที่สุด</h2>
+              <div id="topCategories"></div>
+            </div>
+            <div class="form-box">
+              <h2>ฝ่าย x ประเภท</h2>
+              <div id="deptCategoryRanking"></div>
+            </div>
+          </div>
           <h2>รายการใกล้หมด</h2>
           <div id="lowStockList" class="stock-list"></div>
+        </section>
+
+        <section id="reports" class="panel">
+          <div class="form-box">
+            <h2>ตัวกรองรายงาน</h2>
+            <div class="grid three">
+              <label>เดือน
+                <input id="reportMonth" type="month" onchange="refreshReports()">
+              </label>
+              <label>สัปดาห์
+                <input id="reportWeek" type="week" onchange="refreshReports()">
+              </label>
+              <label>ฝ่าย
+                <select id="reportDepartment" onchange="refreshReports()"></select>
+              </label>
+            </div>
+          </div>
+
+          <h2>รายงานวัสดุคงเหลือปัจจุบัน</h2>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ประเภท</th><th>รายการ</th><th>หน่วย</th><th>รับเข้า</th><th>จ่ายออก</th><th>ปรับยอด</th><th>คงเหลือ</th></tr></thead>
+              <tbody id="currentStockReportRows"></tbody>
+            </table>
+          </div>
+
+          <h2>รายงานทั้งปี</h2>
+          <div class="table-wrap report-table">
+            <table>
+              <thead><tr><th>วันที่</th><th>ฝ่าย</th><th>ผู้เบิก</th><th>รายการ</th><th>จำนวน</th><th>หน่วย</th><th>เลขที่ใบเบิก</th></tr></thead>
+              <tbody id="yearReportRows"></tbody>
+            </table>
+          </div>
+
+          <h2>รายงานรายเดือน</h2>
+          <div class="table-wrap report-table">
+            <table>
+              <thead><tr><th>วันที่</th><th>ฝ่าย</th><th>ผู้เบิก</th><th>รายการ</th><th>จำนวน</th><th>หน่วย</th><th>เลขที่ใบเบิก</th></tr></thead>
+              <tbody id="monthReportRows"></tbody>
+            </table>
+          </div>
+
+          <h2>รายงานรายสัปดาห์</h2>
+          <div class="table-wrap report-table">
+            <table>
+              <thead><tr><th>วันที่</th><th>ฝ่าย</th><th>ผู้เบิก</th><th>รายการ</th><th>จำนวน</th><th>หน่วย</th><th>เลขที่ใบเบิก</th></tr></thead>
+              <tbody id="weekReportRows"></tbody>
+            </table>
+          </div>
+
+          <h2>รายงานแยกฝ่าย/กลุ่มงาน</h2>
+          <div class="table-wrap report-table">
+            <table>
+              <thead><tr><th>วันที่</th><th>ฝ่าย</th><th>ผู้เบิก</th><th>รายการ</th><th>จำนวน</th><th>หน่วย</th><th>เลขที่ใบเบิก</th></tr></thead>
+              <tbody id="departmentReportRows"></tbody>
+            </table>
+          </div>
         </section>
       </main>
     </section>
