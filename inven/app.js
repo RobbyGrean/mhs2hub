@@ -160,7 +160,13 @@ function renderAll() {
 function fillDepartments(id) {
   const select = document.getElementById(id);
   if (!select) return;
-  const emptyLabel = id === 'reportDepartment' ? 'ทุกฝ่าย' : id === 'staffAdminDept' ? 'ส่วนกลาง/ไม่ระบุ' : '';
+  const emptyLabel = id === 'reportDepartment'
+    ? 'ทุกฝ่าย'
+    : id === 'staffAdminDept'
+      ? 'ส่วนกลาง/ไม่ระบุ'
+      : id === 'withdrawDept'
+        ? 'เลือกกลุ่มงาน'
+        : '';
   select.innerHTML = `${emptyLabel ? `<option value="">${emptyLabel}</option>` : ''}${state.departments
     .map((department) => `<option value="${department.dept_id}">${escapeHtml(department.name)}</option>`)
     .join('')}`;
@@ -177,15 +183,21 @@ function fillRequesterStaff(selectedStaffId = '') {
   const select = document.getElementById('withdrawRequesterStaff');
   if (!select) return;
   const deptId = valueOf('withdrawDept');
+  if (!deptId) {
+    select.innerHTML = '<option value="">เลือกกลุ่มงานก่อน</option>';
+    select.disabled = true;
+    return;
+  }
   const rows = state.staff
     .filter((staff) => staff.dept_id === deptId && ['department_head', 'department_staff'].includes(staff.role))
     .sort((a, b) => {
       if (a.role !== b.role) return a.role === 'department_head' ? -1 : 1;
       return String(a.name).localeCompare(String(b.name), 'th');
     });
-  select.innerHTML = rows.map((staff) => `
+  select.disabled = false;
+  select.innerHTML = `<option value="">เลือกชื่อผู้เบิก</option>${rows.map((staff) => `
     <option value="${staff.staff_id}">${escapeHtml(staff.name)} (${escapeHtml(staff.position_label || staff.role)})</option>
-  `).join('') || '<option value="">ยังไม่มีรายชื่อในกลุ่มงานนี้</option>';
+  `).join('') || '<option value="">ยังไม่มีรายชื่อในกลุ่มงานนี้</option>'}`;
   if (selectedStaffId) select.value = selectedStaffId;
 }
 
@@ -311,6 +323,16 @@ async function submitWithdrawal() {
     requester_position: requesterStaff ? requesterStaff.position_label : '',
     items: collectLines('withdrawLines')
   };
+  if (!payload.dept_id) {
+    setMessage('withdrawMessage', 'เลือกกลุ่มงานก่อนบันทึก');
+    showToast('เลือกกลุ่มงานก่อนบันทึก');
+    return;
+  }
+  if (!payload.requester_staff_id) {
+    setMessage('withdrawMessage', 'เลือกชื่อผู้เบิกก่อนบันทึก');
+    showToast('เลือกชื่อผู้เบิกก่อนบันทึก');
+    return;
+  }
   if (!payload.requester_name || payload.items.length === 0) {
     setMessage('withdrawMessage', 'กรอกชื่อผู้เบิกและเลือกรายการอย่างน้อย 1 รายการ');
     return;
@@ -336,6 +358,10 @@ async function submitWithdrawal() {
 }
 
 function openStaffDialog() {
+  if (!valueOf('withdrawDept')) {
+    showToast('เลือกกลุ่มงานก่อนเพิ่มชื่อ');
+    return;
+  }
   const dialog = document.getElementById('staffDialog');
   if (dialog) dialog.showModal();
 }
