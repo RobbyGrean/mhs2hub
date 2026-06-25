@@ -328,9 +328,10 @@ async function submitWithdrawal() {
     const result = await api('createWithdrawal', payload);
     setMessage('withdrawMessage', `บันทึกแล้ว: ${result.withdrawal.withdraw_no}`);
     showToast(`บันทึกใบเบิกเสร็จสิ้น: ${result.withdrawal.withdraw_no}`);
+    applyIssuedStock(result.items || []);
     document.getElementById('withdrawLines').innerHTML = '';
     addWithdrawLine();
-    await reloadData();
+    refreshInventoryViews();
   });
 }
 
@@ -423,13 +424,14 @@ function addItemFromGuide(itemId) {
 async function saveCategoryFromForm() {
   const name = valueOf('categoryName');
   await withBusy('กำลังบันทึกประเภท...', async () => {
-    await api('saveCategory', {
+    const saved = await api('saveCategory', {
       name,
       parent_id: valueOf('categoryParent'),
       reason: 'บันทึกผ่านหน้า HTML'
     });
+    upsertCategory(saved);
     clearValue('categoryName');
-    await loadAdminData();
+    refreshInventoryViews();
     showToast(`ประเภท "${name}" เสร็จสิ้น!`);
   });
 }
@@ -438,7 +440,7 @@ async function saveItemFromForm() {
   const itemId = valueOf('itemId');
   const name = valueOf('itemName');
   await withBusy(itemId ? 'กำลังแก้ไขรายการพัสดุ...' : 'กำลังบันทึกรายการพัสดุ...', async () => {
-    await api('saveItem', {
+    const saved = await api('saveItem', {
       item_id: itemId,
       name,
       category_id: valueOf('itemCategory'),
@@ -446,35 +448,42 @@ async function saveItemFromForm() {
       min_stock: Number(valueOf('itemMinStock') || 0),
       reason: itemId ? 'แก้ไขผ่านหน้า HTML' : 'บันทึกผ่านหน้า HTML'
     });
+    upsertItem({ ...saved, stock: itemId ? findItem(itemId).stock : 0 });
     resetItemForm();
-    await loadAdminData();
+    refreshInventoryViews();
     showToast(`รายการ "${name}" เสร็จสิ้น!`);
   });
 }
 
 async function saveReceiptFromForm() {
   await withBusy('กำลังบันทึกรับเข้า...', async () => {
+    const itemId = valueOf('receiptItem');
+    const qty = Number(valueOf('receiptQty') || 0);
     await api('saveReceipt', {
-      item_id: valueOf('receiptItem'),
-      qty: Number(valueOf('receiptQty') || 0),
+      item_id: itemId,
+      qty,
       unit_price: Number(valueOf('receiptUnitPrice') || 0),
       doc_ref: valueOf('receiptDocRef')
     });
+    adjustLocalStock(itemId, qty);
     ['receiptQty', 'receiptUnitPrice', 'receiptDocRef'].forEach(clearValue);
-    await loadAdminData();
+    refreshInventoryViews();
     showToast('รับเข้าเสร็จสิ้น!');
   });
 }
 
 async function saveAdjustmentFromForm() {
   await withBusy('กำลังบันทึกปรับยอด...', async () => {
+    const itemId = valueOf('adjustItem');
+    const qtyChange = Number(valueOf('adjustQty') || 0);
     await api('saveAdjustment', {
-      item_id: valueOf('adjustItem'),
-      qty_change: Number(valueOf('adjustQty') || 0),
+      item_id: itemId,
+      qty_change: qtyChange,
       reason: valueOf('adjustReason')
     });
+    adjustLocalStock(itemId, qtyChange);
     ['adjustQty', 'adjustReason'].forEach(clearValue);
-    await loadAdminData();
+    refreshInventoryViews();
     showToast('ปรับยอดเสร็จสิ้น!');
   });
 }
@@ -773,6 +782,45 @@ function refreshReports() {
 
 function findItem(itemId) {
   return state.items.find((item) => item.item_id === itemId) || { item_id: '', name: '', stock: 0, unit: '' };
+}
+
+function upsertCategory(category) {
+  const index = state.categories.findIndex((row) => row.category_id === category.category_id);
+  if (index >= 0) {
+    state.categories[index] = category;
+  } else {
+    state.categories.push(category);
+  }
+}
+
+function upsertItem(item) {
+  const index = state.items.findIndex((row) => row.item_id === item.item_id);
+  if (index >= 0) {
+    state.items[index] = item;
+  } else {
+    state.items.push(item);
+  }
+}
+
+function adjustLocalStock(itemId, delta) {
+  const item = state.items.find((row) => row.item_id === itemId);
+  if (!item) return;
+  item.stock = Number(item.stock || 0) + Number(delta || 0);
+}
+
+function applyIssuedStock(lines) {
+  lines.forEach((line) => adjustLocalStock(line.item_id, -Number(line.issued_qty || 0)));
+}
+
+function refreshInventoryViews() {
+  fillCategories('categoryParent', true);
+  fillCategories('itemCategory', false);
+  fillItems('receiptItem');
+  fillItems('adjustItem');
+  renderCategoryTree();
+  renderItemList();
+  renderGuide();
+  document.querySelectorAll('.line-row').forEach((row) => updateLineInfo(row));
 }
 
 function StaffById(staffId) {
