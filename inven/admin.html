@@ -41,6 +41,7 @@
         <button class="tab active" data-tab="withdraw" onclick="showTab('withdraw')">บันทึกใบเบิก</button>
         <button class="tab" data-tab="history" onclick="showTab('history')">ประวัติรวม</button>
         <button class="tab" data-tab="admin" onclick="showTab('admin')">คลังพัสดุ</button>
+        <button class="tab" data-tab="staff" onclick="showTab('staff')">เจ้าหน้าที่</button>
         <button class="tab" data-tab="dashboard" onclick="showTab('dashboard')">Dashboard</button>
         <button class="tab" data-tab="reports" onclick="showTab('reports')">รายงาน</button>
       </nav>
@@ -52,7 +53,10 @@
               <select id="withdrawDept"></select>
             </label>
             <label>ชื่อผู้เบิก
-              <input id="withdrawRequester" placeholder="ชื่อ-สกุล">
+              <div class="inline-field">
+                <select id="withdrawRequesterStaff"></select>
+                <button type="button" onclick="openStaffDialog()">+ เพิ่มชื่อ</button>
+              </div>
             </label>
           </div>
           <div id="withdrawLines"></div>
@@ -142,6 +146,54 @@
           </div>
         </section>
 
+        <section id="staff" class="panel">
+          <div class="admin-grid">
+            <div>
+              <h2>เพิ่ม/แก้ไขเจ้าหน้าที่</h2>
+              <div class="form-box">
+                <input id="staffAdminId" type="hidden">
+                <div class="grid two">
+                  <label>คำนำหน้า
+                    <select id="staffAdminPrefix">
+                      <option>นาย</option>
+                      <option>นาง</option>
+                      <option>นางสาว</option>
+                    </select>
+                  </label>
+                  <label>บทบาท
+                    <select id="staffAdminRole">
+                      <option value="department_staff">เจ้าหน้าที่กลุ่มงาน</option>
+                      <option value="department_head">ผอ. กลุ่ม</option>
+                      <option value="supply_officer">เจ้าหน้าที่พัสดุ</option>
+                      <option value="chief_supply_officer">หัวหน้าเจ้าหน้าที่พัสดุ</option>
+                    </select>
+                  </label>
+                </div>
+                <div class="grid two">
+                  <label>ชื่อ
+                    <input id="staffAdminFirstName">
+                  </label>
+                  <label>นามสกุล
+                    <input id="staffAdminLastName">
+                  </label>
+                </div>
+                <label>กลุ่มงาน
+                  <select id="staffAdminDept"></select>
+                </label>
+                <label>ตำแหน่งบนเอกสาร
+                  <input id="staffAdminPosition" placeholder="เช่น นักวิชาการศึกษา / ผอ. กลุ่ม">
+                </label>
+                <button onclick="saveStaffFromForm()">บันทึกเจ้าหน้าที่</button>
+                <button type="button" onclick="resetStaffForm()">ล้างฟอร์ม</button>
+              </div>
+            </div>
+            <div>
+              <h2>รายชื่อเจ้าหน้าที่</h2>
+              <div id="staffAdminList" class="item-list"></div>
+            </div>
+          </div>
+        </section>
+
         <section id="dashboard" class="panel">
           <div id="dashboardCards" class="cards"></div>
           <div class="rank-grid">
@@ -224,6 +276,36 @@
         </section>
       </main>
     </section>
+
+    <dialog id="staffDialog">
+      <form method="dialog" class="dialog-body">
+        <h2>เพิ่มรายชื่อเจ้าหน้าที่</h2>
+        <div class="grid two">
+          <label>คำนำหน้า
+            <select id="staffPrefix">
+              <option>นาย</option>
+              <option>นาง</option>
+              <option>นางสาว</option>
+            </select>
+          </label>
+          <label>ตำแหน่ง
+            <input id="staffPosition" placeholder="เช่น นักวิชาการศึกษา">
+          </label>
+        </div>
+        <div class="grid two">
+          <label>ชื่อ
+            <input id="staffFirstName">
+          </label>
+          <label>นามสกุล
+            <input id="staffLastName">
+          </label>
+        </div>
+        <div class="dialog-actions">
+          <button type="button" onclick="closeStaffDialog()">ปิด</button>
+          <button type="button" class="primary" onclick="submitNewDepartmentStaff()">บันทึกชื่อ</button>
+        </div>
+      </form>
+    </dialog>
 
     <dialog id="editDialog">
       <form method="dialog" class="dialog-body">

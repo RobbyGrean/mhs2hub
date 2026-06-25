@@ -4,6 +4,7 @@ let state = {
   categories: [],
   items: [],
   departments: [],
+  staff: [],
   withdrawals: [],
   dashboard: {},
   reports: {}
@@ -139,12 +140,16 @@ function renderAll() {
   fillDepartments('withdrawDept');
   fillDepartments('editDept');
   fillDepartments('reportDepartment');
+  fillDepartments('staffAdminDept');
+  bindDepartmentStaffFilter();
+  fillRequesterStaff();
   fillCategories('categoryParent', true);
   fillCategories('itemCategory', false);
   fillItems('receiptItem');
   fillItems('adjustItem');
   renderCategoryTree();
   renderItemList();
+  renderStaffAdmin();
   renderHistory();
   renderDashboard();
   renderReports();
@@ -155,10 +160,33 @@ function renderAll() {
 function fillDepartments(id) {
   const select = document.getElementById(id);
   if (!select) return;
-  const includeAll = id === 'reportDepartment';
-  select.innerHTML = `${includeAll ? '<option value="">ทุกฝ่าย</option>' : ''}${state.departments
+  const emptyLabel = id === 'reportDepartment' ? 'ทุกฝ่าย' : id === 'staffAdminDept' ? 'ส่วนกลาง/ไม่ระบุ' : '';
+  select.innerHTML = `${emptyLabel ? `<option value="">${emptyLabel}</option>` : ''}${state.departments
     .map((department) => `<option value="${department.dept_id}">${escapeHtml(department.name)}</option>`)
     .join('')}`;
+}
+
+function bindDepartmentStaffFilter() {
+  const dept = document.getElementById('withdrawDept');
+  if (!dept || dept.dataset.staffBound === 'true') return;
+  dept.dataset.staffBound = 'true';
+  dept.addEventListener('change', () => fillRequesterStaff());
+}
+
+function fillRequesterStaff(selectedStaffId = '') {
+  const select = document.getElementById('withdrawRequesterStaff');
+  if (!select) return;
+  const deptId = valueOf('withdrawDept');
+  const rows = state.staff
+    .filter((staff) => staff.dept_id === deptId && ['department_head', 'department_staff'].includes(staff.role))
+    .sort((a, b) => {
+      if (a.role !== b.role) return a.role === 'department_head' ? -1 : 1;
+      return String(a.name).localeCompare(String(b.name), 'th');
+    });
+  select.innerHTML = rows.map((staff) => `
+    <option value="${staff.staff_id}">${escapeHtml(staff.name)} (${escapeHtml(staff.position_label || staff.role)})</option>
+  `).join('') || '<option value="">ยังไม่มีรายชื่อในกลุ่มงานนี้</option>';
+  if (selectedStaffId) select.value = selectedStaffId;
 }
 
 function fillCategories(id, includeEmpty) {
@@ -275,9 +303,12 @@ function updateLineInfo(row) {
 }
 
 async function submitWithdrawal() {
+  const requesterStaff = StaffById(valueOf('withdrawRequesterStaff'));
   const payload = {
     dept_id: valueOf('withdrawDept'),
-    requester_name: valueOf('withdrawRequester'),
+    requester_staff_id: requesterStaff ? requesterStaff.staff_id : '',
+    requester_name: requesterStaff ? requesterStaff.name : '',
+    requester_position: requesterStaff ? requesterStaff.position_label : '',
     items: collectLines('withdrawLines')
   };
   if (!payload.requester_name || payload.items.length === 0) {
@@ -300,6 +331,38 @@ async function submitWithdrawal() {
     document.getElementById('withdrawLines').innerHTML = '';
     addWithdrawLine();
     await reloadData();
+  });
+}
+
+function openStaffDialog() {
+  const dialog = document.getElementById('staffDialog');
+  if (dialog) dialog.showModal();
+}
+
+function closeStaffDialog() {
+  const dialog = document.getElementById('staffDialog');
+  if (dialog) dialog.close();
+}
+
+async function submitNewDepartmentStaff() {
+  const payload = {
+    dept_id: valueOf('withdrawDept'),
+    prefix: valueOf('staffPrefix'),
+    first_name: valueOf('staffFirstName'),
+    last_name: valueOf('staffLastName'),
+    position_label: valueOf('staffPosition')
+  };
+  if (!payload.first_name || !payload.last_name || !payload.position_label) {
+    showToast('กรอกชื่อ นามสกุล และตำแหน่งให้ครบ');
+    return;
+  }
+  await withBusy('กำลังเพิ่มรายชื่อ...', async () => {
+    const created = await api('saveDepartmentStaff', payload);
+    closeStaffDialog();
+    ['staffFirstName', 'staffLastName', 'staffPosition'].forEach(clearValue);
+    await reloadData();
+    fillRequesterStaff(created.staff_id);
+    showToast(`เพิ่มรายชื่อ "${created.name}" แล้ว`);
   });
 }
 
@@ -413,6 +476,78 @@ async function saveAdjustmentFromForm() {
     await loadAdminData();
     showToast('ปรับยอดเสร็จสิ้น!');
   });
+}
+
+async function saveStaffFromForm() {
+  const payload = {
+    staff_id: valueOf('staffAdminId'),
+    prefix: valueOf('staffAdminPrefix'),
+    first_name: valueOf('staffAdminFirstName'),
+    last_name: valueOf('staffAdminLastName'),
+    role: valueOf('staffAdminRole'),
+    dept_id: valueOf('staffAdminDept'),
+    position_label: valueOf('staffAdminPosition'),
+    active: true,
+    reason: 'บันทึกผ่านหน้า admin'
+  };
+  if (!payload.first_name || !payload.last_name || !payload.position_label) {
+    showToast('กรอกชื่อ นามสกุล และตำแหน่งให้ครบ');
+    return;
+  }
+  if (['department_staff', 'department_head'].includes(payload.role) && !payload.dept_id) {
+    showToast('เลือกกลุ่มงานก่อน');
+    return;
+  }
+  await withBusy('กำลังบันทึกเจ้าหน้าที่...', async () => {
+    await api('saveStaff', payload);
+    resetStaffForm();
+    await loadAdminData();
+    showToast('บันทึกเจ้าหน้าที่เสร็จสิ้น!');
+  });
+}
+
+function renderStaffAdmin() {
+  const list = document.getElementById('staffAdminList');
+  if (!list) return;
+  list.innerHTML = state.staff.map((staff) => `
+    <div class="item-row">
+      <div>
+        <strong>${escapeHtml(staff.name)}</strong>
+        <small>${escapeHtml(roleLabel(staff.role))} · ${escapeHtml(departmentName(staff.dept_id) || 'ส่วนกลาง')} · ${escapeHtml(staff.position_label || '')}</small>
+      </div>
+      <button type="button" onclick="editStaff('${staff.staff_id}')">แก้ไข</button>
+      <button type="button" onclick="deactivateStaff('${staff.staff_id}')">ปิดใช้</button>
+    </div>
+  `).join('') || '<p>ยังไม่มีรายชื่อเจ้าหน้าที่</p>';
+}
+
+function editStaff(staffId) {
+  const staff = StaffById(staffId);
+  if (!staff) return;
+  document.getElementById('staffAdminId').value = staff.staff_id;
+  document.getElementById('staffAdminPrefix').value = staff.prefix || 'นาย';
+  document.getElementById('staffAdminFirstName').value = staff.first_name || '';
+  document.getElementById('staffAdminLastName').value = staff.last_name || '';
+  document.getElementById('staffAdminRole').value = staff.role || 'department_staff';
+  document.getElementById('staffAdminDept').value = staff.dept_id || '';
+  document.getElementById('staffAdminPosition').value = staff.position_label || '';
+  showTab('staff');
+}
+
+async function deactivateStaff(staffId) {
+  const staff = StaffById(staffId);
+  if (!staff || !confirm(`ปิดใช้งาน ${staff.name}?`)) return;
+  await withBusy('กำลังปิดใช้งานเจ้าหน้าที่...', async () => {
+    await api('saveStaff', { ...staff, active: false, reason: 'ปิดใช้งานผ่านหน้า admin' });
+    await loadAdminData();
+    showToast('ปิดใช้งานแล้ว');
+  });
+}
+
+function resetStaffForm() {
+  ['staffAdminId', 'staffAdminFirstName', 'staffAdminLastName', 'staffAdminPosition'].forEach(clearValue);
+  const role = document.getElementById('staffAdminRole');
+  if (role) role.value = 'department_staff';
 }
 
 function renderCategoryTree() {
@@ -633,6 +768,24 @@ function refreshReports() {
 
 function findItem(itemId) {
   return state.items.find((item) => item.item_id === itemId) || { item_id: '', name: '', stock: 0, unit: '' };
+}
+
+function StaffById(staffId) {
+  return state.staff.find((staff) => staff.staff_id === staffId) || null;
+}
+
+function departmentName(deptId) {
+  const department = state.departments.find((dept) => dept.dept_id === deptId);
+  return department ? department.name : '';
+}
+
+function roleLabel(role) {
+  return {
+    supply_officer: 'เจ้าหน้าที่พัสดุ',
+    chief_supply_officer: 'หัวหน้าเจ้าหน้าที่พัสดุ',
+    department_staff: 'เจ้าหน้าที่กลุ่มงาน',
+    department_head: 'ผอ. กลุ่ม'
+  }[role] || role;
 }
 
 function itemsForCategory(categoryId) {

@@ -28,7 +28,10 @@
             <select id="withdrawDept"></select>
           </label>
           <label>ชื่อผู้เบิก
-            <input id="withdrawRequester" placeholder="ชื่อ-สกุล">
+            <div class="inline-field">
+              <select id="withdrawRequesterStaff"></select>
+              <button type="button" onclick="openStaffDialog()">+ เพิ่มชื่อ</button>
+            </div>
           </label>
         </div>
         <div id="withdrawLines"></div>
@@ -38,6 +41,36 @@
         <div id="itemGuide" class="item-guide"></div>
       </section>
     </main>
+
+    <dialog id="staffDialog">
+      <form method="dialog" class="dialog-body">
+        <h2>เพิ่มรายชื่อเจ้าหน้าที่</h2>
+        <div class="grid two">
+          <label>คำนำหน้า
+            <select id="staffPrefix">
+              <option>นาย</option>
+              <option>นาง</option>
+              <option>นางสาว</option>
+            </select>
+          </label>
+          <label>ตำแหน่ง
+            <input id="staffPosition" placeholder="เช่น นักวิชาการศึกษา">
+          </label>
+        </div>
+        <div class="grid two">
+          <label>ชื่อ
+            <input id="staffFirstName">
+          </label>
+          <label>นามสกุล
+            <input id="staffLastName">
+          </label>
+        </div>
+        <div class="dialog-actions">
+          <button type="button" onclick="closeStaffDialog()">ปิด</button>
+          <button type="button" class="primary" onclick="submitNewDepartmentStaff()">บันทึกชื่อ</button>
+        </div>
+      </form>
+    </dialog>
 
     <script src="./config.js"></script>
     <script src="./app.js"></script>
