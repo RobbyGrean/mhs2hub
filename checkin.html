@@ -121,6 +121,27 @@
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxvS0e-vC-ozQvoyfZdbbmhaCZ4ZIKQ07zSBb48HTYWBcTp6I1H_1LAy8-bv5D5S3Si/exec"; 
         let rawSchoolData = [];
         let currentLogState = [];
+
+function normalizeText(value) {
+    return String(value || '').replace(/\s+/g, ' ').trim();
+}
+
+function escapeHtml(value) {
+    return String(value || '').replace(/[&<>"']/g, ch => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    }[ch]));
+}
+
+function addOption(select, value, text) {
+    const opt = document.createElement('option');
+    opt.value = normalizeText(value);
+    opt.textContent = normalizeText(text || value);
+    select.appendChild(opt);
+}
 // เพิ่มฟังก์ชันนี้ไว้ใต้ประกาศตัวแปร WEB_APP_URL
 function openSummary(type) {
     window.open(`${WEB_APP_URL}?page=${type}`, '_blank');
@@ -148,38 +169,45 @@ function openSummary(type) {
                 
                 // 1. จัดการข้อมูล Master สำหรับ Dropdown (ทำครั้งเดียวตอนเริ่ม)
                 if (rawSchoolData.length === 0 && data.schoolData) {
-                    rawSchoolData = data.schoolData;
+                    rawSchoolData = data.schoolData.map(d => ({
+                        name: normalizeText(d.name),
+                        tambon: normalizeText(d.tambon),
+                        amphure: normalizeText(d.amphure)
+                    })).filter(d => d.name && d.tambon && d.amphure);
                     const ampSelect = document.getElementById('amphureSelect');
                     const amphures = [...new Set(rawSchoolData.map(d => d.amphure))].sort();
-                    amphures.forEach(a => {
-                        const opt = document.createElement('option');
-                        opt.value = opt.innerText = a;
-                        ampSelect.appendChild(opt);
-                    });
+                    amphures.forEach(a => addOption(ampSelect, a));
                 }
 
                 // 2. อัปเดตยอดและกราฟ
-                myChart.data.datasets[0].data = [data.attendedCount, data.missingCount];
+                const totalCount = Number(data.totalCount) || 0;
+                const attendedCount = Number(data.attendedCount) || 0;
+                const missingCount = Math.max(0, Number(data.missingCount) || 0);
+                const percent = totalCount > 0 ? ((attendedCount / totalCount) * 100).toFixed(0) : "0";
+                myChart.data.datasets[0].data = [attendedCount, missingCount];
                 myChart.update();
-                document.getElementById('percentDisplay').innerText = ((data.attendedCount / data.totalCount) * 100).toFixed(0) + "%";
+                document.getElementById('percentDisplay').innerText = percent + "%";
                 document.getElementById('countDisplay').innerHTML = `
                     <div class="text-sm space-y-2">
-                        <div class="px-4 py-2 bg-indigo-500/20 rounded-full text-indigo-400 font-bold border border-indigo-500/30">มาแล้ว: ${data.attendedCount} จาก ${data.totalCount}</div>
-                        <div class="px-4 py-2 bg-rose-500/10 rounded-full text-rose-400 font-medium border border-rose-500/20">ยังไม่มา: ${data.missingCount} จาก ${data.totalCount}</div>
+                        <div class="px-4 py-2 bg-indigo-500/20 rounded-full text-indigo-400 font-bold border border-indigo-500/30">มาแล้ว: ${attendedCount} จาก ${totalCount}</div>
+                        <div class="px-4 py-2 bg-rose-500/10 rounded-full text-rose-400 font-medium border border-rose-500/20">ยังไม่มา: ${missingCount} จาก ${totalCount}</div>
                     </div>`;
 
                 // 3. ระบบ Live Log อัจฉริยะ
                 const logContainer = document.getElementById('activityLog');
                 if (logContainer && data.recentLogs) {
                     const newEntries = data.recentLogs.filter(n => 
-                        !currentLogState.some(old => old.school === n.school && old.details === n.details)
+                        !currentLogState.some(old => old.school === normalizeText(n.school) && old.details === normalizeText(n.details))
                     );
 
                     if (newEntries.length > 0) {
                         if (logContainer.innerHTML.includes("รอข้อมูล")) logContainer.innerHTML = "";
                         
                         // รวมข้อมูลใหม่และจำกัดแค่ 20 อันล่าสุด
-                        currentLogState = [...newEntries, ...currentLogState].slice(0, 20);
+                        currentLogState = [...newEntries.map(log => ({
+                            school: normalizeText(log.school),
+                            details: normalizeText(log.details)
+                        })).filter(log => log.school), ...currentLogState].slice(0, 20);
                         logContainer.innerHTML = '';
                         
 currentLogState.forEach((log, index) => {
@@ -191,10 +219,10 @@ currentLogState.forEach((log, index) => {
             <div class="flex justify-between items-start">
                 <div class="w-full">
                     <div class="text-xl font-medium ${isNew ? 'text-indigo-200' : 'text-slate-400'} mb-1">
-                        🏫 ${log.school}
+                        🏫 ${escapeHtml(log.school)}
                     </div>
                     <div class="text-xl md:text-xl font-bold ${isNew ? 'text-white' : 'text-indigo-100'} tracking-wide">
-                        👤 ${log.details}
+                        👤 ${escapeHtml(log.details)}
                     </div>
                 </div>
                 ${isNew ? '<span class="bg-yellow-400 text-black px-3 py-1 rounded-full text-xs font-black animate-bounce shadow-lg">NEW</span>' : ''}
@@ -218,7 +246,7 @@ currentLogState.forEach((log, index) => {
 
             if (amp) {
                 const tambons = [...new Set(rawSchoolData.filter(d => d.amphure === amp).map(d => d.tambon))].sort();
-                tambons.forEach(t => { tamSelect.innerHTML += `<option value="${t}">${t}</option>`; });
+                tambons.forEach(t => addOption(tamSelect, t));
                 tamSelect.disabled = false;
             } else { tamSelect.disabled = true; }
         }
@@ -231,7 +259,7 @@ currentLogState.forEach((log, index) => {
             schSelect.innerHTML = '<option value="">-- กรุณาเลือกโรงเรียน --</option>';
             if (tam) {
                 const schools = rawSchoolData.filter(d => d.amphure === amp && d.tambon === tam).sort((a,b) => a.name.localeCompare(b.name));
-                schools.forEach(s => { schSelect.innerHTML += `<option value="${s.name}">${s.name}</option>`; });
+                schools.forEach(s => addOption(schSelect, s.name));
                 schSelect.disabled = false;
             } else { schSelect.disabled = true; }
         }
@@ -242,18 +270,27 @@ document.getElementById('checkinForm').onsubmit = async (e) => {
     e.preventDefault();
     if (isSubmitting) return;          // ← กัน double tap
     isSubmitting = true;               // ← lock
-    const school = document.getElementById('schoolSelect').value;
-    const name = document.getElementById('userName').value;
-    const pos = document.getElementById('userPosition').value;
+    const school = normalizeText(document.getElementById('schoolSelect').value);
+    const name = normalizeText(document.getElementById('userName').value);
+    const pos = normalizeText(document.getElementById('userPosition').value);
     const newDetails = `${name} (${pos})`;
+
+    if (!school || !name || !pos) {
+        alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+        isSubmitting = false;
+        return;
+    }
 
     if (!school) { alert("⚠️ กรุณาเลือกโรงเรียนให้ครบถ้วนครับ"); return; }
     
     // เช็คเบื้องต้นว่าโรงเรียนนี้เคยมาหรือยัง (จาก Live Log ปัจจุบัน)
-    const existingLog = currentLogState.find(l => l.school === school);
+    const existingLog = currentLogState.find(l => normalizeText(l.school) === school);
     if (existingLog) {
         const confirmAdd = confirm(`โรงเรียนนี้มีการลงทะเบียนอยู่ก่อนแล้วโดย:\n"${existingLog.details}"\n\nกด 'ตกลง' เพื่อเพิ่มชื่อของคุณต่อท้ายเข้าไประบบครับ`);
-        if (!confirmAdd) return;
+        if (!confirmAdd) {
+            isSubmitting = false;
+            return;
+        }
     }
 
     const btn = document.getElementById('btnSubmit');
