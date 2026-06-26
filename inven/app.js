@@ -7,7 +7,13 @@ let state = {
   staff: [],
   withdrawals: [],
   dashboard: {},
-  reports: {}
+  reports: {},
+  loaded: {
+    base: false,
+    history: false,
+    dashboard: false,
+    reports: false
+  }
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -116,10 +122,79 @@ async function loadRequesterData() {
 
 async function loadAdminData() {
   setMessage('withdrawMessage', 'กำลังโหลดข้อมูล...');
-  const data = await api('getAppData');
+  let data;
+  let usedBaseEndpoint = false;
+  try {
+    data = await api('getAdminBaseData');
+    usedBaseEndpoint = true;
+  } catch (error) {
+    data = await api('getAppData');
+    ['history', 'dashboard', 'reports'].forEach((section) => {
+      state.loaded[section] = true;
+    });
+  }
   Object.assign(state, data);
+  state.loaded.base = true;
+  if (usedBaseEndpoint) invalidateAdminSections('history', 'dashboard', 'reports');
   renderAll();
   setMessage('withdrawMessage', '');
+}
+
+async function loadAdminSection(section, options = {}) {
+  if (!state.auth || state.mode !== 'admin') return;
+  if (!options.force && state.loaded[section]) return;
+  const actionBySection = {
+    history: 'getHistoryData',
+    dashboard: 'getDashboardData',
+    reports: 'getReportsData'
+  };
+  const renderBySection = {
+    history: renderHistory,
+    dashboard: renderDashboard,
+    reports: renderReports
+  };
+  const action = actionBySection[section];
+  if (!action) return;
+  await withBusy(`กำลังโหลด${sectionLabel(section)}...`, async () => {
+    let data;
+    try {
+      data = await api(action);
+    } catch (error) {
+      data = await api('getAppData');
+      ['history', 'dashboard', 'reports'].forEach((lazySection) => {
+        state.loaded[lazySection] = true;
+      });
+    }
+    Object.assign(state, data);
+    state.loaded[section] = true;
+    renderBySection[section]();
+  });
+}
+
+function sectionLabel(section) {
+  return {
+    history: 'ประวัติรวม',
+    dashboard: 'Dashboard',
+    reports: 'รายงาน'
+  }[section] || 'ข้อมูล';
+}
+
+function invalidateAdminSections(...sections) {
+  sections.forEach((section) => {
+    if (state.loaded[section] !== undefined) state.loaded[section] = false;
+  });
+}
+
+function activeTabName() {
+  const active = document.querySelector('.panel.active');
+  return active ? active.id : '';
+}
+
+async function refreshActiveLazySection() {
+  const tab = activeTabName();
+  if (['history', 'dashboard', 'reports'].includes(tab)) {
+    await loadAdminSection(tab, { force: true });
+  }
 }
 
 async function reloadData() {
@@ -134,6 +209,11 @@ function showTab(tabName) {
   document.querySelectorAll('.panel').forEach((panel) => {
     panel.classList.toggle('active', panel.id === tabName);
   });
+  if (state.mode === 'admin') {
+    if (tabName === 'history') loadAdminSection('history');
+    if (tabName === 'dashboard') loadAdminSection('dashboard');
+    if (tabName === 'reports') loadAdminSection('reports');
+  }
 }
 
 function renderAll() {
@@ -399,6 +479,7 @@ async function submitWithdrawal() {
     applyIssuedStock(result.items || []);
     document.getElementById('withdrawLines').innerHTML = '';
     addWithdrawLine();
+    invalidateAdminSections('history', 'dashboard', 'reports');
     refreshInventoryViews();
   });
 }
@@ -503,7 +584,9 @@ async function saveCategoryFromForm() {
     });
     upsertCategory(saved);
     clearValue('categoryName');
+    invalidateAdminSections('dashboard', 'reports');
     refreshInventoryViews();
+    await refreshActiveLazySection();
     showToast(`ประเภท "${name}" เสร็จสิ้น!`);
   });
 }
@@ -522,7 +605,9 @@ async function saveItemFromForm() {
     });
     upsertItem({ ...saved, stock: itemId ? findItem(itemId).stock : 0 });
     resetItemForm();
+    invalidateAdminSections('dashboard', 'reports');
     refreshInventoryViews();
+    await refreshActiveLazySection();
     showToast(`รายการ "${name}" เสร็จสิ้น!`);
   });
 }
@@ -540,7 +625,9 @@ async function saveReceiptFromForm() {
     });
     adjustLocalStock(itemId, qty);
     ['receiptItem', 'receiptSearch', 'receiptQty', 'receiptUnitPrice', 'receiptDocRef'].forEach(clearValue);
+    invalidateAdminSections('dashboard', 'reports');
     refreshInventoryViews();
+    await refreshActiveLazySection();
     showToast('รับเข้าเสร็จสิ้น!');
   });
 }
@@ -557,7 +644,9 @@ async function saveAdjustmentFromForm() {
     });
     adjustLocalStock(itemId, qtyChange);
     ['adjustItem', 'adjustSearch', 'adjustQty', 'adjustReason'].forEach(clearValue);
+    invalidateAdminSections('dashboard', 'reports');
     refreshInventoryViews();
+    await refreshActiveLazySection();
     showToast('ปรับยอดเสร็จสิ้น!');
   });
 }
@@ -727,6 +816,10 @@ function resetItemForm() {
 function renderHistory() {
   const list = document.getElementById('historyList');
   if (!list) return;
+  if (state.mode === 'admin' && !state.loaded.history) {
+    list.innerHTML = '<p>กดแท็บนี้เพื่อโหลดประวัติรวม</p>';
+    return;
+  }
   list.innerHTML = state.withdrawals.map((withdrawal) => `
     <article class="history-card">
       <div class="history-head">
@@ -774,6 +867,8 @@ async function submitEditWithdrawal() {
     clearValue('editReason');
     closeEditDialog();
     await loadAdminData();
+    invalidateAdminSections('history', 'dashboard', 'reports');
+    await loadAdminSection('history', { force: true });
     showToast('แก้ไขใบเบิกเสร็จสิ้น!');
   });
 }
@@ -784,6 +879,8 @@ async function cancelWithdrawalFromHistory(withdrawId) {
   await withBusy('กำลังยกเลิกใบเบิก...', async () => {
     await api('cancelWithdrawal', { withdraw_id: withdrawId, reason });
     await loadAdminData();
+    invalidateAdminSections('history', 'dashboard', 'reports');
+    await loadAdminSection('history', { force: true });
     showToast('ยกเลิกใบเบิกเสร็จสิ้น!');
   });
 }
@@ -792,6 +889,15 @@ function renderDashboard() {
   const cards = document.getElementById('dashboardCards');
   const list = document.getElementById('lowStockList');
   if (!cards || !list) return;
+  if (state.mode === 'admin' && !state.loaded.dashboard) {
+    cards.innerHTML = '<div>ยังไม่ได้โหลด Dashboard<strong>-</strong></div>';
+    list.innerHTML = '<p>กดแท็บ Dashboard เพื่อโหลดสถิติ</p>';
+    ['topItems', 'topDepartments', 'topCategories', 'deptCategoryRanking'].forEach((id) => {
+      const box = document.getElementById(id);
+      if (box) box.innerHTML = '<p>ยังไม่ได้โหลดข้อมูล</p>';
+    });
+    return;
+  }
   const dashboard = state.dashboard || {};
   cards.innerHTML = `
     <div>รายการพัสดุ<strong>${dashboard.totalItems || 0}</strong></div>
@@ -827,6 +933,14 @@ function renderRanking(id, rows) {
 }
 
 function renderReports() {
+  if (state.mode === 'admin' && !state.loaded.reports) {
+    renderCurrentStockReport([]);
+    ['yearReportRows', 'monthReportRows', 'weekReportRows', 'departmentReportRows'].forEach((id) => {
+      const box = document.getElementById(id);
+      if (box) box.innerHTML = '<tr><td colspan="6">กดแท็บรายงานเพื่อโหลดข้อมูล</td></tr>';
+    });
+    return;
+  }
   const reports = state.reports || {};
   renderCurrentStockReport(reports.currentStock || []);
   renderReportRows('yearReportRows', reports.yearly || []);
@@ -886,6 +1000,10 @@ function filterBySelectedDepartment(rows) {
 }
 
 function refreshReports() {
+  if (state.mode === 'admin' && !state.loaded.reports) {
+    loadAdminSection('reports');
+    return;
+  }
   renderReports();
   showToast('กรองรายงานแล้ว');
 }
