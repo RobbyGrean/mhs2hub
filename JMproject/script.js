@@ -8,6 +8,13 @@ const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyXTMpnUJw4R9u-g-WV
 let allData = [];
 let previousDataState = {};
 let activeStatusFilter = 'all';
+let activeTheme = localStorage.getItem('jm-theme') || 'dark';
+
+function getThemePalette() {
+    return activeTheme === 'cute'
+        ? ['#65c9a8', '#ff6f91', '#c9b9ff']
+        : ['#39ff88', '#ff5d6c', '#64748b'];
+}
 
 // ── Donut Chart ──────────────────────────────────────────────────────────────
 const summaryCtx = document.getElementById('summaryChart').getContext('2d');
@@ -17,7 +24,7 @@ const summaryChart = new Chart(summaryCtx, {
         labels: ['ออกแล้ว', 'ค้างจ่าย', 'ไม่มีข้อมูล'],
         datasets: [{
             data: [0, 0, 1],
-            backgroundColor: ['#65c9a8', '#ff6f91', '#c9b9ff'],
+            backgroundColor: getThemePalette(),
             borderWidth: 0,
             hoverOffset: 4
         }]
@@ -31,9 +38,34 @@ const summaryChart = new Chart(summaryCtx, {
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 window.onload = async () => {
+    initThemeControls();
     await fetchData();
     updateMonthHeader();
 };
+
+function applyTheme(theme) {
+    activeTheme = theme === 'cute' ? 'cute' : 'dark';
+    document.documentElement.dataset.theme = activeTheme;
+    localStorage.setItem('jm-theme', activeTheme);
+
+    document.querySelectorAll('[data-theme-choice]').forEach(btn => {
+        const isActive = btn.dataset.themeChoice === activeTheme;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
+    });
+
+    if (typeof summaryChart !== 'undefined') {
+        summaryChart.data.datasets[0].backgroundColor = getThemePalette();
+        summaryChart.update('none');
+    }
+}
+
+function initThemeControls() {
+    applyTheme(activeTheme);
+    document.querySelectorAll('[data-theme-choice]').forEach(btn => {
+        btn.addEventListener('click', () => applyTheme(btn.dataset.themeChoice));
+    });
+}
 
 function updateMonthHeader() {
     const months = ["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];

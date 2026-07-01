@@ -7,7 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <link rel="stylesheet" href="style.css?v=kawaii-20260623-3">
+    <link rel="stylesheet" href="style.css?v=dark-neon-v2-20260701">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
         .scrollbar-hide::-webkit-scrollbar { display: none; }
@@ -268,6 +268,10 @@
             <div id="hud-progress-fill" style="width: 0%"></div>
         </div>
         <span id="hud-percent">0%</span>
+        <div class="theme-toggle" aria-label="Theme selector">
+            <button type="button" class="theme-toggle-btn" data-theme-choice="dark" aria-pressed="true">Dark</button>
+            <button type="button" class="theme-toggle-btn" data-theme-choice="cute" aria-pressed="false">Cute</button>
+        </div>
     </div>
 
     <div class="container mx-auto px-4 py-10">
