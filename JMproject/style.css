@@ -29,23 +29,23 @@ html[data-theme="dark"] {
 
 html[data-theme="cute"] {
     color-scheme: light;
-    --bg: #fff8fb;
-    --bg-2: #f7fbff;
-    --surface: rgba(255, 255, 255, 0.9);
+    --bg: #fff2f8;
+    --bg-2: #fffaf0;
+    --surface: rgba(255, 255, 255, 0.88);
     --surface-strong: rgba(255, 255, 255, 0.96);
-    --surface-soft: rgba(217, 79, 115, 0.08);
-    --line: rgba(217, 79, 115, 0.22);
-    --line-strong: rgba(217, 79, 115, 0.42);
-    --ink: #27313b;
-    --muted: #657786;
-    --muted-2: #8793a0;
-    --accent: #d94f73;
-    --accent-2: #3b92d1;
+    --surface-soft: rgba(255, 143, 189, 0.14);
+    --line: rgba(255, 143, 189, 0.36);
+    --line-strong: rgba(216, 79, 143, 0.58);
+    --ink: #5f334b;
+    --muted: #7c5d6e;
+    --muted-2: #a08392;
+    --accent: #e85291;
+    --accent-2: #7ec8b6;
     --danger: #d95050;
     --warn: #b97811;
-    --neutral: #8a7bb0;
-    --panel-shadow: 0 12px 30px rgba(76, 46, 63, 0.12);
-    --soft-shadow: 0 4px 12px rgba(76, 46, 63, 0.10);
+    --neutral: #9d86c8;
+    --panel-shadow: 0 14px 32px rgba(196, 87, 135, 0.16);
+    --soft-shadow: 0 6px 14px rgba(196, 87, 135, 0.12);
     --focus: rgba(217, 79, 115, 0.22);
 }
 
@@ -84,10 +84,32 @@ body::before {
 
 html[data-theme="cute"] body::before {
     background-image:
-        radial-gradient(circle, color-mix(in srgb, var(--accent) 22%, transparent) 0 2px, transparent 2.5px),
-        linear-gradient(color-mix(in srgb, var(--accent-2) 9%, transparent) 1px, transparent 1px);
-    background-size: 120px 120px, 46px 46px;
-    opacity: 0.28;
+        linear-gradient(90deg, rgba(255, 143, 189, 0.15) 50%, transparent 50%),
+        linear-gradient(0deg, rgba(126, 200, 182, 0.14) 50%, transparent 50%),
+        radial-gradient(circle, rgba(255, 143, 189, 0.32) 0 2px, transparent 2.5px);
+    background-size: 34px 34px, 34px 34px, 132px 132px;
+    background-position: 0 0, 0 0, 22px 18px;
+    opacity: 0.52;
+    mask-image: none;
+}
+
+html[data-theme="cute"] body::after {
+    content: "";
+    position: fixed;
+    right: -72px;
+    bottom: -68px;
+    z-index: -1;
+    width: 260px;
+    height: 260px;
+    pointer-events: none;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle at 50% 50%, #fff 0 22px, transparent 23px),
+        radial-gradient(circle at 50% 18%, #ff9fc5 0 25px, transparent 26px),
+        radial-gradient(circle at 82% 50%, #ff9fc5 0 25px, transparent 26px),
+        radial-gradient(circle at 50% 82%, #ff9fc5 0 25px, transparent 26px),
+        radial-gradient(circle at 18% 50%, #ff9fc5 0 25px, transparent 26px);
+    opacity: 0.42;
 }
 
 button,
@@ -780,11 +802,78 @@ html[data-theme="cute"] #prevLink {
 
 /* Cute mode refinements */
 html[data-theme="cute"] header::before {
-    content: "Cute mode";
+    content: "";
+    position: absolute;
+    left: 24px;
+    top: 24px;
+    width: 86px;
+    height: 74px;
+    margin: 0;
+    padding: 0;
+    border: 3px solid #6f4562;
+    border-radius: 42% 42% 46% 46%;
+    background:
+        radial-gradient(circle at 35% 42%, #6f4562 0 4px, transparent 4.5px),
+        radial-gradient(circle at 65% 42%, #6f4562 0 4px, transparent 4.5px),
+        radial-gradient(ellipse at 50% 58%, #ff9fc5 0 6px, transparent 6.5px),
+        linear-gradient(135deg, transparent 0 14px, #ff8fbd 14px 25px, transparent 25px),
+        linear-gradient(225deg, transparent 0 14px, #ff8fbd 14px 25px, transparent 25px),
+        #fff;
+    box-shadow: 0 10px 22px rgba(196, 87, 135, 0.18);
+}
+
+html[data-theme="cute"] header {
+    padding-left: 132px !important;
+    border-width: 2px !important;
+    background:
+        radial-gradient(circle at 92% 20%, rgba(255, 233, 167, 0.62) 0 56px, transparent 57px),
+        linear-gradient(90deg, rgba(255, 143, 189, 0.14) 50%, transparent 50%),
+        linear-gradient(0deg, rgba(126, 200, 182, 0.12) 50%, transparent 50%),
+        rgba(255, 255, 255, 0.9) !important;
+    background-size: auto, 30px 30px, 30px 30px, auto !important;
+}
+
+html[data-theme="cute"] header::after {
+    height: 8px;
+    background:
+        radial-gradient(circle at 12px 50%, #ff8fbd 0 5px, transparent 5.5px),
+        radial-gradient(circle at 26px 50%, #7ec8b6 0 5px, transparent 5.5px),
+        linear-gradient(90deg, #ff8fbd, #ffe9a7, #7ec8b6);
+    background-size: 38px 8px, 38px 8px, auto;
+    opacity: 1;
 }
 
 html[data-theme="cute"] h1 {
+    color: #d84f8f !important;
     text-shadow: none !important;
+}
+
+html[data-theme="cute"] header p,
+html[data-theme="cute"] .text-slate-400,
+html[data-theme="cute"] .text-slate-500,
+html[data-theme="cute"] .text-slate-200,
+html[data-theme="cute"] .text-cyan-400,
+html[data-theme="cute"] .text-cyan-500 {
+    color: #6f4562 !important;
+}
+
+html[data-theme="cute"] #currentMonthDisplay {
+    color: #b83e77 !important;
+    border-color: rgba(255, 143, 189, 0.58);
+    background: rgba(255, 233, 167, 0.46);
+}
+
+html[data-theme="cute"] .stat-card,
+html[data-theme="cute"] .filter-container,
+html[data-theme="cute"] .guide-bar,
+html[data-theme="cute"] aside > div,
+html[data-theme="cute"] #previewCard > div {
+    background:
+        linear-gradient(90deg, rgba(255, 143, 189, 0.08) 50%, transparent 50%),
+        linear-gradient(0deg, rgba(255, 143, 189, 0.08) 50%, transparent 50%),
+        rgba(255, 255, 255, 0.9) !important;
+    background-size: 26px 26px, 26px 26px, auto !important;
+    border: 2px solid rgba(255, 143, 189, 0.42) !important;
 }
 
 html[data-theme="cute"] .stat-card::before,
@@ -794,8 +883,50 @@ html[data-theme="cute"] .item-card::before {
 
 html[data-theme="cute"] .item-card {
     background:
-        radial-gradient(circle at 22px 22px, color-mix(in srgb, var(--accent) 13%, transparent) 0 7px, transparent 7.5px),
+        radial-gradient(circle at 20px 20px, rgba(255, 143, 189, 0.24) 0 7px, transparent 7.5px),
+        radial-gradient(circle at calc(100% - 28px) 22px, rgba(255, 233, 167, 0.62) 0 12px, transparent 12.5px),
         var(--surface) !important;
+    border: 2px solid rgba(255, 143, 189, 0.42) !important;
+}
+
+html[data-theme="cute"] .item-card::after {
+    height: 7px;
+    background:
+        radial-gradient(circle at 10px 50%, #ff8fbd 0 4px, transparent 4.5px),
+        radial-gradient(circle at 24px 50%, #7ec8b6 0 4px, transparent 4.5px),
+        linear-gradient(90deg, rgba(255, 143, 189, 0.58), rgba(126, 200, 182, 0.48));
+    background-size: 34px 7px, 34px 7px, auto;
+}
+
+html[data-theme="cute"] .item-card h3::before {
+    border: 2px solid #fff;
+}
+
+html[data-theme="cute"] .theme-toggle {
+    background: #fff;
+    border-color: rgba(255, 143, 189, 0.46);
+}
+
+html[data-theme="cute"] .theme-toggle-btn.active {
+    background: #ff8fbd;
+    color: #fff;
+}
+
+html[data-theme="cute"] #btn-export,
+html[data-theme="cute"] #btn-print,
+html[data-theme="cute"] .status-pill {
+    border-radius: 999px !important;
+    background: #fff !important;
+    border-color: rgba(255, 143, 189, 0.48) !important;
+    color: #b83e77 !important;
+}
+
+html[data-theme="cute"] .status-pill.active,
+html[data-theme="cute"] #btn-export:hover,
+html[data-theme="cute"] #btn-print:hover {
+    background: #ff8fbd !important;
+    border-color: #d84f8f !important;
+    color: #fff !important;
 }
 
 html[data-theme="cute"] .status-slider::-webkit-slider-thumb,
