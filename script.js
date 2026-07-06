@@ -97,6 +97,43 @@ const supplyGame = {
   timer: 0,
   raf: 0
 };
+const supplyKeyboardStack = [];
+
+function getSupplyKeyDir(key) {
+  const lower = key.toLowerCase();
+  if (key === 'ArrowLeft' || lower === 'a') return -1;
+  if (key === 'ArrowRight' || lower === 'd') return 1;
+  return 0;
+}
+
+function syncSupplyKeyboardDir() {
+  const activeKey = supplyKeyboardStack[supplyKeyboardStack.length - 1];
+  if (!activeKey) {
+    holdSupplyDir(0);
+    return;
+  }
+  holdSupplyDir(getSupplyKeyDir(activeKey));
+}
+
+function pressSupplyKey(key) {
+  if (!getSupplyKeyDir(key)) return;
+  const existing = supplyKeyboardStack.indexOf(key);
+  if (existing !== -1) supplyKeyboardStack.splice(existing, 1);
+  supplyKeyboardStack.push(key);
+  syncSupplyKeyboardDir();
+}
+
+function releaseSupplyKey(key) {
+  const existing = supplyKeyboardStack.indexOf(key);
+  if (existing === -1) return;
+  supplyKeyboardStack.splice(existing, 1);
+  syncSupplyKeyboardDir();
+}
+
+function clearSupplyKeyboard() {
+  supplyKeyboardStack.length = 0;
+  syncSupplyKeyboardDir();
+}
 
 function setSupplyMessage(title, body, button = 'เริ่มเกม') {
   const msg = document.getElementById('supplyMessage');
@@ -130,7 +167,7 @@ function startSupplyGame() {
   supplyGame.score = 0;
   supplyGame.time = 45;
   supplyGame.x = 50;
-  supplyGame.dir = 0;
+  clearSupplyKeyboard();
   supplyGame.touchActive = false;
   supplyGame.items.forEach(item => item.el.remove());
   supplyGame.items = [];
@@ -223,8 +260,7 @@ function endSupplyGame() {
 }
 
 document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowLeft' || e.key.toLowerCase() === 'a') holdSupplyDir(-1);
-  if (e.key === 'ArrowRight' || e.key.toLowerCase() === 'd') holdSupplyDir(1);
+  pressSupplyKey(e.key);
   const active = document.activeElement;
   const gameFocused = active && (active.id === 'supplyGame' || active.closest?.('.game-wrap'));
   if (e.code === 'Space' && gameFocused) {
@@ -233,8 +269,9 @@ document.addEventListener('keydown', e => {
   }
 });
 document.addEventListener('keyup', e => {
-  if (['ArrowLeft', 'ArrowRight', 'a', 'A', 'd', 'D'].includes(e.key)) holdSupplyDir(0);
+  releaseSupplyKey(e.key);
 });
+window.addEventListener('blur', clearSupplyKeyboard);
 
 (function initSupplyTouchControls() {
   const stage = document.getElementById('supplyGame');
