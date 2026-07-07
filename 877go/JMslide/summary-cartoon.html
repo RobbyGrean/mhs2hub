@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>สรุปแบบการ์ตูน งานจ้างเหมาบริการผู้ปฏิบัติงานให้ราชการ</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans Thai", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(160, 220, 255, 0.45), transparent 24%),
+        radial-gradient(circle at bottom right, rgba(255, 215, 138, 0.35), transparent 24%),
+        #eef6ff;
+    }
+    .tools {
+      max-width: 210mm;
+      margin: 18px auto 0;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .tools a,
+    .tools button {
+      min-height: 42px;
+      padding: 0 16px;
+      border: 0;
+      border-radius: 999px;
+      font: inherit;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, #2d73da, #5ea8ff);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+    }
+    .sheet {
+      width: 210mm;
+      min-height: 297mm;
+      margin: 16px auto 32px;
+      padding: 10mm;
+      background: #fff;
+      box-shadow: 0 22px 55px rgba(15, 45, 88, 0.16);
+    }
+    .sheet img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 18px;
+      border: 1px solid #dbe7f5;
+      box-shadow: 0 18px 40px rgba(32, 74, 132, 0.12);
+    }
+    .caption {
+      margin-top: 12px;
+      text-align: center;
+      color: #34506f;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    @page {
+      size: A4 portrait;
+      margin: 0;
+    }
+    @media print {
+      body { background: #fff; }
+      .tools { display: none; }
+      .sheet {
+        margin: 0;
+        width: 210mm;
+        min-height: 297mm;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="tools">
+    <a href="index.html">กลับหน้าเต็ม</a>
+    <a href="summary-a4.html">สรุปแบบ Workflow-Map</a>
+    <button type="button" onclick="window.print()">Print A4</button>
+  </div>
+
+  <main class="sheet">
+    <img src="assets/images/summary-cartoon.png" alt="สรุปแบบการ์ตูนงานจ้างเหมาบริการผู้ปฏิบัติงานให้ราชการ">
+    <div class="caption">สรุปแบบการ์ตูน: Workflow งานจ้างเหมาบริการผู้ปฏิบัติงานให้ราชการ</div>
+  </main>
+</body>
+</html>
