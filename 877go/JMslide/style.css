@@ -109,6 +109,7 @@ img {
 }
 
 .brand-badge-art {
+  position: relative;
   padding: 0;
   overflow: hidden;
   background: transparent;
@@ -120,6 +121,14 @@ img {
   height: 100%;
   object-fit: cover;
   transform: scale(1.02);
+}
+
+.brand-badge-art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
 }
 
 .brand strong,
@@ -300,6 +309,7 @@ img {
   margin: 0;
   font-size: clamp(2.4rem, 4vw, 4.7rem);
   line-height: 1.04;
+  text-shadow: 0 10px 30px rgba(8, 20, 49, 0.24);
 }
 
 .hero-text {
@@ -319,6 +329,35 @@ img {
   gap: 16px;
 }
 
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.metric-chip {
+  padding: 18px 18px 16px;
+  border-radius: 24px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.09));
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 18px 38px rgba(10, 28, 62, 0.18);
+  backdrop-filter: blur(12px);
+}
+
+.metric-chip strong {
+  display: block;
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 1.1rem;
+}
+
+.metric-chip span {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.95rem;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -335,7 +374,7 @@ img {
 }
 
 .btn-primary {
-  background: #fff;
+  background: linear-gradient(135deg, #ffffff, #ffe8b1);
   color: #16417c;
   box-shadow: 0 16px 35px rgba(12, 28, 63, 0.24);
 }
@@ -343,7 +382,7 @@ img {
 .btn-secondary {
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.42);
-  background: rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(124, 198, 255, 0.16));
 }
 
 .btn-drive {
@@ -351,6 +390,17 @@ img {
   color: #fff;
   min-width: 210px;
   box-shadow: 0 18px 36px rgba(22, 143, 94, 0.28);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-drive::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 -22%;
+  width: 30%;
+  transform: skewX(-20deg);
+  background: rgba(255, 255, 255, 0.22);
 }
 
 .btn-paper {
@@ -416,10 +466,11 @@ img {
   width: 220px;
   padding: 22px;
   border-radius: 26px;
-  background: rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
   border: 1px solid rgba(255, 255, 255, 0.18);
   backdrop-filter: blur(12px);
   box-shadow: 0 18px 45px rgba(9, 27, 61, 0.22);
+  animation: orbitFloat 7s ease-in-out infinite;
 }
 
 .orbit-card span {
@@ -440,6 +491,8 @@ img {
 .orbit-card-a { top: 4%; left: 8%; transform: rotate(-8deg); }
 .orbit-card-b { top: 37%; right: 5%; transform: rotate(7deg); }
 .orbit-card-c { bottom: 4%; left: 22%; transform: rotate(-4deg); }
+.orbit-card-b { animation-delay: 1.2s; }
+.orbit-card-c { animation-delay: 2.4s; }
 
 .pulse {
   border-radius: 999px;
@@ -456,12 +509,24 @@ img {
   50% { transform: scale(1.08); opacity: 0.65; }
 }
 
+@keyframes orbitFloat {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -10px; }
+}
+
 .quick-map,
 .content-section {
   padding: 34px;
   background: var(--surface);
   backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.quick-map {
+  background:
+    radial-gradient(circle at top right, rgba(255, 213, 125, 0.22), transparent 18%),
+    radial-gradient(circle at bottom left, rgba(155, 212, 255, 0.24), transparent 18%),
+    var(--surface);
 }
 
 .content-section {
@@ -548,6 +613,22 @@ img {
 .overview-card:hover {
   transform: translateY(-6px) rotate(-1deg);
   box-shadow: 0 24px 48px rgba(21, 49, 84, 0.14);
+}
+
+.overview-card:nth-child(1) {
+  background: linear-gradient(180deg, rgba(239, 255, 244, 0.98), rgba(221, 246, 229, 0.84));
+}
+
+.overview-card:nth-child(2) {
+  background: linear-gradient(180deg, rgba(255, 248, 232, 0.98), rgba(255, 230, 186, 0.84));
+}
+
+.overview-card:nth-child(3) {
+  background: linear-gradient(180deg, rgba(236, 247, 255, 0.98), rgba(210, 231, 255, 0.84));
+}
+
+.overview-card:nth-child(4) {
+  background: linear-gradient(180deg, rgba(255, 238, 243, 0.98), rgba(255, 216, 226, 0.84));
 }
 
 .overview-card span,
@@ -674,9 +755,16 @@ img {
 }
 
 .flow-arrow {
-  font-size: 2.2rem;
-  color: var(--accent);
-  text-shadow: 0 8px 20px rgba(255, 157, 47, 0.25);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  font-size: 2rem;
+  color: #fff;
+  background: linear-gradient(135deg, #ffba5a, #ff8b4f);
+  box-shadow: 0 16px 32px rgba(255, 157, 47, 0.28);
 }
 
 .insight-panel {
@@ -813,11 +901,20 @@ img {
   width: 100%;
   border-radius: 18px;
   background: linear-gradient(180deg, #f3f8ff, #fff3dc);
+  padding: 12px;
 }
 
 .payment-layout {
   align-items: stretch;
   margin-top: 18px;
+}
+
+.payment-summary {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(236, 245, 255, 0.96));
+}
+
+.payment-highlight {
+  background: linear-gradient(180deg, rgba(255, 248, 245, 0.98), rgba(255, 235, 223, 0.96));
 }
 
 .doc-list {
@@ -864,6 +961,7 @@ img {
   flex: 1;
   padding: 14px;
   border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(240, 247, 255, 0.96));
 }
 
 .gallery-card img {
@@ -926,6 +1024,10 @@ img {
   background: linear-gradient(135deg, #dff4ff, #fff0bf);
 }
 
+.theme-procurement .cloud-step:nth-child(1) { rotate: -2deg; }
+.theme-procurement .cloud-step:nth-child(3) { rotate: 2deg; }
+.theme-procurement .cloud-step:nth-child(5) { rotate: -1deg; }
+
 .theme-report {
   background:
     radial-gradient(circle at top left, rgba(255, 208, 125, 0.24), transparent 18%),
@@ -935,6 +1037,10 @@ img {
 
 .theme-report .section-sticker {
   background: linear-gradient(135deg, #fff2c4, #ffd4b9);
+}
+
+.theme-report .rail-body {
+  border-left: 5px solid #ffb85d;
 }
 
 .theme-work {
@@ -948,6 +1054,14 @@ img {
   background: linear-gradient(135deg, #d6ffe7, #cde6ff);
 }
 
+.theme-work .job-card:nth-child(odd) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(233, 248, 255, 0.94));
+}
+
+.theme-work .job-card:nth-child(even) {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 255, 235, 0.94));
+}
+
 .theme-payment {
   background:
     radial-gradient(circle at top right, rgba(255, 166, 194, 0.2), transparent 18%),
@@ -957,6 +1071,18 @@ img {
 
 .theme-payment .section-sticker {
   background: linear-gradient(135deg, #ffd4e0, #ffe7a9);
+}
+
+.theme-payment .ribbon-card:nth-child(1) {
+  background: linear-gradient(180deg, rgba(255, 245, 248, 0.98), rgba(255, 228, 237, 0.96));
+}
+
+.theme-payment .ribbon-card:nth-child(2) {
+  background: linear-gradient(180deg, rgba(245, 250, 255, 0.98), rgba(228, 240, 255, 0.96));
+}
+
+.theme-payment .ribbon-card:nth-child(3) {
+  background: linear-gradient(180deg, rgba(255, 250, 241, 0.98), rgba(255, 236, 205, 0.96));
 }
 
 .reveal {
@@ -1058,6 +1184,10 @@ body.presentation-view {
   .payment-layout {
     grid-template-columns: 1fr;
     flex-direction: column;
+  }
+
+  .hero-metrics {
+    grid-template-columns: 1fr;
   }
 
   .cloud-flow {
