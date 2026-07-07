@@ -4,6 +4,14 @@ const sections = document.querySelectorAll(".content-section");
 const scrollTopButton = document.querySelector(".scroll-top");
 const viewButtons = document.querySelectorAll("[data-view]");
 const printButton = document.querySelector("[data-print]");
+const webViewButton = document.querySelector('[data-view="web"]');
+
+function setViewMode(view) {
+  document.body.classList.toggle("presentation-view", view === "presentation");
+  viewButtons.forEach((item) => {
+    item.classList.toggle("is-current", item.getAttribute("data-view") === view);
+  });
+}
 
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -32,22 +40,32 @@ const navObserver = new IntersectionObserver((entries) => {
 sections.forEach((section) => navObserver.observe(section));
 
 window.addEventListener("scroll", () => {
-  scrollTopButton.classList.toggle("is-visible", window.scrollY > 480);
+  if (scrollTopButton) {
+    scrollTopButton.classList.toggle("is-visible", window.scrollY > 480);
+  }
 });
 
-scrollTopButton.addEventListener("click", () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
+if (scrollTopButton) {
+  scrollTopButton.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
 
 viewButtons.forEach((button) => {
   button.addEventListener("click", () => {
     const view = button.getAttribute("data-view");
-    document.body.classList.toggle("presentation-view", view === "presentation");
-    viewButtons.forEach((item) => {
-      item.classList.toggle("is-current", item === button);
-    });
+    setViewMode(view);
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
+});
+
+window.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && document.body.classList.contains("presentation-view")) {
+    setViewMode("web");
+    if (webViewButton) {
+      webViewButton.focus();
+    }
+  }
 });
 
 if (printButton) {
