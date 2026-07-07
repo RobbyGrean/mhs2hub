@@ -881,6 +881,13 @@ body.presentation-view {
     padding: 0;
   }
 
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
   .print-page {
     margin: 0 0 8mm;
     break-after: page;
