@@ -6,6 +6,28 @@ const viewButtons = document.querySelectorAll("[data-view]");
 const printButton = document.querySelector("[data-print]");
 const webViewButton = document.querySelector('[data-view="web"]');
 
+const navDescriptions = {
+  "#section-1": "แต่งตั้งกรรมการ + TOR + ราคากลาง",
+  "#section-2": "รับราคา พิจารณา และเรียกทำสัญญา",
+  "#section-3": "ส่งมอบงานรายงวดให้ตรวจรับได้",
+  "#section-4": "ปิดชุดเอกสารและเบิกจ่ายครบ",
+};
+
+navLinks.forEach((link, index) => {
+  const href = link.getAttribute("href");
+  const rawText = link.textContent.trim();
+  const title = rawText.replace(/^\d+\.\s*/, "");
+  const number = String(index + 1).padStart(2, "0");
+
+  link.innerHTML = `
+    <span class="nav-no">${number}</span>
+    <span class="nav-copy">
+      <strong>${title}</strong>
+      <small>${navDescriptions[href] || "เปิดรายละเอียดในหัวข้อนี้"}</small>
+    </span>
+  `;
+});
+
 function setViewMode(view) {
   document.body.classList.toggle("presentation-view", view === "presentation");
   viewButtons.forEach((item) => {
