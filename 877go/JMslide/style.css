@@ -222,6 +222,29 @@ img {
   letter-spacing: 0.05em;
 }
 
+.side-nav-toggle {
+  display: none;
+  width: 100%;
+  min-height: 46px;
+  margin-bottom: 14px;
+  padding: 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(124, 198, 255, 0.14));
+  color: #eff6ff;
+  font-family: "Chakra Petch", sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: left;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.14);
+  cursor: pointer;
+}
+
+.side-nav-toggle::after {
+  content: "▾";
+  float: right;
+}
+
 .nav-links {
   display: grid;
   gap: 12px;
@@ -268,6 +291,38 @@ img {
 .nav-links a.is-active::before {
   background: #ffe08c;
   box-shadow: 0 0 0 6px rgba(255, 224, 140, 0.12);
+}
+
+.nav-links a[href="#section-1"] {
+  background: linear-gradient(180deg, rgba(120, 214, 148, 0.18), rgba(255, 255, 255, 0.03));
+}
+
+.nav-links a[href="#section-2"] {
+  background: linear-gradient(180deg, rgba(255, 196, 105, 0.2), rgba(255, 255, 255, 0.03));
+}
+
+.nav-links a[href="#section-3"] {
+  background: linear-gradient(180deg, rgba(118, 183, 255, 0.2), rgba(255, 255, 255, 0.03));
+}
+
+.nav-links a[href="#section-4"] {
+  background: linear-gradient(180deg, rgba(255, 151, 183, 0.18), rgba(255, 255, 255, 0.03));
+}
+
+.nav-links a[href="#section-1"] .nav-no {
+  background: linear-gradient(135deg, #d3ffd8, #8fe0a0);
+}
+
+.nav-links a[href="#section-2"] .nav-no {
+  background: linear-gradient(135deg, #fff0bf, #ffc981);
+}
+
+.nav-links a[href="#section-3"] .nav-no {
+  background: linear-gradient(135deg, #d7ecff, #8bc1ff);
+}
+
+.nav-links a[href="#section-4"] .nav-no {
+  background: linear-gradient(135deg, #ffd9e6, #ff9fc0);
 }
 
 .nav-no {
@@ -1316,8 +1371,11 @@ body.presentation-view {
   .side-nav {
     position: relative;
     height: auto;
-    border-right: 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 14px 14px 0;
+  }
+
+  .side-nav-shell {
+    height: auto;
   }
 
   .nav-links {
@@ -1371,6 +1429,37 @@ body.presentation-view {
 }
 
 @media (max-width: 760px) {
+  .side-nav {
+    padding: 10px 10px 0;
+  }
+
+  .side-nav-shell {
+    padding: 16px 14px 14px;
+    border-radius: 24px;
+  }
+
+  .side-nav-shell::before,
+  .side-nav-shell::after {
+    display: none;
+  }
+
+  .side-nav-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    grid-template-columns: 1fr;
+  }
+
+  .side-nav.is-open .nav-links {
+    display: grid;
+  }
+
+  .side-nav.is-open .side-nav-toggle::after {
+    content: "▴";
+  }
+
   .main-content {
     padding: 14px;
   }

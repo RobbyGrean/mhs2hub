@@ -5,6 +5,8 @@ const scrollTopButton = document.querySelector(".scroll-top");
 const viewButtons = document.querySelectorAll("[data-view]");
 const printButton = document.querySelector("[data-print]");
 const webViewButton = document.querySelector('[data-view="web"]');
+const sideNav = document.querySelector(".side-nav");
+const sideNavToggle = document.querySelector(".side-nav-toggle");
 
 const navDescriptions = {
   "#section-1": "แต่งตั้งกรรมการ + TOR + ราคากลาง",
@@ -26,6 +28,29 @@ navLinks.forEach((link, index) => {
       <small>${navDescriptions[href] || "เปิดรายละเอียดในหัวข้อนี้"}</small>
     </span>
   `;
+});
+
+function setSideNavOpen(isOpen) {
+  if (!sideNav || !sideNavToggle) {
+    return;
+  }
+
+  sideNav.classList.toggle("is-open", isOpen);
+  sideNavToggle.setAttribute("aria-expanded", String(isOpen));
+}
+
+if (sideNavToggle) {
+  sideNavToggle.addEventListener("click", () => {
+    setSideNavOpen(!sideNav.classList.contains("is-open"));
+  });
+}
+
+navLinks.forEach((link) => {
+  link.addEventListener("click", () => {
+    if (window.innerWidth <= 760) {
+      setSideNavOpen(false);
+    }
+  });
 });
 
 function setViewMode(view) {
