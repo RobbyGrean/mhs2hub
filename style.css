@@ -334,35 +334,35 @@
 
     .card-passadu {
       background:
-        radial-gradient(circle at 12% 18%, rgba(255,255,255,0.14), transparent 24%),
-        radial-gradient(circle at 86% 24%, rgba(125,211,252,0.12), transparent 20%),
-        linear-gradient(135deg, rgba(90,42,135,0.42), rgba(35,18,70,0.68) 55%, rgba(24,11,50,0.92) 100%);
-      border-color: rgba(226,195,255,0.24);
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,0.16), transparent 24%),
+        radial-gradient(circle at 84% 22%, rgba(255,170,214,0.2), transparent 20%),
+        linear-gradient(135deg, rgba(255,72,160,0.26), rgba(118,30,102,0.5) 44%, rgba(42,12,46,0.94) 100%);
+      border-color: rgba(255,159,211,0.42);
       box-shadow:
         0 14px 34px rgba(0,0,0,0.32),
         inset 0 1.5px 0 rgba(255,255,255,0.2),
-        0 0 0 1px rgba(210,150,255,0.18),
-        0 0 44px rgba(166,99,255,0.14);
+        0 0 0 1px rgba(255,128,196,0.22),
+        0 0 44px rgba(255,72,160,0.22);
     }
     .card-passadu::after {
       content: '';
       position: absolute;
       inset: 0;
       background:
-        linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.08) 44%, transparent 60%),
-        radial-gradient(circle at 82% 18%, rgba(125,211,252,0.14), transparent 18%);
+        linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.1) 44%, transparent 60%),
+        radial-gradient(circle at 82% 18%, rgba(255,126,194,0.18), transparent 18%);
       opacity: 0.9;
       pointer-events: none;
     }
     .card-passadu:hover {
       transform: translateY(-6px) scale(1.005);
-      border-color: rgba(231,211,255,0.42);
+      border-color: rgba(255,196,228,0.68);
       box-shadow:
         0 24px 56px rgba(0,0,0,0.38),
         inset 0 1.5px 0 rgba(255,255,255,0.26),
-        0 0 0 1px rgba(218,171,255,0.34),
-        0 0 60px rgba(172,103,255,0.22),
-        0 0 96px rgba(92,207,255,0.08);
+        0 0 0 1px rgba(255,182,223,0.42),
+        0 0 60px rgba(255,80,168,0.3),
+        0 0 96px rgba(255,172,215,0.14);
     }
     .passadu-orb {
       position: absolute;
@@ -371,14 +371,15 @@
       width: 120px;
       height: 120px;
       border-radius: 50%;
-      background: radial-gradient(circle, rgba(145,221,255,0.28) 0%, rgba(204,146,255,0.16) 36%, transparent 72%);
+      background: radial-gradient(circle, rgba(255,202,231,0.36) 0%, rgba(255,92,177,0.22) 34%, transparent 72%);
       filter: blur(10px);
       pointer-events: none;
       animation: passaduPulse 3.8s ease-in-out infinite;
     }
     .passadu-ico {
       position: relative;
-      box-shadow: 0 0 18px rgba(192,132,252,0.24);
+      background: linear-gradient(135deg, rgba(255,118,193,0.24), rgba(255,197,228,0.14));
+      box-shadow: 0 0 20px rgba(255,84,173,0.3);
     }
     .passadu-title-row {
       display: inline-flex;
@@ -391,7 +392,7 @@
       margin-top: 0.18rem;
       font-size: 0.8rem;
       font-weight: 400;
-      color: rgba(226,215,255,0.84);
+      color: rgba(255,223,239,0.92);
     }
     .passadu-badge {
       display: inline-flex;
@@ -403,9 +404,9 @@
       font-weight: 800;
       letter-spacing: 0.05em;
       text-transform: uppercase;
-      color: #34124f;
-      background: linear-gradient(135deg, #f7d6ff, #86ecff);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.56), 0 0 18px rgba(134,236,255,0.18);
+      color: #5b0934;
+      background: linear-gradient(135deg, #ffd0ea, #ff7bc6);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.56), 0 0 18px rgba(255,96,181,0.28);
     }
     .passadu-mini-cta {
       position: relative;
@@ -423,10 +424,10 @@
       border-radius: 999px;
       font-size: 0.72rem;
       font-weight: 700;
-      color: rgba(248,241,255,0.92);
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.14);
+      color: rgba(255,240,248,0.98);
+      background: linear-gradient(135deg, rgba(255,95,183,0.32), rgba(255,158,213,0.18));
+      border: 1px solid rgba(255,173,221,0.34);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.18), 0 0 18px rgba(255,78,170,0.12);
     }
     .passadu-link {
       position: relative;
@@ -434,9 +435,9 @@
       align-items: flex-start;
       gap: 0.8rem;
       padding: 0.9rem 1rem;
-      background: linear-gradient(135deg, rgba(255,255,255,0.06), rgba(188,137,255,0.06));
-      border-color: rgba(214,178,255,0.12);
-      color: rgba(244,239,255,0.88);
+      background: linear-gradient(135deg, rgba(255,122,194,0.14), rgba(255,255,255,0.04));
+      border-color: rgba(255,170,221,0.18);
+      color: rgba(255,239,247,0.94);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
     }
     .passadu-link::before {
@@ -450,10 +451,10 @@
     }
     .passadu-link:hover::before { transform: translateX(120%); }
     .passadu-link:hover {
-      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(134,236,255,0.08));
-      border-color: rgba(226,200,255,0.28);
+      background: linear-gradient(135deg, rgba(255,103,186,0.24), rgba(255,188,226,0.08));
+      border-color: rgba(255,196,230,0.36);
       color: #fff;
-      box-shadow: 0 0 22px rgba(166,99,255,0.12), inset 0 1px 0 rgba(255,255,255,0.16);
+      box-shadow: 0 0 24px rgba(255,91,176,0.22), inset 0 1px 0 rgba(255,255,255,0.16);
     }
     .passadu-link-copy {
       display: flex;
@@ -479,18 +480,18 @@
       height: 34px;
       border-radius: 0.9rem;
       flex-shrink: 0;
-      background: linear-gradient(135deg, rgba(243,215,255,0.22), rgba(127,228,255,0.18));
-      border: 1px solid rgba(255,255,255,0.14);
-      box-shadow: 0 0 18px rgba(165,102,255,0.1);
+      background: linear-gradient(135deg, rgba(255,214,237,0.24), rgba(255,114,190,0.2));
+      border: 1px solid rgba(255,196,229,0.22);
+      box-shadow: 0 0 18px rgba(255,97,182,0.18);
     }
     .passadu-link-hot {
-      background: linear-gradient(135deg, rgba(244,114,182,0.12), rgba(255,213,74,0.12));
+      background: linear-gradient(135deg, rgba(255,69,168,0.28), rgba(255,166,211,0.14));
       border-style: solid !important;
-      border-color: rgba(255,201,105,0.24) !important;
+      border-color: rgba(255,163,216,0.38) !important;
     }
     .passadu-link-icon-hot {
-      background: linear-gradient(135deg, rgba(255,241,168,0.28), rgba(255,161,72,0.22));
-      box-shadow: 0 0 22px rgba(255,193,7,0.16);
+      background: linear-gradient(135deg, rgba(255,220,239,0.32), rgba(255,99,181,0.28));
+      box-shadow: 0 0 22px rgba(255,92,177,0.24);
     }
     @keyframes passaduPulse {
       0%, 100% { transform: scale(1); opacity: 0.82; }
