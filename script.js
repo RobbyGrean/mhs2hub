@@ -106,6 +106,57 @@ function getSupplyKeyDir(key) {
   return 0;
 }
 
+/* Appeal knowledge slideshow */
+const appealSlides = Array.from({ length: 7 }, (_, i) => `appeal/${i + 1}a.png`);
+let appealSlideIndex = 0;
+
+function renderAppealSlide() {
+  const img = document.getElementById('appealSlideImg');
+  const count = document.getElementById('appealSlideCount');
+  const progress = document.getElementById('appealSlideProgress');
+  const dots = document.querySelectorAll('.appeal-slide-dot');
+  if (!img || !count) return;
+  img.src = appealSlides[appealSlideIndex];
+  img.alt = `องค์ความรู้ด้านการอุทธรณ์ หน้า ${appealSlideIndex + 1}`;
+  count.textContent = `${appealSlideIndex + 1} / ${appealSlides.length}`;
+  if (progress) progress.style.width = `${((appealSlideIndex + 1) / appealSlides.length) * 100}%`;
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === appealSlideIndex));
+}
+
+function changeAppealSlide(step) {
+  appealSlideIndex = (appealSlideIndex + step + appealSlides.length) % appealSlides.length;
+  renderAppealSlide();
+}
+
+function goAppealSlide(index) {
+  appealSlideIndex = index;
+  renderAppealSlide();
+}
+
+(function initAppealSlides() {
+  const toggle = document.getElementById('appealToggle');
+  const guide = document.getElementById('appealGuide');
+  const dots = document.getElementById('appealSlideDots');
+  const viewer = document.getElementById('appealSlideViewer');
+  if (!toggle || !guide || !dots || !viewer) return;
+  dots.innerHTML = appealSlides.map((_, i) =>
+    `<button class="slide-dot appeal-slide-dot${i === 0 ? ' active' : ''}" type="button" onclick="goAppealSlide(${i})" aria-label="ไปหน้าที่ ${i + 1}"></button>`
+  ).join('');
+  renderAppealSlide();
+  toggle.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    guide.hidden = isOpen;
+    if (!isOpen) guide.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  });
+  let startX = 0;
+  viewer.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive:true });
+  viewer.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 45) changeAppealSlide(dx < 0 ? 1 : -1);
+  }, { passive:true });
+})();
+
 function syncSupplyKeyboardDir() {
   const activeKey = supplyKeyboardStack[supplyKeyboardStack.length - 1];
   if (!activeKey) {

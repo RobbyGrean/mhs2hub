@@ -296,6 +296,41 @@
     </a>
 
   </div>
+
+  <section class="appeal-section" aria-labelledby="appealTitle">
+    <button class="appeal-launch" id="appealToggle" type="button" aria-expanded="false" aria-controls="appealGuide">
+      <span class="appeal-launch-icon" aria-hidden="true">⚖</span>
+      <span class="appeal-launch-copy">
+        <strong>องค์ความรู้ด้านการอุทธรณ์ การไม่มีสิทธิอุทธรณ์ และเรื่องที่ห้ามอุทธรณ์</strong>
+        <small>กดเพื่อเปิดสไลด์ความรู้ 7 หน้า</small>
+      </span>
+      <span class="appeal-launch-arrow" aria-hidden="true">⌄</span>
+    </button>
+
+    <div class="workflow-box featured-guide appeal-guide" id="appealGuide" hidden>
+      <div class="featured-guide-head">
+        <div>
+          <p class="featured-eyebrow">Appeal Knowledge</p>
+          <h2 id="appealTitle">องค์ความรู้ด้านการอุทธรณ์ การไม่มีสิทธิอุทธรณ์ และเรื่องที่ห้ามอุทธรณ์</h2>
+        </div>
+        <a class="appeal-download" href="appeal/appealinglaw.pdf" download>
+          ดาวน์โหลดสไลด์นี้เป็น PDF
+        </a>
+      </div>
+      <div class="slide-viewer" id="appealSlideViewer">
+        <div class="slide-frame">
+          <img id="appealSlideImg" src="appeal/1a.png" alt="องค์ความรู้ด้านการอุทธรณ์ หน้า 1">
+        </div>
+        <div class="slide-controls">
+          <button class="slide-btn" type="button" onclick="changeAppealSlide(-1)" aria-label="สไลด์ก่อนหน้า">‹</button>
+          <div class="slide-mid"><span class="slide-count" id="appealSlideCount">1 / 7</span></div>
+          <button class="slide-btn" type="button" onclick="changeAppealSlide(1)" aria-label="สไลด์ถัดไป">›</button>
+        </div>
+      </div>
+      <div class="slide-progress appeal-progress" aria-hidden="true"><span id="appealSlideProgress"></span></div>
+      <div class="slide-dots" id="appealSlideDots" aria-label="เลือกหน้าสไลด์"></div>
+    </div>
+  </section>
 <!-- START: จัดซื้อจัดจ้าง วงเงินเล็กน้อย -->
 <div class="sec-label">
   <span class="sec-label-text">✦ จัดซื้อจัดจ้าง วงเงินเล็กน้อย</span>
