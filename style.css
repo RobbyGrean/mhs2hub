@@ -815,6 +815,9 @@
 .appeal-download { flex-shrink:0; padding:0.62rem 0.9rem; border-radius:999px; background:linear-gradient(135deg, #fb923c, #ea580c); color:#fff; font-size:0.8rem; font-weight:800; text-decoration:none; box-shadow:0 8px 20px rgba(234,88,12,0.28); transition:transform 180ms var(--ease), filter 180ms var(--ease); }
 .appeal-download:hover { transform:translateY(-2px); filter:brightness(1.08); }
 .appeal-progress span { background:linear-gradient(90deg, #fb923c, #fdba74); }
+.appeal-guide .slide-viewer { overflow:hidden; }
+.appeal-guide .slide-frame { aspect-ratio:auto; height:auto; min-height:0; }
+.appeal-guide .slide-frame img { width:100%; height:auto; max-height:none; object-fit:contain; }
 @keyframes appealBorderFlow { to { background-position:100% 100%, 300% 100%; } }
 @media (max-width:640px) {
       .slide-controls { left:0.55rem; right:0.55rem; bottom:0.55rem; gap:0.35rem; }
