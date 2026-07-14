@@ -470,36 +470,21 @@
   <section id="break" class="break-section">
     <details class="break-panel">
       <summary>
-        <span class="game-badge">พักสมอง · เก็บเอกสารพัสดุ</span>
-        <span class="break-summary-text">เปิดเกมสั้น ๆ เมื่ออยากพักสายตา</span>
+        <span class="game-badge">พักสมอง · Battle City</span>
+        <span class="break-summary-text">เล่นเกมรถถังคลาสสิก พร้อมคีย์ลัดพิเศษ</span>
       </summary>
-      <div class="game-wrap">
-      <div class="game-stage" id="supplyGame" tabindex="0" aria-label="เกมเก็บเอกสารพัสดุ">
-        <div class="game-hud">
-          <div class="game-score">คะแนน <span id="supplyScore">0</span></div>
-          <div class="game-time">เวลา <span id="supplyTime">45</span></div>
+      <div class="game-wrap battle-city-wrap">
+        <iframe
+          class="battle-city-frame"
+          src="https://robbygrean.github.io/BattleCity/BattleCity.html"
+          title="Battle City"
+          loading="lazy"
+          allowfullscreen>
+        </iframe>
+        <div class="battle-city-footer">
+          <span>คลิกในพื้นที่เกมก่อนใช้คีย์บอร์ด</span>
+          <a href="https://robbygrean.github.io/BattleCity/BattleCity.html" target="_blank" rel="noopener noreferrer">เปิดเต็มจอ ↗</a>
         </div>
-        <div class="game-message" id="supplyMessage">
-          <strong>เก็บเอกสารให้ทัน</strong>
-          <span>เลื่อนตะกร้ารับเอกสารสีเหลือง หลบเอกสารแดง เล่น 45 วินาที</span>
-          <button class="game-start" type="button" onclick="startSupplyGame()">เริ่มเกม</button>
-        </div>
-        <div class="game-basket" id="supplyBasket"></div>
-      </div>
-      <div class="game-mobile-controls">
-        <button type="button" onpointerdown="holdSupplyDir(-1)" onpointerup="holdSupplyDir(0)" onpointerleave="holdSupplyDir(0)" onpointercancel="holdSupplyDir(0)">← ซ้าย</button>
-        <button type="button" onpointerdown="holdSupplyDir(1)" onpointerup="holdSupplyDir(0)" onpointerleave="holdSupplyDir(0)" onpointercancel="holdSupplyDir(0)">ขวา →</button>
-      </div>
-      <div class="ctrl-row">
-        <div class="ctrl-cell">
-          <div class="ctrl-player">คีย์บอร์ด</div>
-          <div class="ctrl-keys">บังคับ: <kbd>←</kbd> <kbd>→</kbd> หรือ <kbd>A</kbd> <kbd>D</kbd> · เริ่มใหม่: <kbd>Space</kbd></div>
-        </div>
-        <div class="ctrl-cell">
-          <div class="ctrl-player">กติกา</div>
-          <div class="ctrl-keys">เอกสารเหลือง +10 · เอกสารแดง -15 · หลุดพื้น -5</div>
-        </div>
-      </div>
       </div>
     </details>
   </section>
