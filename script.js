@@ -107,7 +107,11 @@ function getSupplyKeyDir(key) {
 }
 
 /* Appeal knowledge slideshow */
-const appealSlides = Array.from({ length: 7 }, (_, i) => `appeal/${i + 1}a.png`);
+const appealSlides = [
+  ...Array.from({ length: 7 }, (_, i) => `appeal/${i + 1}a.png`),
+  'appeal/a8.png',
+  'appeal/a9.png'
+];
 let appealSlideIndex = 0;
 
 function renderAppealSlide() {
