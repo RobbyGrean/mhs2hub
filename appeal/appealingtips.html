@@ -1,0 +1,691 @@
+
+
+กระบวนการอุทธรณ์ จัดซื้อจัดจ้างภาครัฐ · HTML
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>กระบวนการอุทธรณ์การจัดซื้อจัดจ้างภาครัฐ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;500;600;700&family=Sarabun:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MASTER DESIGN TOKENS
+   ธีม: "ตราราชการดิจิทัล" — ผสานภาษาเอกสารราชการไทย (ตรากรม,
+   กระดาษครีม, หมึกน้ำเงินเข้ม, ตราปั๊มแดง) เข้ากับงานออกแบบดิจิทัล
+   ที่อ่านง่ายและมีลำดับเวลา (timeline) ชัดเจน เพราะเนื้อหาเป็น
+   "กระบวนการ" ที่มีเส้นตายเป็นวันจริง ๆ (7 วัน / 30 วัน ฯลฯ)
+   ============================================================ */
+:root{
+  --navy:#152238;        /* หมึกน้ำเงินราชการ */
+  --navy-2:#1f3358;
+  --seal:#a31621;        /* สีตราปั๊มแดง */
+  --seal-2:#c2261f;
+  --gold:#b08d57;        /* กรอบทอง/เส้นคั่นทรงเกียรติ */
+  --paper:#f6f1e6;       /* กระดาษครีม */
+  --paper-2:#efe6d3;
+  --ink:#221f1a;
+  --ink-soft:#5c564a;
+  --line:#d8cdb2;
+  --ok:#2f6d4f;
+  --font-display:'Kanit',sans-serif;
+  --font-body:'Sarabun',sans-serif;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;background:#0d1420;font-family:var(--font-body);color:var(--ink);}
+ 
+/* ---------- ตราปั๊มลายน้ำ (signature element) ---------- */
+.seal-mark{
+  position:absolute;
+  width:220px;height:220px;
+  border:3px solid rgba(163,22,33,.16);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);
+  color:rgba(163,22,33,.14);
+  font-size:13px;letter-spacing:4px;text-align:center;
+  transform:rotate(-14deg);
+  pointer-events:none;
+  user-select:none;
+}
+.seal-mark::before{
+  content:'';
+  position:absolute;inset:14px;
+  border:1px dashed rgba(163,22,33,.18);
+  border-radius:50%;
+}
+.seal-mark span{max-width:130px;line-height:1.5;}
+ 
+/* ---------- deck / slide shell ---------- */
+.deck{
+  width:100vw;height:100vh;
+  overflow:hidden;
+  position:relative;
+  background:#0d1420;
+}
+.slide{
+  display:none;
+  width:100%;height:100%;
+  align-items:stretch;
+  justify-content:center;
+  background:var(--paper);
+}
+.slide.active{display:flex;}
+.slide-inner{
+  position:relative;
+  width:min(100%,1280px);
+  aspect-ratio:16/9;
+  margin:auto;
+  background:
+    radial-gradient(1200px 600px at 100% -10%, rgba(176,141,87,.10), transparent 60%),
+    linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%);
+  border:1px solid var(--line);
+  overflow:hidden;
+  padding:56px 68px 48px 68px;
+  display:flex;
+  flex-direction:column;
+}
+.slide-inner::after{ /* เส้นกรอบทองด้านล่าง — ลายเซ็นของทุกสไลด์ */
+  content:'';
+  position:absolute;left:68px;right:68px;bottom:34px;height:2px;
+  background:linear-gradient(90deg,var(--gold),transparent 70%);
+}
+.kicker{
+  font-family:var(--font-display);
+  font-size:13px; font-weight:600; letter-spacing:3px;
+  color:var(--seal); text-transform:uppercase;
+  display:flex;align-items:center;gap:10px;
+}
+.kicker::before{content:'';width:22px;height:2px;background:var(--seal);display:inline-block;}
+h1.slide-title{
+  font-family:var(--font-display);
+  font-weight:600;
+  font-size:40px;
+  color:var(--navy);
+  margin:10px 0 4px 0;
+  line-height:1.25;
+}
+h2.slide-sub{
+  font-family:var(--font-body);
+  font-weight:500;
+  font-size:17px;
+  color:var(--ink-soft);
+  margin:0 0 22px 0;
+}
+.body{flex:1;min-height:0;display:flex;gap:34px;}
+.footer-bar{
+  position:absolute;left:68px;right:68px;bottom:8px;
+  display:flex;justify-content:space-between;
+  font-size:11.5px;color:var(--ink-soft);
+  font-family:var(--font-body);
+}
+.pagechip{
+  font-family:var(--font-display);
+  color:var(--navy);font-weight:600;
+}
+ 
+/* ---------- ป้ายอ้างอิงตัวบท ---------- */
+.tag{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12.5px; font-weight:600;
+  padding:5px 12px; border-radius:999px;
+  border:1px solid var(--seal);
+  color:var(--seal); background:rgba(163,22,33,.06);
+  font-family:var(--font-body);
+}
+.tag.navy{border-color:var(--navy);color:var(--navy);background:rgba(21,34,56,.06);}
+.tag.gold{border-color:var(--gold);color:#7a5f2f;background:rgba(176,141,87,.10);}
+ 
+/* ---------- การ์ด / กล่องเนื้อหา ---------- */
+.card{
+  background:#fffdf8;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:18px 20px;
+  box-shadow:0 2px 0 rgba(21,34,56,.03);
+}
+.card h3{
+  margin:0 0 8px 0;font-family:var(--font-display);
+  font-size:17px;color:var(--navy);font-weight:600;
+}
+.card p{margin:0;font-size:14.5px;line-height:1.65;color:var(--ink);}
+.card ul{margin:8px 0 0 0;padding-left:18px;font-size:14px;line-height:1.6;}
+.card li{margin-bottom:5px;}
+ 
+/* ---------- timeline เส้นทางกระบวนการ ---------- */
+.route{display:flex;align-items:stretch;gap:0;flex:1;}
+.route-step{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;padding:0 8px;}
+.route-step .dot{
+  width:44px;height:44px;border-radius:50%;
+  background:var(--navy);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:600;font-size:15px;
+  border:3px solid var(--paper);
+  box-shadow:0 0 0 2px var(--navy);
+  z-index:2;
+}
+.route-step.seal .dot{background:var(--seal);box-shadow:0 0 0 2px var(--seal);}
+.route-line{
+  position:absolute;top:22px;left:-50%;width:100%;height:3px;
+  background:repeating-linear-gradient(90deg,var(--gold) 0 10px, transparent 10px 16px);
+  z-index:1;
+}
+.route-step:first-child .route-line{display:none;}
+.route-step .rt-title{font-family:var(--font-display);font-weight:600;font-size:14px;color:var(--navy);margin-top:10px;}
+.route-step .rt-days{font-family:var(--font-display);font-weight:700;font-size:20px;color:var(--seal);margin-top:2px;}
+.route-step .rt-desc{font-size:12px;color:var(--ink-soft);margin-top:4px;line-height:1.5;}
+ 
+/* ---------- ตาราง ---------- */
+table.cmp{width:100%;border-collapse:collapse;font-size:14px;}
+table.cmp th{
+  font-family:var(--font-display);font-weight:600;font-size:13.5px;
+  background:var(--navy);color:#fff;text-align:left;padding:10px 14px;
+}
+table.cmp th:first-child{border-radius:8px 0 0 0;}
+table.cmp th:last-child{border-radius:0 8px 0 0;}
+table.cmp td{padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.55;}
+table.cmp tr:nth-child(even) td{background:rgba(176,141,87,.06);}
+ 
+/* ---------- hero ---------- */
+.hero .slide-inner{
+  background:
+    radial-gradient(900px 500px at 15% 0%, rgba(163,22,33,.10), transparent 55%),
+    radial-gradient(900px 500px at 100% 100%, rgba(21,34,56,.10), transparent 55%),
+    linear-gradient(180deg,var(--paper) 0%,var(--paper-2) 100%);
+  justify-content:center;
+  padding:0 68px;
+}
+.hero .body{flex-direction:column;justify-content:center;align-items:flex-start;gap:0;}
+.hero-eyebrow{font-family:var(--font-display);color:var(--seal);letter-spacing:4px;font-size:14px;font-weight:600;margin-bottom:18px;}
+.hero h1{
+  font-family:var(--font-display);font-weight:700;
+  font-size:56px;color:var(--navy);line-height:1.18;margin:0 0 16px 0;
+  max-width:820px;
+}
+.hero h1 em{font-style:normal;color:var(--seal);}
+.hero p.lead{font-size:18px;color:var(--ink-soft);max-width:640px;line-height:1.7;margin:0 0 26px 0;}
+.hero .chips{display:flex;gap:10px;flex-wrap:wrap;}
+ 
+/* ---------- pill list ---------- */
+.pillrow{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px;}
+.pill{font-size:12.5px;font-weight:600;padding:6px 12px;border-radius:8px;background:var(--navy);color:#fff;font-family:var(--font-body);}
+.pill.red{background:var(--seal);}
+.pill.outline{background:transparent;border:1px solid var(--navy);color:var(--navy);}
+ 
+/* ---------- grid columns ---------- */
+.col2{display:grid;grid-template-columns:1fr 1fr;gap:18px;flex:1;}
+.col3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;flex:1;}
+.stack{display:flex;flex-direction:column;gap:14px;flex:1;min-height:0;}
+ 
+/* ---------- แถบเน้นคำเตือน ---------- */
+.warn{
+  border-left:4px solid var(--seal);
+  background:rgba(163,22,33,.06);
+  padding:12px 16px;border-radius:0 8px 8px 0;
+  font-size:13.5px;line-height:1.6;
+}
+.warn b{color:var(--seal);}
+ 
+/* ---------- controls (screen only) ---------- */
+.controls{
+  position:fixed;left:0;right:0;bottom:18px;
+  display:flex;justify-content:center;align-items:center;gap:14px;
+  z-index:50;
+}
+.ctrl-btn{
+  background:var(--navy);color:#fff;border:none;
+  width:42px;height:42px;border-radius:50%;
+  font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+  transition:transform .15s ease, background .15s ease;
+}
+.ctrl-btn:hover{background:var(--seal);transform:translateY(-2px);}
+.counter{
+  font-family:var(--font-display);color:#fff;background:rgba(255,255,255,.08);
+  padding:9px 16px;border-radius:999px;font-size:13px;letter-spacing:1px;
+  border:1px solid rgba(255,255,255,.18);
+  min-width:70px;text-align:center;
+}
+.print-btn{
+  position:fixed;top:18px;right:18px;z-index:50;
+  font-family:var(--font-body);font-weight:600;font-size:13px;
+  background:var(--seal);color:#fff;border:none;
+  padding:10px 16px;border-radius:8px;cursor:pointer;
+  box-shadow:0 4px 14px rgba(0,0,0,.35);
+}
+.print-btn:hover{background:var(--seal-2);}
+.hint{
+  position:fixed;top:18px;left:18px;z-index:50;
+  font-family:var(--font-body);font-size:12px;color:#cfd6e4;
+  background:rgba(255,255,255,.06);padding:8px 12px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.14);
+}
+ 
+/* ---------- print ---------- */
+@media print{
+  @page{ size: landscape; margin:0; }
+  html,body{background:#fff;}
+  .controls,.print-btn,.hint{display:none !important;}
+  .deck{height:auto;width:auto;overflow:visible;}
+  .slide{
+    display:flex !important;
+    width:100%;height:100vh;
+    page-break-after:always;
+    break-after:page;
+  }
+  .slide:last-child{page-break-after:auto;}
+  .slide-inner{border:none;box-shadow:none;width:100%;height:100%;aspect-ratio:auto;}
+}
+ 
+/* responsive scale-down for small screens */
+@media (max-width:900px){
+  .col2,.col3{grid-template-columns:1fr;}
+  .body{flex-direction:column;}
+  h1.slide-title{font-size:28px;}
+  .hero h1{font-size:34px;}
+}
+</style>
+</head>
+<body>
+ 
+<div class="hint">ใช้ ← → หรือ Space เพื่อเปลี่ยนสไลด์ · กด P เพื่อพิมพ์</div>
+<button class="print-btn" onclick="window.print()">🖨 พิมพ์ / บันทึกเป็น PDF</button>
+ 
+<div class="deck" id="deck">
+ 
+  <!-- SLIDE 1 : HERO -->
+  <section class="slide hero active" data-title="ภาพรวม">
+    <div class="slide-inner">
+      <div class="seal-mark" style="top:-40px;right:-40px;"><span>PASADU · การจัดซื้อจัดจ้างภาครัฐ</span></div>
+      <div class="body">
+        <div class="hero-eyebrow">สรุปฐานอ้างอิงโครงการ PASADU</div>
+        <h1>กระบวนการ<em>อุทธรณ์</em><br>การจัดซื้อจัดจ้างภาครัฐ</h1>
+        <p class="lead">เส้นทางตั้งแต่การเกิดสิทธิอุทธรณ์ตามมาตรา 114 จนถึงคำวินิจฉัยของคณะกรรมการพิจารณาอุทธรณ์ พร้อมกลไกคู่ขนานอย่างการร้องเรียน และหลักการแยกแยะที่มักสับสนในทางปฏิบัติ</p>
+        <div class="chips">
+          <span class="tag navy">พ.ร.บ.จัดซื้อจัดจ้าง 2560 ม.114–119, ม.66</span>
+          <span class="tag">ระเบียบกระทรวงการคลังฯ 2560 ข้อ 220–223</span>
+          <span class="tag gold">หนังสือเวียน ว 367 (25 มิ.ย. 2567)</span>
+        </div>
+      </div>
+      <div class="footer-bar">
+        <span>PASADU Legal Reference Deck</span>
+        <span class="pagechip">01</span>
+      </div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 2 : แผนที่กระบวนการโดยรวม -->
+  <section class="slide" data-title="แผนที่กระบวนการ">
+    <div class="slide-inner">
+      <div class="kicker">ภาพรวมกระบวนการ</div>
+      <h1 class="slide-title">เส้นทางอุทธรณ์ ตั้งแต่ต้นจนจบ</h1>
+      <h2 class="slide-sub">ลำดับขั้นตอนหลักตามพระราชบัญญัติการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560</h2>
+      <div class="body" style="align-items:center;">
+        <div class="route">
+          <div class="route-step"><div class="dot">1</div><div class="rt-title">ประกาศผล</div><div class="rt-desc">หน่วยงานประกาศผู้ชนะในระบบ e-GP</div></div>
+          <div class="route-step"><div class="route-line"></div><div class="dot">2</div><div class="rt-title">ยื่นอุทธรณ์</div><div class="rt-days">≤ 7 วันทำการ</div><div class="rt-desc">ม.117 นับจากวันประกาศผล</div></div>
+          <div class="route-step"><div class="route-line"></div><div class="dot">3</div><div class="rt-title">หน่วยงานพิจารณา</div><div class="rt-days">≤ 7 วันทำการ</div><div class="rt-desc">ม.118 วรรคหนึ่ง</div></div>
+          <div class="route-step seal"><div class="route-line"></div><div class="dot">4</div><div class="rt-title">ไม่เห็นด้วย → รายงาน คกก.</div><div class="rt-days">≤ 3 วันทำการ</div><div class="rt-desc">ม.118 วรรคสอง</div></div>
+          <div class="route-step seal"><div class="route-line"></div><div class="dot">5</div><div class="rt-title">คกก.พิจารณาอุทธรณ์วินิจฉัย</div><div class="rt-days">≤ 30 วัน (+15+15)</div><div class="rt-desc">ม.119 คำวินิจฉัยเป็นที่สุด</div></div>
+        </div>
+      </div>
+      <div class="footer-bar"><span>อ้างอิง: พ.ร.บ.จัดซื้อจัดจ้าง 2560 มาตรา 117–119</span><span class="pagechip">02</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 3 : มาตรา 114 สิทธิอุทธรณ์ -->
+  <section class="slide" data-title="สิทธิอุทธรณ์ ม.114">
+    <div class="slide-inner">
+      <div class="kicker">จุดเริ่มต้นของสิทธิ</div>
+      <h1 class="slide-title">ใครมีสิทธิอุทธรณ์ และอุทธรณ์เรื่องอะไรได้</h1>
+      <h2 class="slide-sub">พระราชบัญญัติการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560 มาตรา 114</h2>
+      <div class="body">
+        <div class="col2" style="flex:1;">
+          <div class="card">
+            <h3>ผู้มีสิทธิ</h3>
+            <p>ผู้ซึ่งได้ <b>ยื่นข้อเสนอ</b> เพื่อทำการจัดซื้อจัดจ้างพัสดุกับหน่วยงานของรัฐในครั้งนั้น</p>
+          </div>
+          <div class="card">
+            <h3>เงื่อนไขการเกิดสิทธิ</h3>
+            <ul>
+              <li>เห็นว่าหน่วยงานของรัฐมิได้ปฏิบัติตามหลักเกณฑ์และวิธีการที่กำหนดใน พ.ร.บ. กฎกระทรวง ระเบียบ หรือประกาศที่ออกตาม พ.ร.บ.</li>
+              <li>เป็นเหตุให้ตน <b>ไม่ได้รับการประกาศผลเป็นผู้ชนะ</b> หรือ <b>ไม่ได้รับการคัดเลือกเป็นคู่สัญญา</b> กับหน่วยงานของรัฐ</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="warn" style="margin-top:6px;">สิทธินี้เกิดจาก "ความเสียหายต่อโอกาสในการเป็นผู้ชนะ/คู่สัญญา" ไม่ใช่สิทธิทั่วไปในการโต้แย้งกระบวนการจัดซื้อจัดจ้าง — ผู้ที่ไม่ได้ยื่นข้อเสนอ หรือได้รับประกาศเป็นผู้ชนะแล้ว จึงมักไม่เข้าองค์ประกอบนี้</div>
+      <div class="footer-bar"><span>อ้างอิง: พ.ร.บ.จัดซื้อจัดจ้าง 2560 มาตรา 114</span><span class="pagechip">03</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 4 : มาตรา 115 เรื่องที่อุทธรณ์ไม่ได้ -->
+  <section class="slide" data-title="เรื่องที่อุทธรณ์ไม่ได้ ม.115">
+    <div class="slide-inner">
+      <div class="kicker">ข้อยกเว้น</div>
+      <h1 class="slide-title">เรื่องที่ยื่นอุทธรณ์ไม่ได้</h1>
+      <h2 class="slide-sub">แม้มีสิทธิอุทธรณ์ตามมาตรา 114 แล้ว แต่ห้ามยกบางประเด็นขึ้นอุทธรณ์ — พระราชบัญญัติฯ มาตรา 115</h2>
+      <div class="body">
+        <div class="col2" style="flex:1;">
+          <div class="stack">
+            <div class="card"><h3>(1)</h3><p>การเลือกใช้วิธีการจัดซื้อจัดจ้าง หรือเกณฑ์ที่ใช้ในการพิจารณาผลการจัดซื้อจัดจ้างของหน่วยงานของรัฐ</p></div>
+            <div class="card"><h3>(2)</h3><p>การยกเลิกการจัดซื้อจัดจ้างตาม<b>มาตรา 67</b> (เอกสิทธิ์ของหน่วยงานของรัฐ)</p></div>
+          </div>
+          <div class="stack">
+            <div class="card"><h3>(3)</h3><p>การละเว้นการอ้างถึง พ.ร.บ. กฎกระทรวง ระเบียบ หรือประกาศ ในส่วนที่เกี่ยวข้องโดยตรง ภายในประกาศ เอกสาร หรือหนังสือเชิญชวนของหน่วยงานของรัฐ</p></div>
+            <div class="card"><h3>(4)</h3><p>กรณีอื่นตามที่กำหนดใน<b>กฎกระทรวง</b> — เนื้อหารายละเอียดของกฎกระทรวงฉบับนี้ยังไม่มีอยู่ในฐานอ้างอิงที่ใช้จัดทำสไลด์นี้</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"><span>อ้างอิง: พ.ร.บ.จัดซื้อจัดจ้าง 2560 มาตรา 115</span><span class="pagechip">04</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 5 : ม.116-117 รูปแบบและกำหนดเวลา -->
+  <section class="slide" data-title="รูปแบบและกำหนดเวลา">
+    <div class="slide-inner">
+      <div class="kicker">การยื่นอุทธรณ์</div>
+      <h1 class="slide-title">รูปแบบหนังสือ และกำหนดเวลายื่น</h1>
+      <h2 class="slide-sub">มาตรา 116 (แบบ) และมาตรา 117 (เวลา)</h2>
+      <div class="body">
+        <div class="col2" style="flex:1;">
+          <div class="card">
+            <h3>มาตรา 116 — รูปแบบหนังสืออุทธรณ์</h3>
+            <ul>
+              <li>ต้องทำเป็น <b>หนังสือ</b> ลงลายมือชื่อผู้อุทธรณ์</li>
+              <li>ใช้ถ้อยคำสุภาพ ระบุข้อเท็จจริงและเหตุผลอันเป็นเหตุแห่งการอุทธรณ์ให้ชัดเจน</li>
+              <li>แนบเอกสารหลักฐานที่เกี่ยวข้องไปด้วย</li>
+              <li>รัฐมนตรีอาจออกระเบียบกำหนดวิธีการอุทธรณ์เป็นอย่างอื่นหรือรายละเอียดเพิ่มเติมได้</li>
+            </ul>
+          </div>
+          <div class="card" style="border-color:var(--seal);">
+            <h3 style="color:var(--seal);">มาตรา 117 — กำหนดเวลายื่น</h3>
+            <p>ยื่นต่อ <b>หน่วยงานของรัฐ</b> นั้น ภายใน <b style="color:var(--seal);font-size:19px;">7 วันทำการ</b><br>นับแต่วันประกาศผลการจัดซื้อจัดจ้างในระบบเครือข่ายสารสนเทศของกรมบัญชีกลาง</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"><span>อ้างอิง: พ.ร.บ.จัดซื้อจัดจ้าง 2560 มาตรา 116–117</span><span class="pagechip">05</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 6 : ม.118 การพิจารณาของหน่วยงาน -->
+  <section class="slide" data-title="ม.118 หน่วยงานพิจารณา">
+    <div class="slide-inner">
+      <div class="kicker">ชั้นต้น</div>
+      <h1 class="slide-title">การพิจารณาของหน่วยงานของรัฐ</h1>
+      <h2 class="slide-sub">มาตรา 118 — ด่านแรกก่อนถึงคณะกรรมการพิจารณาอุทธรณ์</h2>
+      <div class="body">
+        <div class="col2" style="flex:1;">
+          <div class="card">
+            <h3>วรรคหนึ่ง — วินิจฉัยเอง</h3>
+            <p>หน่วยงานของรัฐต้องพิจารณาและวินิจฉัยอุทธรณ์ให้แล้วเสร็จภายใน <b>7 วันทำการ</b> นับแต่วันที่ได้รับอุทธรณ์</p>
+            <p style="margin-top:8px;">ถ้า <b>เห็นด้วย</b> กับอุทธรณ์ ให้ดำเนินการตามความเห็นนั้นภายในกำหนดเวลาเดียวกัน</p>
+          </div>
+          <div class="card" style="border-color:var(--seal);">
+            <h3 style="color:var(--seal);">วรรคสอง — ส่งต่อคณะกรรมการ</h3>
+            <p>ถ้า <b>ไม่เห็นด้วย</b> กับอุทธรณ์ ไม่ว่าทั้งหมดหรือบางส่วน ให้เร่งรายงานความเห็นพร้อมเหตุผล ไปยัง<b>คณะกรรมการพิจารณาอุทธรณ์</b></p>
+            <p style="margin-top:8px;">ภายใน <b style="color:var(--seal);">3 วันทำการ</b> นับแต่วันที่ครบกำหนดตามวรรคหนึ่ง</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"><span>อ้างอิง: พ.ร.บ.จัดซื้อจัดจ้าง 2560 มาตรา 118</span><span class="pagechip">06</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 7 : ม.119 คกก.พิจารณาอุทธรณ์ -->
+  <section class="slide" data-title="ม.119 คกก.อุทธรณ์">
+    <div class="slide-inner">
+      <div class="kicker">ชั้นวินิจฉัยสุดท้าย</div>
+      <h1 class="slide-title">การพิจารณาของคณะกรรมการพิจารณาอุทธรณ์</h1>
+      <h2 class="slide-sub">มาตรา 119</h2>
+      <div class="body">
+        <div class="col3" style="flex:1;">
+          <div class="card">
+            <h3>กรอบเวลา</h3>
+            <p>พิจารณาให้แล้วเสร็จภายใน <b style="color:var(--seal);">30 วัน</b> นับแต่ได้รับรายงาน หากไม่ทัน ขยายได้ไม่เกิน <b>2 ครั้ง</b> ครั้งละไม่เกิน <b>15 วัน</b> พร้อมแจ้งผู้อุทธรณ์และผู้ชนะทราบ</p>
+          </div>
+          <div class="card">
+            <h3>ผลการวินิจฉัย</h3>
+            <ul>
+              <li><b>ฟังขึ้นและมีนัยสำคัญ</b> → สั่งให้จัดซื้อจัดจ้างใหม่ หรือเริ่มจากขั้นตอนใดตามที่เห็นสมควร</li>
+              <li><b>ฟังไม่ขึ้น/ไม่มีนัยสำคัญ</b> → แจ้งหน่วยงานทำการจัดซื้อจัดจ้างต่อไป</li>
+              <li>คำวินิจฉัยของคณะกรรมการพิจารณาอุทธรณ์ <b>เป็นที่สุด</b></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>ถ้าพ้นกำหนดยังไม่แล้วเสร็จ</h3>
+            <p>ให้ <b>ยุติเรื่อง</b> และแจ้งผู้อุทธรณ์/ผู้ชนะทราบ พร้อมแจ้งหน่วยงานให้ทำการจัดซื้อจัดจ้างต่อไป</p>
+            <p style="margin-top:8px;">ผู้อุทธรณ์ที่ไม่พอใจ มีสิทธิ<b>ฟ้องศาล</b>เรียกค่าเสียหายได้ แต่ไม่กระทบสัญญาที่ลงนามแล้ว</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"><span>อ้างอิง: พ.ร.บ.จัดซื้อจัดจ้าง 2560 มาตรา 119</span><span class="pagechip">07</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 8 : ม.66 ผลต่อการลงนามสัญญา -->
+  <section class="slide" data-title="ผลต่อการลงนามสัญญา">
+    <div class="slide-inner">
+      <div class="kicker">ผลกระทบต่อกระบวนการจัดซื้อจัดจ้าง</div>
+      <h1 class="slide-title">การอุทธรณ์หยุดการลงนามสัญญาได้เมื่อใด</h1>
+      <h2 class="slide-sub">มาตรา 66 วรรคสอง</h2>
+      <div class="body">
+        <div class="col2" style="flex:1;">
+          <div class="card">
+            <h3>หลักทั่วไป: ห้ามลงนามก่อนพ้นระยะเวลาอุทธรณ์</h3>
+            <p>ลงนามในสัญญาจัดซื้อจัดจ้างได้ต่อเมื่อ <b>ล่วงพ้นระยะเวลาอุทธรณ์และไม่มีผู้ใดอุทธรณ์</b> ตามมาตรา 117 หรือกรณีมีอุทธรณ์ ต้องรอจนหน่วยงานได้รับแจ้งจากคณะกรรมการพิจารณาอุทธรณ์ให้ทำการจัดซื้อจัดจ้างต่อไปได้</p>
+          </div>
+          <div class="card" style="border-color:var(--gold);">
+            <h3 style="color:#7a5f2f;">ข้อยกเว้น — ลงนามได้ทันทีโดยไม่ต้องรอ</h3>
+            <ul>
+              <li>การจัดซื้อจัดจ้างที่มีความจำเป็นเร่งด่วนตาม <b>มาตรา 56(1)(ค)</b></li>
+              <li>การจัดซื้อจัดจ้างโดย <b>วิธีเฉพาะเจาะจง</b></li>
+              <li>การจัดซื้อจัดจ้างที่มี <b>วงเงินเล็กน้อย</b> ตามกฎกระทรวงที่ออกตามมาตรา 96 วรรคสอง</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"><span>อ้างอิง: พ.ร.บ.จัดซื้อจัดจ้าง 2560 มาตรา 66 วรรคสอง</span><span class="pagechip">08</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 9 : หลักแยก อุทธรณ์ไม่ได้ vs ไม่เข้าข่ายใช้สิทธิ -->
+  <section class="slide" data-title="หลักแยกสำคัญ">
+    <div class="slide-inner">
+      <div class="seal-mark" style="bottom:-50px;left:-50px;"><span>หลักแยก ว 367</span></div>
+      <div class="kicker">ประเด็นที่มักสับสน</div>
+      <h1 class="slide-title">"อุทธรณ์ไม่ได้" ≠ "ไม่เข้าข่ายใช้สิทธิอุทธรณ์"</h1>
+      <h2 class="slide-sub">แนวทางแยกตามหนังสือเวียน ว 367 ลงวันที่ 25 มิถุนายน 2567 ข้อ 2</h2>
+      <div class="body">
+        <div class="col2" style="flex:1;">
+          <div class="card">
+            <h3>เรื่องที่อุทธรณ์ไม่ได้ — มาตรา 115</h3>
+            <p>ผู้ยื่นข้อเสนอ <b>มีสิทธิอุทธรณ์ตามมาตรา 114</b> อยู่แล้ว แต่กฎหมายห้ามยกเรื่องบางประเภทขึ้นอุทธรณ์ (เช่น การเลือกวิธีจัดซื้อจัดจ้าง หรือการยกเลิกตามมาตรา 67)</p>
+          </div>
+          <div class="card" style="border-color:var(--seal);">
+            <h3 style="color:var(--seal);">ไม่เข้าข่ายใช้สิทธิอุทธรณ์ — ว 367 ข้อ 2</h3>
+            <p>บุคคลหรือสถานการณ์นั้น <b>ไม่เข้าองค์ประกอบผู้มีสิทธิอุทธรณ์ตามมาตรา 114 ตั้งแต่ต้น</b> จึงไม่อาจเข้าสู่กระบวนการอุทธรณ์สำหรับกรณีนั้นได้เลย</p>
+          </div>
+        </div>
+      </div>
+      <div class="warn">คำว่า "ไม่มีสิทธิอุทธรณ์" ตาม ว 367 หมายถึง <b>กรณีหรือการจัดซื้อจัดจ้างนั้น</b> ไม่ใช่การตัดสิทธิบุคคลเป็นการทั่วไปหรือถาวร</div>
+      <div class="footer-bar"><span>อ้างอิง: พ.ร.บ.จัดซื้อจัดจ้าง 2560 ม.114–115 / หนังสือเวียน ว 367 (25 มิ.ย. 2567)</span><span class="pagechip">09</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 10 : ว 367 5 กรณี -->
+  <section class="slide" data-title="ว 367: 5 กรณี">
+    <div class="slide-inner">
+      <div class="kicker">หนังสือเวียน ว 367</div>
+      <h1 class="slide-title">5 กรณีที่หน่วยงานไม่ต้องส่งเรื่องให้คณะกรรมการพิจารณาอุทธรณ์</h1>
+      <h2 class="slide-sub">หน่วยงานของรัฐวินิจฉัยเองตามกฎหมายว่าด้วยวิธีปฏิบัติราชการทางปกครอง</h2>
+      <div class="body">
+        <div class="col3" style="flex:1;">
+          <div class="stack">
+            <div class="card"><h3>1. ยกเลิกการจัดซื้อจัดจ้าง</h3><p>หน่วยงานยกเลิกการจัดซื้อจัดจ้าง หรือยกเลิกประกาศผู้ชนะ/ผู้ได้รับคัดเลือกแล้ว — ไม่เข้าข่ายอุทธรณ์ตามมาตรา 114</p></div>
+            <div class="card"><h3>2. ไม่มีสิทธิตาม ม.114 (4 กรณีย่อย)</h3><p>2.1 ใช้สิทธิตามกฎหมายอื่น · 2.2 ผู้อุทธรณ์ไม่ใช่ผู้ยื่นข้อเสนอ · 2.3 ผู้อุทธรณ์ได้รับประกาศเป็นผู้ชนะแล้ว · 2.4 มีประกาศเปลี่ยนผู้ชนะเพราะรายเดิมไม่มาลงนาม</p></div>
+          </div>
+          <div class="stack">
+            <div class="card"><h3>3. หนังสืออุทธรณ์ผิดแบบ ม.116</h3><p>ผู้ลงลายมือชื่อในแบบอุทธรณ์มิใช่ผู้มีอำนาจกระทำการแทนผู้อุทธรณ์</p></div>
+            <div class="card"><h3>4. เรื่องอุทธรณ์ไม่ได้ตาม ม.115</h3><p>ให้หน่วยงานมีหนังสือแจ้งผู้อุทธรณ์ว่าเป็นเรื่องที่อุทธรณ์ไม่ได้</p></div>
+          </div>
+          <div class="stack">
+            <div class="card"><h3>5. ยื่นเกินกำหนดเวลา</h3><p>เกินกำหนด 7 วันทำการตามมาตรา 117 — หน่วยงานแจ้งปฏิเสธไม่รับเรื่องไว้พิจารณา</p></div>
+            <div class="card" style="border-color:var(--gold);"><h3 style="color:#7a5f2f;">สิทธิของผู้อุทธรณ์หลังแจ้งผล</h3><p>มีสิทธิฟ้องคดีต่อ<b>ศาลปกครอง</b>ภายใน <b>90 วัน</b> นับแต่วันที่ได้รับแจ้งคำวินิจฉัยจากหน่วยงาน</p></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"><span>อ้างอิง: หนังสือเวียน ว 367 ลงวันที่ 25 มิถุนายน 2567 ข้อ 1–5</span><span class="pagechip">10</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 11 : กลไกคู่ขนาน การร้องเรียน -->
+  <section class="slide" data-title="กลไกคู่ขนาน: ร้องเรียน">
+    <div class="slide-inner">
+      <div class="kicker">กลไกคู่ขนาน</div>
+      <h1 class="slide-title">การร้องเรียน — คนละกลไกกับการอุทธรณ์</h1>
+      <h2 class="slide-sub">ระเบียบกระทรวงการคลังว่าด้วยการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พ.ศ. 2560 หมวด 10 ข้อ 220–223</h2>
+      <div class="body">
+        <div class="col2" style="flex:1;">
+          <div class="stack">
+            <div class="card"><h3>ข้อ 220 — สิทธิร้องเรียน</h3><p><b>ผู้ใด</b> เห็นว่าหน่วยงานของรัฐมิได้ปฏิบัติตามหลักเกณฑ์และวิธีการที่กำหนดในกฎหมายว่าด้วยการจัดซื้อจัดจ้างฯ มีสิทธิร้องเรียนไปยังหน่วยงานของรัฐนั้น หรือคณะกรรมการพิจารณาอุทธรณ์ ภายใน <b style="color:var(--seal);">15 วัน</b> นับแต่วันที่รู้หรือควรรู้เหตุ</p></div>
+            <div class="card"><h3>ข้อ 221 — รูปแบบ</h3><p>ทำเป็นหนังสือ ลงลายมือชื่อผู้ร้องเรียน (นิติบุคคลต้องลงลายมือชื่อกรรมการผู้มีอำนาจและประทับตรา) ใช้ถ้อยคำสุภาพ ระบุข้อเท็จจริงและเหตุผลชัดเจน พร้อมแนบหลักฐาน</p></div>
+          </div>
+          <div class="stack">
+            <div class="card"><h3>ข้อ 222 — หน่วยงานได้รับเรื่อง</h3><p>พิจารณาให้แล้วเสร็จโดยเร็ว แจ้งผลให้ผู้ร้องเรียนทราบโดยไม่ชักช้า พร้อมแจ้งคณะกรรมการพิจารณาอุทธรณ์ทราบด้วย</p></div>
+            <div class="card"><h3>ข้อ 223 — คกก.พิจารณาอุทธรณ์ได้รับเรื่อง</h3><p>พิจารณาโดยเร็วตามมาตรา 43 วรรคสี่ แจ้งผลให้ผู้ร้องเรียนและหน่วยงานทราบ <b>คำวินิจฉัยเป็นที่สุด</b></p></div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"><span>อ้างอิง: ระเบียบกระทรวงการคลังฯ 2560 ข้อ 220–223</span><span class="pagechip">11</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 12 : ตารางเปรียบเทียบ -->
+  <section class="slide" data-title="เปรียบเทียบ">
+    <div class="slide-inner">
+      <div class="kicker">สรุปเปรียบเทียบ</div>
+      <h1 class="slide-title">อุทธรณ์ vs ร้องเรียน</h1>
+      <h2 class="slide-sub">สองกลไกที่แยกฐานอำนาจและเงื่อนไขกันชัดเจน</h2>
+      <div class="body" style="align-items:flex-start;">
+        <table class="cmp">
+          <thead>
+            <tr><th>ประเด็น</th><th>อุทธรณ์ (พ.ร.บ. ม.114–119)</th><th>ร้องเรียน (ระเบียบ ข้อ 220–223)</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><b>ผู้มีสิทธิ</b></td><td>เฉพาะผู้ยื่นข้อเสนอในการจัดซื้อจัดจ้างครั้งนั้น</td><td>"ผู้ใด" ก็ได้ที่เห็นว่าหน่วยงานไม่ปฏิบัติตามกฎหมาย</td></tr>
+            <tr><td><b>ผลที่ต้องเสีย</b></td><td>ต้องเป็นเหตุให้ไม่ได้เป็นผู้ชนะ/ไม่ได้รับคัดเลือกเป็นคู่สัญญา</td><td>ไม่จำเป็นต้องเสียประโยชน์โดยตรงจากการเป็นคู่สัญญา</td></tr>
+            <tr><td><b>กำหนดเวลายื่น</b></td><td>7 วันทำการ นับแต่ประกาศผล (ม.117)</td><td>15 วัน นับแต่รู้หรือควรรู้เหตุ (ข้อ 220)</td></tr>
+            <tr><td><b>ยื่นต่อ</b></td><td>หน่วยงานของรัฐ (ชั้นต้น) → คกก.พิจารณาอุทธรณ์ (ถ้าไม่เห็นด้วย)</td><td>หน่วยงานของรัฐ หรือ คกก.พิจารณาอุทธรณ์ โดยตรง</td></tr>
+            <tr><td><b>ผลต่อสัญญา</b></td><td>อาจระงับการลงนามสัญญาไว้ก่อน (ม.66 วรรคสอง)</td><td>ระเบียบมิได้กำหนดผลระงับสัญญาไว้เป็นการเฉพาะในข้อ 220–223</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="footer-bar"><span>อ้างอิง: พ.ร.บ.จัดซื้อจัดจ้าง 2560 ม.114–119, ม.66 / ระเบียบกระทรวงการคลังฯ 2560 ข้อ 220–223</span><span class="pagechip">12</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 13 : ข้อจำกัดของฐานข้อมูล -->
+  <section class="slide" data-title="ข้อจำกัด">
+    <div class="slide-inner">
+      <div class="kicker">ความโปร่งใสของแหล่งข้อมูล</div>
+      <h1 class="slide-title">สิ่งที่สไลด์นี้ยังไม่ครอบคลุม</h1>
+      <h2 class="slide-sub">เพื่อป้องกันการเข้าใจผิดว่าเนื้อหาครบถ้วน 100%</h2>
+      <div class="body">
+        <div class="col2" style="flex:1;">
+          <div class="card" style="border-color:var(--seal);">
+            <h3 style="color:var(--seal);">ยังไม่มีเนื้อหาตัวบทในคลังอ้างอิงที่ใช้จัดทำ</h3>
+            <ul>
+              <li><b>กฎกระทรวงกำหนดเรื่องการจัดซื้อจัดจ้างกับหน่วยงานของรัฐที่ใช้สิทธิอุทธรณ์ไม่ได้ พ.ศ. 2568</b> — มีเพียงชื่อ/หัวข้อในดัชนีของโครงการ แต่ยังไม่มีเนื้อหาตัวบทจริงในเอกสารที่ใช้จัดทำสไลด์ชุดนี้ จึงยังอ้างเนื้อหารายมาตราไม่ได้ ต้องตรวจจากราชกิจจานุเบกษาหรือ cgd.go.th โดยตรง</li>
+              <li>รายละเอียดกฎหมายว่าด้วย <b>วิธีปฏิบัติราชการทางปกครอง</b> ที่ ว 367 อ้างถึง ไม่ได้อยู่ในคลังอ้างอิงนี้</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>สถานะเอกสารที่ใช้จริง</h3>
+            <p>สไลด์ชุดนี้อ้างอิงเฉพาะข้อความที่ปรากฏจริงใน:</p>
+            <ul>
+              <li>พ.ร.บ.จัดซื้อจัดจ้างฯ 2560 — มาตรา 66, 114–119</li>
+              <li>ระเบียบกระทรวงการคลังฯ 2560 — ข้อ 220–223</li>
+              <li>หนังสือเวียน ว 367 ลงวันที่ 25 มิถุนายน 2567</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="warn">คำตอบที่มีผลต่อกฎหมาย งบประมาณ สัญญา หรือความรับผิด ควรตรวจต้นฉบับทางการและหน่วยงานผู้มีอำนาจอีกครั้งเสมอ</div>
+      <div class="footer-bar"><span>ตามหลัก Development Rules ของโครงการ Pasadu</span><span class="pagechip">13</span></div>
+    </div>
+  </section>
+ 
+  <!-- SLIDE 14 : สรุป / checklist -->
+  <section class="slide" data-title="สรุป">
+    <div class="slide-inner">
+      <div class="seal-mark" style="top:-40px;right:-60px;"><span>สรุปกระบวนการอุทธรณ์</span></div>
+      <div class="kicker">สรุปสำหรับผู้ปฏิบัติงาน</div>
+      <h1 class="slide-title">เช็กลิสต์เร็ว: รับเรื่องอุทธรณ์อย่างไรให้ไม่พลาดกำหนดเวลา</h1>
+      <div class="body">
+        <div class="col2" style="flex:1;">
+          <div class="card">
+            <h3>ลำดับตรวจสอบ</h3>
+            <ul>
+              <li>ผู้อุทธรณ์เป็น "ผู้ยื่นข้อเสนอ" ในครั้งนั้นจริงหรือไม่ (ม.114)</li>
+              <li>ยื่นภายใน 7 วันทำการนับแต่ประกาศผลหรือไม่ (ม.117)</li>
+              <li>เรื่องที่อุทธรณ์เข้าข่ายห้ามตาม ม.115 หรือไม่</li>
+              <li>เข้าเงื่อนไข 5 กรณีของ ว 367 ที่ไม่ต้องส่ง คกก. หรือไม่</li>
+              <li>หน่วยงานวินิจฉัยเองให้ทันภายใน 7 วันทำการ (ม.118)</li>
+              <li>ถ้าไม่เห็นด้วย รายงาน คกก.พิจารณาอุทธรณ์ภายใน 3 วันทำการ</li>
+            </ul>
+          </div>
+          <div class="card" style="border-color:var(--gold);">
+            <h3 style="color:#7a5f2f;">อ้างอิงหลักทั้งชุด</h3>
+            <div class="pillrow">
+              <span class="pill">ม.66 วรรคสอง</span>
+              <span class="pill">ม.114</span>
+              <span class="pill">ม.115</span>
+              <span class="pill">ม.116</span>
+              <span class="pill">ม.117</span>
+              <span class="pill">ม.118</span>
+              <span class="pill">ม.119</span>
+              <span class="pill red">ข้อ 220–223</span>
+              <span class="pill outline">ว 367 (25 มิ.ย. 2567)</span>
+            </div>
+            <p style="margin-top:14px;">จัดทำภายใต้ workflow ของโครงการ Pasadu — ไม่ใช่คำวินิจฉัยทางกฎหมายอย่างเป็นทางการ</p>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bar"><span>จบการนำเสนอ</span><span class="pagechip">14</span></div>
+    </div>
+  </section>
+ 
+</div>
+ 
+<div class="controls">
+  <button class="ctrl-btn" onclick="go(-1)" aria-label="ก่อนหน้า">‹</button>
+  <div class="counter" id="counter">1 / 14</div>
+  <button class="ctrl-btn" onclick="go(1)" aria-label="ถัดไป">›</button>
+</div>
+ 
+<script>
+const slides = document.querySelectorAll('.slide');
+let idx = 0;
+function render(){
+  slides.forEach((s,i)=>s.classList.toggle('active', i===idx));
+  document.getElementById('counter').textContent = (idx+1)+' / '+slides.length;
+}
+function go(delta){
+  idx = Math.min(Math.max(idx+delta,0), slides.length-1);
+  render();
+}
+document.addEventListener('keydown', (e)=>{
+  if(e.key==='ArrowRight' || e.key===' ') { e.preventDefault(); go(1); }
+  if(e.key==='ArrowLeft') go(-1);
+  if(e.key.toLowerCase()==='p' && !e.ctrlKey && !e.metaKey) window.print();
+});
+render();
+</script>
+</body>
+</html>
+ 
+
+
