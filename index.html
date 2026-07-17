@@ -19,6 +19,7 @@
 
 <nav class="top-mini-nav" aria-label="เมนูย่อย">
   <a href="#guides">คู่มือ</a>
+  <a href="#ai-learning">ต่อยอดด้วย AI</a>
   <a href="#overview">ภาพรวม</a>
   <a href="#break">พักสมอง</a>
   <a href="#contact">ติดต่อ</a>
@@ -222,61 +223,6 @@
     </a>
 
     <!-- 5. หนังสือเวียน (full width) -->
-    <div class="card card-lilac card-passadu span2" onclick="this.classList.toggle('open')">
-      <div class="spotlight"></div>
-      <div class="passadu-orb" aria-hidden="true"></div>
-      <div class="card-head">
-        <div class="card-left">
-          <div class="card-ico ico-lilac passadu-ico">🤖</div>
-          <span class="card-title">
-            <span class="passadu-title-row">
-              <span>PassaduAIagent</span>
-              <span class="passadu-badge">AI Guide</span>
-            </span>
-            <span class="passadu-subtitle">คู่มือการติดตั้งและการใช้งาน AI ที่ปรึกษาด้านงานพัสดุ</span>
-          </span>
-        </div>
-        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-        </svg>
-      </div>
-      <div class="passadu-mini-cta">
-        <span>ติดตั้ง</span>
-        <span>ใช้งาน</span>
-        <span>เอาไปต่อยอด</span>
-      </div>
-      <div class="dd">
-        <a href="https://robbygrean.github.io/PassaduAIagent/how2agent/"
-           target="_blank" onclick="event.stopPropagation()" class="dd-link passadu-link">
-          <span class="passadu-link-icon">✨</span>
-          <span class="passadu-link-copy">
-            <strong>5.1 คู่มือการติดตั้งบน Claude.ai ฟรี</strong>
-            <small>เริ่มแบบทำตามภาพทีละขั้น เหมาะกับคนอยากใช้ทันที</small>
-          </span>
-          <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-        </a>
-        <a href="https://github.com/RobbyGrean/PassaduAIagent"
-           target="_blank" onclick="event.stopPropagation()" class="dd-link passadu-link">
-          <span class="passadu-link-icon">🚀</span>
-          <span class="passadu-link-copy">
-            <strong>5.2 หน้า repo หลักสำหรับนำไปทำ Agent ของตัวเอง</strong>
-            <small>เหมาะกับ Claude Code, Codex, local AI และงานต่อยอดจริง</small>
-          </span>
-          <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-        </a>
-        <a href="https://github.com/RobbyGrean/PassaduAIagent/blob/main/INSTALLATION.md"
-           target="_blank" onclick="event.stopPropagation()" class="dd-link dd-special passadu-link passadu-link-hot">
-          <span class="passadu-link-icon passadu-link-icon-hot">⚡</span>
-          <span class="passadu-link-copy">
-            <strong>5.3 INSTALLATION.md สำหรับ Claude Code, Codex และ local AI</strong>
-            <small>เปิดดูขั้นตอนติดตั้งแบบ developer-focused ได้จาก repo หลัก</small>
-          </span>
-          <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-        </a>
-      </div>
-    </div>
-
-    <!-- 6. หนังสือเวียน (full width) -->
     <a href="https://drive.google.com/drive/folders/1RqBlTaetk0uJFzkGP5R84fyLjDNJB_pa?usp=sharing"
        target="_blank" class="card card-sky span2">
       <div class="spotlight"></div>
@@ -428,6 +374,50 @@
 
 </div>
 <!-- END: จัดซื้อจัดจ้าง วงเงินเล็กน้อย -->
+
+  <!-- START: AI Learning From Project -->
+  <section class="ai-learning-section" id="ai-learning" aria-labelledby="aiLearningTitle">
+    <div class="sec-label">
+      <span class="sec-label-text">✦ ฐานโปรเจกต์ที่คุณต่อยอดได้ด้วย AI</span>
+      <div class="sec-rule"></div>
+    </div>
+    <div class="ai-learning-intro">
+      <div>
+        <p class="ai-learning-kicker">Learn by building</p>
+        <h2 id="aiLearningTitle">ฐานโปรเจกต์ที่คุณต่อยอดได้ด้วย AI</h2>
+        <p>ดูโครงสร้างและ source ของระบบจริง แล้วใช้ AI ช่วยวิเคราะห์ ปรับแต่ง และสร้างระบบในแบบของคุณ</p>
+      </div>
+      <a href="learning/" class="ai-learning-all">เปิดศูนย์การเรียนรู้ <span>→</span></a>
+    </div>
+    <div class="ai-learning-grid">
+      <a class="learning-quick-card phonebook" href="learning/#phonebook">
+        <span class="learning-quick-icon">☎️</span><span><strong>1. สมุดโทรศัพท์หน่วยงาน</strong><small>Google Sheets + Apps Script</small></span><b>เริ่มเรียน →</b>
+      </a>
+      <a class="learning-quick-card assets" href="learning/#assets">
+        <span class="learning-quick-icon">🏷️</span><span><strong>2. ทะเบียนครุภัณฑ์ออนไลน์</strong><small>อ่านโครงสร้างและต่อยอดระบบ</small></span><b>ศึกษาระบบ →</b>
+      </a>
+      <a class="learning-quick-card jmoney" href="learning/#jmoney">
+        <span class="learning-quick-icon">📄</span><span><strong>3. jmoney</strong><small>สร้างเอกสารเบิกเงินเดือนจ้างเหมา</small></span><b>ดูแนวทาง →</b>
+      </a>
+      <a class="learning-quick-card pictures" href="learning/#picturemhs2">
+        <span class="learning-quick-icon">🖼️</span><span><strong>4. picturemhs2</strong><small>Hub อัปโหลดและค้นหาแฟ้มภาพ</small></span><b>ดูคู่มือ →</b>
+      </a>
+      <div class="learning-quick-card pending" aria-label="ระบบ Inventory กำลังพัฒนา">
+        <span class="learning-quick-icon">📦</span><span><strong>6. ระบบ Inventory</strong><small>กำลังพัฒนา — เตรียมเป็นบทเรียนถัดไป</small></span><b>Pending…</b>
+      </div>
+    </div>
+    <div class="card card-lilac card-passadu ai-passadu-card" onclick="this.classList.toggle('open')">
+      <div class="spotlight"></div><div class="passadu-orb" aria-hidden="true"></div>
+      <div class="card-head"><div class="card-left"><div class="card-ico ico-lilac passadu-ico">🤖</div><span class="card-title"><span class="passadu-title-row"><span>5. PassaduAIagent</span><span class="passadu-badge">AI Guide</span></span><span class="passadu-subtitle">เรียนรู้การสร้าง Agent เฉพาะด้านสำหรับสรุปและตอบคำถาม</span></span></div><svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+      <div class="passadu-mini-cta"><span>ติดตั้ง</span><span>ใช้งาน</span><span>เอาไปต่อยอด</span></div>
+      <div class="dd">
+        <a href="https://robbygrean.github.io/PassaduAIagent/how2agent/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="dd-link passadu-link"><span class="passadu-link-icon">✨</span><span class="passadu-link-copy"><strong>คู่มือเริ่มใช้งานแบบทำตามภาพ</strong><small>เหมาะกับผู้ที่ต้องการเริ่มใช้งาน Agent ทันที</small></span><svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg></a>
+        <a href="https://github.com/RobbyGrean/PassaduAIagent" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="dd-link passadu-link"><span class="passadu-link-icon">🚀</span><span class="passadu-link-copy"><strong>ดู repo และแนวคิดการสร้าง Agent ของตัวเอง</strong><small>สำหรับ Claude Code, Codex, local AI และการต่อยอดจริง</small></span><svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg></a>
+        <a href="https://github.com/RobbyGrean/PassaduAIagent/blob/main/INSTALLATION.md" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="dd-link dd-special passadu-link passadu-link-hot"><span class="passadu-link-icon passadu-link-icon-hot">⚡</span><span class="passadu-link-copy"><strong>INSTALLATION.md สำหรับการติดตั้งเชิงเทคนิค</strong><small>เปิดดูขั้นตอนติดตั้งและการใช้งานแบบ developer-focused</small></span><svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg></a>
+      </div>
+    </div>
+  </section>
+  <!-- END: AI Learning From Project -->
   <!-- ── WORKFLOW ── -->
   <div id="overview" class="featured-guide-section">
     <div class="sec-label">

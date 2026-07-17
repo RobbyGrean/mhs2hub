@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ฐานโปรเจกต์ที่คุณต่อยอดได้ด้วย AI | MHS2 Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./learning.css">
+</head>
+<body>
+  <main class="page">
+    <a class="back" href="../">← กลับ MHS2 Hub</a>
+    <header class="hero">
+      <p class="eyebrow">MHS2 HUB · LEARN BY BUILDING</p>
+      <h1>ฐานโปรเจกต์ที่คุณต่อยอดได้ด้วย AI</h1>
+      <p>ดูโครงสร้างและ source ของระบบจริง แล้วใช้ AI ช่วยวิเคราะห์ ปรับแต่ง และสร้างระบบในแบบของคุณ</p>
+      <nav class="jump" aria-label="เลือกบทเรียน">
+        <a href="#phonebook">Phonebook</a><a href="#assets">Assets</a><a href="#jmoney">jmoney</a><a href="#picturemhs2">picturemhs2</a><a href="#agent">AI Agent</a><a href="#inventory">Inventory</a>
+      </nav>
+    </header>
+
+    <section class="lesson phonebook" id="phonebook">
+      <div class="lesson-number">01</div>
+      <div class="lesson-copy"><p class="eyebrow">WORKSHOP · READY TO LEARN</p><h2>สมุดโทรศัพท์ง่าย ๆ ของหน่วยงาน</h2><p class="lead">บทเรียนเริ่มต้นที่เห็นภาพครบวงจร: หน้าเว็บเรียก Google Apps Script เพื่ออ่านและจัดการข้อมูลใน Google Sheets</p></div>
+      <aside class="lesson-actions"><a class="button primary" href="../Phonebook/" target="_blank" rel="noopener">เปิดระบบตัวอย่าง</a><a class="button" href="../Phonebook/Code.gs" target="_blank" rel="noopener">ดู Code.gs</a><a class="button" href="#phonebook-flow">ทำตามขั้นตอน</a></aside>
+      <div class="lesson-body">
+        <div class="flow"><div><b>1</b><span>Google Sheet</span><small>เก็บข้อมูล 6 คอลัมน์</small></div><i>→</i><div><b>2</b><span>Apps Script</span><small>เป็น API ของระบบ</small></div><i>→</i><div><b>3</b><span>Web page</span><small>ค้นหาและจัดการรายชื่อ</small></div></div>
+        <div class="two-col"><div id="phonebook-flow"><h3>ทำตามนี้เพื่อได้ระบบต้นแบบ</h3><ol><li>สร้าง Google Sheet และสร้างชีตชื่อ <code>เบอร์โทร</code></li><li>สำรองแถว 1–4 ไว้สำหรับส่วนหัว แล้วเริ่มข้อมูลจริงที่แถว 5</li><li>กำหนดคอลัมน์: ลำดับ, โรงเรียน, ผู้อำนวยการ, ตำบล, อำเภอ, โทรศัพท์</li><li>วาง <code>Code.gs</code> ใน Extensions → Apps Script</li><li>Deploy เป็น Web app แล้วนำ URL ที่ได้ไปใส่ในหน้า <code>index.html</code></li><li>ทดสอบค้นหา เพิ่ม แก้ไข และลบข้อมูลทีละรายการ</li></ol></div><div><h3>อ่านโค้ดแล้วจะได้เรียนรู้อะไร</h3><ul><li><code>doGet()</code> และ <code>doPost()</code> รับคำสั่งจากหน้าเว็บ</li><li><code>listAll()</code> อ่านข้อมูลจาก Sheet เป็น JSON</li><li><code>addRecord()</code>, <code>updateRecord()</code>, <code>deleteRecord()</code> จัดการข้อมูล</li><li><code>renumberSeq()</code> จัดเลขลำดับใหม่หลังลบ</li></ul><p class="notice"><b>ข้อสังเกตสำคัญ:</b> โค้ดชุดเรียนรู้นี้ยังไม่ตรวจสิทธิ์ที่ฝั่ง Apps Script สำหรับคำสั่งเพิ่ม/แก้ไข/ลบ จึงไม่ควรใช้ endpoint แบบเปิดสาธารณะกับข้อมูลจริงโดยไม่เพิ่มการยืนยันสิทธิ์ก่อน</p></div></div>
+      </div>
+    </section>
+
+    <section class="lesson assets" id="assets">
+      <div class="lesson-number">02</div><div class="lesson-copy"><p class="eyebrow">SYSTEM READING · BACKEND REQUIRED</p><h2>ระบบทะเบียนครุภัณฑ์แบบออนไลน์</h2><p class="lead">ศึกษาหน้าเว็บจริงใน MHS2Assets เพื่อเห็นระบบทะเบียนที่มี login, กลุ่มงาน, สถานะครุภัณฑ์, รายงาน และการจัดการตัดจำหน่าย</p></div><aside class="lesson-actions"><a class="button primary" href="../MHS2Assets/" target="_blank" rel="noopener">เปิดระบบตัวอย่าง</a><a class="button" href="https://github.com/RobbyGrean/mhs2hub/tree/main/MHS2Assets" target="_blank" rel="noopener">ดู source</a></aside>
+      <div class="lesson-body two-col"><div><h3>เส้นทางอ่านโค้ดที่แนะนำ</h3><ol><li>เริ่มจากค่ากลาง: กลุ่มงาน, สถานะ และวิธีได้มา</li><li>อ่าน <code>doLogin()</code> และการเก็บ session</li><li>ดู <code>loadSheet()</code> เพื่อเข้าใจการอ่านทะเบียนตามกลุ่ม</li><li>ดูฟอร์มเพิ่ม/แก้ไข, รายงาน และการส่งออก CSV</li><li>ดูฟังก์ชัน <code>api()</code> เพื่อเห็นจุดเชื่อมกับ Apps Script</li></ol></div><div><h3>สิ่งที่ยืนยันจากหน้าเว็บได้แล้ว</h3><ul><li>มี 9 กลุ่มงาน และสถานะ ใช้ได้ / ชำรุด / เสื่อมสภาพ / สูญ</li><li>รองรับเพิ่ม แก้ไข ลบ รายงาน และ export CSV</li><li>มี flow ตัดจำหน่ายและบัญชีรวม</li></ul><p class="notice"><b>จุดที่ต้องมีเพิ่มก่อนทำคู่มือติดตั้งเต็ม:</b> ไฟล์ backend ของ Apps Script เพราะหน้าเว็บเรียก action เช่น login, list, report และ syncSummary แต่ไฟล์ฝั่งนั้นยังไม่อยู่ใน repo นี้</p></div></div>
+    </section>
+
+    <section class="lesson jmoney" id="jmoney"><div class="lesson-number">03</div><div class="lesson-copy"><p class="eyebrow">OFFLINE TOOL · DOCUMENT WORKFLOW</p><h2>jmoney — โปรแกรมสร้างเอกสารเบิกเงินเดือนจ้างเหมา</h2><p class="lead">เริ่มจากการใช้งานโปรแกรมแบบ offline ก่อน แล้วเปิดดู source เพื่อทำความเข้าใจว่าเครื่องมือเอกสารหนึ่งตัวถูกออกแบบอย่างไร</p></div><aside class="lesson-actions"><a class="button primary" href="https://robbygrean.github.io/jmoney/" target="_blank" rel="noopener">ดาวน์โหลดโปรแกรม</a><a class="button" href="https://robbygrean.github.io/jmoney/guide.html" target="_blank" rel="noopener">คู่มือการใช้งาน</a><a class="button" href="https://github.com/RobbyGrean/jmoney" target="_blank" rel="noopener">ดู source / README</a></aside><div class="lesson-body"><h3>วิธีเรียนที่แนะนำ</h3><div class="three-col"><div><b>ใช้งานก่อน</b><span>ดาวน์โหลดและทดลองสร้างเอกสารจากข้อมูลตัวอย่าง</span></div><div><b>อ่านคู่มือ</b><span>ทำตามขั้นตอนใช้งาน เพื่อเข้าใจจุดที่โปรแกรมช่วยลดงาน</span></div><div><b>ต่อยอด source</b><span>กลับไปดู repo เมื่อมีความต้องการปรับเอกสารหรือเพิ่มขั้นตอนของหน่วยงาน</span></div></div></div></section>
+
+    <section class="lesson pictures" id="picturemhs2"><div class="lesson-number">04</div><div class="lesson-copy"><p class="eyebrow">IMAGE HUB · TWO AUDIENCES</p><h2>picturemhs2 — ระบบอัปโหลดและค้นหาแฟ้มภาพ</h2><p class="lead">ศึกษาการออกแบบระบบที่แยกทางเข้าให้ผู้ดูแลอัปโหลดภาพ และให้บุคคลทั่วไปค้นหาภาพได้สะดวก</p></div><aside class="lesson-actions"><a class="button primary" href="https://github.com/RobbyGrean/picturemhs2" target="_blank" rel="noopener">README และ source</a><a class="button" href="https://github.com/RobbyGrean/picturemhs2/blob/main/ORGANIZATION_MIGRATION_GUIDE.md" target="_blank" rel="noopener">สำหรับหน่วยงาน</a><a class="button" href="https://github.com/RobbyGrean/picturemhs2/blob/main/PERSONAL_SINGLE_USER_GUIDE.md" target="_blank" rel="noopener">สำหรับบุคคลเดียว</a></aside><div class="lesson-body two-col"><div><h3>เลือกเส้นทางที่ตรงกับคุณ</h3><p><b>หน่วยงาน:</b> ใช้คู่มือ Organization Migration เพื่อวางระบบที่มีผู้ดูแลและผู้ใช้งานหลายกลุ่ม</p><p><b>ผู้ใช้คนเดียว:</b> ใช้คู่มือ Personal Single User เพื่อสร้าง Hub ภาพส่วนตัวที่เป็นระเบียบ</p></div><div><h3>โจทย์ที่ควรถามขณะศึกษา</h3><ul><li>ใครอัปโหลดภาพ และใครค้นหาภาพ</li><li>จะตั้งชื่อ หมวด และคำค้นอย่างไรให้หาเจอภายหลัง</li><li>ภาพใดควรเปิดเผย และภาพใดต้องจำกัดสิทธิ์</li></ul></div></div></section>
+
+    <section class="lesson agent" id="agent"><div class="lesson-number">05</div><div class="lesson-copy"><p class="eyebrow">SPECIALIZED AI · REUSE THE EXISTING PROJECT</p><h2>PassaduAIagent — สร้าง Agent เฉพาะด้าน</h2><p class="lead">ใช้โปรเจกต์เดิมเป็นต้นแบบในการจัดความรู้เฉพาะด้าน เพื่อช่วยสรุปและตอบคำถามอย่างมีขอบเขต</p></div><aside class="lesson-actions"><a class="button primary" href="https://robbygrean.github.io/PassaduAIagent/how2agent/" target="_blank" rel="noopener">คู่มือเริ่มต้น</a><a class="button" href="https://github.com/RobbyGrean/PassaduAIagent" target="_blank" rel="noopener">ดู repo</a><a class="button" href="https://github.com/RobbyGrean/PassaduAIagent/blob/main/INSTALLATION.md" target="_blank" rel="noopener">คู่มือติดตั้ง</a></aside><div class="lesson-body"><div class="three-col"><div><b>กำหนดขอบเขต</b><span>ระบุเรื่องที่ Agent ตอบได้และตอบไม่ได้</span></div><div><b>จัดแหล่งความรู้</b><span>แยกเอกสารอ้างอิงให้ค้นหาและตรวจที่มาได้</span></div><div><b>ทดสอบคำถาม</b><span>ใช้คำถามจริงเพื่อตรวจคำตอบและปรับคู่มือ</span></div></div></div></section>
+
+    <section class="lesson inventory" id="inventory"><div class="lesson-number">06</div><div class="lesson-copy"><p class="eyebrow">ROADMAP · PENDING</p><h2>Inventory — ระบบคลังวัสดุสิ้นเปลือง</h2><p class="lead">กำลังพัฒนา: รับเข้า จ่ายออก คงเหลือ และใบเบิกพัสดุแบบออนไลน์</p></div><aside class="lesson-actions"><span class="button disabled">Pending…</span></aside><div class="lesson-body"><p class="notice">จะแปลงเป็นบทเรียนเมื่อโครงสร้างข้อมูล, ขั้นตอนเบิกจ่าย และหน้าจอหลักของระบบนิ่งแล้ว เพื่อให้คู่มือสะท้อนระบบจริง</p></div></section>
+
+    <footer>สร้างเพื่อให้เริ่มจากระบบเล็ก ๆ แล้วค่อยต่อยอดได้จริง · <a href="../">กลับสู่ MHS2 Hub</a></footer>
+  </main>
+</body>
+</html>
