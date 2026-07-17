@@ -436,7 +436,7 @@
         <span class="learning-quick-icon">📦</span><span><strong>6. ระบบ Inventory</strong><small>กำลังพัฒนา — เตรียมเป็นบทเรียนถัดไป</small></span><b>Pending…</b>
       </div>
     </div>
-    <div class="card card-lilac card-passadu ai-passadu-card" onclick="this.classList.toggle('open')">
+    <div class="card card-lilac card-passadu ai-passadu-card" onclick="toggleAiCard(this)" onkeydown="handleAiCardKeydown(event, this)" role="button" tabindex="0" aria-expanded="false">
       <div class="spotlight"></div><div class="passadu-orb" aria-hidden="true"></div>
       <div class="card-head"><div class="card-left"><div class="card-ico ico-lilac passadu-ico">🤖</div><span class="card-title"><span class="passadu-title-row"><span>5. PassaduAIagent</span><span class="passadu-badge">AI Guide</span></span><span class="passadu-subtitle">เรียนรู้การสร้าง Agent เฉพาะด้านสำหรับสรุปและตอบคำถาม</span></span></div><svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
       <div class="passadu-mini-cta"><span>ติดตั้ง</span><span>ใช้งาน</span><span>เอาไปต่อยอด</span></div>
@@ -444,6 +444,34 @@
         <a href="https://robbygrean.github.io/PassaduAIagent/how2agent/" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="dd-link passadu-link"><span class="passadu-link-icon">✨</span><span class="passadu-link-copy"><strong>คู่มือเริ่มใช้งานแบบทำตามภาพ</strong><small>เหมาะกับผู้ที่ต้องการเริ่มใช้งาน Agent ทันที</small></span><svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg></a>
         <a href="https://github.com/RobbyGrean/PassaduAIagent" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="dd-link passadu-link"><span class="passadu-link-icon">🚀</span><span class="passadu-link-copy"><strong>ดู repo และแนวคิดการสร้าง Agent ของตัวเอง</strong><small>สำหรับ Claude Code, Codex, local AI และการต่อยอดจริง</small></span><svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg></a>
         <a href="https://github.com/RobbyGrean/PassaduAIagent/blob/main/INSTALLATION.md" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="dd-link dd-special passadu-link passadu-link-hot"><span class="passadu-link-icon passadu-link-icon-hot">⚡</span><span class="passadu-link-copy"><strong>INSTALLATION.md สำหรับการติดตั้งเชิงเทคนิค</strong><small>เปิดดูขั้นตอนติดตั้งและการใช้งานแบบ developer-focused</small></span><svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg></a>
+      </div>
+    </div>
+    <div class="card card-gpt ai-gpt-card span2" onclick="toggleAiCard(this)" onkeydown="handleAiCardKeydown(event, this)" role="button" tabindex="0" aria-expanded="false">
+      <div class="spotlight"></div><div class="gpt-orb" aria-hidden="true"></div>
+      <div class="card-head"><div class="card-left"><div class="card-ico gpt-ico">🧭</div><span class="card-title"><span class="passadu-title-row"><span>9. คู่มือการเลือก Model และ Mode [GPT ver.]</span><span class="gpt-badge">GPT Guide</span></span><span class="passadu-subtitle">เลือก Model และ Mode ให้เหมาะกับงาน ก่อนเริ่มต่อยอดด้วย AI</span></span></div><svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></div>
+      <div class="passadu-mini-cta"><span>Model</span><span>Mode</span><span>ภาพคู่มือ GPT 5.6</span></div>
+      <div class="dd">
+        <div class="workflow-box featured-guide gpt-inline-guide" onclick="event.stopPropagation()">
+          <div class="featured-guide-head">
+            <div>
+              <p class="featured-eyebrow">GPT 5.6 Guide</p>
+              <h2 id="gptGuideTitle">คู่มือการเลือก Model และ Mode</h2>
+            </div>
+            <a class="appeal-download" href="gptguide/GPT5.6ass.pdf" download onclick="event.stopPropagation()">ดาวน์โหลดคู่มือ PDF</a>
+          </div>
+          <div class="slide-viewer" id="gptSlideViewer">
+            <div class="slide-frame">
+              <img id="gptSlideImg" src="gptguide/GPT5.6-1.png" alt="คู่มือการเลือก Model และ Mode GPT 5.6 หน้า 1">
+            </div>
+            <div class="slide-controls">
+              <button class="slide-btn" type="button" onclick="event.stopPropagation(); changeGptSlide(-1)" aria-label="สไลด์ก่อนหน้า">‹</button>
+              <div class="slide-mid"><span class="slide-count" id="gptSlideCount">1 / 6</span></div>
+              <button class="slide-btn" type="button" onclick="event.stopPropagation(); changeGptSlide(1)" aria-label="สไลด์ถัดไป">›</button>
+            </div>
+          </div>
+          <div class="slide-progress" aria-hidden="true"><span id="gptSlideProgress"></span></div>
+          <div class="slide-dots" id="gptSlideDots" aria-label="เลือกหน้าคู่มือ GPT"></div>
+        </div>
       </div>
     </div>
   </section>
@@ -481,34 +509,6 @@
       <div class="slide-dots" id="basicSlideDots" aria-label="เลือกหน้าสไลด์"></div>
     </div>
   </div>
-
-  <section id="gpt-guide" class="featured-guide-section" aria-labelledby="gptGuideTitle">
-    <div class="sec-label">
-      <span class="sec-label-text">✦ คู่มือการเลือก Model และ Mode [GPT ver.]</span>
-      <div class="sec-rule"></div>
-    </div>
-    <div class="workflow-box featured-guide">
-      <div class="featured-guide-head">
-        <div>
-          <p class="featured-eyebrow">GPT 5.6 Guide</p>
-          <h2 id="gptGuideTitle">คู่มือการเลือก Model และ Mode</h2>
-        </div>
-        <a class="appeal-download" href="gptguide/GPT5.6ass.pdf" download>ดาวน์โหลดคู่มือ PDF</a>
-      </div>
-      <div class="slide-viewer" id="gptSlideViewer">
-        <div class="slide-frame">
-          <img id="gptSlideImg" src="gptguide/GPT5.6-1.png" alt="คู่มือการเลือก Model และ Mode GPT 5.6 หน้า 1">
-        </div>
-        <div class="slide-controls">
-          <button class="slide-btn" type="button" onclick="changeGptSlide(-1)" aria-label="สไลด์ก่อนหน้า">‹</button>
-          <div class="slide-mid"><span class="slide-count" id="gptSlideCount">1 / 6</span></div>
-          <button class="slide-btn" type="button" onclick="changeGptSlide(1)" aria-label="สไลด์ถัดไป">›</button>
-        </div>
-      </div>
-      <div class="slide-progress" aria-hidden="true"><span id="gptSlideProgress"></span></div>
-      <div class="slide-dots" id="gptSlideDots" aria-label="เลือกหน้าคู่มือ GPT"></div>
-    </div>
-  </section>
 
   <!-- Break game -->
   <section id="break" class="break-section">

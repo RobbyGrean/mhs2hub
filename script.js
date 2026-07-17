@@ -40,6 +40,18 @@ if (navigator.userAgent.includes("Line")) {
 })();
 
 /* ── Music ── */
+function toggleAiCard(card) {
+  const isOpen = card.classList.toggle('open');
+  card.setAttribute('aria-expanded', String(isOpen));
+}
+
+function handleAiCardKeydown(event, card) {
+  if (event.target !== card) return;
+  if (event.key !== 'Enter' && event.key !== ' ') return;
+  event.preventDefault();
+  toggleAiCard(card);
+}
+
 /* Basic law slideshow */
 const basicSlides = Array.from({ length: 11 }, (_, i) => `pictureassets/basic${i + 1}.png`);
 let basicSlideIndex = 0;
@@ -115,7 +127,7 @@ function goGptSlide(index) {
   const viewer = document.getElementById('gptSlideViewer');
   if (!dots || !viewer) return;
   dots.innerHTML = gptSlides.map((_, i) =>
-    `<button class="slide-dot${i === 0 ? ' active' : ''}" type="button" onclick="goGptSlide(${i})" aria-label="ไปหน้าที่ ${i + 1}"></button>`
+    `<button class="slide-dot${i === 0 ? ' active' : ''}" type="button" onclick="event.stopPropagation(); goGptSlide(${i})" aria-label="ไปหน้าที่ ${i + 1}"></button>`
   ).join('');
   renderGptSlide();
 
