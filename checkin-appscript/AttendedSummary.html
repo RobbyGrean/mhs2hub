@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { font-family: 'Sarabun', sans-serif; padding: 15px; background: #f0fff4; }
+    .header { color: #28a745; font-size: 20px; font-weight: bold; text-align: center; margin-bottom: 10px; }
+    .count-box { text-align: center; font-size: 16px; margin-bottom: 15px; color: #555; }
+    .list-area { background: white; border-radius: 8px; height: 400px; overflow-y: auto; border: 1px solid #c3e6cb; }
+    .item { padding: 10px; border-bottom: 1px solid #eee; color: #2e7d32; }
+    .item:nth-child(even) { background: #f9fff9; }
+  </style>
+</head>
+<body>
+  <div class="header">✅ มาเข้าร่วมแล้ว</div>
+  <div id="count" class="count-box">กำลังโหลด...</div>
+  <div class="list-area" id="list"></div>
+  <script>
+    google.script.run.withSuccessHandler(function(data) {
+      document.getElementById('count').innerText = 'จำนวน: ' + data.attended.length + ' / ' + data.totalAll + ' แห่ง';
+      const html = data.attended.map(s => `<div class="item">🟢 ${s}</div>`).join('');
+      document.getElementById('list').innerHTML = html || '<div style="padding:20px;text-align:center;">ยังไม่มีข้อมูลการเช็คชื่อ</div>';
+    }).getMeetingStatus();
+  </script>
+</body>
+</html>

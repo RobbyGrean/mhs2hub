@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body { font-family: 'Sarabun', sans-serif; padding: 20px; text-align: center; color: #333; }
+      .container { display: flex; flex-direction: column; align-items: center; }
+      input[type="date"] { width: 80%; padding: 10px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; }
+      button { background-color: #28a745; color: white; padding: 10px 25px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
+      button:hover { background-color: #218838; }
+      p { font-size: 14px; margin-bottom: 10px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <p>ระบุวันที่ต้องการเปิดแท็บประชุม</p>
+      <input type="date" id="dateInput">
+      <button onclick="sendDate()">ตกลง</button>
+    </div>
+    <script>
+      document.getElementById('dateInput').valueAsDate = new Date();
+      function sendDate() {
+        var selectedDate = document.getElementById('dateInput').value;
+        if (!selectedDate) { alert('กรุณาเลือกวันที่ก่อนครับ'); return; }
+        google.script.run.withSuccessHandler(function() {
+          google.script.host.close();
+        }).createMeetingSheetFromDate(selectedDate);
+      }
+    </script>
+  </body>
+</html>
