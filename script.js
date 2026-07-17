@@ -48,7 +48,7 @@ function renderBasicSlide() {
   const img = document.getElementById('basicSlideImg');
   const count = document.getElementById('basicSlideCount');
   const progress = document.getElementById('basicSlideProgress');
-  const dots = document.querySelectorAll('.slide-dot');
+  const dots = document.querySelectorAll('#basicSlideDots .slide-dot');
   if (!img || !count) return;
   img.src = basicSlides[basicSlideIndex];
   img.alt = `ภาพรวมกฎหมายพัสดุ หน้า ${basicSlideIndex + 1}`;
@@ -80,6 +80,50 @@ function goBasicSlide(index) {
   viewer.addEventListener('touchend', e => {
     const dx = e.changedTouches[0].clientX - startX;
     if (Math.abs(dx) > 45) changeBasicSlide(dx < 0 ? 1 : -1);
+  }, { passive:true });
+})();
+
+/* GPT 5.6 model and mode slideshow */
+const gptSlides = Array.from({ length: 6 }, (_, i) => `gptguide/GPT5.6-${i + 1}.png`);
+let gptSlideIndex = 0;
+
+function renderGptSlide() {
+  const img = document.getElementById('gptSlideImg');
+  const count = document.getElementById('gptSlideCount');
+  const progress = document.getElementById('gptSlideProgress');
+  const dots = document.querySelectorAll('#gptSlideDots .slide-dot');
+  if (!img || !count) return;
+  img.src = gptSlides[gptSlideIndex];
+  img.alt = `คู่มือการเลือก Model และ Mode GPT 5.6 หน้า ${gptSlideIndex + 1}`;
+  count.textContent = `${gptSlideIndex + 1} / ${gptSlides.length}`;
+  if (progress) progress.style.width = `${((gptSlideIndex + 1) / gptSlides.length) * 100}%`;
+  dots.forEach((dot, i) => dot.classList.toggle('active', i === gptSlideIndex));
+}
+
+function changeGptSlide(step) {
+  gptSlideIndex = (gptSlideIndex + step + gptSlides.length) % gptSlides.length;
+  renderGptSlide();
+}
+
+function goGptSlide(index) {
+  gptSlideIndex = index;
+  renderGptSlide();
+}
+
+(function initGptSlides() {
+  const dots = document.getElementById('gptSlideDots');
+  const viewer = document.getElementById('gptSlideViewer');
+  if (!dots || !viewer) return;
+  dots.innerHTML = gptSlides.map((_, i) =>
+    `<button class="slide-dot${i === 0 ? ' active' : ''}" type="button" onclick="goGptSlide(${i})" aria-label="ไปหน้าที่ ${i + 1}"></button>`
+  ).join('');
+  renderGptSlide();
+
+  let startX = 0;
+  viewer.addEventListener('touchstart', e => { startX = e.touches[0].clientX; }, { passive:true });
+  viewer.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - startX;
+    if (Math.abs(dx) > 45) changeGptSlide(dx < 0 ? 1 : -1);
   }, { passive:true });
 })();
 
@@ -386,6 +430,8 @@ music.onended = nextSong;
 Object.assign(window, {
   changeBasicSlide,
   goBasicSlide,
+  changeGptSlide,
+  goGptSlide,
   holdSupplyDir,
   startSupplyGame,
   toggleMusic,
