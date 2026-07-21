@@ -1149,6 +1149,41 @@
     html[data-skin="overdrive"] .school-card { animation-duration: 15s; }
     html[data-skin="overdrive"] .header-title h1 { text-shadow: 0 0 14px rgba(255,79,216,.26); }
   }
+
+  /* Colorize: semantic accents carry meaning, not decoration. */
+  .stat-card:nth-child(2) .n { color: var(--primary-light); }
+  .stat-card:nth-child(3) .n { color: var(--accent); }
+  .stat-card:nth-child(2)::after { background: color-mix(in srgb, var(--primary-light) 18%, transparent); }
+  .stat-card:nth-child(3)::after { background: color-mix(in srgb, var(--accent) 15%, transparent); }
+  .freshness-text {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 3px 8px; border: 1px solid color-mix(in srgb, var(--accent) 26%, var(--border));
+    border-radius: 999px; background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  }
+  .freshness-text::before { content: '↻'; color: var(--accent); font-weight: 700; }
+  .result-info strong { color: var(--primary); }
+  .hl { background: color-mix(in srgb, var(--gold-light) 62%, var(--surface)); color: var(--text); }
+
+  /* Delight: short, earned feedback for familiar moments. */
+  .toast { display: inline-flex; align-items: center; gap: 8px; }
+  .toast.success::before { content: '✓'; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--green-pale); color: var(--green); font-weight: 700; }
+  .toast.error::before { content: '!'; display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: #fbe4e1; color: var(--accent); font-weight: 700; }
+  .btn-copy.copied { animation: delight-pop .26s cubic-bezier(.22,1,.36,1) both; }
+  .empty-state .icon { animation: empty-float 3.4s ease-in-out infinite; }
+  @keyframes delight-pop { 50% { transform: scale(1.12) rotate(-3deg); } }
+  @keyframes empty-float { 50% { transform: translateY(-5px) rotate(-2deg); } }
+
+  /* Animate: list rhythm and state transitions, capped to keep the task fast. */
+  .js .reveal-card { transition-delay: calc(var(--i, 0) * 45ms); }
+  .modal-overlay.open .modal { animation: modal-arrive .32s cubic-bezier(.16,1,.3,1) both; }
+  @keyframes modal-arrive { from { opacity: .6; transform: translateY(12px) scale(.985); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  button:not(:disabled):active, .btn-call:active { transform: scale(.97); }
+  .btn-primary, .btn-secondary, .btn-danger, .btn-call, .btn-copy, .card-edit, .refresh-btn, .empty-action { transition: transform .15s cubic-bezier(.25,1,.5,1), background .18s ease, border-color .18s ease, color .18s ease, box-shadow .18s ease; }
+  .motion-toggle, .back-to-top, .fab, .fab-mini-btn { transition: transform .18s cubic-bezier(.25,1,.5,1), background .18s ease, box-shadow .18s ease; }
+  .no-motion *, .no-motion *::before, .no-motion *::after { animation: none !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  }
 </style>
 </head>
 <body>
@@ -1457,7 +1492,7 @@ function showFreshness(kind) {
   const ts = localStorage.getItem(CACHE_TS_KEY);
   const time = ts ? new Date(Number(ts)).toLocaleString('th-TH', { dateStyle: 'short', timeStyle: 'short' }) : 'ไม่ทราบเวลา';
   el.textContent = `ข้อมูลจากแคช • อัปเดตล่าสุด ${time}`;
-  el.style.display = 'inline';
+  el.style.display = 'inline-flex';
 }
 
 // ====================================================
@@ -1739,7 +1774,7 @@ function renderCards() {
     const isMulti = multiDirectors.has(d.director);
     const phoneClean = (d.phone || '').replace(/\s/g,'');
     return `
-      <article class="school-card reveal-card" id="card-${i}">
+      <article class="school-card reveal-card" id="card-${i}" style="--i:${Math.min(i, 8)}">
         ${isMulti ? '<span class="multi-school-badge">ดูแลหลายโรงเรียน</span>' : ''}
         <div class="card-header">
           <div class="card-avatar ${gender}">${escHtml(initials)}</div>
