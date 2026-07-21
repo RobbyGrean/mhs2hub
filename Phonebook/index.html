@@ -944,6 +944,211 @@
     .card-phone { width: 100%; justify-content: flex-end; }
     .modal-body { padding: 18px; }
   }
+
+  /* OVERDRIVE SKIN: Neon Cyber Education. Progressive enhancement over the clean skin. */
+  @property --od-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+  }
+  html[data-skin="overdrive"] {
+    --od-bg: #080512;
+    --od-surface: #0f0a1f;
+    --od-surface2: #17102c;
+    --od-surface3: #21153d;
+    --od-ink: #f8f5ff;
+    --od-muted: #b9add3;
+    --od-faint: #80709f;
+    --od-border: rgba(183, 143, 255, .28);
+    --od-magenta: #ff4fd8;
+    --od-cyan: #61f7ff;
+    --od-violet: #9667ff;
+    --od-lime: #d6ff70;
+  }
+  html[data-skin="overdrive"] body {
+    isolation: isolate;
+    background:
+      radial-gradient(circle at 12% 10%, rgba(255,79,216,.18), transparent 23rem),
+      radial-gradient(circle at 88% 28%, rgba(97,247,255,.13), transparent 26rem),
+      radial-gradient(circle at 46% 92%, rgba(150,103,255,.16), transparent 30rem),
+      linear-gradient(135deg, #080512 0%, #120820 48%, #07040f 100%);
+    color: var(--od-ink);
+  }
+  html[data-skin="overdrive"] body::before,
+  html[data-skin="overdrive"] body::after {
+    content: ""; display: block !important; position: fixed; pointer-events: none;
+    z-index: 0; inset: -20%;
+  }
+  html[data-skin="overdrive"] body::before {
+    background: linear-gradient(112deg, transparent 39%, rgba(97,247,255,.08) 49%, rgba(255,79,216,.06) 51%, transparent 61%);
+    transform: translateX(-24%); animation: od-sweep 13s ease-in-out infinite alternate;
+  }
+  html[data-skin="overdrive"] body::after {
+    inset: auto -10% -12rem auto; width: 34rem; height: 34rem; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,79,216,.16), transparent 66%);
+    filter: blur(18px); animation: od-pulse 7s ease-in-out infinite alternate;
+  }
+  @keyframes od-sweep { to { transform: translateX(24%); } }
+  @keyframes od-pulse { to { opacity: .5; transform: scale(1.12); } }
+
+  html[data-skin="overdrive"] header,
+  html[data-skin="overdrive"] .sticky-tools,
+  html[data-skin="overdrive"] main,
+  html[data-skin="overdrive"] #setupBanner {
+    position: relative; z-index: 2;
+  }
+  html[data-skin="overdrive"] header {
+    overflow: hidden;
+    background:
+      radial-gradient(circle at 82% -32%, rgba(255,79,216,.24), transparent 28%),
+      radial-gradient(circle at 7% 118%, rgba(97,247,255,.18), transparent 31%),
+      linear-gradient(124deg, #10071f 0%, #28104d 54%, #160a31 100%);
+    border-bottom: 1px solid rgba(97,247,255,.62);
+    box-shadow: 0 0 34px rgba(150,103,255,.28), inset 0 -1px 0 rgba(255,79,216,.45);
+  }
+  html[data-skin="overdrive"] header::before {
+    display: block !important; opacity: .5;
+    background-image:
+      linear-gradient(115deg, transparent 42%, rgba(97,247,255,.16) 43%, transparent 44%),
+      linear-gradient(15deg, transparent 48%, rgba(255,79,216,.12) 49%, transparent 50%);
+    background-size: 19rem 19rem, 23rem 23rem;
+  }
+  html[data-skin="overdrive"] header::after {
+    content: ""; position: absolute; inset: -120% 0; pointer-events: none;
+    background: linear-gradient(to bottom, transparent 46%, rgba(97,247,255,.22) 50%, transparent 54%);
+    opacity: .42; animation: od-scan 8s linear infinite;
+  }
+  @keyframes od-scan { to { transform: translateY(70%); } }
+  html[data-skin="overdrive"] .header-cinematic { display: block !important; }
+  html[data-skin="overdrive"] .header-layer.depth-2,
+  html[data-skin="overdrive"] .header-layer.depth-5 { display: block !important; }
+  html[data-skin="overdrive"] .header-layer.depth-0 { filter: blur(9px); }
+  html[data-skin="overdrive"] .aurora-orb.one { background: radial-gradient(circle, rgba(255,79,216,.58), rgba(255,79,216,0) 68%); }
+  html[data-skin="overdrive"] .aurora-orb.two { background: radial-gradient(circle, rgba(97,247,255,.42), rgba(97,247,255,0) 70%); }
+  html[data-skin="overdrive"] .topographic-lines { opacity: .32; background: repeating-radial-gradient(ellipse at 75% 35%, transparent 0 23px, rgba(97,247,255,.3) 24px 25px, transparent 26px 47px); }
+  html[data-skin="overdrive"] .spark { background: var(--od-lime); box-shadow: 0 0 14px 3px rgba(214,255,112,.82); }
+  html[data-skin="overdrive"] .header-emblem {
+    background: linear-gradient(145deg, rgba(255,79,216,.35), rgba(97,247,255,.12));
+    border-color: rgba(97,247,255,.54); box-shadow: 0 0 20px rgba(255,79,216,.3), inset 0 1px 0 rgba(255,255,255,.28);
+    animation: od-emblem 3.6s ease-in-out infinite;
+  }
+  @keyframes od-emblem { 50% { transform: translateY(-2px) rotate(2deg); box-shadow: 0 0 28px rgba(97,247,255,.34), inset 0 1px 0 rgba(255,255,255,.3); } }
+  html[data-skin="overdrive"] .header-title h1 { color: #fff; text-shadow: 0 0 22px rgba(255,79,216,.32); }
+  html[data-skin="overdrive"] .header-title p { color: rgba(231,248,255,.78); }
+  html[data-skin="overdrive"] .header-count .num { color: var(--od-lime); text-shadow: 0 0 18px rgba(214,255,112,.42); }
+  html[data-skin="overdrive"] .header-count .lbl { color: rgba(231,248,255,.62); }
+  html[data-skin="overdrive"] .theme-picker { border-top-color: rgba(97,247,255,.26); }
+  html[data-skin="overdrive"] .theme-picker summary { color: var(--od-cyan); text-shadow: 0 0 12px rgba(97,247,255,.3); }
+
+  html[data-skin="overdrive"] .sticky-tools { background: rgba(8,5,18,.9); border-bottom-color: rgba(183,143,255,.28); box-shadow: 0 8px 24px rgba(0,0,0,.24); backdrop-filter: blur(16px); }
+  html[data-skin="overdrive"] .sticky-tools .search-box {
+    background: rgba(15,10,31,.86); border-color: rgba(97,247,255,.46);
+    box-shadow: 0 0 0 1px rgba(255,79,216,.2), 0 0 24px rgba(97,247,255,.12), inset 0 1px 0 rgba(255,255,255,.08);
+  }
+  html[data-skin="overdrive"] .sticky-tools .search-box:focus-within { border-color: var(--od-cyan); box-shadow: 0 0 0 3px rgba(97,247,255,.16), 0 0 30px rgba(255,79,216,.18); }
+  html[data-skin="overdrive"] .sticky-tools .search-box > span:first-child { color: var(--od-cyan) !important; text-shadow: 0 0 12px rgba(97,247,255,.52); }
+  html[data-skin="overdrive"] .sticky-tools #searchInput { color: var(--od-ink); }
+  html[data-skin="overdrive"] .sticky-tools #searchInput::placeholder { color: var(--od-faint); }
+  html[data-skin="overdrive"] .sticky-tools .search-clear { color: var(--od-muted); }
+  html[data-skin="overdrive"] .sticky-tools .filter-wrap { background: rgba(15,10,31,.92); border-top-color: rgba(183,143,255,.24); }
+  html[data-skin="overdrive"] .sticky-tools .filter-tab { color: var(--od-muted); }
+  html[data-skin="overdrive"] .sticky-tools .filter-tab:hover:not(.active) { color: var(--od-cyan); background: rgba(97,247,255,.1); }
+  html[data-skin="overdrive"] .sticky-tools .filter-tab.active { background: linear-gradient(135deg, #7833a7, #b63b9d); box-shadow: 0 0 18px rgba(255,79,216,.3); }
+
+  html[data-skin="overdrive"] main { color: var(--od-ink); }
+  html[data-skin="overdrive"] .stat-card {
+    border-color: var(--od-border); background: linear-gradient(145deg, var(--od-surface2), var(--od-surface));
+    box-shadow: 0 0 18px rgba(150,103,255,.1), inset 0 1px 0 rgba(255,255,255,.06);
+  }
+  html[data-skin="overdrive"] .stat-card:first-child { background: linear-gradient(135deg, #7b2fa7, #3d206d); border-color: rgba(255,79,216,.62); box-shadow: 0 0 24px rgba(255,79,216,.24), inset 0 1px 0 rgba(255,255,255,.18); }
+  html[data-skin="overdrive"] .stat-card .n { color: var(--od-cyan); text-shadow: 0 0 14px rgba(97,247,255,.3); }
+  html[data-skin="overdrive"] .stat-card:first-child .n { color: var(--od-lime); }
+  html[data-skin="overdrive"] .stat-card .l { color: var(--od-muted); }
+  html[data-skin="overdrive"] .stat-card:first-child .l { color: rgba(255,255,255,.78); }
+  html[data-skin="overdrive"] .result-info { color: var(--od-muted); }
+  html[data-skin="overdrive"] .result-info strong { color: var(--od-cyan); }
+  html[data-skin="overdrive"] .freshness-text { color: var(--od-faint); }
+  html[data-skin="overdrive"] .refresh-btn { color: var(--od-cyan); background: var(--od-surface); border-color: var(--od-border); }
+  html[data-skin="overdrive"] .refresh-btn:hover { background: var(--od-surface2); border-color: var(--od-cyan); box-shadow: 0 0 14px rgba(97,247,255,.2); }
+
+  html[data-skin="overdrive"] .school-card {
+    border: 1px solid transparent; border-top: 2px solid transparent; border-radius: 14px;
+    background: linear-gradient(var(--od-surface), var(--od-surface)) padding-box, conic-gradient(from var(--od-angle), rgba(97,247,255,.7), rgba(255,79,216,.7), rgba(150,103,255,.75), rgba(97,247,255,.7)) border-box;
+    box-shadow: 0 0 16px rgba(150,103,255,.11), inset 0 1px 0 rgba(255,255,255,.07);
+    animation: od-border-spin 11s linear infinite;
+  }
+  @keyframes od-border-spin { to { --od-angle: 360deg; } }
+  html[data-skin="overdrive"] .school-card:hover { background: linear-gradient(var(--od-surface2), var(--od-surface2)) padding-box, conic-gradient(from var(--od-angle), var(--od-cyan), var(--od-magenta), var(--od-violet), var(--od-cyan)) border-box; box-shadow: 0 0 28px rgba(255,79,216,.22), inset 0 1px 0 rgba(255,255,255,.1); }
+  html[data-skin="overdrive"] .card-avatar { background: linear-gradient(145deg, rgba(255,79,216,.22), rgba(97,247,255,.12)); border-color: rgba(97,247,255,.45); color: var(--od-cyan); box-shadow: 0 0 16px rgba(97,247,255,.2); }
+  html[data-skin="overdrive"] .card-avatar.female { background: rgba(255,79,216,.16); border-color: rgba(255,79,216,.48); color: #ff9deb; }
+  html[data-skin="overdrive"] .card-avatar.other { background: rgba(214,255,112,.12); border-color: rgba(214,255,112,.42); color: var(--od-lime); }
+  html[data-skin="overdrive"] .school-name { color: var(--od-ink); }
+  html[data-skin="overdrive"] .director-name { color: var(--od-muted); }
+  html[data-skin="overdrive"] .title-prefix { color: var(--od-faint); }
+  html[data-skin="overdrive"] .name-part { color: var(--od-magenta); text-shadow: 0 0 10px rgba(255,79,216,.22); }
+  html[data-skin="overdrive"] .card-body { border-top-color: rgba(183,143,255,.24); }
+  html[data-skin="overdrive"] .card-location { color: var(--od-muted); }
+  html[data-skin="overdrive"] .location-dot { background: var(--od-cyan); box-shadow: 0 0 8px rgba(97,247,255,.6); }
+  html[data-skin="overdrive"] .badge-amphoe { background: rgba(150,103,255,.16); border-color: rgba(150,103,255,.42); color: #d8c9ff; }
+  html[data-skin="overdrive"] .multi-school-badge { background: rgba(214,255,112,.12); border-color: rgba(214,255,112,.48); color: var(--od-lime); box-shadow: 0 0 12px rgba(214,255,112,.12); }
+  html[data-skin="overdrive"] .phone-number { color: var(--od-ink); text-shadow: 0 0 12px rgba(97,247,255,.16); }
+  html[data-skin="overdrive"] .btn-copy { color: var(--od-cyan); background: rgba(97,247,255,.06); border-color: rgba(97,247,255,.42); }
+  html[data-skin="overdrive"] .btn-copy:hover { background: rgba(97,247,255,.16); border-color: var(--od-cyan); box-shadow: 0 0 14px rgba(97,247,255,.2); }
+  html[data-skin="overdrive"] .btn-call { background: linear-gradient(135deg, #8e2a9f, #d5378e); box-shadow: 0 0 18px rgba(255,79,216,.3), inset 0 1px 0 rgba(255,255,255,.2); }
+  html[data-skin="overdrive"] .btn-call:hover { background: linear-gradient(135deg, #a63cb8, #f04ca1); box-shadow: 0 0 26px rgba(255,79,216,.48); }
+  html[data-skin="overdrive"] .card-edit { color: var(--od-cyan); background: rgba(97,247,255,.05); border-color: rgba(97,247,255,.4); }
+  html[data-skin="overdrive"] .card-edit:hover { color: #fff; background: rgba(97,247,255,.14); border-color: var(--od-cyan); box-shadow: 0 0 14px rgba(97,247,255,.22); }
+
+  html[data-skin="overdrive"] .empty-state { color: var(--od-muted); background: var(--od-surface); border-color: rgba(255,79,216,.38); box-shadow: 0 0 22px rgba(150,103,255,.12); }
+  html[data-skin="overdrive"] .empty-state h3 { color: var(--od-ink); }
+  html[data-skin="overdrive"] .empty-action { color: var(--od-cyan); background: var(--od-surface2); border-color: rgba(97,247,255,.46); }
+  html[data-skin="overdrive"] .empty-action:hover { background: rgba(97,247,255,.12); box-shadow: 0 0 16px rgba(97,247,255,.18); }
+  html[data-skin="overdrive"] .modal-overlay { background: rgba(4,2,12,.78); backdrop-filter: blur(16px) saturate(1.25); }
+  html[data-skin="overdrive"] .modal { background: var(--od-surface); border-color: rgba(97,247,255,.48); box-shadow: 0 0 38px rgba(150,103,255,.3), 0 0 0 1px rgba(255,79,216,.18); }
+  html[data-skin="overdrive"] .modal-header { background: linear-gradient(135deg, #1b0d35, #27104d); border-bottom-color: rgba(97,247,255,.28); }
+  html[data-skin="overdrive"] .modal h2 { color: var(--od-ink); text-shadow: 0 0 14px rgba(255,79,216,.22); }
+  html[data-skin="overdrive"] .modal-close { color: var(--od-cyan); background: rgba(97,247,255,.06); border-color: rgba(97,247,255,.38); }
+  html[data-skin="overdrive"] .modal-close:hover { color: #fff; background: rgba(255,79,216,.14); border-color: var(--od-magenta); box-shadow: 0 0 14px rgba(255,79,216,.25); }
+  html[data-skin="overdrive"] .form-group label { color: var(--od-muted); }
+  html[data-skin="overdrive"] .form-group input, html[data-skin="overdrive"] .form-group select { color: var(--od-ink); background: #0b0718; border-color: rgba(183,143,255,.34); }
+  html[data-skin="overdrive"] .form-group input:focus, html[data-skin="overdrive"] .form-group select:focus { background: #100a21; border-color: var(--od-cyan); box-shadow: 0 0 0 3px rgba(97,247,255,.15), 0 0 16px rgba(97,247,255,.16); }
+  html[data-skin="overdrive"] .modal-footer { border-top-color: rgba(183,143,255,.24); }
+  html[data-skin="overdrive"] .btn-secondary { color: var(--od-muted); background: var(--od-surface2); border-color: rgba(183,143,255,.36); }
+  html[data-skin="overdrive"] .btn-secondary:hover { color: var(--od-ink); background: var(--od-surface3); border-color: var(--od-cyan); }
+  html[data-skin="overdrive"] .btn-primary { background: linear-gradient(135deg, #7833a7, #d5378e); box-shadow: 0 0 20px rgba(255,79,216,.28); }
+  html[data-skin="overdrive"] .btn-primary:hover { background: linear-gradient(135deg, #9347bd, #f04ca1); box-shadow: 0 0 28px rgba(255,79,216,.42); }
+  html[data-skin="overdrive"] .btn-danger { color: #ff91a7; border-color: rgba(255,95,130,.52); background: rgba(255,95,130,.08); }
+  html[data-skin="overdrive"] .btn-danger:hover { background: rgba(255,95,130,.18); box-shadow: 0 0 16px rgba(255,95,130,.2); }
+  html[data-skin="overdrive"] .copyfrom-wrap { border-color: rgba(97,247,255,.34); }
+  html[data-skin="overdrive"] .copyfrom-toggle { color: var(--od-cyan); background: var(--od-surface2); }
+  html[data-skin="overdrive"] .copyfrom-toggle:hover { background: rgba(97,247,255,.12); }
+  html[data-skin="overdrive"] .copyfrom-body { background: var(--od-surface); }
+  html[data-skin="overdrive"] .copyfrom-search { color: var(--od-ink); background: #0b0718; border-color: rgba(183,143,255,.34); }
+  html[data-skin="overdrive"] .copyfrom-item:hover { background: rgba(97,247,255,.1); border-color: rgba(97,247,255,.42); }
+  html[data-skin="overdrive"] .copyfrom-item .ci-school { color: var(--od-ink); }
+  html[data-skin="overdrive"] .copyfrom-item .ci-director { color: var(--od-magenta); }
+  html[data-skin="overdrive"] .copyfrom-item .ci-phone { color: var(--od-muted); }
+  html[data-skin="overdrive"] .toast { color: #fff; background: #1b0d35; border: 1px solid rgba(97,247,255,.42); box-shadow: 0 0 24px rgba(150,103,255,.28); }
+  html[data-skin="overdrive"] .toast.success { background: #15342d; border-color: rgba(214,255,112,.48); }
+  html[data-skin="overdrive"] .toast.error { background: #3a1426; border-color: rgba(255,95,130,.5); }
+
+  html[data-skin="overdrive"] .fab { background: linear-gradient(135deg, #d5378e, #7833a7); box-shadow: 0 0 24px rgba(255,79,216,.44), inset 0 1px 0 rgba(255,255,255,.24); }
+  html[data-skin="overdrive"] .fab:hover { background: linear-gradient(135deg, #f04ca1, #9347bd); box-shadow: 0 0 34px rgba(255,79,216,.64); }
+  html[data-skin="overdrive"] .fab-group { filter: drop-shadow(0 0 14px rgba(150,103,255,.22)); }
+  html[data-skin="overdrive"] .fab-mini-label { color: var(--od-ink); background: rgba(15,10,31,.94); border: 1px solid rgba(183,143,255,.38); box-shadow: 0 0 16px rgba(150,103,255,.22); }
+  html[data-skin="overdrive"] .fab-mini-btn { background: linear-gradient(135deg, #27104d, #7833a7); border: 1px solid rgba(97,247,255,.42); box-shadow: 0 0 16px rgba(97,247,255,.18); }
+  html[data-skin="overdrive"] .fab-mini-btn:hover, html[data-skin="overdrive"] .skin-action.active .fab-mini-btn { background: linear-gradient(135deg, #8e2a9f, #d5378e); box-shadow: 0 0 24px rgba(255,79,216,.4); }
+  html[data-skin="overdrive"] .motion-toggle { color: var(--od-cyan); background: rgba(15,10,31,.92); border-color: rgba(97,247,255,.52); box-shadow: 0 0 18px rgba(97,247,255,.22); backdrop-filter: blur(12px); }
+  html[data-skin="overdrive"] .motion-toggle:hover { background: rgba(97,247,255,.18); transform: translateY(-2px); }
+  html[data-skin="overdrive"] .back-to-top { background: linear-gradient(135deg, #7833a7, #d5378e); box-shadow: 0 0 20px rgba(255,79,216,.35); }
+  html[data-skin="overdrive"] .back-to-top:hover { filter: brightness(1.18); }
+  html[data-skin="overdrive"] .skip-link { background: var(--od-surface); color: var(--od-cyan); border: 1px solid rgba(97,247,255,.42); }
+  html[data-skin="overdrive"] ::-webkit-scrollbar-thumb { background: linear-gradient(var(--od-magenta), var(--od-cyan)); }
+
+  @media (max-width: 680px) {
+    html[data-skin="overdrive"] .school-card { animation-duration: 15s; }
+    html[data-skin="overdrive"] .header-title h1 { text-shadow: 0 0 14px rgba(255,79,216,.26); }
+  }
 </style>
 </head>
 <body>
@@ -1042,6 +1247,10 @@
 
 <!-- FAB -->
 <div class="fab-group" id="fabGroup">
+  <div class="fab-mini skin-action">
+    <span class="fab-mini-label">Overdrive skin</span>
+    <button class="fab-mini-btn" id="skinToggle" type="button" onclick="toggleSkin()" aria-pressed="false" aria-label="เปิด Overdrive skin">◈</button>
+  </div>
   <div class="fab-mini">
     <span class="fab-mini-label">เพิ่มโรงเรียนใหม่</span>
     <button class="fab-mini-btn" onclick="openAddModal()">＋</button>
@@ -1121,6 +1330,7 @@
 const SCRIPT_URL_KEY = 'sppms2_script_url';
 const CACHE_KEY = 'sppms2_data_v3';
 const CACHE_TS_KEY = 'sppms2_ts_v3';
+const SKIN_KEY = 'sppms2_skin';
 const CACHE_TTL = 30 * 60 * 1000; // 30 นาที
 
 let allData = [];
@@ -1759,6 +1969,32 @@ function toggleFab() {
   document.getElementById('fabBtn').style.background = fabOpen ? 'var(--primary)' : '';
 }
 
+function setSkin(skin, persist = true) {
+  const isOverdrive = skin === 'overdrive';
+  if (isOverdrive) document.documentElement.setAttribute('data-skin', 'overdrive');
+  else document.documentElement.removeAttribute('data-skin');
+  const button = document.getElementById('skinToggle');
+  if (button) {
+    button.setAttribute('aria-pressed', String(isOverdrive));
+    button.setAttribute('aria-label', isOverdrive ? 'ปิด Overdrive skin' : 'เปิด Overdrive skin');
+    button.title = isOverdrive ? 'กลับไป clean skin' : 'เปิด Neon Cyber Education';
+    button.textContent = isOverdrive ? '◈' : '◌';
+    button.closest('.skin-action')?.classList.toggle('active', isOverdrive);
+  }
+  if (persist) localStorage.setItem(SKIN_KEY, isOverdrive ? 'overdrive' : 'clean');
+}
+
+function toggleSkin() {
+  const isOverdrive = document.documentElement.getAttribute('data-skin') === 'overdrive';
+  setSkin(isOverdrive ? 'clean' : 'overdrive');
+  if (fabOpen) toggleFab();
+  showToast(isOverdrive ? 'กลับไป clean skin แล้ว' : 'เปิด Overdrive: Neon Cyber Education แล้ว', 'success');
+}
+
+function initSkin() {
+  setSkin(localStorage.getItem(SKIN_KEY) === 'overdrive' ? 'overdrive' : 'clean', false);
+}
+
 function setTheme(t) {
   document.documentElement.setAttribute('data-theme', t);
   localStorage.setItem('sppms2_theme', t);
@@ -1807,6 +2043,7 @@ document.addEventListener('keydown', e => {
 
 initVisualEnhancements();
 initTheme();
+initSkin();
 init();
 </script>
 </body>
