@@ -312,19 +312,19 @@ async function doPullDisposed() {
   btn.disabled = true; btn.textContent = '⏳ กำลังสแกน...';
   try {
     const res = await api({ action: 'pullDisposed' });
-    showToast(`ดึงรายการสำเร็จ ${res.pulled} รายการ ✓`, 'success');
+    showToast(`อัปเดตคิวแล้ว ${res.pulled} รายการ (ล้างคิวเดิม ${res.removed||0}) ✓`, 'success');
     await loadSheet('ตัดจำหน่าย');
   } catch(e) { showToast('สแกนล้มเหลว: ' + e.message, 'error'); }
   btn.disabled = false; btn.textContent = '🔍 สแกนและดึงรายการ (ชำรุด/เสื่อมสภาพ/สูญ)';
 }
 
-async function confirmDispose(dstRow, group, code, item) {
-  if (!confirm(`ยืนยันตัดจำหน่าย "${item}" ?\nรายการจะถูกลบออกจากกลุ่มงาน "${group}" จริงๆ`)) return;
+async function confirmDispose(dstRow, sourceSheet, item) {
+  if (!confirm(`ยืนยันตัดจำหน่าย "${item}" ?\nรายการจะถูกลบออกจากกลุ่มงาน "${sourceSheet}" จริงๆ`)) return;
   const sess = _getSession();
   const dispBy = sess?.display_name || sess?.username || 'ระบบ';
   try {
-    await api({ action: 'confirmDispose', dstRow, group, code, item, dispBy });
-    showToast('ยืนยันตัดจำหน่ายเรียบร้อย ✓', 'success');
+    const res = await api({ action: 'confirmDispose', dstRow, dispBy });
+    showToast(`ยืนยันแล้ว เก็บใน ${res.archiveSheet} ✓`, 'success');
     await loadSheet('ตัดจำหน่าย');
   } catch(e) { showToast('ล้มเหลว: ' + e.message, 'error'); }
 }
@@ -334,7 +334,7 @@ function applyFilter() {
   const q = searchQuery.toLowerCase().replace(/\s/g, '');
   filteredRecords = allRecords.filter(r => {
     if (!q) return true;
-    const hay = [r.item, r.brand, r.model, r.serial, r.code, r.group, r.status, r.user, r.method]
+    const hay = [r.item, r.brand, r.model, r.serial, r.code, r.sourceSheet, r.remark, r.status, r.user, r.method]
       .join(' ').toLowerCase().replace(/\s/g, '');
     return hay.includes(q);
   });
@@ -362,8 +362,8 @@ function renderTable() {
   const isDispose = currentSheet === 'ตัดจำหน่าย';
   const isSummary = currentSheet === 'บัญชีรวม';
   const headers = isDispose
-    ? ['#','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','รหัสครุภัณฑ์','กลุ่มงาน','สภาพ','ใช้ประจำที่','วันที่ตัด','ผู้ดำเนินการ/สถานะ']
-    : ['#','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','วันที่ได้มา','วิธีได้มา','รหัสครุภัณฑ์','กลุ่มงาน','สภาพ','ใช้ประจำที่/บุคลากร',...(!isSummary ? ['จัดการ'] : [])];
+    ? ['#','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','รหัสครุภัณฑ์','กลุ่มงาน','หมายเหตุ','สภาพ','ใช้ประจำที่','วันที่ตัด','ผู้ดำเนินการ/สถานะ']
+    : ['#','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','วันที่ได้มา','วิธีได้มา','รหัสครุภัณฑ์','กลุ่มงาน','หมายเหตุ','สภาพ','ใช้ประจำที่/บุคลากร',...(!isSummary ? ['จัดการ'] : [])];
   document.getElementById('tableHead').innerHTML = `<tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr>`;
   const tbody = document.getElementById('tableBody');
   if (filteredRecords.length === 0) {
@@ -376,7 +376,7 @@ function renderTable() {
     if (isDispose) {
       const isPending  = r.dispBy === 'รอการยืนยัน';
       const actionCell = isPending
-        ? `<button class="btn-confirm" onclick="confirmDispose(${r.rowIndex},'${escAttr(r.group)}','${escAttr(r.code)}','${escAttr(r.item)}')">✅ ยืนยันตัดจำหน่าย</button>`
+        ? `<button class="btn-confirm" onclick="confirmDispose(${r.rowIndex},'${escAttr(r.sourceSheet)}','${escAttr(r.item)}')">✅ ยืนยันตัดจำหน่าย</button>`
         : `<span class="badge badge-done">✓ ตัดแล้ว (${escHtml(r.dispBy)})</span>`;
       return `<tr>
         <td class="td-no">${i+1}</td><td>${escHtml(r.item)}</td>
@@ -384,7 +384,8 @@ function renderTable() {
         <td><span class="td-code">${escHtml(r.serial||'')}</span></td>
         <td class="td-price">${priceStr}</td>
         <td><span class="td-code">${escHtml(r.code||'')}</span></td>
-        <td>${escHtml(r.group||'')}</td>
+        <td>${escHtml(r.sourceSheet||'')}</td>
+        <td>${escHtml(r.remark||'')}</td>
         <td class="td-status">${statusBadge}</td>
         <td>${escHtml(r.user||'')}</td>
         <td>${escHtml(r.dispDate||'—')}</td>
@@ -394,7 +395,7 @@ function renderTable() {
     const actionCol = !isSummary
       ? `<td class="td-actions">
            <button class="btn-icon" onclick="openEditModal(${r.rowIndex})" title="แก้ไข">✏️</button>
-           <button class="btn-icon danger" onclick="quickDelete(${r.rowIndex},'${escAttr(r.group||currentSheet)}')" title="ลบ">🗑</button>
+           <button class="btn-icon danger" onclick="quickDelete(${r.rowIndex})" title="ลบ">🗑</button>
          </td>` : '';
     return `<tr>
       <td class="td-no">${r.no||i+1}</td><td>${escHtml(r.item)}</td>
@@ -403,7 +404,8 @@ function renderTable() {
       <td class="td-price">${priceStr}</td>
       <td>${escHtml(cleanDateDisplay(r.date))}</td><td>${escHtml(r.method||'')}</td>
       <td><span class="td-code">${escHtml(r.code||'')}</span></td>
-      <td>${escHtml(r.group||'')}</td>
+      <td>${escHtml(r.sourceSheet||currentSheet)}</td>
+      <td>${escHtml(r.remark||'')}</td>
       <td class="td-status">${statusBadge}</td>
       <td>${escHtml(r.user||'')}</td>
       ${actionCol}
@@ -458,7 +460,8 @@ function closeModalBg(e) { if (e.target === document.getElementById('modalOverla
 // ── FORM BUILDER ──────────────────────────────────────────
 function buildRowForm(data, idx, isEdit=false) {
   const d = data || {};
-  const groupOpts  = GROUPS.map(g => `<option value="${g}" ${(d.group||currentSheet)===g?'selected':''}>${g}</option>`).join('');
+  const ownerSheet = isEdit ? currentSheet : (d.sourceSheet || currentSheet);
+  const groupOpts  = GROUPS.map(g => `<option value="${g}" ${ownerSheet===g?'selected':''}>${g}</option>`).join('');
   const statusOpts = STATUSES.map(s => `<option value="${s}" ${(d.status||'ใช้ได้')===s?'selected':''}>${s}</option>`).join('');
   const methodOpts = METHODS.map(m => `<option value="${m}" ${(d.method||'')===m?'selected':''}>${m}</option>`).join('');
   return `
@@ -478,7 +481,8 @@ function buildRowForm(data, idx, isEdit=false) {
       <div class="form-group"><label>วันที่ได้มา</label><input type="text" id="date-${idx}" value="${escHtml(cleanDateDisplay(d.date))}" placeholder="พิมพ์เองได้เลย เช่น 22/01/61 หรือ 10 มิย 69"/></div>
       <div class="form-group"><label>วิธีได้มา</label><select id="method-${idx}"><option value="">-- เลือก --</option>${methodOpts}</select></div>
       <div class="form-group"><label>รหัสครุภัณฑ์ *</label><input type="text" id="code-${idx}" value="${escHtml(d.code||'')}" placeholder="เช่น มส2/1/100/61-1"/></div>
-      <div class="form-group"><label>กลุ่มงาน</label><select id="group-${idx}">${groupOpts}</select></div>
+      <div class="form-group"><label>กลุ่มงาน</label><select id="group-${idx}" ${isEdit ? 'disabled' : ''}>${groupOpts}</select></div>
+      <div class="form-group form-full"><label>หมายเหตุ</label><input type="text" id="remark-${idx}" value="${escHtml(d.remark||'')}"/></div>
       <div class="form-group"><label>สภาพครุภัณฑ์</label><select id="status-${idx}">${statusOpts}</select></div>
       <div class="form-group form-full"><label>ใช้ประจำที่ / บุคลากร</label><input type="text" id="user-${idx}" value="${escHtml(d.user||'')}" placeholder="เช่น ศน.สิทธิพงษ์"/></div>
     </div>
@@ -562,7 +566,7 @@ function _readRow(idx) {
   return {
     item, brand: v('brand'), model: v('model'), serial: v('serial'),
     price: v('price'), date: v('date'), method: v('method'),
-    code, group: v('group')||currentSheet, status: v('status')||'ใช้ได้', user: v('user'),
+    code, sourceSheet: editingRecord ? currentSheet : (v('group')||currentSheet), remark: v('remark'), status: v('status')||'ใช้ได้', user: v('user'),
     isBundle,
     bundle: isBundle ? { item: bItem, brand: v('b-brand'), model: v('b-model'), serial: v('b-serial'), code: bCode, user: v('b-user') } : null,
   };
@@ -579,22 +583,22 @@ function setBusy(busy) {
 async function deleteRecord() {
   if (!editingRecord) return;
   if (!confirm(`ลบ "${editingRecord.item}" ?\nไม่สามารถย้อนกลับได้`)) return;
-  const snapshot = { ...editingRecord };
+  const snapshot = { ...editingRecord, sourceSheet: currentSheet };
   setBusy(true);
   try {
-    await api({ action: 'delete', rowIndex: editingRecord.rowIndex, group: editingRecord.group||currentSheet });
+    await api({ action: 'delete', rowIndex: editingRecord.rowIndex, sourceSheet: currentSheet });
     showUndoToast('ลบเรียบร้อย ✓', () => restoreDeleted(snapshot));
     closeModal(); await loadSheet(currentSheet);
   } catch(e) { showModalErr(e.message); }
   setBusy(false);
 }
-async function quickDelete(rowIndex, group) {
+async function quickDelete(rowIndex) {
   const r = allRecords.find(x => x.rowIndex === rowIndex);
   if (!r) return;
   if (!confirm(`ลบ "${r.item||'รายการนี้'}" ?`)) return;
-  const snapshot = { ...r };
+  const snapshot = { ...r, sourceSheet: currentSheet };
   try {
-    await api({ action: 'delete', rowIndex, group });
+    await api({ action: 'delete', rowIndex, sourceSheet: currentSheet });
     showUndoToast('ลบเรียบร้อย ✓', () => restoreDeleted(snapshot));
     await loadSheet(currentSheet);
   } catch(e) { showToast('ลบล้มเหลว: ' + e.message, 'error'); }
@@ -604,7 +608,8 @@ async function restoreDeleted(snapshot) {
     const d = {
       item: snapshot.item, brand: snapshot.brand||'', model: snapshot.model||'',
       serial: snapshot.serial||'', price: snapshot.price||'', date: snapshot.date||'',
-      method: snapshot.method||'', code: snapshot.code||'', group: snapshot.group||currentSheet,
+      method: snapshot.method||'', code: snapshot.code||'', sourceSheet: snapshot.sourceSheet,
+      remark: snapshot.remark||'',
       status: snapshot.status||'ใช้ได้', user: snapshot.user||'', isBundle: false, bundle: null,
     };
     await api({ action: 'add', data: JSON.stringify(d) });
@@ -636,15 +641,15 @@ function renderReport() {
   const isDispose = document.getElementById('reportSheetSel').value === 'ตัดจำหน่าย';
   document.getElementById('reportInfo').textContent = `แสดง ${reportData.length} รายการ`;
   const headers = isDispose
-    ? ['#','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','รหัสครุภัณฑ์','กลุ่มงาน','สภาพ','ใช้ประจำที่','วันที่ตัด','ผู้ดำเนินการ']
-    : ['#','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','วันที่ได้มา','วิธีได้มา','รหัสครุภัณฑ์','กลุ่มงาน','สภาพ','ใช้ประจำที่'];
+    ? ['#','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','รหัสครุภัณฑ์','กลุ่มงาน','หมายเหตุ','สภาพ','ใช้ประจำที่','วันที่ตัด','ผู้ดำเนินการ']
+    : ['#','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','วันที่ได้มา','วิธีได้มา','รหัสครุภัณฑ์','กลุ่มงาน','หมายเหตุ','สภาพ','ใช้ประจำที่'];
   document.getElementById('reportHead').innerHTML =
     `<tr style="background:var(--primary);color:#fff">${headers.map(h=>`<th style="padding:8px 12px;text-align:left;font-size:11px;white-space:nowrap">${h}</th>`).join('')}</tr>`;
   document.getElementById('reportBody').innerHTML = reportData.map((r,i) => {
     const priceStr = r.price && !isNaN(r.price) ? Number(r.price).toLocaleString('th-TH') : (r.price||'');
     const cells = isDispose
-      ? [i+1,r.item,r.brand,r.model,r.serial,priceStr,r.code,r.group,r.status,r.user,r.dispDate,r.dispBy]
-      : [i+1,r.item,r.brand,r.model,r.serial,priceStr,cleanDateDisplay(r.date),r.method,r.code,r.group,r.status,r.user];
+      ? [i+1,r.item,r.brand,r.model,r.serial,priceStr,r.code,r.sourceSheet,r.remark,r.status,r.user,r.dispDate,r.dispBy]
+      : [i+1,r.item,r.brand,r.model,r.serial,priceStr,cleanDateDisplay(r.date),r.method,r.code,r.sourceSheet,r.remark,r.status,r.user];
     return `<tr style="border-bottom:1px solid var(--border)">${cells.map(c=>`<td style="padding:7px 12px">${escHtml(String(c||''))}</td>`).join('')}</tr>`;
   }).join('');
 }
@@ -652,11 +657,11 @@ function exportCSV() {
   if (!reportData.length) { showToast('กรุณาดูรายงานก่อน','error'); return; }
   const isDispose = document.getElementById('reportSheetSel').value === 'ตัดจำหน่าย';
   const hdr = isDispose
-    ? ['ลำดับ','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','รหัสครุภัณฑ์','กลุ่มงาน','สภาพ','ใช้ประจำที่','วันที่ตัด','ผู้ดำเนินการ']
-    : ['ลำดับ','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','วันที่ได้มา','วิธีได้มา','รหัสครุภัณฑ์','กลุ่มงาน','สภาพ','ใช้ประจำที่'];
+    ? ['ลำดับ','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','รหัสครุภัณฑ์','กลุ่มงาน','หมายเหตุ','สภาพ','ใช้ประจำที่','วันที่ตัด','ผู้ดำเนินการ']
+    : ['ลำดับ','รายการ','ยี่ห้อ','รุ่น','Serial','ราคา/หน่วย','วันที่ได้มา','วิธีได้มา','รหัสครุภัณฑ์','กลุ่มงาน','หมายเหตุ','สภาพ','ใช้ประจำที่'];
   const rows = reportData.map((r,i) => isDispose
-    ? [i+1,r.item,r.brand,r.model,r.serial,r.price,r.code,r.group,r.status,r.user,r.dispDate,r.dispBy]
-    : [i+1,r.item,r.brand,r.model,r.serial,r.price,cleanDateDisplay(r.date),r.method,r.code,r.group,r.status,r.user]);
+    ? [i+1,r.item,r.brand,r.model,r.serial,r.price,r.code,r.sourceSheet,r.remark,r.status,r.user,r.dispDate,r.dispBy]
+    : [i+1,r.item,r.brand,r.model,r.serial,r.price,cleanDateDisplay(r.date),r.method,r.code,r.sourceSheet,r.remark,r.status,r.user]);
   const csv = '\uFEFF' + [hdr,...rows].map(r=>r.map(c=>`"${String(c||'').replace(/"/g,'""')}"`).join(',')).join('\n');
   const a = Object.assign(document.createElement('a'), {
     href: URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'})),
