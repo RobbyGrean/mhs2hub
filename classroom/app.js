@@ -326,6 +326,9 @@ async function toggleFullscreen() {
       await document.exitFullscreen();
       return;
     }
+    if (elements.slideFrame.classList.contains("is-zoomed")) {
+      toggleZoom();
+    }
     if (elements.slideFrame.requestFullscreen) {
       await elements.slideFrame.requestFullscreen();
     } else {
