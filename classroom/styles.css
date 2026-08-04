@@ -66,6 +66,30 @@ img {
   pointer-events: none;
 }
 
+.ambient::before {
+  content: "";
+  position: absolute;
+  top: -48vw;
+  left: 15vw;
+  width: 92vw;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 30deg,
+    transparent 0 18%,
+    rgba(67, 224, 195, 0.42) 25%,
+    transparent 34% 48%,
+    rgba(169, 120, 255, 0.4) 57%,
+    transparent 66% 78%,
+    rgba(255, 122, 138, 0.28) 87%,
+    transparent 94%
+  );
+  filter: blur(120px);
+  opacity: 0.1;
+  will-change: transform, opacity;
+  animation: auroraSweep 34s linear infinite;
+}
+
 .ambient::after {
   content: "";
   position: absolute;
@@ -81,18 +105,21 @@ img {
   filter: blur(130px);
   opacity: 0.13;
   transition: background 550ms ease;
+  will-change: transform, opacity;
 }
 
 .ambient-orb-a {
   top: -24vw;
   right: -8vw;
   background: var(--accent);
+  animation: auroraDriftA 22s ease-in-out infinite alternate;
 }
 
 .ambient-orb-b {
   top: 44vh;
   left: -30vw;
   background: var(--accent-two);
+  animation: auroraDriftB 28s ease-in-out infinite alternate;
 }
 
 .ambient-grid {
@@ -104,6 +131,7 @@ img {
     linear-gradient(90deg, rgba(255,255,255,0.08) 1px, transparent 1px);
   background-size: 80px 80px;
   mask-image: radial-gradient(circle at 70% 20%, #000, transparent 54%);
+  animation: gridDrift 42s linear infinite;
 }
 
 .ambient-noise {
@@ -114,6 +142,7 @@ img {
     radial-gradient(circle at 10% 20%, rgba(255,255,255,0.1) 0 0.5px, transparent 0.7px),
     radial-gradient(circle at 70% 60%, rgba(255,255,255,0.08) 0 0.5px, transparent 0.8px);
   background-size: 7px 7px, 11px 11px;
+  animation: starBreath 7s ease-in-out infinite alternate;
 }
 
 .site-header {
@@ -393,6 +422,8 @@ img {
   border-radius: 50%;
   background: radial-gradient(circle, rgba(var(--accent-rgb), 0.3), rgba(var(--accent-rgb), 0.06) 46%, transparent 68%);
   filter: blur(18px);
+  will-change: transform, opacity;
+  animation: haloBreath 8s ease-in-out infinite;
 }
 
 .orbit {
@@ -476,6 +507,11 @@ img {
   opacity: 0.54;
   transform: rotateZ(2.2deg) translate3d(-4px, -10px, -120px);
   animation-delay: 270ms;
+}
+
+.hero-card-four img {
+  object-fit: contain;
+  background: #f7f1e6;
 }
 
 .hero-card-three {
@@ -864,6 +900,21 @@ kbd {
   touch-action: pan-y;
 }
 
+.slide-frame.is-portrait {
+  width: min(100%, calc(78vh * 0.8), 720px);
+  aspect-ratio: var(--slide-ratio, 4 / 5);
+  margin-inline: auto;
+  background:
+    linear-gradient(135deg, rgba(var(--accent-rgb), 0.06), transparent 42%),
+    #05070d;
+}
+
+.slide-frame.is-portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
 .slide-frame img {
   width: 100%;
   height: 100%;
@@ -1051,6 +1102,12 @@ kbd {
   transform: translateY(-3px);
 }
 
+.thumbnail-button.is-portrait {
+  width: 76px;
+  min-width: 76px;
+  aspect-ratio: 4 / 5;
+}
+
 .thumbnail-button img {
   width: 100%;
   height: 100%;
@@ -1217,6 +1274,39 @@ kbd {
     scale: 0.94;
     filter: blur(5px);
   }
+}
+
+@keyframes auroraSweep {
+  0% { transform: rotate(0deg) scale(0.92); opacity: 0.07; }
+  50% { transform: rotate(180deg) scale(1.08); opacity: 0.13; }
+  100% { transform: rotate(360deg) scale(0.92); opacity: 0.07; }
+}
+
+@keyframes auroraDriftA {
+  0% { transform: translate3d(0, 0, 0) scale(0.94); opacity: 0.09; }
+  45% { transform: translate3d(-8vw, 10vh, 0) scale(1.08); opacity: 0.16; }
+  100% { transform: translate3d(5vw, 18vh, 0) scale(0.98); opacity: 0.12; }
+}
+
+@keyframes auroraDriftB {
+  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.08; }
+  52% { transform: translate3d(14vw, -9vh, 0) scale(1.12); opacity: 0.14; }
+  100% { transform: translate3d(24vw, 8vh, 0) scale(0.92); opacity: 0.1; }
+}
+
+@keyframes gridDrift {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 80px 80px, 80px 80px; }
+}
+
+@keyframes starBreath {
+  0% { opacity: 0.11; transform: translate3d(0, 0, 0); }
+  100% { opacity: 0.23; transform: translate3d(-6px, 4px, 0); }
+}
+
+@keyframes haloBreath {
+  0%, 100% { transform: scale(0.94); opacity: 0.72; }
+  50% { transform: scale(1.08); opacity: 1; }
 }
 
 @keyframes scrollLine {

@@ -58,6 +58,7 @@ const courses = {
     audience: "คณะกรรมการและเจ้าหน้าที่",
     total: 9,
     folder: "course-4",
+    orientation: "portrait",
     pdf: "../appeal/appealinglaw.pdf",
     accent: "#ff9a52",
     accentRgb: "255, 154, 82",
@@ -164,6 +165,9 @@ function updateCourseContent(course) {
     elements.downloadLink.setAttribute("download", "");
   }
   elements.slideCourseId.textContent = course.code;
+  const isPortraitCourse = course.orientation === "portrait";
+  elements.slideFrame.classList.toggle("is-portrait", isPortraitCourse);
+  elements.slideFrame.style.setProperty("--slide-ratio", isPortraitCourse ? "4 / 5" : "16 / 9");
 
   elements.tabs.forEach((tab) => {
     const selected = Number(tab.dataset.course) === course.id;
@@ -179,6 +183,7 @@ function renderThumbnails(course) {
   for (let page = 1; page <= course.total; page += 1) {
     const button = document.createElement("button");
     button.className = "thumbnail-button";
+    button.classList.toggle("is-portrait", course.orientation === "portrait");
     button.type = "button";
     button.dataset.slide = String(page);
     button.setAttribute("aria-label", `เปิดสไลด์หน้า ${page}`);
@@ -244,6 +249,9 @@ function updateSlideUi({ scrollThumbnail = true } = {}) {
   const incoming = new Image();
   incoming.onload = () => {
     if (requestId !== imageRequest) return;
+    const isPortrait = incoming.naturalHeight > incoming.naturalWidth;
+    elements.slideFrame.classList.toggle("is-portrait", isPortrait);
+    elements.slideFrame.style.setProperty("--slide-ratio", `${incoming.naturalWidth} / ${incoming.naturalHeight}`);
     elements.slideImage.src = source;
     elements.slideImage.alt = `วิชา${course.shortTitle} สไลด์หน้า ${activeSlide} จาก ${course.total}`;
     elements.slideFrame.classList.remove("is-loading");
