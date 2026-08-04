@@ -330,11 +330,13 @@ async function toggleFullscreen() {
       toggleZoom();
     }
     if (elements.slideFrame.requestFullscreen) {
+      elements.slideFrame.classList.add("is-fullscreen");
       await elements.slideFrame.requestFullscreen();
     } else {
       showToast("อุปกรณ์นี้ไม่รองรับโหมดเต็มจอ ใช้ปุ่มขยายแทนได้");
     }
   } catch {
+    elements.slideFrame.classList.remove("is-fullscreen");
     showToast("เปิดเต็มจอไม่สำเร็จ ใช้ปุ่มขยายแทนได้");
   }
 }
@@ -392,6 +394,7 @@ function bindEvents() {
   elements.copyLink.addEventListener("click", copyCurrentLink);
 
   document.addEventListener("fullscreenchange", () => {
+    elements.slideFrame.classList.toggle("is-fullscreen", document.fullscreenElement === elements.slideFrame);
     elements.fullscreenButton.textContent = document.fullscreenElement ? "ออกจากเต็มจอ" : "เต็มจอ";
   });
 

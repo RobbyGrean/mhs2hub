@@ -945,12 +945,13 @@ kbd {
 }
 
 .slide-frame:fullscreen,
-.slide-frame:-webkit-full-screen {
-  width: 100vw;
-  height: 100vh;
+.slide-frame:-webkit-full-screen,
+.slide-frame.is-fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
   max-width: none;
   max-height: none;
-  margin: 0;
+  margin: 0 !important;
   aspect-ratio: auto;
   overflow: hidden;
   place-items: center;
@@ -960,11 +961,13 @@ kbd {
 .slide-frame:fullscreen img,
 .slide-frame:fullscreen.is-zoomed img,
 .slide-frame:-webkit-full-screen img,
-.slide-frame:-webkit-full-screen.is-zoomed img {
-  width: 100%;
-  height: 100%;
-  max-width: 100%;
-  max-height: 100%;
+.slide-frame:-webkit-full-screen.is-zoomed img,
+.slide-frame.is-fullscreen img,
+.slide-frame.is-fullscreen.is-zoomed img {
+  width: auto !important;
+  height: auto !important;
+  max-width: 100vw !important;
+  max-height: 100vh !important;
   object-fit: contain;
   object-position: center;
   cursor: default;
