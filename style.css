@@ -1423,3 +1423,143 @@ body::after {
 .ai-learning-section .ai-passadu-card.card .dd-link { color:#f8fbff; border-color:rgba(255,255,255,.24); background:linear-gradient(135deg,rgba(15,27,35,.94),rgba(58,76,87,.94),rgba(18,31,40,.94)); }
 .ai-learning-section .ai-passadu-card.card .passadu-link-copy strong { color:#fff; }
 .ai-learning-section .ai-passadu-card.card .passadu-link-copy small { color:rgba(248,251,255,.76); }
+
+/* ── Presentation Library portal ── */
+.classroom-portal {
+  margin:0 0 2.5rem;
+}
+.classroom-portal-link {
+  position:relative;
+  min-height:220px;
+  padding:2rem clamp(1.5rem,4vw,3.25rem);
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:end;
+  gap:1.5rem;
+  overflow:hidden;
+  color:#f6f3eb;
+  border:1px solid rgba(125,211,252,.28);
+  border-radius:1rem;
+  background:
+    radial-gradient(circle at 82% 42%,rgba(67,224,195,.18),transparent 28%),
+    radial-gradient(circle at 15% 0%,rgba(169,120,255,.14),transparent 36%),
+    linear-gradient(118deg,#080b16,#11172a 58%,#0a101c);
+  box-shadow:0 24px 70px rgba(0,0,0,.36),inset 0 1px 0 rgba(255,255,255,.1);
+  isolation:isolate;
+  transition:transform .35s cubic-bezier(.2,.8,.2,1),border-color .25s ease,box-shadow .35s ease;
+}
+.classroom-portal-link:hover {
+  transform:translateY(-6px);
+  border-color:rgba(67,224,195,.72);
+  box-shadow:0 32px 90px rgba(0,0,0,.46),0 0 50px rgba(67,224,195,.1),inset 0 1px 0 rgba(255,255,255,.15);
+}
+.classroom-portal-glow {
+  position:absolute;
+  z-index:-1;
+  right:-5%;
+  top:-65%;
+  width:52%;
+  aspect-ratio:1;
+  border-radius:50%;
+  background:#43e0c3;
+  filter:blur(110px);
+  opacity:.1;
+  transition:opacity .3s ease;
+}
+.classroom-portal-link:hover .classroom-portal-glow { opacity:.18; }
+.classroom-portal-grid {
+  position:absolute;
+  z-index:-1;
+  inset:0;
+  opacity:.16;
+  background-image:linear-gradient(rgba(255,255,255,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.08) 1px,transparent 1px);
+  background-size:54px 54px;
+  mask-image:linear-gradient(90deg,transparent 32%,#000);
+}
+.classroom-portal-index {
+  position:absolute;
+  top:1.5rem;
+  left:clamp(1.5rem,4vw,3.25rem);
+  color:rgba(245,242,234,.52);
+  font:600 .62rem/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.13em;
+}
+.classroom-portal-copy {
+  position:relative;
+  z-index:2;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+}
+.classroom-portal-copy small {
+  margin-bottom:.72rem;
+  color:#43e0c3;
+  font:600 .68rem/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;
+  letter-spacing:.14em;
+}
+.classroom-portal-copy strong {
+  font-size:clamp(1.9rem,4vw,3.55rem);
+  font-weight:850;
+  line-height:1.02;
+  letter-spacing:-.045em;
+}
+.classroom-portal-copy strong em {
+  color:transparent;
+  font-style:normal;
+  -webkit-text-stroke:1px rgba(245,242,234,.8);
+}
+.classroom-portal-copy > span:last-child {
+  margin-top:.9rem;
+  color:rgba(245,242,234,.58);
+  font-size:.82rem;
+}
+.classroom-portal-action {
+  position:relative;
+  z-index:2;
+  min-width:190px;
+  min-height:54px;
+  padding:0 1.25rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1.5rem;
+  color:#07120f;
+  background:#43e0c3;
+  font-size:.78rem;
+  font-weight:800;
+  transition:transform .25s ease,background .25s ease;
+}
+.classroom-portal-link:hover .classroom-portal-action { transform:translateX(5px);background:#76ecd6; }
+.classroom-portal-action b { font-size:1.2rem; }
+.classroom-portal-stack {
+  position:absolute;
+  top:2.1rem;
+  right:4.5rem;
+  width:130px;
+  height:72px;
+  opacity:.38;
+  transform:rotate(-8deg);
+}
+.classroom-portal-stack i {
+  position:absolute;
+  inset:0;
+  border:1px solid rgba(245,242,234,.35);
+  background:rgba(255,255,255,.035);
+  box-shadow:0 12px 24px rgba(0,0,0,.2);
+}
+.classroom-portal-stack i:nth-child(2) { transform:translate(-12px,8px); }
+.classroom-portal-stack i:nth-child(3) { transform:translate(-24px,16px); }
+
+@media(max-width:700px) {
+  .classroom-portal-link {
+    min-height:290px;
+    padding:4.5rem 1.3rem 1.35rem;
+    grid-template-columns:1fr;
+    align-items:end;
+  }
+  .classroom-portal-index { left:1.3rem; }
+  .classroom-portal-copy strong { max-width:10ch; }
+  .classroom-portal-copy > span:last-child { max-width:34ch; }
+  .classroom-portal-action { width:100%; }
+  .classroom-portal-stack { top:2.2rem;right:-1rem;width:105px;height:59px; }
+}
