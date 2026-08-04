@@ -46,6 +46,38 @@ const courses = {
     accent: "#ff7a8a",
     accentRgb: "255, 122, 138",
     accentTwo: "#f2c55c"
+  },
+  4: {
+    id: 4,
+    code: "C04",
+    kicker: "COURSE 04 · APPEAL KNOWLEDGE",
+    title: "องค์ความรู้ด้านการอุทธรณ์",
+    shortTitle: "การอุทธรณ์",
+    description: "เข้าใจหลักการอุทธรณ์ ผู้มีสิทธิอุทธรณ์ เรื่องที่อุทธรณ์ได้หรือไม่ได้ และกรอบเวลาที่ต้องดำเนินการอย่างเป็นระบบ",
+    level: "เฉพาะเรื่อง",
+    audience: "คณะกรรมการและเจ้าหน้าที่",
+    total: 9,
+    folder: "course-4",
+    pdf: "../appeal/appealinglaw.pdf",
+    accent: "#ff9a52",
+    accentRgb: "255, 154, 82",
+    accentTwo: "#ff7a8a"
+  },
+  5: {
+    id: 5,
+    code: "C05",
+    kicker: "COURSE 05 · LEGAL FOUNDATION",
+    title: "ภาพรวมกฎหมายและระเบียบพัสดุ",
+    shortTitle: "กฎหมายและระเบียบพัสดุ",
+    description: "ปูพื้นฐานองค์ความรู้ด้านงานพัสดุ ตั้งแต่กรอบกฎหมาย การจัดซื้อจัดจ้าง การควบคุมพัสดุ การบริหารสัญญา ไปจนถึงการจำหน่ายพัสดุ",
+    level: "พื้นฐานสำคัญ",
+    audience: "ผู้ปฏิบัติงานทุกระดับ",
+    total: 11,
+    folder: "course-5",
+    pdf: "https://drive.google.com/file/d/1RTbgAm172FUEujS-01I9NnQZmq_ZYNl1/view?usp=sharing",
+    accent: "#7dd3fc",
+    accentRgb: "125, 211, 252",
+    accentTwo: "#f2c55c"
   }
 };
 
@@ -119,7 +151,18 @@ function updateCourseContent(course) {
   elements.courseLevel.textContent = course.level;
   elements.courseTotal.textContent = `${course.total} หน้า`;
   elements.courseAudience.textContent = course.audience;
-  elements.downloadLink.href = `./downloads/${course.pdf}`;
+  const isDirectPath = course.pdf.startsWith(".") || course.pdf.startsWith("http");
+  const isExternal = course.pdf.startsWith("http");
+  elements.downloadLink.href = isDirectPath ? course.pdf : `./downloads/${course.pdf}`;
+  if (isExternal) {
+    elements.downloadLink.target = "_blank";
+    elements.downloadLink.rel = "noopener";
+    elements.downloadLink.removeAttribute("download");
+  } else {
+    elements.downloadLink.removeAttribute("target");
+    elements.downloadLink.removeAttribute("rel");
+    elements.downloadLink.setAttribute("download", "");
+  }
   elements.slideCourseId.textContent = course.code;
 
   elements.tabs.forEach((tab) => {
@@ -231,12 +274,16 @@ function setCourse(courseId, options = {}) {
   const course = courses[courseId];
   if (!course) return;
 
+  elements.viewer.classList.add("course-swap");
   activeCourse = course.id;
   activeSlide = Math.min(Math.max(options.slide || 1, 1), course.total);
   applyTheme(course);
   updateCourseContent(course);
   renderThumbnails(course);
   updateSlideUi({ scrollThumbnail: false });
+  window.requestAnimationFrame(() => {
+    window.requestAnimationFrame(() => elements.viewer.classList.remove("course-swap"));
+  });
 
   if (options.scroll) {
     elements.viewer.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -366,9 +413,11 @@ function bindEvents() {
       const x = (event.clientX - rect.left) / rect.width - 0.5;
       const y = (event.clientY - rect.top) / rect.height - 0.5;
       const transforms = [
-        `rotateY(${-13 + x * 2}deg) rotateX(${y * -2}deg) rotateZ(7deg) translate3d(${x * 5}px, ${y * 5}px, -110px)`,
-        `rotateY(${12 + x * 3}deg) rotateX(${y * -2}deg) rotateZ(-7deg) translate3d(${x * -7}px, ${y * -7}px, -45px)`,
-        `rotateY(${-7 + x * 5}deg) rotateX(${y * -4}deg) rotateZ(2deg) translate3d(${x * 10}px, ${y * 10}px, 40px)`
+        `rotateX(${y * -1.2}deg) rotateY(${x * 1.5}deg) rotateZ(-3deg) translate3d(${-10 + x * 3}px, ${-18 + y * 3}px, -160px)`,
+        `rotateX(${y * -1.4}deg) rotateY(${x * 1.8}deg) rotateZ(2.2deg) translate3d(${-4 + x * 4}px, ${-10 + y * 4}px, -120px)`,
+        `rotateX(${y * -1.7}deg) rotateY(${x * 2.2}deg) rotateZ(-1.8deg) translate3d(${x * 5}px, ${-4 + y * 5}px, -80px)`,
+        `rotateX(${y * -2}deg) rotateY(${x * 2.7}deg) rotateZ(1deg) translate3d(${4 + x * 6}px, ${3 + y * 6}px, -40px)`,
+        `rotateX(${y * -2.4}deg) rotateY(${x * 3.2}deg) rotateZ(-0.4deg) translate3d(${8 + x * 8}px, ${10 + y * 8}px, 20px)`
       ];
       elements.heroCards.forEach((card, index) => { card.style.transform = transforms[index]; });
     });
