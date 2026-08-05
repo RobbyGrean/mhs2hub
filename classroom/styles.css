@@ -1483,7 +1483,7 @@ kbd {
 .music-heading {
   margin-bottom: clamp(38px, 5vw, 64px);
   display: grid;
-  grid-template-columns: minmax(290px, 0.9fr) auto minmax(280px, 0.75fr);
+  grid-template-columns: minmax(290px, 1fr) auto;
   align-items: end;
   gap: clamp(28px, 5vw, 72px);
 }
@@ -2119,11 +2119,6 @@ html[data-theme="soft"] .thumbnail-button span {
 
   .music-heading {
     grid-template-columns: minmax(0, 1fr) auto;
-  }
-
-  .music-heading > p {
-    max-width: 620px;
-    grid-column: 1 / -1;
   }
 
   .music-layout {

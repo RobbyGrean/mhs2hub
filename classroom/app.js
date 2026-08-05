@@ -236,7 +236,7 @@ function setColorMode(mode, { persist = true } = {}) {
 
 function updateThemeColor() {
   const isDark = elements.root.dataset.theme === "dark";
-  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", isDark ? "#080b16" : "#fff7f2");
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", isDark ? "#080b16" : "#f3e3cd");
 }
 
 function openCategory(categoryId) {
