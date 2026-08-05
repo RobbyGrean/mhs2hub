@@ -186,12 +186,18 @@ const elements = {
   fullscreenButton: document.getElementById("fullscreen-button"),
   toast: document.getElementById("toast"),
   heroVisual: document.querySelector(".hero-visual"),
-  heroCards: [...document.querySelectorAll(".hero-card")]
+  heroCards: [...document.querySelectorAll(".hero-card")],
+  musicPlayer: document.getElementById("music-player"),
+  musicCurrentIndex: document.getElementById("music-current-index"),
+  musicCurrentTitle: document.getElementById("music-current-title"),
+  musicYoutubeLink: document.getElementById("music-youtube-link"),
+  musicTracks: [...document.querySelectorAll(".music-track")]
 };
 
 let activeCourse = 1;
 let activeSlide = 1;
 let toastTimer;
+let musicLoadTimer;
 let touchStartX = 0;
 let touchStartY = 0;
 let imageRequest = 0;
@@ -455,6 +461,31 @@ function showToast(message) {
   toastTimer = window.setTimeout(() => elements.toast.classList.remove("is-visible"), 2400);
 }
 
+function selectMusicTrack(track) {
+  if (!track || !elements.musicPlayer) return;
+  const { video, title, index } = track.dataset;
+  if (!video || !title || !index) return;
+
+  elements.musicTracks.forEach((button) => {
+    const selected = button === track;
+    button.classList.toggle("is-active", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
+  elements.musicCurrentIndex.textContent = `${index} / 05`;
+  elements.musicCurrentTitle.textContent = title;
+  elements.musicYoutubeLink.href = `https://youtu.be/${video}`;
+
+  if (elements.musicPlayer.dataset.currentVideo === video) return;
+  elements.musicPlayer.closest(".music-player-shell")?.classList.add("is-switching");
+  window.clearTimeout(musicLoadTimer);
+  musicLoadTimer = window.setTimeout(() => {
+    elements.musicPlayer.closest(".music-player-shell")?.classList.remove("is-switching");
+  }, 8000);
+  elements.musicPlayer.dataset.currentVideo = video;
+  elements.musicPlayer.title = `เพลงพัสดุ: ${title}`;
+  elements.musicPlayer.src = `https://www.youtube-nocookie.com/embed/${video}?rel=0&playsinline=1&autoplay=1`;
+}
+
 async function copyCurrentLink() {
   updateUrlAndMemory();
   try {
@@ -495,6 +526,14 @@ function bindEvents() {
 
   elements.themeToggle?.addEventListener("click", () => {
     setColorMode(elements.root.dataset.theme === "dark" ? "soft" : "dark");
+  });
+
+  elements.musicTracks.forEach((track) => {
+    track.addEventListener("click", () => selectMusicTrack(track));
+  });
+  elements.musicPlayer?.addEventListener("load", () => {
+    window.clearTimeout(musicLoadTimer);
+    elements.musicPlayer.closest(".music-player-shell")?.classList.remove("is-switching");
   });
 
   document.querySelectorAll("[data-open-course]").forEach((button) => {
