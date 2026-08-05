@@ -8,8 +8,9 @@ const courses = {
     description: "เข้าใจเส้นทางตั้งแต่ได้รับจัดสรรงบประมาณ การผูกพันงบ การตรวจรับ ไปจนถึงการควบคุมครุภัณฑ์และประกัน",
     level: "พื้นฐาน",
     audience: "ผู้เริ่มต้น",
-    total: 11,
+    total: 8,
     folder: "course-1",
+    category: "knowledge",
     pdf: "course-1-budget.pdf",
     accent: "#43e0c3",
     accentRgb: "67, 224, 195",
@@ -26,6 +27,7 @@ const courses = {
     audience: "เจ้าหน้าที่พัสดุ",
     total: 9,
     folder: "course-2",
+    category: "knowledge",
     pdf: "course-2-assets.pdf",
     accent: "#f2c55c",
     accentRgb: "242, 197, 92",
@@ -42,6 +44,7 @@ const courses = {
     audience: "ทุกคน",
     total: 13,
     folder: "course-3",
+    category: "knowledge",
     pdf: "course-3-procurement.pdf",
     accent: "#ff7a8a",
     accentRgb: "255, 122, 138",
@@ -58,6 +61,7 @@ const courses = {
     audience: "คณะกรรมการและเจ้าหน้าที่",
     total: 9,
     folder: "course-4",
+    category: "knowledge",
     orientation: "portrait",
     pdf: "../appeal/appealinglaw.pdf",
     accent: "#ff9a52",
@@ -75,10 +79,79 @@ const courses = {
     audience: "ผู้ปฏิบัติงานทุกระดับ",
     total: 11,
     folder: "course-5",
+    category: "knowledge",
     pdf: "https://drive.google.com/file/d/1RTbgAm172FUEujS-01I9NnQZmq_ZYNl1/view?usp=sharing",
     accent: "#7dd3fc",
     accentRgb: "125, 211, 252",
     accentTwo: "#f2c55c"
+  },
+  6: {
+    id: 6,
+    code: "C06",
+    kicker: "COURSE 06 · SCHOOL LUNCH",
+    title: "แนวทางการจัดซื้อจัดจ้างและบริหารจัดการอาหารกลางวัน",
+    shortTitle: "อาหารกลางวัน",
+    description: "สรุปกระบวนการจัดซื้อจัดจ้าง การบริหารงบประมาณ การจัดหาอาหาร การรายงานผล และการส่งคืนเงินสำหรับโครงการอาหารกลางวัน",
+    level: "แนวทางปฏิบัติ",
+    audience: "สถานศึกษาและผู้รับผิดชอบโครงการ",
+    total: 5,
+    folder: "course-6",
+    category: "knowledge",
+    pdf: "course-6-lunch.pdf",
+    accent: "#f48fb1",
+    accentRgb: "244, 143, 177",
+    accentTwo: "#7dd3fc"
+  },
+  7: {
+    id: 7,
+    code: "C07",
+    kicker: "CIRCULAR 01 · W804",
+    title: "สรุปหนังสือเวียน ว804",
+    shortTitle: "หนังสือเวียน ว804",
+    description: "สรุปแนวทางการจัดซื้อจัดจ้างตามหนังสือเวียน ว804 ให้เห็นขั้นตอน เอกสาร และประเด็นสำคัญในรูปแบบภาพ",
+    level: "สรุปหนังสือเวียน",
+    audience: "เจ้าหน้าที่พัสดุและผู้เกี่ยวข้อง",
+    total: 9,
+    folder: "course-7",
+    category: "circulars",
+    pdf: "circular-w804.pdf",
+    accent: "#d66a5f",
+    accentRgb: "214, 106, 95",
+    accentTwo: "#f7b267"
+  },
+  8: {
+    id: 8,
+    code: "C08",
+    kicker: "CIRCULAR 02 · W414",
+    title: "สรุปหนังสือเวียน ว414",
+    shortTitle: "หนังสือเวียน ว414",
+    description: "สรุปแนวทางเร่งรัดการจัดซื้อจัดจ้างกรณีไม่ใช้งบประมาณรายจ่ายประจำปี พร้อมประเด็นที่ควรรู้ก่อนดำเนินงาน",
+    level: "สรุปหนังสือเวียน",
+    audience: "ผู้วางแผนและผู้ปฏิบัติงานจัดซื้อจัดจ้าง",
+    total: 6,
+    folder: "course-8",
+    category: "circulars",
+    pdf: "circular-w414.pdf",
+    accent: "#d9a441",
+    accentRgb: "217, 164, 65",
+    accentTwo: "#7dd3fc"
+  },
+  9: {
+    id: 9,
+    code: "C09",
+    kicker: "CIRCULAR 03 · W371",
+    title: "สรุปหนังสือเวียน ว371",
+    shortTitle: "หนังสือเวียน ว371",
+    description: "สรุปแนวทางปฏิบัติในการจัดซื้อจัดจ้างและการบริหารพัสดุภาครัฐ พร้อมลำดับวินิจฉัยเบื้องต้นในรูปแบบอ่านง่าย",
+    level: "สรุปหนังสือเวียน",
+    audience: "ผู้ปฏิบัติงานและคณะกรรมการ",
+    total: 12,
+    folder: "course-9",
+    category: "circulars",
+    pdf: "circular-w371.pdf",
+    accent: "#2f8f83",
+    accentRgb: "47, 143, 131",
+    accentTwo: "#d9a441"
   }
 };
 
@@ -86,6 +159,10 @@ const elements = {
   root: document.documentElement,
   viewer: document.getElementById("course-viewer"),
   tabs: [...document.querySelectorAll(".course-tab")],
+  categoryToggles: [...document.querySelectorAll(".category-toggle")],
+  categoryGroups: [...document.querySelectorAll(".course-group")],
+  themeToggle: document.getElementById("theme-toggle"),
+  themeLabel: document.getElementById("theme-label"),
   courseKicker: document.getElementById("course-kicker"),
   courseTitle: document.getElementById("course-title"),
   courseDescription: document.getElementById("course-description"),
@@ -138,11 +215,40 @@ function readInitialState() {
   activeSlide = Math.min(Math.max(requestedSlide, 1), courses[activeCourse].total);
 }
 
+function setColorMode(mode, { persist = true } = {}) {
+  const nextMode = mode === "dark" ? "dark" : "soft";
+  elements.root.dataset.theme = nextMode;
+  if (persist) localStorage.setItem("mhs2-learning-theme", nextMode);
+  if (elements.themeToggle) {
+    const isDark = nextMode === "dark";
+    elements.themeToggle.setAttribute("aria-pressed", String(isDark));
+    elements.themeToggle.setAttribute("aria-label", isDark ? "เปลี่ยนเป็น Soft mode" : "เปลี่ยนเป็น Dark mode");
+  }
+  if (elements.themeLabel) elements.themeLabel.textContent = nextMode === "dark" ? "Dark" : "Soft";
+  updateThemeColor();
+}
+
+function updateThemeColor() {
+  const isDark = elements.root.dataset.theme === "dark";
+  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", isDark ? "#080b16" : "#fff7f2");
+}
+
+function openCategory(categoryId) {
+  elements.categoryGroups.forEach((group) => {
+    const isOpen = group.dataset.category === categoryId;
+    group.classList.toggle("is-open", isOpen);
+    const toggle = group.querySelector(".category-toggle");
+    const panel = group.querySelector(".course-group-panel");
+    toggle?.setAttribute("aria-expanded", String(isOpen));
+    if (panel) panel.hidden = !isOpen;
+  });
+}
+
 function applyTheme(course) {
   elements.root.style.setProperty("--accent", course.accent);
   elements.root.style.setProperty("--accent-rgb", course.accentRgb);
   elements.root.style.setProperty("--accent-two", course.accentTwo);
-  document.querySelector('meta[name="theme-color"]')?.setAttribute("content", course.id === 1 ? "#080b16" : "#090c16");
+  updateThemeColor();
 }
 
 function updateCourseContent(course) {
@@ -285,6 +391,7 @@ function setCourse(courseId, options = {}) {
   elements.viewer.classList.add("course-swap");
   activeCourse = course.id;
   activeSlide = Math.min(Math.max(options.slide || 1, 1), course.total);
+  openCategory(course.category);
   applyTheme(course);
   updateCourseContent(course);
   renderThumbnails(course);
@@ -368,16 +475,26 @@ async function copyCurrentLink() {
 }
 
 function bindEvents() {
+  elements.categoryToggles.forEach((toggle) => {
+    toggle.addEventListener("click", () => openCategory(toggle.closest(".course-group")?.dataset.category));
+  });
+
   elements.tabs.forEach((tab, index) => {
     tab.addEventListener("click", () => setCourse(Number(tab.dataset.course)));
     tab.addEventListener("keydown", (event) => {
       if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
       event.preventDefault();
       const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1;
-      const nextIndex = (index + direction + elements.tabs.length) % elements.tabs.length;
-      elements.tabs[nextIndex].focus();
-      setCourse(Number(elements.tabs[nextIndex].dataset.course));
+      const groupTabs = [...tab.closest(".course-tabs").querySelectorAll(".course-tab")];
+      const groupIndex = groupTabs.indexOf(tab);
+      const nextIndex = (groupIndex + direction + groupTabs.length) % groupTabs.length;
+      groupTabs[nextIndex].focus();
+      setCourse(Number(groupTabs[nextIndex].dataset.course));
     });
+  });
+
+  elements.themeToggle?.addEventListener("click", () => {
+    setColorMode(elements.root.dataset.theme === "dark" ? "soft" : "dark");
   });
 
   document.querySelectorAll("[data-open-course]").forEach((button) => {
@@ -444,4 +561,5 @@ function bindEvents() {
 
 readInitialState();
 bindEvents();
+setColorMode(elements.root.dataset.theme, { persist: false });
 setCourse(activeCourse, { slide: activeSlide });

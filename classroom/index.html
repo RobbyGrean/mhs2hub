@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="th">
+<html lang="th" data-theme="soft">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#080b16">
-  <meta name="description" content="ห้องเรียนงานพัสดุออนไลน์ 5 วิชา 53 สไลด์ เรียนรู้กฎหมายพัสดุ งบประมาณ ทะเบียนครุภัณฑ์ การจัดซื้อจัดจ้าง และการอุทธรณ์ได้ทุกอุปกรณ์">
+  <meta name="theme-color" content="#fff7f2">
+  <meta name="description" content="ห้องเรียนงานพัสดุออนไลน์ 9 ชุด 82 สไลด์ รวมวิชาความรู้ อาหารกลางวัน และสรุปหนังสือเวียน พร้อม Soft และ Dark mode">
   <meta property="og:title" content="MHS2 Learning Library — เรื่องพัสดุ เห็นภาพ ก็เข้าใจ">
-  <meta property="og:description" content="5 วิชา 53 สไลด์ ห้องเรียนงานพัสดุที่เปิดเรียนได้ทุกอุปกรณ์">
+  <meta property="og:description" content="9 ชุด 82 สไลด์ ห้องเรียนงานพัสดุที่เปิดเรียนได้ทุกอุปกรณ์">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://robbygrean.github.io/mhs2hub/classroom/og.png">
   <meta property="og:image:width" content="1200">
@@ -17,6 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script>try { document.documentElement.dataset.theme = localStorage.getItem("mhs2-learning-theme") || "soft"; } catch { document.documentElement.dataset.theme = "soft"; }</script>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
@@ -37,7 +38,11 @@
     </a>
     <nav class="top-nav" aria-label="เมนูหลัก">
       <a href="#courses">บทเรียน</a>
+      <a href="#guarantee-checklist">Checklist</a>
       <a href="#how-it-works">วิธีใช้งาน</a>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false" aria-label="เปลี่ยนเป็น Dark mode">
+        <span aria-hidden="true"></span><b id="theme-label">Soft</b>
+      </button>
       <a class="nav-home" href="../">กลับศูนย์รวม <span aria-hidden="true">↗</span></a>
     </nav>
   </header>
@@ -57,13 +62,13 @@
           <button class="text-button" type="button" data-open-course="1">เปิดวิชาแรก <span aria-hidden="true">↘</span></button>
         </div>
         <dl class="hero-stats" aria-label="ข้อมูลห้องเรียน">
-          <div><dt>05</dt><dd>วิชา</dd></div>
-          <div><dt>53</dt><dd>สไลด์</dd></div>
+          <div><dt>09</dt><dd>ชุดความรู้</dd></div>
+          <div><dt>82</dt><dd>สไลด์</dd></div>
           <div><dt>24/7</dt><dd>เปิดเรียน</dd></div>
         </dl>
       </div>
 
-      <div class="hero-visual" aria-label="ตัวอย่างสไลด์ทั้งห้าวิชา">
+      <div class="hero-visual" aria-label="ตัวอย่างสไลด์ใน Learning Library">
         <div class="visual-halo"></div>
         <div class="orbit orbit-a"></div>
         <div class="orbit orbit-b"></div>
@@ -88,7 +93,7 @@
           <figcaption><span>01</span> กระบวนการงบประมาณ</figcaption>
         </figure>
         <div class="visual-label visual-label-top">CURATED FOR<br>PUBLIC OFFICERS</div>
-        <div class="visual-label visual-label-side">SCROLL TO LEARN · 01—05</div>
+        <div class="visual-label visual-label-side">SCROLL TO LEARN · 01—09</div>
       </div>
 
       <a class="scroll-cue" href="#courses">
@@ -103,35 +108,42 @@
           <p class="eyebrow"><span></span> THE COURSE LIBRARY</p>
           <h2 id="courses-title">เลือกบทเรียนของคุณ</h2>
         </div>
-        <p>เลือกจาก 5 วิชา แล้วใช้ปุ่ม ลูกศรบนคีย์บอร์ด หรือปัดหน้าจอเพื่อเรียนตามจังหวะของคุณ</p>
+        <p>เลือกหมวดก่อน แล้วค่อยเปิดรายวิชาหรือสรุปหนังสือเวียน ใช้ลูกศรบนคีย์บอร์ดหรือปัดหน้าจอเพื่อเรียนตามจังหวะของคุณ</p>
       </div>
 
-      <div class="course-tabs" role="tablist" aria-label="เลือกวิชา">
-        <button class="course-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="course-viewer" data-course="1">
-          <span class="tab-number">01</span>
-          <span><strong>กระบวนการงบประมาณ</strong><small>11 สไลด์</small></span>
-          <i aria-hidden="true"></i>
-        </button>
-        <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="2">
-          <span class="tab-number">02</span>
-          <span><strong>ทะเบียนครุภัณฑ์</strong><small>9 สไลด์</small></span>
-          <i aria-hidden="true"></i>
-        </button>
-        <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="3">
-          <span class="tab-number">03</span>
-          <span><strong>จัดซื้อจัดจ้างเทียบชีวิตจริง</strong><small>13 สไลด์</small></span>
-          <i aria-hidden="true"></i>
-        </button>
-        <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="4">
-          <span class="tab-number">04</span>
-          <span><strong>องค์ความรู้ด้านการอุทธรณ์</strong><small>9 สไลด์</small></span>
-          <i aria-hidden="true"></i>
-        </button>
-        <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="5">
-          <span class="tab-number">05</span>
-          <span><strong>กฎหมายและระเบียบพัสดุ</strong><small>11 สไลด์</small></span>
-          <i aria-hidden="true"></i>
-        </button>
+      <div class="library-groups" aria-label="หมวด Learning Library">
+        <section class="course-group is-open" data-category="knowledge">
+          <button class="category-toggle" type="button" aria-expanded="true" aria-controls="knowledge-courses">
+            <span class="category-index">01</span>
+            <span><strong>วิชาความรู้</strong><small>6 วิชา · 55 สไลด์</small></span>
+            <i aria-hidden="true"></i>
+          </button>
+          <div class="course-group-panel" id="knowledge-courses">
+            <div class="course-tabs" role="tablist" aria-label="เลือกวิชาความรู้" style="--course-count: 6">
+              <button class="course-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="course-viewer" data-course="1"><span class="tab-number">01</span><span><strong>กระบวนการงบประมาณ</strong><small>8 สไลด์</small></span><i aria-hidden="true"></i></button>
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="2"><span class="tab-number">02</span><span><strong>ทะเบียนครุภัณฑ์</strong><small>9 สไลด์</small></span><i aria-hidden="true"></i></button>
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="3"><span class="tab-number">03</span><span><strong>จัดซื้อจัดจ้างเทียบชีวิตจริง</strong><small>13 สไลด์</small></span><i aria-hidden="true"></i></button>
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="4"><span class="tab-number">04</span><span><strong>องค์ความรู้ด้านการอุทธรณ์</strong><small>9 สไลด์</small></span><i aria-hidden="true"></i></button>
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="5"><span class="tab-number">05</span><span><strong>กฎหมายและระเบียบพัสดุ</strong><small>11 สไลด์</small></span><i aria-hidden="true"></i></button>
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="6"><span class="tab-number">06</span><span><strong>อาหารกลางวัน</strong><small>5 สไลด์</small></span><i aria-hidden="true"></i></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="course-group" data-category="circulars">
+          <button class="category-toggle" type="button" aria-expanded="false" aria-controls="circular-courses">
+            <span class="category-index">02</span>
+            <span><strong>สรุปหนังสือเวียน</strong><small>ว804 · ว414 · ว371</small></span>
+            <i aria-hidden="true"></i>
+          </button>
+          <div class="course-group-panel" id="circular-courses" hidden>
+            <div class="course-tabs" role="tablist" aria-label="เลือกสรุปหนังสือเวียน" style="--course-count: 3">
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="7"><span class="tab-number">07</span><span><strong>สรุปหนังสือเวียน ว804</strong><small>9 สไลด์</small></span><i aria-hidden="true"></i></button>
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="8"><span class="tab-number">08</span><span><strong>สรุปหนังสือเวียน ว414</strong><small>6 สไลด์</small></span><i aria-hidden="true"></i></button>
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="9"><span class="tab-number">09</span><span><strong>สรุปหนังสือเวียน ว371</strong><small>12 สไลด์</small></span><i aria-hidden="true"></i></button>
+            </div>
+          </div>
+        </section>
       </div>
 
       <article class="viewer-shell" id="course-viewer" tabindex="-1">
@@ -143,7 +155,7 @@
           </div>
           <div class="course-meta">
             <div><span>ระดับ</span><strong id="course-level">พื้นฐาน</strong></div>
-            <div><span>จำนวน</span><strong id="course-total">11 หน้า</strong></div>
+            <div><span>จำนวน</span><strong id="course-total">8 หน้า</strong></div>
             <div><span>เหมาะกับ</span><strong id="course-audience">ผู้เริ่มต้น</strong></div>
           </div>
           <div class="course-actions">
@@ -163,14 +175,14 @@
           </div>
           <div class="slide-frame" id="slide-frame">
             <div class="slide-loader" id="slide-loader" aria-hidden="true"></div>
-            <img id="slide-image" src="./assets/course-1/01.webp" alt="วิชากระบวนการงบประมาณ สไลด์หน้า 1 จาก 11">
+            <img id="slide-image" src="./assets/course-1/01.webp" alt="วิชากระบวนการงบประมาณ สไลด์หน้า 1 จาก 8">
             <button class="frame-nav frame-prev" id="frame-prev" type="button" aria-label="สไลด์ก่อนหน้า">‹</button>
             <button class="frame-nav frame-next" id="frame-next" type="button" aria-label="สไลด์ถัดไป">›</button>
           </div>
           <div class="slide-footer">
             <button class="slide-nav" id="previous-button" type="button"><span aria-hidden="true">←</span> ก่อนหน้า</button>
             <div class="slide-progress-wrap">
-              <span id="slide-counter" aria-live="polite">01 / 11</span>
+              <span id="slide-counter" aria-live="polite">01 / 08</span>
               <div class="slide-progress" aria-hidden="true"><i id="slide-progress-bar"></i></div>
             </div>
             <button class="slide-nav" id="next-button" type="button">ถัดไป <span aria-hidden="true">→</span></button>
@@ -178,6 +190,21 @@
           <div class="thumbnail-rail" id="thumbnail-rail" aria-label="เลือกหน้าสไลด์"></div>
         </div>
       </article>
+    </section>
+
+    <section class="checklist-section" id="guarantee-checklist" aria-labelledby="checklist-title">
+      <div class="checklist-copy">
+        <p class="eyebrow"><span></span> QUICK REFERENCE</p>
+        <h2 id="checklist-title">Checklist<br><span>หลักประกัน</span></h2>
+        <p>ตารางช่วยจำรูปแบบหลักประกันสำหรับการเสนอราคา สัญญา เงินล่วงหน้า และผลงาน ใช้เปิดประกอบการเรียนหรือทบทวนก่อนปฏิบัติงาน</p>
+        <a class="checklist-open" href="./assets/checklist-guarantee.webp" target="_blank" rel="noopener">เปิดภาพขนาดเต็ม <span aria-hidden="true">↗</span></a>
+        <small>สื่อช่วยจำสำหรับการเรียนรู้ ควรตรวจสอบกฎหมาย ระเบียบ และหนังสือเวียนฉบับปัจจุบันก่อนนำไปใช้</small>
+      </div>
+      <figure class="checklist-frame">
+        <span class="checklist-tab" aria-hidden="true">CAT TABLE · 01</span>
+        <div><img src="./assets/checklist-guarantee.webp" alt="ตาราง Checklist หลักประกัน" loading="lazy" decoding="async"></div>
+        <figcaption>ตารางแมวช่วยจำ · คลิก “เปิดภาพขนาดเต็ม” เพื่ออ่านข้อความรายละเอียด</figcaption>
+      </figure>
     </section>
 
     <section class="how-section" id="how-it-works" aria-labelledby="how-title">
