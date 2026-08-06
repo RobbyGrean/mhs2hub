@@ -317,6 +317,19 @@ function renderThumbnails(course) {
   elements.thumbnailRail.replaceChildren(fragment);
 }
 
+function centerThumbnailHorizontally(button) {
+  const rail = elements.thumbnailRail;
+  const railRect = rail.getBoundingClientRect();
+  const buttonRect = button.getBoundingClientRect();
+  const targetLeft = rail.scrollLeft
+    + (buttonRect.left - railRect.left)
+    - ((rail.clientWidth - buttonRect.width) / 2);
+  const maxLeft = Math.max(0, rail.scrollWidth - rail.clientWidth);
+  const left = Math.min(Math.max(targetLeft, 0), maxLeft);
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  rail.scrollTo({ left, behavior: reduceMotion ? "auto" : "smooth" });
+}
+
 function updateThumbnailSelection(shouldScroll = true) {
   const buttons = elements.thumbnailRail.querySelectorAll(".thumbnail-button");
   buttons.forEach((button) => {
@@ -324,7 +337,7 @@ function updateThumbnailSelection(shouldScroll = true) {
     button.classList.toggle("is-active", selected);
     button.setAttribute("aria-current", selected ? "true" : "false");
     if (selected && shouldScroll) {
-      button.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+      centerThumbnailHorizontally(button);
     }
   });
 }
