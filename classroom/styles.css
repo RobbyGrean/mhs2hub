@@ -692,6 +692,34 @@ html[data-theme="dark"] .theme-toggle span::after {
   gap: 22px;
 }
 
+.circular-library {
+  --circular-accent: #d66a5f;
+  --circular-accent-rgb: 214, 106, 95;
+  margin-top: clamp(52px, 7vw, 92px);
+  padding-top: clamp(30px, 4vw, 48px);
+  border-top: 1px solid rgba(var(--circular-accent-rgb), 0.42);
+}
+
+html[data-theme="soft"] .circular-library {
+  --circular-accent: #c65c35;
+  --circular-accent-rgb: 198, 92, 53;
+}
+
+.circular-viewer {
+  margin-top: 30px;
+  padding-top: 28px;
+  border-top: 1px solid rgba(var(--category-accent-rgb), 0.36);
+}
+
+.circular-viewer .slide-topbar {
+  border-bottom-color: rgba(var(--category-accent-rgb), 0.34);
+}
+
+.circular-viewer .slide-frame {
+  outline: 1px solid rgba(var(--category-accent-rgb), 0.48);
+  outline-offset: -1px;
+}
+
 .course-group {
   --category-accent: #43e0c3;
   --category-accent-rgb: 67, 224, 195;
@@ -734,6 +762,15 @@ html[data-theme="dark"] .theme-toggle span::after {
   background: var(--category-surface);
   cursor: pointer;
   transition: background 260ms ease, color 260ms ease;
+}
+
+.category-heading {
+  grid-template-columns: auto 1fr;
+  cursor: default;
+}
+
+.category-heading i {
+  display: none;
 }
 
 .category-toggle:hover,
@@ -891,6 +928,18 @@ html[data-theme="dark"] .theme-toggle span::after {
   grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.75fr);
   gap: clamp(24px, 4vw, 58px);
   outline: none;
+}
+
+#course-viewer {
+  --accent: #43e0c3;
+  --accent-rgb: 67, 224, 195;
+  --accent-two: #a978ff;
+}
+
+#circular-course-viewer {
+  --accent: #d66a5f;
+  --accent-rgb: 214, 106, 95;
+  --accent-two: #f7b267;
 }
 
 .course-info {

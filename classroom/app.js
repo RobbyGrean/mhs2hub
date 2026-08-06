@@ -104,7 +104,7 @@ const courses = {
   },
   7: {
     id: 7,
-    code: "C07",
+    code: "C01",
     kicker: "CIRCULAR 01 · W804",
     title: "สรุปหนังสือเวียน ว804",
     shortTitle: "หนังสือเวียน ว804",
@@ -121,7 +121,7 @@ const courses = {
   },
   8: {
     id: 8,
-    code: "C08",
+    code: "C02",
     kicker: "CIRCULAR 02 · W414",
     title: "สรุปหนังสือเวียน ว414",
     shortTitle: "หนังสือเวียน ว414",
@@ -138,7 +138,7 @@ const courses = {
   },
   9: {
     id: 9,
-    code: "C09",
+    code: "C03",
     kicker: "CIRCULAR 03 · W371",
     title: "สรุปหนังสือเวียน ว371",
     shortTitle: "หนังสือเวียน ว371",
@@ -159,7 +159,7 @@ const elements = {
   root: document.documentElement,
   viewer: document.getElementById("course-viewer"),
   tabs: [...document.querySelectorAll(".course-tab")],
-  categoryToggles: [...document.querySelectorAll(".category-toggle")],
+  categoryToggles: [...document.querySelectorAll("button.category-toggle")],
   categoryGroups: [...document.querySelectorAll(".course-group")],
   themeToggle: document.getElementById("theme-toggle"),
   themeLabel: document.getElementById("theme-label"),
@@ -194,16 +194,106 @@ const elements = {
   musicTracks: [...document.querySelectorAll(".music-track")]
 };
 
+const viewerBindings = {
+  knowledge: {
+    viewer: elements.viewer,
+    tabs: [...document.querySelectorAll('[data-category="knowledge"] .course-tab')],
+    courseKicker: elements.courseKicker,
+    courseTitle: elements.courseTitle,
+    courseDescription: elements.courseDescription,
+    courseLevel: elements.courseLevel,
+    courseTotal: elements.courseTotal,
+    courseAudience: elements.courseAudience,
+    downloadLink: elements.downloadLink,
+    copyLink: elements.copyLink,
+    slideCourseId: elements.slideCourseId,
+    slideNumberLabel: elements.slideNumberLabel,
+    slideFrame: elements.slideFrame,
+    slideImage: elements.slideImage,
+    slideCounter: elements.slideCounter,
+    progressBar: elements.progressBar,
+    thumbnailRail: elements.thumbnailRail,
+    previousButton: elements.previousButton,
+    nextButton: elements.nextButton,
+    framePrev: elements.framePrev,
+    frameNext: elements.frameNext,
+    zoomButton: elements.zoomButton,
+    fullscreenButton: elements.fullscreenButton
+  },
+  circulars: {
+    viewer: document.getElementById("circular-course-viewer"),
+    tabs: [...document.querySelectorAll('[data-category="circulars"] .course-tab')],
+    courseKicker: document.getElementById("circular-course-kicker"),
+    courseTitle: document.getElementById("circular-course-title"),
+    courseDescription: document.getElementById("circular-course-description"),
+    courseLevel: document.getElementById("circular-course-level"),
+    courseTotal: document.getElementById("circular-course-total"),
+    courseAudience: document.getElementById("circular-course-audience"),
+    downloadLink: document.getElementById("circular-download-link"),
+    copyLink: document.getElementById("circular-copy-link"),
+    slideCourseId: document.getElementById("circular-slide-course-id"),
+    slideNumberLabel: document.getElementById("circular-slide-number-label"),
+    slideFrame: document.getElementById("circular-slide-frame"),
+    slideImage: document.getElementById("circular-slide-image"),
+    slideCounter: document.getElementById("circular-slide-counter"),
+    progressBar: document.getElementById("circular-slide-progress-bar"),
+    thumbnailRail: document.getElementById("circular-thumbnail-rail"),
+    previousButton: document.getElementById("circular-previous-button"),
+    nextButton: document.getElementById("circular-next-button"),
+    framePrev: document.getElementById("circular-frame-prev"),
+    frameNext: document.getElementById("circular-frame-next"),
+    zoomButton: document.getElementById("circular-zoom-button"),
+    fullscreenButton: document.getElementById("circular-fullscreen-button")
+  }
+};
+
+// Keep route IDs global for compatibility, but restart the visible course number per section.
+const categoryCourseNumbers = Object.values(courses).reduce((groups, course) => {
+  if (!groups[course.category]) groups[course.category] = [];
+  groups[course.category].push(course.id);
+  return groups;
+}, {});
+
+const viewerStates = {
+  knowledge: { course: 1, slide: 1 },
+  circulars: { course: 7, slide: 1 }
+};
+
 let activeCourse = 1;
 let activeSlide = 1;
+let activeViewerCategory = "knowledge";
 let toastTimer;
 let musicLoadTimer;
-let touchStartX = 0;
-let touchStartY = 0;
 let imageRequest = 0;
+
+function activateViewer(category) {
+  const nextCategory = viewerBindings[category] ? category : "knowledge";
+  Object.assign(elements, viewerBindings[nextCategory]);
+  activeViewerCategory = nextCategory;
+  activeCourse = viewerStates[nextCategory].course;
+  activeSlide = viewerStates[nextCategory].slide;
+}
 
 function twoDigits(value) {
   return String(value).padStart(2, "0");
+}
+
+function categoryCourseNumber(course) {
+  const courseIds = categoryCourseNumbers[course.category] || [];
+  const position = courseIds.indexOf(course.id);
+  return position >= 0 ? position + 1 : course.id;
+}
+
+function displayCourseCode(course) {
+  return `C${twoDigits(categoryCourseNumber(course))}`;
+}
+
+function normalizeCourseTabNumbers() {
+  document.querySelectorAll(".course-tab").forEach((tab) => {
+    const course = courses[Number(tab.dataset.course)];
+    const number = tab.querySelector(".tab-number");
+    if (course && number) number.textContent = twoDigits(categoryCourseNumber(course));
+  });
 }
 
 function slideSource(courseId, slideNumber) {
@@ -219,6 +309,8 @@ function readInitialState() {
   activeCourse = courses[requestedCourse] ? requestedCourse : 1;
   const requestedSlide = Number(params.get("slide")) || storedSlide || 1;
   activeSlide = Math.min(Math.max(requestedSlide, 1), courses[activeCourse].total);
+  activeViewerCategory = courses[activeCourse].category;
+  viewerStates[activeViewerCategory] = { course: activeCourse, slide: activeSlide };
 }
 
 function setColorMode(mode, { persist = true } = {}) {
@@ -240,20 +332,41 @@ function updateThemeColor() {
 }
 
 function openCategory(categoryId) {
-  elements.categoryGroups.forEach((group) => {
-    const isOpen = group.dataset.category === categoryId;
-    group.classList.toggle("is-open", isOpen);
-    const toggle = group.querySelector(".category-toggle");
+  const group = elements.categoryGroups.find((candidate) => candidate.dataset.category === categoryId);
+  if (!group) return;
+  if (group.dataset.static === "true") {
+    group.classList.add("is-open");
     const panel = group.querySelector(".course-group-panel");
-    toggle?.setAttribute("aria-expanded", String(isOpen));
-    if (panel) panel.hidden = !isOpen;
-  });
+    if (panel) panel.hidden = false;
+    return;
+  }
+  group.classList.add("is-open");
+  group.querySelector(".category-toggle")?.setAttribute("aria-expanded", "true");
+  const panel = group.querySelector(".course-group-panel");
+  if (panel) panel.hidden = false;
+}
+
+function toggleCategory(categoryId) {
+  const group = elements.categoryGroups.find((candidate) => candidate.dataset.category === categoryId);
+  if (!group || group.dataset.static === "true") return;
+  const isOpen = group.classList.contains("is-open");
+  if (isOpen) {
+    group.classList.remove("is-open");
+    group.querySelector(".category-toggle")?.setAttribute("aria-expanded", "false");
+    const panel = group.querySelector(".course-group-panel");
+    if (panel) panel.hidden = true;
+    return;
+  }
+  openCategory(categoryId);
 }
 
 function applyTheme(course) {
   elements.root.style.setProperty("--accent", course.accent);
   elements.root.style.setProperty("--accent-rgb", course.accentRgb);
   elements.root.style.setProperty("--accent-two", course.accentTwo);
+  elements.viewer.style.setProperty("--accent", course.accent);
+  elements.viewer.style.setProperty("--accent-rgb", course.accentRgb);
+  elements.viewer.style.setProperty("--accent-two", course.accentTwo);
   updateThemeColor();
 }
 
@@ -276,7 +389,7 @@ function updateCourseContent(course) {
     elements.downloadLink.removeAttribute("rel");
     elements.downloadLink.setAttribute("download", "");
   }
-  elements.slideCourseId.textContent = course.code;
+  elements.slideCourseId.textContent = displayCourseCode(course);
   const isPortraitCourse = course.orientation === "portrait";
   elements.slideFrame.classList.toggle("is-portrait", isPortraitCourse);
   elements.slideFrame.style.setProperty("--slide-ratio", isPortraitCourse ? "4 / 5" : "16 / 9");
@@ -291,6 +404,7 @@ function updateCourseContent(course) {
 
 function renderThumbnails(course) {
   const fragment = document.createDocumentFragment();
+  const viewerCategory = activeViewerCategory;
 
   for (let page = 1; page <= course.total; page += 1) {
     const button = document.createElement("button");
@@ -310,7 +424,10 @@ function renderThumbnails(course) {
     label.textContent = twoDigits(page);
 
     button.append(image, label);
-    button.addEventListener("click", () => setSlide(page));
+    button.addEventListener("click", () => {
+      activateViewer(viewerCategory);
+      setSlide(page);
+    });
     fragment.append(button);
   }
 
@@ -349,6 +466,7 @@ function updateUrlAndMemory() {
   history.replaceState({ course: activeCourse, slide: activeSlide }, "", url);
   localStorage.setItem("mhs2-learning-course", String(activeCourse));
   localStorage.setItem("mhs2-learning-slide", String(activeSlide));
+  viewerStates[activeViewerCategory] = { course: activeCourse, slide: activeSlide };
 }
 
 function preloadNeighbors() {
@@ -407,9 +525,12 @@ function setCourse(courseId, options = {}) {
   const course = courses[courseId];
   if (!course) return;
 
+  viewerStates[activeViewerCategory] = { course: activeCourse, slide: activeSlide };
+  activateViewer(course.category);
   elements.viewer.classList.add("course-swap");
   activeCourse = course.id;
   activeSlide = Math.min(Math.max(options.slide || 1, 1), course.total);
+  viewerStates[activeViewerCategory] = { course: activeCourse, slide: activeSlide };
   openCategory(course.category);
   applyTheme(course);
   updateCourseContent(course);
@@ -520,7 +641,7 @@ async function copyCurrentLink() {
 
 function bindEvents() {
   elements.categoryToggles.forEach((toggle) => {
-    toggle.addEventListener("click", () => openCategory(toggle.closest(".course-group")?.dataset.category));
+    toggle.addEventListener("click", () => toggleCategory(toggle.closest(".course-group")?.dataset.category));
   });
 
   elements.tabs.forEach((tab, index) => {
@@ -553,18 +674,42 @@ function bindEvents() {
     button.addEventListener("click", () => setCourse(Number(button.dataset.openCourse), { scroll: true }));
   });
 
-  elements.previousButton.addEventListener("click", () => changeSlide(-1));
-  elements.nextButton.addEventListener("click", () => changeSlide(1));
-  elements.framePrev.addEventListener("click", () => changeSlide(-1));
-  elements.frameNext.addEventListener("click", () => changeSlide(1));
-  elements.zoomButton.addEventListener("click", toggleZoom);
-  elements.slideImage.addEventListener("click", toggleZoom);
-  elements.fullscreenButton.addEventListener("click", toggleFullscreen);
-  elements.copyLink.addEventListener("click", copyCurrentLink);
+  Object.entries(viewerBindings).forEach(([category, viewer]) => {
+    const activate = () => activateViewer(category);
+    viewer.previousButton.addEventListener("click", () => { activate(); changeSlide(-1); });
+    viewer.nextButton.addEventListener("click", () => { activate(); changeSlide(1); });
+    viewer.framePrev.addEventListener("click", () => { activate(); changeSlide(-1); });
+    viewer.frameNext.addEventListener("click", () => { activate(); changeSlide(1); });
+    viewer.zoomButton.addEventListener("click", () => { activate(); toggleZoom(); });
+    viewer.slideImage.addEventListener("click", () => { activate(); toggleZoom(); });
+    viewer.fullscreenButton.addEventListener("click", () => { activate(); toggleFullscreen(); });
+    viewer.copyLink.addEventListener("click", () => { activate(); copyCurrentLink(); });
+
+    let startX = 0;
+    let startY = 0;
+    viewer.slideFrame.addEventListener("touchstart", (event) => {
+      activate();
+      startX = event.changedTouches[0].clientX;
+      startY = event.changedTouches[0].clientY;
+    }, { passive: true });
+
+    viewer.slideFrame.addEventListener("touchend", (event) => {
+      if (viewer.slideFrame.classList.contains("is-zoomed")) return;
+      const deltaX = event.changedTouches[0].clientX - startX;
+      const deltaY = event.changedTouches[0].clientY - startY;
+      if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
+        activate();
+        changeSlide(deltaX < 0 ? 1 : -1);
+      }
+    }, { passive: true });
+  });
 
   document.addEventListener("fullscreenchange", () => {
-    elements.slideFrame.classList.toggle("is-fullscreen", document.fullscreenElement === elements.slideFrame);
-    elements.fullscreenButton.textContent = document.fullscreenElement ? "ออกจากเต็มจอ" : "เต็มจอ";
+    Object.values(viewerBindings).forEach((viewer) => {
+      const isFullscreen = document.fullscreenElement === viewer.slideFrame;
+      viewer.slideFrame.classList.toggle("is-fullscreen", isFullscreen);
+      viewer.fullscreenButton.textContent = isFullscreen ? "ออกจากเต็มจอ" : "เต็มจอ";
+    });
   });
 
   document.addEventListener("keydown", (event) => {
@@ -573,20 +718,6 @@ function bindEvents() {
     if (event.key === "ArrowRight") changeSlide(1);
     if (event.key.toLowerCase() === "f") toggleFullscreen();
   });
-
-  elements.slideFrame.addEventListener("touchstart", (event) => {
-    touchStartX = event.changedTouches[0].clientX;
-    touchStartY = event.changedTouches[0].clientY;
-  }, { passive: true });
-
-  elements.slideFrame.addEventListener("touchend", (event) => {
-    if (elements.slideFrame.classList.contains("is-zoomed")) return;
-    const deltaX = event.changedTouches[0].clientX - touchStartX;
-    const deltaY = event.changedTouches[0].clientY - touchStartY;
-    if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
-      changeSlide(deltaX < 0 ? 1 : -1);
-    }
-  }, { passive: true });
 
   const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -612,6 +743,7 @@ function bindEvents() {
 }
 
 readInitialState();
+normalizeCourseTabNumbers();
 bindEvents();
 setColorMode(elements.root.dataset.theme, { persist: false });
 setCourse(activeCourse, { slide: activeSlide });
