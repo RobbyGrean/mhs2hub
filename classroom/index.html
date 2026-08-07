@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#f3e3cd">
-  <meta name="description" content="ห้องเรียนงานพัสดุออนไลน์ 9 ชุด 82 สไลด์ รวมวิชาความรู้ อาหารกลางวัน และสรุปหนังสือเวียน พร้อม Soft และ Dark mode">
+  <meta name="description" content="ห้องเรียนงานพัสดุออนไลน์ 10 ชุด 98 สไลด์ รวมวิชาความรู้ วิชา e-GP และคู่มือหนังสือเวียน พร้อม Soft และ Dark mode">
   <meta property="og:title" content="MHS2 Learning Library — เรื่องพัสดุ เห็นภาพ ก็เข้าใจ">
-  <meta property="og:description" content="9 ชุด 82 สไลด์ ห้องเรียนงานพัสดุที่เปิดเรียนได้ทุกอุปกรณ์">
+  <meta property="og:description" content="10 ชุด 98 สไลด์ ห้องเรียนงานพัสดุที่เปิดเรียนได้ทุกอุปกรณ์">
   <meta property="og:type" content="website">
   <meta property="og:image" content="https://robbygrean.github.io/mhs2hub/classroom/og.png">
   <meta property="og:image:width" content="1200">
@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+Thai:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <script>try { document.documentElement.dataset.theme = localStorage.getItem("mhs2-learning-theme") || "soft"; } catch { document.documentElement.dataset.theme = "soft"; }</script>
-  <link rel="stylesheet" href="./styles.css?v=20260806-library-layout">
+  <link rel="stylesheet" href="./styles.css?v=20260807-course-categories">
 </head>
 <body>
   <div class="ambient" aria-hidden="true">
@@ -62,8 +62,8 @@
           <button class="text-button" type="button" data-open-course="1">เปิดวิชาแรก <span aria-hidden="true">↘</span></button>
         </div>
         <dl class="hero-stats" aria-label="ข้อมูลห้องเรียน">
-          <div><dt>09</dt><dd>ชุดความรู้</dd></div>
-          <div><dt>82</dt><dd>สไลด์</dd></div>
+          <div><dt>10</dt><dd>ชุดความรู้</dd></div>
+          <div><dt>98</dt><dd>สไลด์</dd></div>
           <div><dt>24/7</dt><dd>เปิดเรียน</dd></div>
         </dl>
       </div>
@@ -93,7 +93,7 @@
           <figcaption><span>01</span> กระบวนการงบประมาณ</figcaption>
         </figure>
         <div class="visual-label visual-label-top">CURATED FOR<br>PUBLIC OFFICERS</div>
-        <div class="visual-label visual-label-side">SCROLL TO LEARN · 01—09</div>
+        <div class="visual-label visual-label-side">SCROLL TO LEARN · 01—10</div>
       </div>
 
       <a class="scroll-cue" href="#courses">
@@ -112,11 +112,23 @@
       </div>
 
       <div class="library-groups" aria-label="หมวด Learning Library">
-        <section class="course-group course-group-static is-open" data-category="knowledge" data-static="true">
-          <div class="category-toggle category-heading" role="heading" aria-level="3">
+        <div class="category-tabs" role="tablist" aria-label="เลือกหมวดวิชา">
+          <button class="category-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="knowledge-courses" data-category="knowledge">
             <span class="category-index">01</span>
             <span><strong>วิชาความรู้</strong><small>6 วิชา · 55 สไลด์</small></span>
-          </div>
+          </button>
+          <button class="category-tab" type="button" role="tab" aria-selected="false" aria-controls="egp-courses" data-category="egp" tabindex="-1">
+            <span class="category-index">02</span>
+            <span><strong>วิชา e-GP และระบบการเบิกจ่ายเงินคลัง</strong><small>1 วิชา · 16 สไลด์</small></span>
+          </button>
+          <!-- Add future categories here, immediately before the pinned 00 tab. -->
+          <button class="category-tab category-tab-pinned" type="button" role="tab" aria-selected="false" aria-controls="circular-courses" data-category="circulars" tabindex="-1">
+            <span class="category-index">00</span>
+            <span><strong>คู่มือหนังสือเวียน</strong><small>ว804 · ว414 · ว371</small></span>
+          </button>
+        </div>
+
+        <section class="course-group is-open" data-category="knowledge">
           <div class="course-group-panel" id="knowledge-courses">
             <div class="course-tabs" role="tablist" aria-label="เลือกวิชาความรู้" style="--course-count: 6">
               <button class="course-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="course-viewer" data-course="1"><span class="tab-number">01</span><span><strong>กระบวนการงบประมาณ</strong><small>8 สไลด์</small></span><i aria-hidden="true"></i></button>
@@ -129,6 +141,23 @@
           </div>
         </section>
 
+        <section class="course-group" data-category="egp" hidden>
+          <div class="course-group-panel" id="egp-courses">
+            <div class="course-tabs" role="tablist" aria-label="เลือกวิชา e-GP และระบบการเบิกจ่ายเงินคลัง" style="--course-count: 1">
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="10"><span class="tab-number">01</span><span><strong>คู่มือหลักประกันสัญญา</strong><small>16 สไลด์</small></span><i aria-hidden="true"></i></button>
+            </div>
+          </div>
+        </section>
+
+        <section class="course-group" data-category="circulars" hidden>
+          <div class="course-group-panel" id="circular-courses">
+            <div class="course-tabs" role="tablist" aria-label="เลือกคู่มือหนังสือเวียน" style="--course-count: 3">
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="7"><span class="tab-number">01</span><span><strong>สรุปหนังสือเวียน ว804</strong><small>9 สไลด์</small></span><i aria-hidden="true"></i></button>
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="8"><span class="tab-number">02</span><span><strong>สรุปหนังสือเวียน ว414</strong><small>6 สไลด์</small></span><i aria-hidden="true"></i></button>
+              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="course-viewer" data-course="9"><span class="tab-number">03</span><span><strong>สรุปหนังสือเวียน ว371</strong><small>12 สไลด์</small></span><i aria-hidden="true"></i></button>
+            </div>
+          </div>
+        </section>
       </div>
 
       <article class="viewer-shell" id="course-viewer" tabindex="-1">
@@ -176,67 +205,6 @@
         </div>
       </article>
 
-      <section class="circular-library" aria-label="คลังสรุปหนังสือเวียน">
-        <section class="course-group" data-category="circulars">
-          <button class="category-toggle" type="button" aria-expanded="false" aria-controls="circular-courses">
-            <span class="category-index">02</span>
-            <span><strong>สรุปหนังสือเวียน</strong><small>ว804 · ว414 · ว371</small></span>
-            <i aria-hidden="true"></i>
-          </button>
-          <div class="course-group-panel" id="circular-courses" hidden>
-            <div class="course-tabs" role="tablist" aria-label="เลือกสรุปหนังสือเวียน" style="--course-count: 3">
-              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="circular-course-viewer" data-course="7"><span class="tab-number">01</span><span><strong>สรุปหนังสือเวียน ว804</strong><small>9 สไลด์</small></span><i aria-hidden="true"></i></button>
-              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="circular-course-viewer" data-course="8"><span class="tab-number">02</span><span><strong>สรุปหนังสือเวียน ว414</strong><small>6 สไลด์</small></span><i aria-hidden="true"></i></button>
-              <button class="course-tab" type="button" role="tab" aria-selected="false" aria-controls="circular-course-viewer" data-course="9"><span class="tab-number">03</span><span><strong>สรุปหนังสือเวียน ว371</strong><small>12 สไลด์</small></span><i aria-hidden="true"></i></button>
-            </div>
-
-            <article class="viewer-shell circular-viewer" id="circular-course-viewer" tabindex="-1">
-              <aside class="course-info">
-                <div>
-                  <p class="course-kicker" id="circular-course-kicker">CIRCULAR 01 · W804</p>
-                  <h3 id="circular-course-title">สรุปหนังสือเวียน ว804</h3>
-                  <p id="circular-course-description">สรุปแนวทางการจัดซื้อจัดจ้างตามหนังสือเวียน ว804 ให้เห็นขั้นตอน เอกสาร และประเด็นสำคัญในรูปแบบภาพ</p>
-                </div>
-                <div class="course-meta">
-                  <div><span>ระดับ</span><strong id="circular-course-level">สรุปหนังสือเวียน</strong></div>
-                  <div><span>จำนวน</span><strong id="circular-course-total">9 หน้า</strong></div>
-                  <div><span>เหมาะกับ</span><strong id="circular-course-audience">เจ้าหน้าที่พัสดุและผู้เกี่ยวข้อง</strong></div>
-                </div>
-                <div class="course-actions">
-                  <a class="download-button" id="circular-download-link" href="./downloads/circular-w804.pdf" download>ดาวน์โหลด PDF <span aria-hidden="true">↓</span></a>
-                  <button class="copy-button" id="circular-copy-link" type="button">คัดลอกลิงก์หน้านี้</button>
-                </div>
-                <p class="keyboard-tip"><kbd>←</kbd><kbd>→</kbd> เปลี่ยนหน้า · <kbd>F</kbd> เต็มจอ</p>
-              </aside>
-
-              <div class="slide-viewer">
-                <div class="slide-topbar">
-                  <div class="slide-id"><span id="circular-slide-course-id">C01</span> / <strong id="circular-slide-number-label">SLIDE 01</strong></div>
-                  <div class="slide-tools">
-                    <button id="circular-zoom-button" type="button" aria-pressed="false">ขยาย</button>
-                    <button id="circular-fullscreen-button" type="button">เต็มจอ</button>
-                  </div>
-                </div>
-                <div class="slide-frame" id="circular-slide-frame">
-                  <div class="slide-loader" id="circular-slide-loader" aria-hidden="true"></div>
-                  <img id="circular-slide-image" src="./assets/course-7/01.webp" alt="สรุปหนังสือเวียน ว804 สไลด์หน้า 1 จาก 9">
-                  <button class="frame-nav frame-prev" id="circular-frame-prev" type="button" aria-label="สไลด์ก่อนหน้า">‹</button>
-                  <button class="frame-nav frame-next" id="circular-frame-next" type="button" aria-label="สไลด์ถัดไป">›</button>
-                </div>
-                <div class="slide-footer">
-                  <button class="slide-nav" id="circular-previous-button" type="button"><span aria-hidden="true">←</span> ก่อนหน้า</button>
-                  <div class="slide-progress-wrap">
-                    <span id="circular-slide-counter" aria-live="polite">01 / 09</span>
-                    <div class="slide-progress" aria-hidden="true"><i id="circular-slide-progress-bar"></i></div>
-                  </div>
-                  <button class="slide-nav" id="circular-next-button" type="button">ถัดไป <span aria-hidden="true">→</span></button>
-                </div>
-                <div class="thumbnail-rail" id="circular-thumbnail-rail" aria-label="เลือกหน้าสไลด์หนังสือเวียน"></div>
-              </div>
-            </article>
-          </div>
-        </section>
-      </section>
     </section>
 
     <section class="checklist-section" id="guarantee-checklist" aria-labelledby="checklist-title">
@@ -359,6 +327,6 @@
   </footer>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="./app.js?v=20260806-split-viewers"></script>
+  <script src="./app.js?v=20260807-course-categories"></script>
 </body>
 </html>

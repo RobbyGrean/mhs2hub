@@ -152,6 +152,24 @@ const courses = {
     accent: "#2f8f83",
     accentRgb: "47, 143, 131",
     accentTwo: "#d9a441"
+  },
+  10: {
+    id: 10,
+    code: "C01",
+    kicker: "COURSE 01 · E-GP / CONTRACT GUARANTEE",
+    title: "คู่มือการคืนหลักประกันสัญญา",
+    shortTitle: "หลักประกันสัญญา",
+    description: "เรียนรู้ขั้นตอนการคืนหลักประกันสัญญาในระบบ e-GP ตั้งแต่ตรวจสอบเงื่อนไข เอกสารที่เกี่ยวข้อง ไปจนถึงการดำเนินการให้ครบถ้วน",
+    level: "แนวทางปฏิบัติ",
+    audience: "เจ้าหน้าที่พัสดุและผู้รับผิดชอบสัญญา",
+    total: 16,
+    folder: "course-10",
+    extension: "png",
+    category: "egp",
+    pdf: "course-10-guarantee-return.pdf",
+    accent: "#f2c55c",
+    accentRgb: "242, 197, 92",
+    accentTwo: "#43e0c3"
   }
 };
 
@@ -159,7 +177,7 @@ const elements = {
   root: document.documentElement,
   viewer: document.getElementById("course-viewer"),
   tabs: [...document.querySelectorAll(".course-tab")],
-  categoryToggles: [...document.querySelectorAll("button.category-toggle")],
+  categoryTabs: [...document.querySelectorAll(".category-tab")],
   categoryGroups: [...document.querySelectorAll(".course-group")],
   themeToggle: document.getElementById("theme-toggle"),
   themeLabel: document.getElementById("theme-label"),
@@ -219,31 +237,6 @@ const viewerBindings = {
     frameNext: elements.frameNext,
     zoomButton: elements.zoomButton,
     fullscreenButton: elements.fullscreenButton
-  },
-  circulars: {
-    viewer: document.getElementById("circular-course-viewer"),
-    tabs: [...document.querySelectorAll('[data-category="circulars"] .course-tab')],
-    courseKicker: document.getElementById("circular-course-kicker"),
-    courseTitle: document.getElementById("circular-course-title"),
-    courseDescription: document.getElementById("circular-course-description"),
-    courseLevel: document.getElementById("circular-course-level"),
-    courseTotal: document.getElementById("circular-course-total"),
-    courseAudience: document.getElementById("circular-course-audience"),
-    downloadLink: document.getElementById("circular-download-link"),
-    copyLink: document.getElementById("circular-copy-link"),
-    slideCourseId: document.getElementById("circular-slide-course-id"),
-    slideNumberLabel: document.getElementById("circular-slide-number-label"),
-    slideFrame: document.getElementById("circular-slide-frame"),
-    slideImage: document.getElementById("circular-slide-image"),
-    slideCounter: document.getElementById("circular-slide-counter"),
-    progressBar: document.getElementById("circular-slide-progress-bar"),
-    thumbnailRail: document.getElementById("circular-thumbnail-rail"),
-    previousButton: document.getElementById("circular-previous-button"),
-    nextButton: document.getElementById("circular-next-button"),
-    framePrev: document.getElementById("circular-frame-prev"),
-    frameNext: document.getElementById("circular-frame-next"),
-    zoomButton: document.getElementById("circular-zoom-button"),
-    fullscreenButton: document.getElementById("circular-fullscreen-button")
   }
 };
 
@@ -256,6 +249,7 @@ const categoryCourseNumbers = Object.values(courses).reduce((groups, course) => 
 
 const viewerStates = {
   knowledge: { course: 1, slide: 1 },
+  egp: { course: 10, slide: 1 },
   circulars: { course: 7, slide: 1 }
 };
 
@@ -267,8 +261,7 @@ let musicLoadTimer;
 let imageRequest = 0;
 
 function activateViewer(category) {
-  const nextCategory = viewerBindings[category] ? category : "knowledge";
-  Object.assign(elements, viewerBindings[nextCategory]);
+  const nextCategory = viewerStates[category] ? category : "knowledge";
   activeViewerCategory = nextCategory;
   activeCourse = viewerStates[nextCategory].course;
   activeSlide = viewerStates[nextCategory].slide;
@@ -298,7 +291,8 @@ function normalizeCourseTabNumbers() {
 
 function slideSource(courseId, slideNumber) {
   const course = courses[courseId];
-  return `./assets/${course.folder}/${twoDigits(slideNumber)}.webp`;
+  const extension = course.extension || "webp";
+  return `./assets/${course.folder}/${twoDigits(slideNumber)}.${extension}`;
 }
 
 function readInitialState() {
@@ -334,30 +328,17 @@ function updateThemeColor() {
 function openCategory(categoryId) {
   const group = elements.categoryGroups.find((candidate) => candidate.dataset.category === categoryId);
   if (!group) return;
-  if (group.dataset.static === "true") {
-    group.classList.add("is-open");
-    const panel = group.querySelector(".course-group-panel");
-    if (panel) panel.hidden = false;
-    return;
-  }
-  group.classList.add("is-open");
-  group.querySelector(".category-toggle")?.setAttribute("aria-expanded", "true");
-  const panel = group.querySelector(".course-group-panel");
-  if (panel) panel.hidden = false;
-}
-
-function toggleCategory(categoryId) {
-  const group = elements.categoryGroups.find((candidate) => candidate.dataset.category === categoryId);
-  if (!group || group.dataset.static === "true") return;
-  const isOpen = group.classList.contains("is-open");
-  if (isOpen) {
-    group.classList.remove("is-open");
-    group.querySelector(".category-toggle")?.setAttribute("aria-expanded", "false");
-    const panel = group.querySelector(".course-group-panel");
-    if (panel) panel.hidden = true;
-    return;
-  }
-  openCategory(categoryId);
+  elements.categoryGroups.forEach((candidate) => {
+    const selected = candidate === group;
+    candidate.classList.toggle("is-open", selected);
+    candidate.hidden = !selected;
+  });
+  elements.categoryTabs.forEach((tab) => {
+    const selected = tab.dataset.category === categoryId;
+    tab.classList.toggle("is-active", selected);
+    tab.setAttribute("aria-selected", String(selected));
+    tab.tabIndex = selected ? 0 : -1;
+  });
 }
 
 function applyTheme(course) {
@@ -640,8 +621,26 @@ async function copyCurrentLink() {
 }
 
 function bindEvents() {
-  elements.categoryToggles.forEach((toggle) => {
-    toggle.addEventListener("click", () => toggleCategory(toggle.closest(".course-group")?.dataset.category));
+  elements.categoryTabs.forEach((tab, index) => {
+    tab.addEventListener("click", () => {
+      const state = viewerStates[tab.dataset.category];
+      if (state) setCourse(state.course, { slide: state.slide });
+    });
+    tab.addEventListener("keydown", (event) => {
+      if (![
+        "ArrowLeft",
+        "ArrowRight",
+        "ArrowUp",
+        "ArrowDown"
+      ].includes(event.key)) return;
+      event.preventDefault();
+      const direction = ["ArrowRight", "ArrowDown"].includes(event.key) ? 1 : -1;
+      const nextIndex = (index + direction + elements.categoryTabs.length) % elements.categoryTabs.length;
+      const nextTab = elements.categoryTabs[nextIndex];
+      nextTab.focus();
+      const state = viewerStates[nextTab.dataset.category];
+      if (state) setCourse(state.course, { slide: state.slide });
+    });
   });
 
   elements.tabs.forEach((tab, index) => {
@@ -674,42 +673,39 @@ function bindEvents() {
     button.addEventListener("click", () => setCourse(Number(button.dataset.openCourse), { scroll: true }));
   });
 
-  Object.entries(viewerBindings).forEach(([category, viewer]) => {
-    const activate = () => activateViewer(category);
-    viewer.previousButton.addEventListener("click", () => { activate(); changeSlide(-1); });
-    viewer.nextButton.addEventListener("click", () => { activate(); changeSlide(1); });
-    viewer.framePrev.addEventListener("click", () => { activate(); changeSlide(-1); });
-    viewer.frameNext.addEventListener("click", () => { activate(); changeSlide(1); });
-    viewer.zoomButton.addEventListener("click", () => { activate(); toggleZoom(); });
-    viewer.slideImage.addEventListener("click", () => { activate(); toggleZoom(); });
-    viewer.fullscreenButton.addEventListener("click", () => { activate(); toggleFullscreen(); });
-    viewer.copyLink.addEventListener("click", () => { activate(); copyCurrentLink(); });
+  const viewer = viewerBindings.knowledge;
+  const activate = () => activateViewer(activeViewerCategory);
+  viewer.previousButton.addEventListener("click", () => { activate(); changeSlide(-1); });
+  viewer.nextButton.addEventListener("click", () => { activate(); changeSlide(1); });
+  viewer.framePrev.addEventListener("click", () => { activate(); changeSlide(-1); });
+  viewer.frameNext.addEventListener("click", () => { activate(); changeSlide(1); });
+  viewer.zoomButton.addEventListener("click", () => { activate(); toggleZoom(); });
+  viewer.slideImage.addEventListener("click", () => { activate(); toggleZoom(); });
+  viewer.fullscreenButton.addEventListener("click", () => { activate(); toggleFullscreen(); });
+  viewer.copyLink.addEventListener("click", () => { activate(); copyCurrentLink(); });
 
-    let startX = 0;
-    let startY = 0;
-    viewer.slideFrame.addEventListener("touchstart", (event) => {
+  let startX = 0;
+  let startY = 0;
+  viewer.slideFrame.addEventListener("touchstart", (event) => {
+    activate();
+    startX = event.changedTouches[0].clientX;
+    startY = event.changedTouches[0].clientY;
+  }, { passive: true });
+
+  viewer.slideFrame.addEventListener("touchend", (event) => {
+    if (viewer.slideFrame.classList.contains("is-zoomed")) return;
+    const deltaX = event.changedTouches[0].clientX - startX;
+    const deltaY = event.changedTouches[0].clientY - startY;
+    if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
       activate();
-      startX = event.changedTouches[0].clientX;
-      startY = event.changedTouches[0].clientY;
-    }, { passive: true });
-
-    viewer.slideFrame.addEventListener("touchend", (event) => {
-      if (viewer.slideFrame.classList.contains("is-zoomed")) return;
-      const deltaX = event.changedTouches[0].clientX - startX;
-      const deltaY = event.changedTouches[0].clientY - startY;
-      if (Math.abs(deltaX) > 55 && Math.abs(deltaX) > Math.abs(deltaY) * 1.3) {
-        activate();
-        changeSlide(deltaX < 0 ? 1 : -1);
-      }
-    }, { passive: true });
-  });
+      changeSlide(deltaX < 0 ? 1 : -1);
+    }
+  }, { passive: true });
 
   document.addEventListener("fullscreenchange", () => {
-    Object.values(viewerBindings).forEach((viewer) => {
-      const isFullscreen = document.fullscreenElement === viewer.slideFrame;
-      viewer.slideFrame.classList.toggle("is-fullscreen", isFullscreen);
-      viewer.fullscreenButton.textContent = isFullscreen ? "ออกจากเต็มจอ" : "เต็มจอ";
-    });
+    const isFullscreen = document.fullscreenElement === viewer.slideFrame;
+    viewer.slideFrame.classList.toggle("is-fullscreen", isFullscreen);
+    viewer.fullscreenButton.textContent = isFullscreen ? "ออกจากเต็มจอ" : "เต็มจอ";
   });
 
   document.addEventListener("keydown", (event) => {
