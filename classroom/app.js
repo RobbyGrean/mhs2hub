@@ -80,7 +80,7 @@ const courses = {
     total: 11,
     folder: "course-5",
     category: "knowledge",
-    pdf: "https://drive.google.com/file/d/1RTbgAm172FUEujS-01I9NnQZmq_ZYNl1/view?usp=sharing",
+    pdf: "course-5-procurement-law.pdf",
     accent: "#7dd3fc",
     accentRgb: "125, 211, 252",
     accentTwo: "#f2c55c"
