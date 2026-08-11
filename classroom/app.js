@@ -188,6 +188,24 @@ const courses = {
     accent: "#f2c55c",
     accentRgb: "242, 197, 92",
     accentTwo: "#43e0c3"
+  },
+  12: {
+    id: 12,
+    code: "C03",
+    kicker: "COURSE 03 · E-GP / BUDGET CODE",
+    title: "การแก้ไขรหัสงบประมาณ",
+    shortTitle: "แก้ไขรหัสงบประมาณ",
+    description: "คู่มือการดำเนินงานแก้ไขรหัสงบประมาณ แยกตามสถานะโครงการ เพื่อช่วยให้ตรวจสอบขั้นตอนและดำเนินงานในระบบ e-GP ได้อย่างถูกต้อง",
+    level: "คู่มือการดำเนินงาน",
+    audience: "เจ้าหน้าที่พัสดุและผู้ปฏิบัติงานในระบบ e-GP",
+    total: 26,
+    folder: "course-12",
+    extension: "png",
+    category: "egp",
+    pdf: "course-12-budget-code-correction.pdf",
+    accent: "#f2c55c",
+    accentRgb: "242, 197, 92",
+    accentTwo: "#43e0c3"
   }
 };
 
