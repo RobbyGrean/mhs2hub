@@ -170,6 +170,24 @@ const courses = {
     accent: "#f2c55c",
     accentRgb: "242, 197, 92",
     accentTwo: "#43e0c3"
+  },
+  11: {
+    id: 11,
+    code: "C02",
+    kicker: "COURSE 02 · E-GP / SPECIFIC PROCUREMENT",
+    title: "ข้อสังเกตการจัดซื้อวิธีเฉพาะเจาะจง",
+    shortTitle: "จัดซื้อวิธีเฉพาะเจาะจง",
+    description: "สรุปข้อสังเกตและประเด็นสำคัญในการจัดซื้อวิธีเฉพาะเจาะจง เพื่อช่วยตรวจสอบลำดับงาน เอกสาร และเงื่อนไขที่เกี่ยวข้องได้อย่างครบถ้วน",
+    level: "ข้อควรรู้",
+    audience: "เจ้าหน้าที่พัสดุและผู้ปฏิบัติงานจัดซื้อจัดจ้าง",
+    total: 29,
+    folder: "course-11",
+    extension: "jpg",
+    category: "egp",
+    pdf: "course-11-specific-procurement.pdf",
+    accent: "#f2c55c",
+    accentRgb: "242, 197, 92",
+    accentTwo: "#43e0c3"
   }
 };
 
