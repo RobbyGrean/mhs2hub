@@ -224,6 +224,24 @@ const courses = {
     accent: "#8ea4e8",
     accentRgb: "142, 164, 232",
     accentTwo: "#ef967d"
+  },
+  14: {
+    id: 14,
+    code: "C07",
+    kicker: "COURSE 07 · BUILDING REGISTRATION",
+    title: "การขึ้นทะเบียนสิ่งปลูกสร้าง",
+    shortTitle: "ขึ้นทะเบียนสิ่งปลูกสร้าง",
+    description: "สรุปขั้นตอนและเอกสารประกอบการนำสิ่งปลูกสร้างขึ้นทะเบียนที่ราชพัสดุ สำหรับสถานศึกษาและผู้ปฏิบัติงานที่เกี่ยวข้อง",
+    level: "สรุปขั้นตอนการดำเนินงาน",
+    audience: "สถานศึกษาและผู้รับผิดชอบงานพัสดุ",
+    total: 1,
+    folder: "course-14",
+    extension: "png",
+    category: "knowledge",
+    pdf: "",
+    accent: "#62c5f5",
+    accentRgb: "98, 197, 245",
+    accentTwo: "#f6c85f"
   }
 };
 
@@ -412,17 +430,23 @@ function updateCourseContent(course) {
   elements.courseLevel.textContent = course.level;
   elements.courseTotal.textContent = `${course.total} หน้า`;
   elements.courseAudience.textContent = course.audience;
-  const isDirectPath = course.pdf.startsWith(".") || course.pdf.startsWith("http");
-  const isExternal = course.pdf.startsWith("http");
-  elements.downloadLink.href = isDirectPath ? course.pdf : `./downloads/${course.pdf}`;
-  if (isExternal) {
-    elements.downloadLink.target = "_blank";
-    elements.downloadLink.rel = "noopener";
-    elements.downloadLink.removeAttribute("download");
+  const hasPdf = Boolean(course.pdf);
+  elements.downloadLink.hidden = !hasPdf;
+  if (hasPdf) {
+    const isDirectPath = course.pdf.startsWith(".") || course.pdf.startsWith("http");
+    const isExternal = course.pdf.startsWith("http");
+    elements.downloadLink.href = isDirectPath ? course.pdf : `./downloads/${course.pdf}`;
+    if (isExternal) {
+      elements.downloadLink.target = "_blank";
+      elements.downloadLink.rel = "noopener";
+      elements.downloadLink.removeAttribute("download");
+    } else {
+      elements.downloadLink.removeAttribute("target");
+      elements.downloadLink.removeAttribute("rel");
+      elements.downloadLink.setAttribute("download", "");
+    }
   } else {
-    elements.downloadLink.removeAttribute("target");
-    elements.downloadLink.removeAttribute("rel");
-    elements.downloadLink.setAttribute("download", "");
+    elements.downloadLink.removeAttribute("href");
   }
   elements.slideCourseId.textContent = displayCourseCode(course);
   const isPortraitCourse = course.orientation === "portrait";
