@@ -191,8 +191,8 @@ const courses = {
   },
   12: {
     id: 12,
-    code: "C03",
-    kicker: "COURSE 03 · E-GP / BUDGET CODE",
+    code: "C04",
+    kicker: "COURSE 04 · E-GP / BUDGET CODE",
     title: "การแก้ไขรหัสงบประมาณ",
     shortTitle: "แก้ไขรหัสงบประมาณ",
     description: "คู่มือการดำเนินงานแก้ไขรหัสงบประมาณ แยกตามสถานะโครงการ เพื่อช่วยให้ตรวจสอบขั้นตอนและดำเนินงานในระบบ e-GP ได้อย่างถูกต้อง",
@@ -206,6 +206,24 @@ const courses = {
     accent: "#f2c55c",
     accentRgb: "242, 197, 92",
     accentTwo: "#43e0c3"
+  },
+  13: {
+    id: 13,
+    code: "C03",
+    kicker: "COURSE 03 · E-GP / OBECMAIL",
+    title: "การสมัคร ObecMail",
+    shortTitle: "สมัคร ObecMail",
+    description: "เรียนรู้ขั้นตอนการสมัครบัญชี ObecMail ตั้งแต่เข้าสู่หน้าลงทะเบียน กรอกข้อมูล ตรวจสอบผลการสมัคร ไปจนถึงแนวทางแจ้งปัญหาการใช้งาน",
+    level: "คู่มือทีละขั้นตอน",
+    audience: "บุคลากรทางการศึกษาและผู้ใช้งาน ObecMail",
+    total: 11,
+    folder: "course-13",
+    extension: "png",
+    category: "egp",
+    pdf: "course-13-obecmail-registration.pdf",
+    accent: "#8ea4e8",
+    accentRgb: "142, 164, 232",
+    accentTwo: "#ef967d"
   }
 };
 

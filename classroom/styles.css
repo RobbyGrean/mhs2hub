@@ -1801,7 +1801,7 @@ kbd {
 }
 
 .closing-section::before {
-  content: "12 / 153";
+  content: "13 / 164";
   position: absolute;
   right: -2%;
   bottom: -24%;
