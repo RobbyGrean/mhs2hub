@@ -239,6 +239,9 @@ const courses = {
     extension: "png",
     category: "knowledge",
     pdf: "",
+    download: "./assets/course-14/01.png",
+    downloadLabel: "ดาวน์โหลดภาพ",
+    downloadName: "ขึ้นทะเบียนสิ่งปลูกสร้าง.png",
     accent: "#62c5f5",
     accentRgb: "98, 197, 245",
     accentTwo: "#f6c85f"
@@ -260,6 +263,7 @@ const elements = {
   courseTotal: document.getElementById("course-total"),
   courseAudience: document.getElementById("course-audience"),
   downloadLink: document.getElementById("download-link"),
+  downloadLabel: document.getElementById("download-label"),
   copyLink: document.getElementById("copy-link"),
   slideCourseId: document.getElementById("slide-course-id"),
   slideNumberLabel: document.getElementById("slide-number-label"),
@@ -430,12 +434,14 @@ function updateCourseContent(course) {
   elements.courseLevel.textContent = course.level;
   elements.courseTotal.textContent = `${course.total} หน้า`;
   elements.courseAudience.textContent = course.audience;
-  const hasPdf = Boolean(course.pdf);
-  elements.downloadLink.hidden = !hasPdf;
-  if (hasPdf) {
-    const isDirectPath = course.pdf.startsWith(".") || course.pdf.startsWith("http");
-    const isExternal = course.pdf.startsWith("http");
-    elements.downloadLink.href = isDirectPath ? course.pdf : `./downloads/${course.pdf}`;
+  const downloadPath = course.download || course.pdf;
+  const hasDownload = Boolean(downloadPath);
+  elements.downloadLink.hidden = !hasDownload;
+  elements.downloadLabel.textContent = course.downloadLabel || "ดาวน์โหลด PDF";
+  if (hasDownload) {
+    const isDirectPath = downloadPath.startsWith(".") || downloadPath.startsWith("http");
+    const isExternal = downloadPath.startsWith("http");
+    elements.downloadLink.href = isDirectPath ? downloadPath : `./downloads/${downloadPath}`;
     if (isExternal) {
       elements.downloadLink.target = "_blank";
       elements.downloadLink.rel = "noopener";
@@ -443,7 +449,7 @@ function updateCourseContent(course) {
     } else {
       elements.downloadLink.removeAttribute("target");
       elements.downloadLink.removeAttribute("rel");
-      elements.downloadLink.setAttribute("download", "");
+      elements.downloadLink.setAttribute("download", course.downloadName || "");
     }
   } else {
     elements.downloadLink.removeAttribute("href");
