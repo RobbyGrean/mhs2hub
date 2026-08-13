@@ -242,6 +242,7 @@ const courses = {
     download: "./assets/course-14/01.png",
     downloadLabel: "ดาวน์โหลดภาพ",
     downloadName: "ขึ้นทะเบียนสิ่งปลูกสร้าง.png",
+    slideRatio: "3 / 2",
     accent: "#62c5f5",
     accentRgb: "98, 197, 245",
     accentTwo: "#f6c85f"
@@ -457,7 +458,7 @@ function updateCourseContent(course) {
   elements.slideCourseId.textContent = displayCourseCode(course);
   const isPortraitCourse = course.orientation === "portrait";
   elements.slideFrame.classList.toggle("is-portrait", isPortraitCourse);
-  elements.slideFrame.style.setProperty("--slide-ratio", isPortraitCourse ? "4 / 5" : "16 / 9");
+  elements.slideFrame.style.setProperty("--slide-ratio", course.slideRatio || (isPortraitCourse ? "4 / 5" : "16 / 9"));
 
   elements.tabs.forEach((tab) => {
     const selected = Number(tab.dataset.course) === course.id;

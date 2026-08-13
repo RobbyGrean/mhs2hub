@@ -1123,7 +1123,7 @@ kbd {
 
 .slide-frame {
   position: relative;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: var(--slide-ratio, 16 / 9);
   display: grid;
   place-items: center;
   overflow: hidden;
