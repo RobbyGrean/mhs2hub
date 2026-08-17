@@ -515,6 +515,11 @@
     .ico-lemon  { background: rgba(253,230,138,0.15); }
 
     .card-head { display:flex; align-items:center; justify-content:space-between; gap:0.875rem; }
+    .card-toggle {
+      width:100%; padding:0; border:0; background:transparent; color:inherit;
+      font:inherit; text-align:left; cursor:pointer;
+    }
+    .card-toggle:focus-visible { outline:2px solid var(--lilac); outline-offset:4px; }
     .card-left { display:flex; align-items:center; gap:0.875rem; }
     .card-title { font-size:1rem; font-weight:600; color:#fff; line-height:1.3; }
 

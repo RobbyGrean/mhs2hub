@@ -174,19 +174,31 @@
     </div>
 
     <!-- 2. คู่มือตรวจสอบพัสดุ -->
-    <a href="https://drive.google.com/file/d/1Mk_KzDl6d91KcbM2U2D4rK77ujxhzp6k/view?usp=sharing"
-       target="_blank" class="card card-lilac">
+    <div class="card card-lilac">
       <div class="spotlight"></div>
-      <div class="card-head">
+      <button class="card-head card-toggle" type="button" aria-expanded="false" aria-controls="inventory-audit-options"
+              onclick="const card = this.closest('.card'); const isOpen = card.classList.toggle('open'); this.setAttribute('aria-expanded', String(isOpen))">
         <div class="card-left">
           <div class="card-ico ico-lilac">📋</div>
           <span class="card-title">คู่มือตรวจสอบพัสดุประจำปี</span>
         </div>
-        <svg style="width:18px;height:18px;color:rgba(192,132,252,0.6);flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+        <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
+      </button>
+      <div class="dd" id="inventory-audit-options">
+        <a href="https://drive.google.com/file/d/1Mk_KzDl6d91KcbM2U2D4rK77ujxhzp6k/view?usp=sharing"
+           target="_blank" rel="noopener" onclick="event.stopPropagation()" class="dd-link">
+          <span class="dd-dot" style="background:var(--lilac)"></span> 1. คู่มือการตรวจสอบพัสดุประจำปี
+          <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
+        <a href="https://drive.google.com/drive/folders/1lpmrH_CvZAjMUctmhW3cbDxbKw9D9hsA"
+           target="_blank" rel="noopener" onclick="event.stopPropagation()" class="dd-link">
+          <span class="dd-dot" style="background:var(--lilac)"></span> 2. เอกสารแนวทาง ตัวอย่าง
+          <svg class="dd-arr" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+        </a>
       </div>
-    </a>
+    </div>
 
     <!-- 3. งานจ้างเหมาบริการ -->
     <div class="card card-peach" onclick="this.classList.toggle('open')">
