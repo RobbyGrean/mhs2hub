@@ -176,8 +176,9 @@
     <!-- 2. คู่มือตรวจสอบพัสดุ -->
     <div class="card card-lilac">
       <div class="spotlight"></div>
-      <button class="card-head card-toggle" type="button" aria-expanded="false" aria-controls="inventory-audit-options"
-              onclick="const card = this.closest('.card'); const isOpen = card.classList.toggle('open'); this.setAttribute('aria-expanded', String(isOpen))">
+      <div class="card-head card-toggle" role="button" tabindex="0" aria-expanded="false" aria-controls="inventory-audit-options"
+           onclick="const card = this.closest('.card'); const isOpen = card.classList.toggle('open'); this.setAttribute('aria-expanded', String(isOpen))"
+           onkeydown="if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); this.click(); }">
         <div class="card-left">
           <div class="card-ico ico-lilac">📋</div>
           <span class="card-title">คู่มือตรวจสอบพัสดุประจำปี</span>
@@ -185,7 +186,7 @@
         <svg class="chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
         </svg>
-      </button>
+      </div>
       <div class="dd" id="inventory-audit-options">
         <a href="https://drive.google.com/file/d/1Mk_KzDl6d91KcbM2U2D4rK77ujxhzp6k/view?usp=sharing"
            target="_blank" rel="noopener" onclick="event.stopPropagation()" class="dd-link">
