@@ -202,25 +202,6 @@
       border-color: rgba(255,151,210,0.85);
       box-shadow: 0 0 42px rgba(255,45,154,0.46), inset 0 1px 0 rgba(255,255,255,0.28);
     }
-    .pill-lunch {
-      position: relative;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 84% 20%, rgba(255,255,255,0.28) 0 8%, transparent 9%),
-        linear-gradient(135deg, rgba(110,231,183,0.24), rgba(125,211,252,0.12)),
-        rgba(255,255,255,0.04);
-      border-color: rgba(110,231,183,0.52);
-      color: #ecfff7;
-      box-shadow: 0 0 26px rgba(110,231,183,0.18), inset 0 1px 0 rgba(255,255,255,0.24);
-    }
-    .pill-lunch:hover {
-      background:
-        radial-gradient(circle at 84% 20%, rgba(255,255,255,0.38) 0 8%, transparent 9%),
-        linear-gradient(135deg, rgba(110,231,183,0.38), rgba(125,211,252,0.2)),
-        rgba(255,255,255,0.06);
-      border-color: rgba(167,243,208,0.82);
-      box-shadow: 0 0 42px rgba(110,231,183,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
-    }
     .pill-emoji, .pill-text, .pill-flower svg { position: relative; z-index: 1; }
     .pill-text { display:flex; flex-direction:column; align-items:flex-start; line-height:1.18; }
     .pill-text strong { font-size:0.875rem; font-weight:700; }
@@ -384,6 +365,36 @@
         0 0 0 1px rgba(255,182,223,0.42),
         0 0 60px rgba(255,80,168,0.3),
         0 0 96px rgba(255,172,215,0.14);
+    }
+    .card-lunch {
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,0.15), transparent 24%),
+        radial-gradient(circle at 84% 22%, rgba(110,231,183,0.18), transparent 22%),
+        linear-gradient(135deg, rgba(35,114,104,0.38), rgba(20,65,70,0.62) 48%, rgba(13,31,43,0.94) 100%);
+      border-color: rgba(167,243,208,0.42);
+      box-shadow:
+        0 6px 24px rgba(0,0,0,0.3),
+        inset 0 1.5px 0 rgba(255,255,255,0.18),
+        0 0 34px rgba(110,231,183,0.12);
+    }
+    .card-lunch:hover {
+      border-color: rgba(167,243,208,0.76);
+      box-shadow:
+        0 18px 50px rgba(0,0,0,0.4),
+        inset 0 1.5px 0 rgba(255,255,255,0.28),
+        0 0 50px rgba(110,231,183,0.2);
+    }
+    .lunch-ico {
+      background: linear-gradient(135deg, rgba(110,231,183,0.3), rgba(125,211,252,0.24));
+      box-shadow: 0 0 20px rgba(110,231,183,0.2);
+    }
+    .card-lunch .card-title { color: #f2fffa; }
+    .card-lunch .card-subtitle {
+      display: block;
+      margin-top: 0.2rem;
+      color: rgba(209,250,229,0.82);
+      font-size: 0.8rem;
+      font-weight: 400;
     }
     .passadu-orb {
       position: absolute;
