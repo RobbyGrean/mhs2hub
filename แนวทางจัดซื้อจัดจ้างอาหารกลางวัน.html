@@ -286,6 +286,71 @@
       font-size: 13px;
       line-height: 1.5;
     }
+    .document-view-toggle {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 28px;
+      padding: 6px;
+      background: var(--paper-2);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+    }
+    .document-view-toggle-label {
+      margin: 0 8px 0 6px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .document-view-tab {
+      min-height: 38px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--muted);
+      background: transparent;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 700;
+      transition: color .2s ease, background .2s ease, border-color .2s ease;
+    }
+    .document-view-tab:hover,
+    .document-view-tab:focus-visible {
+      color: var(--ink);
+      border-color: var(--rule-strong);
+      outline: none;
+    }
+    .document-view-tab[aria-selected="true"] {
+      color: var(--white);
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+    .document-detail-panel {
+      overflow: hidden;
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+    }
+    .document-detail-heading {
+      margin: 0;
+      padding: 18px 22px;
+      color: var(--muted);
+      background: var(--paper-2);
+      border-bottom: 1px solid var(--rule);
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.6;
+    }
+    .document-detail-frame {
+      display: block;
+      width: 100%;
+      height: min(78vh, 980px);
+      min-height: 680px;
+      border: 0;
+      background: var(--paper);
+    }
     @media (max-width: 900px) {
       .page { padding: 32px 22px; }
       .card-grid, .parallel-strip { grid-template-columns: 1fr; }
@@ -293,24 +358,34 @@
       .footer { display: block; }
       .footer span + span { display: block; margin-top: 8px; }
       .document-toolbar { align-items: flex-start; flex-direction: column-reverse; }
+      .document-view-toggle-label { width: 100%; margin: 4px 6px 0; }
+      .document-view-tab { flex: 1 1 140px; }
+      .document-detail-frame { height: 78vh; min-height: 560px; }
     }
   </style>
 </head>
 <body>
   <main class="page">
     <nav class="document-toolbar" aria-label="คำสั่งเอกสาร">
-      <p class="document-toolbar-note">พิมพ์หรือบันทึกจากไฟล์ PDF ฉบับเต็ม</p>
+      <p class="document-toolbar-note">เลือกแผนภาพหรือรายละเอียด แล้วพิมพ์/บันทึกเป็น PDF ตามมุมมองที่เลือก</p>
       <div class="document-toolbar-actions">
         <a class="document-action" href="index.html">← BACK</a>
-        <a class="document-action document-action-primary" href="แนวทางจัดซื้อจัดจ้างอาหารกลางวัน-ฉบับเต็มหน้า.pdf" target="_blank" rel="noopener">PRINT</a>
-        <a class="document-action document-action-save" href="แนวทางจัดซื้อจัดจ้างอาหารกลางวัน-ฉบับเต็มหน้า.pdf" download>SAVE PDF</a>
+        <a id="documentPrintAction" class="document-action document-action-primary" href="แนวทางจัดซื้อจัดจ้างอาหารกลางวัน-ฉบับเต็มหน้า.pdf" target="_blank" rel="noopener">PRINT</a>
+        <a id="documentSaveAction" class="document-action document-action-save" href="แนวทางจัดซื้อจัดจ้างอาหารกลางวัน-ฉบับเต็มหน้า.pdf" download="แนวทางจัดซื้อจัดจ้างอาหารกลางวัน-ฉบับเต็มหน้า.pdf">SAVE PDF</a>
       </div>
     </nav>
-    <header>
+    <div class="document-view-toggle" role="tablist" aria-label="เลือกรูปแบบแนวทาง">
+      <p class="document-view-toggle-label">รูปแบบเอกสาร</p>
+      <button id="diagramViewTab" class="document-view-tab" type="button" role="tab" aria-selected="true" aria-controls="diagramView" onclick="setDocumentView('diagram')">แผนภาพสรุป</button>
+      <button id="detailViewTab" class="document-view-tab" type="button" role="tab" aria-selected="false" aria-controls="detailView" onclick="setDocumentView('detail')">รายละเอียดฉบับเต็ม</button>
+    </div>
+
+    <div id="diagramView" class="document-view" role="tabpanel" aria-labelledby="diagramViewTab">
+      <header>
       <p class="eyebrow">PURCHASING &amp; FINANCE ROADMAP</p>
       <h1>แนวทางการจัดซื้อจัดจ้าง<br>อาหารกลางวัน</h1>
       <p class="subtitle">ตัดสินใจจากสถานะเงินงวดก่อนเปิดภาคเรียน แล้วเดินงานพัสดุและงานการเงินให้เงินพร้อมในบัญชีอาหารกลางวันอย่างน้อย 1 วันทำการก่อนเปิดเรียน</p>
-    </header>
+      </header>
 
     <section class="figure-wrap" aria-label="แผนภาพเส้นทางการจัดซื้อจัดจ้างอาหารกลางวัน">
       <svg viewBox="0 0 1200 720" role="img" aria-labelledby="lunch-procurement-title lunch-procurement-desc">
@@ -464,6 +539,34 @@
       <span>ข้อเสนอเชิงปฏิบัติ: ประสาน อปท. ล่วงหน้าอย่างน้อย 45 วัน เพื่อผลักดันกรณีที่ 1</span>
       <span>เนื้อหาจัดวางตามข้อมูลที่ผู้ใช้ให้มา · ตรวจทานระเบียบ/คำสั่งที่ใช้บังคับก่อนนำไปใช้จริง</span>
     </footer>
+    </div>
+
+    <section id="detailView" class="document-detail-panel" role="tabpanel" aria-labelledby="detailViewTab" hidden>
+      <p class="document-detail-heading">รายละเอียดฉบับเต็มสำหรับผู้ที่ต้องการอ่านหลักการ เหตุผล และขั้นตอนแยกตามกรณี</p>
+      <iframe class="document-detail-frame" src="แนวทางจัดซื้อจัดจ้างอาหารกลางวัน-ข้อความต้นฉบับเต็ม.html" title="แนวทางจัดซื้อจัดจ้างอาหารกลางวัน ข้อความต้นฉบับเต็ม" loading="lazy"></iframe>
+    </section>
   </main>
+  <script>
+    function setDocumentView(view) {
+      const isDetail = view === 'detail';
+      const diagram = document.getElementById('diagramView');
+      const detail = document.getElementById('detailView');
+      const diagramTab = document.getElementById('diagramViewTab');
+      const detailTab = document.getElementById('detailViewTab');
+      const printAction = document.getElementById('documentPrintAction');
+      const saveAction = document.getElementById('documentSaveAction');
+      const pdf = isDetail
+        ? 'แนวทางจัดซื้อจัดจ้างอาหารกลางวัน-ข้อความต้นฉบับเต็ม.pdf'
+        : 'แนวทางจัดซื้อจัดจ้างอาหารกลางวัน-ฉบับเต็มหน้า.pdf';
+
+      diagram.hidden = isDetail;
+      detail.hidden = !isDetail;
+      diagramTab.setAttribute('aria-selected', String(!isDetail));
+      detailTab.setAttribute('aria-selected', String(isDetail));
+      printAction.href = pdf;
+      saveAction.href = pdf;
+      saveAction.download = pdf;
+    }
+  </script>
 </body>
 </html>

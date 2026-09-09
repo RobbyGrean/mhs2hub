@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>แนวทางการจัดซื้อจัดจ้าง อาหารกลางวัน — ข้อความต้นฉบับเต็ม</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600&family=Noto+Sans+Thai:wght@400;500;600;700&family=Noto+Serif+Thai:wght@400;600&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #faf9f5;
+      --paper-2: #e8e6dc;
+      --ink: #141413;
+      --muted: #6f6d66;
+      --soft: #8b897f;
+      --rule: rgba(20, 20, 19, .14);
+      --rule-strong: #b0aea5;
+      --accent: #d97757;
+      --accent-tint: rgba(217, 119, 87, .12);
+      --link: #6a9bcc;
+      --link-tint: rgba(106, 155, 204, .12);
+      --green: #788c5d;
+      --green-tint: rgba(120, 140, 93, .12);
+      --white: #ffffff;
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--paper); }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Poppins", "Noto Sans Thai", Arial, sans-serif;
+    }
+    .page {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 56px 64px 48px;
+    }
+    .eyebrow {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
+    h1, h2, h3, h4, p { overflow-wrap: anywhere; }
+    h1 {
+      max-width: 1000px;
+      margin: 0;
+      font-family: "Lora", "Noto Serif Thai", Georgia, serif;
+      font-size: clamp(36px, 4vw, 54px);
+      font-weight: 600;
+      letter-spacing: -.02em;
+      line-height: 1.18;
+    }
+    .lead {
+      max-width: 1040px;
+      margin: 20px 0 0;
+      color: var(--muted);
+      font-size: 19px;
+      line-height: 1.75;
+    }
+    .route-map {
+      margin-top: 36px;
+      padding: 26px 28px 22px;
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+    }
+    .route-map svg {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+    .route-map .route-label {
+      fill: var(--muted);
+      font-family: "Poppins", "Noto Sans Thai", Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .08em;
+    }
+    .route-map .route-title {
+      fill: var(--ink);
+      font-family: "Poppins", "Noto Sans Thai", Arial, sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+    }
+    .route-map .route-sub {
+      fill: var(--muted);
+      font-family: "Poppins", "Noto Sans Thai", Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .route-map .route-num {
+      fill: var(--paper);
+      font-family: "Poppins", "Noto Sans Thai", Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .06em;
+    }
+    .content {
+      display: grid;
+      gap: 28px;
+      margin-top: 32px;
+    }
+    .section {
+      padding: 32px 34px 34px;
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-radius: 8px;
+    }
+    .section.case-one { border-top: 8px solid var(--accent); }
+    .section.case-two { border-top: 8px solid var(--ink); }
+    .section.summary { border-top: 8px solid var(--green); }
+    .section-kicker {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      line-height: 1.4;
+      text-transform: uppercase;
+    }
+    .section h2 {
+      margin: 0 0 20px;
+      font-size: 28px;
+      line-height: 1.35;
+    }
+    .section h3 {
+      margin: 0 0 18px;
+      font-size: 23px;
+      line-height: 1.45;
+    }
+    .section h4 {
+      margin: 0 0 14px;
+      font-size: 20px;
+      line-height: 1.4;
+    }
+    .copy {
+      margin: 0 0 20px;
+      font-size: 18px;
+      line-height: 1.78;
+    }
+    .source-list {
+      display: grid;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      font-size: 18px;
+      line-height: 1.78;
+    }
+    .source-list li {
+      position: relative;
+      padding-left: 28px;
+    }
+    .source-list li::before {
+      content: "";
+      position: absolute;
+      top: .82em;
+      left: 2px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+    .case-two-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-top: 26px;
+    }
+    .case-card {
+      padding: 26px 26px 30px;
+      border: 1px solid var(--rule);
+      border-radius: 7px;
+    }
+    .case-card.case-21 { background: var(--link-tint); border-top: 5px solid var(--link); }
+    .case-card.case-22 { background: var(--green-tint); border-top: 5px solid var(--green); }
+    .lane-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      margin-top: 22px;
+    }
+    .lane {
+      min-width: 0;
+      padding: 20px 22px 24px;
+      background: var(--white);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+    }
+    .lane.finance { border-left: 5px solid var(--accent); }
+    .lane.procurement { border-left: 5px solid var(--link); }
+    .lane h4 { margin-bottom: 16px; }
+    .lane.procurement h4 { color: #426e9c; }
+    .lane.finance h4 { color: #a9543c; }
+    .lane .source-list { font-size: 17px; }
+    .lane .source-list li { padding-left: 24px; }
+    .lane .source-list li::before {
+      width: 7px;
+      height: 7px;
+    }
+    .callout {
+      margin-top: 24px;
+      padding: 18px 22px;
+      background: var(--paper-2);
+      border-left: 5px solid var(--accent);
+      border-radius: 4px;
+      font-size: 17px;
+      line-height: 1.75;
+    }
+    .summary-list {
+      display: grid;
+      gap: 18px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: summary;
+    }
+    .summary-list li {
+      counter-increment: summary;
+      position: relative;
+      padding: 22px 24px 22px 76px;
+      background: var(--paper-2);
+      border: 1px solid var(--rule);
+      border-radius: 6px;
+      font-size: 18px;
+      line-height: 1.78;
+    }
+    .summary-list li::before {
+      content: counter(summary);
+      position: absolute;
+      top: 20px;
+      left: 22px;
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      color: var(--paper);
+      background: var(--green);
+      border-radius: 50%;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 28px;
+      margin-top: 30px;
+      padding-top: 18px;
+      border-top: 1px solid var(--rule);
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    @media (max-width: 900px) {
+      .page { padding: 36px 24px; }
+      .case-two-grid, .lane-grid { grid-template-columns: 1fr; }
+      .footer { display: block; }
+      .footer span + span { display: block; margin-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header>
+      <p class="eyebrow">แนวทางการจัดซื้อจัดจ้าง</p>
+      <h1>แนวทางการจัดซื้อจัดจ้าง อาหารกลางวัน</h1>
+    </header>
+
+    <section class="route-map" aria-label="กรณีที่ 1 และกรณีที่ 2.1 / กรณีที่ 2.2">
+      <svg viewBox="0 0 1240 250" role="img" aria-labelledby="original-route-title original-route-desc">
+        <title id="original-route-title">กรณีที่ 1 และกรณีที่ 2.1 / กรณีที่ 2.2</title>
+        <desc id="original-route-desc">แผนภาพจัดหมวดหมู่ข้อความต้นฉบับเป็นกรณีที่ 1 กรณีที่ 2.1 และกรณีที่ 2.2</desc>
+        <defs>
+          <marker id="original-route-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#6f6d66" />
+          </marker>
+        </defs>
+        <rect x="0" y="0" width="1240" height="250" fill="#ffffff" />
+        <path d="M 372 102 H 456 Q 464 102 464 110 V 174" fill="none" stroke="#6f6d66" stroke-width="2" marker-end="url(#original-route-arrow)" />
+        <path d="M 464 174 H 548 Q 556 174 556 166 V 102" fill="none" stroke="#6f6d66" stroke-width="2" marker-end="url(#original-route-arrow)" />
+        <path d="M 464 174 H 848 Q 856 174 856 166 V 102" fill="none" stroke="#6f6d66" stroke-width="2" marker-end="url(#original-route-arrow)" />
+        <rect x="48" y="64" width="324" height="76" rx="8" fill="#d97757" />
+        <text x="72" y="92" class="route-num">กรณีที่ 1</text>
+        <text x="72" y="119" fill="#faf9f5" class="route-title">กรณีที่ 1</text>
+        <rect x="548" y="64" width="324" height="76" rx="8" fill="#6a9bcc" />
+        <text x="572" y="92" class="route-num">กรณี 2.1</text>
+        <text x="572" y="119" fill="#faf9f5" class="route-title">กรณี 2.1</text>
+        <rect x="872" y="64" width="320" height="76" rx="8" fill="#788c5d" />
+        <text x="896" y="92" class="route-num">กรณี 2.2</text>
+        <text x="896" y="119" fill="#faf9f5" class="route-title">กรณี 2.2</text>
+        <text x="48" y="216" class="route-label">กรณีที่ 2 : โรงเรียนไม่ได้รับอนุมัติเงินงวดได้ทัน ก่อนอาหารมื้อแรกของวันเปิดภาคเรียน</text>
+      </svg>
+    </section>
+
+    <div class="content">
+      <section class="section case-one">
+        <p class="section-kicker">กรณีที่ 1</p>
+        <h2>กรณีที่ 1 : โรงเรียนได้รับอนุมัติเงินงวดได้ทัน ก่อนวันเปิดภาคเรียน</h2>
+        <p class="copy">สามารถดำเนินการจัดซื้อจัดจ้างผ่านระบบ e-GP ได้เลย</p>
+        <ul class="source-list">
+          <li>จัดทำเอกสาร TOR (เต็มรูปแบบ 10 หัวข้อ)</li>
+          <li>จัดทำรายงานขอซื้อขอจ้าง จนประกาศผู้ชนะการเสนอราคา</li>
+          <li>ลงนามในสัญญา/ใบสั่งซื้อสั่งจ้าง ได้ตั้งต่อเมื่อได้รับอนุมัติเงินงวด และก่อนการส่งมอบอาหารมื้อแรกของนักเรียน</li>
+          <li>จำนวนวันที่เขียนรายงานขอซื้อขอจ้าง ระบุระยะดำเนินการส่งมอบอาหาร เท่ากับเงินที่ อปท. อนุมัติเงินงวดมา เช่น 50 วัน 100 วัน</li>
+        </ul>
+      </section>
+
+      <section class="section case-two">
+        <p class="section-kicker">กรณีที่ 2</p>
+        <h2>กรณีที่ 2 : โรงเรียนไม่ได้รับอนุมัติเงินงวดได้ทัน ก่อนอาหารมื้อแรกของวันเปิดภาคเรียน</h2>
+
+        <div class="case-two-grid">
+          <article class="case-card case-21">
+            <p class="section-kicker">กรณี 2.1</p>
+            <h3>กรณี 2.1 : โรงเรียนไม่ได้รับอนุมัติเงินงวดได้ทัน แต่ทราบข้อมูลแล้วว่า อปท. จะอนุมัติเงินงวดและโอนเงินมาเมื่อใด</h3>
+            <div class="lane-grid">
+              <section class="lane procurement">
+                <h4>งานพัสดุ</h4>
+                <ul class="source-list">
+                  <li>จัดทำเอกสาร TOR (เต็มรูปแบบ 10 หัวข้อ)</li>
+                  <li>จัดทำรายงานขอซื้อขอจ้างและประกาศผู้ชนะการเสนอราคา</li>
+                  <li>ลงนามในสัญญา/ใบสั่งซื้อจ้างได้ต่อเมื่อ เงินยืมได้รับการอนุมัติและได้มีการโอนเงินยืมเข้าบัญชีอาหารกลางวันแล้ว</li>
+                  <li>จำนวนวันที่เขียนรายงานขอซื้อขอจ้าง ระบุระยะดำเนินการส่งมอบอาหาร เป็นจำนวน 100 วัน (1 เทอม)</li>
+                  <li>เอกสารทั้งหมดต้องดำเนินการคู่ขนานไปกับกระบวนการยืมเงิน และเสร็จสิ้น อย่างน้อย 1 วันทำการก่อนเปิดภาคเรียน</li>
+                  <li>ดำเนินการในระบบ e-GP แบบ 1 รายงานขอซื้อขอจ้าง ครบกำหนดส่งมอบ 100 วัน กำหนดจำนวนงวดงานและงวดเงิน ตามดุลยพินิจของโรงเรียนเห็นว่าเหมาะสม</li>
+                </ul>
+              </section>
+              <section class="lane finance">
+                <h4>* งานการเงิน</h4>
+                <ul class="source-list">
+                  <li>ทำบันทึกยืมเงินรายได้สถานศึกษาหรือเงินอุดหนุนอื่นๆ ในวงเงินเท่ากับงวดงานที่จะใช้เบิกจ่ายไปพลางก่อน ที่เงินจาก อปท จะได้รับอนุมัติเงินงวด ยกตัวอย่างเช่น วงเงินทั้งภาคเรียน 100,000 บาท จำนวน 10 งวด งวดละ 10,000 บาท และคาดการณ์ได้ว่า โรงเรียนจะต้องดำเนินการเบิกจ่ายไปก่อนได้รับเงินจาก อปท จำนวน 2 งวด จากทั้งหมด 10 งวด ให้โรงเรียนดำเนินการยืมเงินจำนวน 20,000 บาท ก่อน</li>
+                  <li>เมื่อได้รับอนุมัติยืมเงินจำนวนดังกล่าวแล้ว นำโอนเข้าบัญชีอาหารกลางวัน</li>
+                  <li>ให้กระบวนการทั้งหมด เสร็จสิ้น และเงินอยู่ในบัญชีอาหารกลางวันเรียบร้อย อย่างน้อย 1 วันทำการก่อนวันเปิดภาคเรียน</li>
+                </ul>
+              </section>
+            </div>
+          </article>
+
+          <article class="case-card case-22">
+            <p class="section-kicker">กรณี 2.2</p>
+            <h3>กรณี 2.2 : โรงเรียนไม่ได้รับอนุมัติเงินงวดได้ทัน และไม่ทราบข้อมูลว่า อปท. จะอนุมัติเงินงวดและโอนเงินมาเมื่อใด</h3>
+            <div class="lane-grid">
+              <section class="lane procurement">
+                <h4>งานพัสดุ</h4>
+                <ul class="source-list">
+                  <li>จัดทำเอกสาร TOR (เต็มรูปแบบ 10 หัวข้อ)</li>
+                  <li>จัดทำรายงานขอซื้อขอจ้างและประกาศผู้ชนะการเสนอราคา</li>
+                  <li>ลงนามในสัญญา/ใบสั่งซื้อจ้างได้ต่อเมื่อ เงินยืมได้รับการอนุมัติและได้มีการโอนเงินยืมเข้าบัญชีอาหารกลางวันแล้ว</li>
+                  <li>จำนวนวันที่เขียนรายงานขอซื้อขอจ้าง ระบุระยะดำเนินการส่งมอบอาหาร เป็นจำนวน 100 วัน (1 เทอม)</li>
+                  <li>เอกสารทั้งหมดต้องดำเนินการคู่ขนานไปกับกระบวนการยืมเงิน และเสร็จสิ้น อย่างน้อย 1 วันทำการก่อนเปิดภาคเรียน</li>
+                  <li>ดำเนินการในระบบ e-GP แบบ 1 รายงานขอซื้อขอจ้าง ครบกำหนดส่งมอบ 100 วัน กำหนดจำนวนงวดงานและงวดเงิน ตามดุลยพินิจของโรงเรียนเห็นว่าเหมาะสม</li>
+                </ul>
+              </section>
+              <section class="lane finance">
+                <h4>งานการเงิน</h4>
+                <ul class="source-list">
+                  <li>ทำบันทึกยืมเงินรายได้สถานศึกษาหรือเงินอุดหนุนอื่นๆ ในวงเงินที่เพียงพอกับงวดการจ่ายเงิน ให้ผู้ขาย/ผู้รับจ้าง ไม่น้อยกว่าค่ามื้ออาหารสำหรับนักเรียนจำนวน <strong>30 วัน</strong></li>
+                  <li>เมื่อได้รับอนุมัติให้ยืมเงินจำนวนดังกล่าวแล้ว นำโอนเข้าบัญชีอาหารกลางวัน</li>
+                  <li>ให้กระบวนการทั้งหมด เสร็จสิ้น และเงินอยู่ในบัญชีอาหารกลางวันเรียบร้อย อย่างน้อย 1 วันทำการก่อนวันเปิดภาคเรียน</li>
+                </ul>
+              </section>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section summary">
+        <p class="section-kicker">สรุปภาพรวมทั้ง 3 กรณี</p>
+        <h2>สรุปภาพรวมทั้ง 3 กรณี</h2>
+        <ol class="summary-list">
+          <li>ให้ดำเนินการตามกรณีที่ 1 ก่อนจะดีทีสุด โดยให้ประสานงานกับ อปท ก่อนวันเปิดเทอมอย่างน้อย 45 วัน เพื่อให้ได้รับอนุมัติเงินงวดค่าอาหารกลางวันได้ทันก่อนเปิดภาคเรียน</li>
+          <li>หากไม่สามารถดำเนินการตามกรณีที่ 1 ได้ ควรดำเนินการตามกรณีที่ 2.1 ต่อไป เพื่อให้ทราบว่าต้องดำเนินการยืมเงินเพื่อเปิดสัญญา/ใบสั่งจ้าง เป็นจำนวนเงินเท่าใดและต้องยืมเงินจ่ายไปพลางก่อนถึงงวดใด เพื่อให้สามารถมีวงเงินเพื่อรองรับการทำสัญญาและเบิกจ่ายในงวดเงินที่ต้องเบิกจ่ายพลางก่อนนั้นได้</li>
+          <li>กระบวนการทางการเงินและพัสดุ ควรดำเนินการควบคู่ขนานกันไปเพื่อให้เกิดความรวดเร็วคล่องตัว ในทางเอกสารและเงินรองรับในบัญชีให้พร้อมก่อนวันเปิดภาคเรียน</li>
+        </ol>
+      </section>
+    </div>
+
+  </main>
+</body>
+</html>
