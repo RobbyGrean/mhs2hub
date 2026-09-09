@@ -202,6 +202,25 @@
       border-color: rgba(255,151,210,0.85);
       box-shadow: 0 0 42px rgba(255,45,154,0.46), inset 0 1px 0 rgba(255,255,255,0.28);
     }
+    .pill-lunch {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 84% 20%, rgba(255,255,255,0.28) 0 8%, transparent 9%),
+        linear-gradient(135deg, rgba(110,231,183,0.24), rgba(125,211,252,0.12)),
+        rgba(255,255,255,0.04);
+      border-color: rgba(110,231,183,0.52);
+      color: #ecfff7;
+      box-shadow: 0 0 26px rgba(110,231,183,0.18), inset 0 1px 0 rgba(255,255,255,0.24);
+    }
+    .pill-lunch:hover {
+      background:
+        radial-gradient(circle at 84% 20%, rgba(255,255,255,0.38) 0 8%, transparent 9%),
+        linear-gradient(135deg, rgba(110,231,183,0.38), rgba(125,211,252,0.2)),
+        rgba(255,255,255,0.06);
+      border-color: rgba(167,243,208,0.82);
+      box-shadow: 0 0 42px rgba(110,231,183,0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+    }
     .pill-emoji, .pill-text, .pill-flower svg { position: relative; z-index: 1; }
     .pill-text { display:flex; flex-direction:column; align-items:flex-start; line-height:1.18; }
     .pill-text strong { font-size:0.875rem; font-weight:700; }
