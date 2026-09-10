@@ -1271,7 +1271,7 @@ body::after {
 .learning-quick-card b { grid-column:2; color:var(--lemon); font-size:0.74rem; }
 .learning-quick-card.phonebook { border-color:rgba(110,231,183,0.22); }
 .learning-quick-card.assets { border-color:rgba(125,211,252,0.22); }
-.learning-quick-card.jmoney { border-color:rgba(252,165,165,0.22); }
+.learning-quick-card.jangmao70 { border-color:rgba(252,165,165,0.22); }
 .learning-quick-card.pictures { border-color:rgba(192,132,252,0.24); }
 .ai-passadu-card { margin-top:0.75rem; }
 .ai-gpt-card { margin-top:0.75rem; }
@@ -1418,7 +1418,7 @@ body::after {
 .ai-learning-section .learning-quick-icon { border:1px solid rgba(255,255,255,.75); background:rgba(18,29,37,.13); box-shadow:inset 0 1px 0 rgba(255,255,255,.85),inset 0 -2px 3px rgba(25,36,45,.25); }
 .ai-learning-section .learning-quick-card.phonebook .learning-quick-icon { box-shadow:inset 0 0 0 2px rgba(110,231,183,.55),inset 0 1px 0 rgba(255,255,255,.85); }
 .ai-learning-section .learning-quick-card.assets .learning-quick-icon { box-shadow:inset 0 0 0 2px rgba(125,211,252,.6),inset 0 1px 0 rgba(255,255,255,.85); }
-.ai-learning-section .learning-quick-card.jmoney .learning-quick-icon { box-shadow:inset 0 0 0 2px rgba(252,165,165,.62),inset 0 1px 0 rgba(255,255,255,.85); }
+.ai-learning-section .learning-quick-card.jangmao70 .learning-quick-icon { box-shadow:inset 0 0 0 2px rgba(252,165,165,.62),inset 0 1px 0 rgba(255,255,255,.85); }
 .ai-learning-section .learning-quick-card.pictures .learning-quick-icon { box-shadow:inset 0 0 0 2px rgba(192,132,252,.62),inset 0 1px 0 rgba(255,255,255,.85); }
 .ai-learning-section .learning-quick-card.checkin .learning-quick-icon { box-shadow:inset 0 0 0 2px rgba(253,230,138,.72),inset 0 1px 0 rgba(255,255,255,.85); }
 .ai-learning-section .learning-quick-card.hub .learning-quick-icon { box-shadow:inset 0 0 0 2px rgba(244,114,182,.68),inset 0 1px 0 rgba(255,255,255,.85); }

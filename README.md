@@ -36,7 +36,7 @@
 | ฐานโปรเจกต์ที่คุณต่อยอดได้ด้วย AI | [Learning Hub](https://robbygrean.github.io/mhs2hub/learning/) |
 | ระบบเช็คชื่อออนไลน์ | [checkin2.html](https://robbygrean.github.io/mhs2hub/checkin2.html) |
 | หน้าสำรองระบบเช็คชื่อ | [checkin.html](https://robbygrean.github.io/mhs2hub/checkin.html) |
-| โปรแกรมออกเอกสารเบิกเงินเดือน | [jmoney](https://robbygrean.github.io/jmoney/) |
+| โปรแกรมสร้างเอกสารจ้างเหมาบริการผู้ปฏิบัติงานให้ราชการ | [Jangmao70](https://robbygrean.github.io/Jangmao70/) |
 | ภาพรวมการจ้างเหมาบริการผู้ปฏิบัติงานให้ราชการ | [JM Slide](https://robbygrean.github.io/mhs2hub/877go/JMslide/) |
 | เนื้อหากระบวนงาน 804 | [804go](https://robbygrean.github.io/mhs2hub/804go/) |
 
@@ -119,7 +119,7 @@ mhs2hub/
 
 ### `learning/`
 
-ศูนย์การเรียนรู้สำหรับดูระบบจริงเป็นต้นแบบ โดยเชื่อมไปยัง Phonebook, ทะเบียนครุภัณฑ์, jmoney, picturemhs2, PassaduAIagent, ระบบ Inventory และระบบเช็คชื่อออนไลน์
+ศูนย์การเรียนรู้สำหรับดูระบบจริงเป็นต้นแบบ โดยเชื่อมไปยัง Phonebook, ทะเบียนครุภัณฑ์, Jangmao70, picturemhs2, PassaduAIagent, ระบบ Inventory และระบบเช็คชื่อออนไลน์
 
 ## เรียนรู้การสร้าง Hub แบบ mhs2hub
 
