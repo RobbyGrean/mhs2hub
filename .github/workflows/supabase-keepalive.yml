@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: supabase-keepalive
@@ -22,6 +22,9 @@ jobs:
       SUPABASE_URL: https://jtveymfojswonzkqbqyl.supabase.co
       SUPABASE_PUBLISHABLE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
     steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
       - name: Check Supabase REST API
         shell: bash
         run: |
@@ -42,3 +45,23 @@ jobs:
             -o /dev/null \
             -w 'Supabase API response: HTTP %{http_code}\n' \
             "${SUPABASE_URL}/rest/v1/phonebook_records?select=id&limit=1"
+
+      - name: Create monthly GitHub activity
+        if: ${{ always() }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          heartbeat=".github/supabase-keepalive/$(date -u +%Y-%m).txt"
+          if [[ -e "${heartbeat}" ]]; then
+            echo "Monthly GitHub heartbeat already exists: ${heartbeat}"
+            exit 0
+          fi
+
+          mkdir -p "$(dirname "${heartbeat}")"
+          : > "${heartbeat}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${heartbeat}"
+          git commit -m "chore: keep scheduled workflows active"
+          git push
