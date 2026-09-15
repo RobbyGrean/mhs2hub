@@ -3,10 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#1a5276">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="สมุดโทรศัพท์">
 <title>สมุดโทรศัพท์ ผอ.โรงเรียน สพป.มส.2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600&family=Noto+Serif+Thai:wght@400;600&display=swap" rel="stylesheet">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%231a5276'/><text y='.9em' font-size='62' x='50%' text-anchor='middle'>📞</text></svg>">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon.svg">
 <style>
   /* ── THEMES ───────────────────────────────────── */
   :root {
@@ -1184,6 +1191,58 @@
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
   }
+
+  /* ── PHONEBOOK FEATURES ───────────────────────── */
+  .special-tab { color: var(--accent); }
+  .connection-status {
+    display: inline-flex; align-items: center; gap: 5px; font-size: 11.5px;
+    padding: 4px 9px; border-radius: 999px; background: var(--surface2);
+    color: var(--text2); white-space: nowrap;
+  }
+  .connection-status::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: #a9b9c8; }
+  .connection-status.online::before { background: #27ae60; }
+  .connection-status.syncing::before { background: #f39c12; animation: status-pulse 1s ease-in-out infinite; }
+  .connection-status.offline::before, .connection-status.error::before { background: #e74c3c; }
+  @keyframes status-pulse { 50% { opacity: .35; } }
+
+  .management-panel {
+    margin: 0 0 16px; background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden;
+  }
+  .management-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 18px; background: var(--surface2); border-bottom: 1px solid var(--border); }
+  .management-head h2 { font-size: 17px; color: var(--text); }
+  .management-head p { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .panel-close { width: 34px; height: 34px; border: 1px solid var(--border); border-radius: 50%; background: var(--surface); color: var(--text2); cursor: pointer; font-size: 20px; line-height: 1; }
+  .management-list { padding: 8px 18px 12px; max-height: 360px; overflow-y: auto; }
+  .panel-empty { padding: 22px 4px; color: var(--text2); font-size: 13px; text-align: center; }
+  .history-item, .trash-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--border); }
+  .history-item:last-child, .trash-item:last-child { border-bottom: 0; }
+  .history-main, .trash-main { min-width: 0; flex: 1; }
+  .history-main strong, .trash-main strong { display: block; color: var(--text); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .history-main span, .trash-main span { display: block; color: var(--text2); font-size: 12px; }
+  .history-action { color: var(--primary); font-weight: 600; }
+  .trash-restore { border: 1px solid var(--primary-light); color: var(--primary); background: var(--surface); border-radius: 7px; padding: 6px 10px; cursor: pointer; font-family: inherit; white-space: nowrap; }
+  .favorite-btn { border: 1px solid var(--border); background: var(--surface); color: var(--text3); border-radius: 8px; min-width: 36px; height: 36px; cursor: pointer; font-size: 19px; line-height: 1; }
+  .favorite-btn.active { color: #e6a817; border-color: #e8cc6a; background: #fffbea; }
+  .card-tools { display: flex; align-items: center; gap: 7px; flex-shrink: 0; }
+  .btn-qr { border: 1px solid var(--border); background: var(--surface); color: var(--text2); border-radius: 8px; padding: 7px 9px; cursor: pointer; font-family: inherit; font-size: 13px; }
+  .btn-qr:hover, .favorite-btn:hover { border-color: var(--primary-light); color: var(--primary); }
+  .school-card.is-focus { border-color: var(--accent); box-shadow: 0 0 0 4px rgba(231,76,60,.15), var(--shadow-md); }
+  .qr-overlay { position: fixed; inset: 0; z-index: 1100; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(8,20,35,.68); opacity: 0; visibility: hidden; transition: opacity .2s, visibility .2s; }
+  .qr-overlay.open { opacity: 1; visibility: visible; }
+  .qr-modal { position: relative; width: min(360px, 100%); padding: 24px; border-radius: 18px; background: var(--surface); text-align: center; box-shadow: var(--shadow-md); }
+  .qr-modal .panel-close { position: absolute; top: 14px; right: 14px; }
+  .qr-modal h2 { color: var(--text); font-size: 18px; }
+  .qr-modal p { color: var(--text2); font-size: 14px; margin: 8px 0 16px; }
+  .qr-modal canvas { display: block; width: 240px; height: 240px; margin: 0 auto 18px; background: #fff; padding: 8px; border-radius: 8px; }
+  .qr-modal .btn-secondary { width: 100%; }
+  @media (max-width: 680px) {
+    .result-info { align-items: flex-start; }
+    .connection-status { order: 3; }
+    .result-actions { width: 100%; overflow-x: auto; padding-bottom: 2px; }
+    .result-actions .refresh-btn { flex-shrink: 0; }
+    .management-list { padding-inline: 13px; }
+  }
 </style>
 </head>
 <body>
@@ -1256,6 +1315,8 @@
     <button class="filter-tab" aria-pressed="false" onclick="filterAmphoe('แม่สะเรียง')" id="tab-แม่สะเรียง">อ.แม่สะเรียง</button>
     <button class="filter-tab" aria-pressed="false" onclick="filterAmphoe('สบเมย')" id="tab-สบเมย">อ.สบเมย</button>
     <button class="filter-tab" aria-pressed="false" onclick="filterAmphoe('แม่ลาน้อย')" id="tab-แม่ลาน้อย">อ.แม่ลาน้อย</button>
+    <button class="filter-tab special-tab" aria-pressed="false" onclick="filterSpecial('favorites')" id="tab-favorites">⭐ โปรด (<span id="favoriteCount">0</span>)</button>
+    <button class="filter-tab special-tab" aria-pressed="false" onclick="filterSpecial('recent')" id="tab-recent">🕘 ล่าสุด</button>
   </div>
 </div>
 
@@ -1268,12 +1329,31 @@
   <div class="result-info" id="resultInfo" style="display:none">
     <span id="resultText" aria-live="polite"></span>
     <span id="freshnessText" class="freshness-text" aria-live="polite" style="display:none"></span>
+    <span id="connectionStatus" class="connection-status connecting" aria-live="polite">กำลังเชื่อมต่อ...</span>
     <div class="result-actions">
       <button class="refresh-btn" onclick="refreshData()">
         <span id="refreshIcon">↻</span> รีเฟรช
       </button>
+      <button class="refresh-btn" onclick="openHistoryPanel()">ประวัติ</button>
+      <button class="refresh-btn" onclick="openTrashPanel()">ถังขยะ</button>
+      <button class="refresh-btn" onclick="exportCsv()">ส่งออก CSV</button>
+      <button class="refresh-btn" onclick="exportExcel()">ส่งออก Excel</button>
     </div>
   </div>
+  <section class="management-panel" id="historyPanel" hidden aria-labelledby="historyTitle">
+    <div class="management-head">
+      <div><h2 id="historyTitle">ประวัติการแก้ไข</h2><p>รายการเปลี่ยนแปลงล่าสุดของสมุดโทรศัพท์</p></div>
+      <button class="panel-close" type="button" onclick="closeManagementPanels()" aria-label="ปิดประวัติ">×</button>
+    </div>
+    <div class="management-list" id="historyList"><div class="panel-empty">ยังไม่ได้โหลดประวัติ</div></div>
+  </section>
+  <section class="management-panel" id="trashPanel" hidden aria-labelledby="trashTitle">
+    <div class="management-head">
+      <div><h2 id="trashTitle">ถังขยะ</h2><p>ข้อมูลที่ลบไว้และสามารถกู้คืนได้</p></div>
+      <button class="panel-close" type="button" onclick="closeManagementPanels()" aria-label="ปิดถังขยะ">×</button>
+    </div>
+    <div class="management-list" id="trashList"><div class="panel-empty">ยังไม่ได้โหลดถังขยะ</div></div>
+  </section>
   <div class="cards-list" id="cardsList" aria-live="polite"></div>
 </main>
 
@@ -1286,6 +1366,10 @@
   <div class="fab-mini">
     <span class="fab-mini-label">เพิ่มโรงเรียนใหม่</span>
     <button class="fab-mini-btn" onclick="openAddModal()">＋</button>
+  </div>
+  <div class="fab-mini" id="installAction" hidden>
+    <span class="fab-mini-label">ติดตั้งเป็นแอป</span>
+    <button class="fab-mini-btn" type="button" onclick="installPwa()">⬇</button>
   </div>
 </div>
 <button class="fab" id="fabBtn" onclick="toggleFab()" aria-label="เมนูเพิ่มโรงเรียน">✎</button>
@@ -1354,6 +1438,19 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite" aria-atomic="true"></div>
 
+<div class="qr-overlay" id="qrOverlay" aria-hidden="true">
+  <div class="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qrTitle">
+    <button class="panel-close" type="button" onclick="closeQrModal()" aria-label="ปิด QR Code">×</button>
+    <h2 id="qrTitle">QR Code</h2>
+    <p id="qrSchoolName"></p>
+    <canvas id="qrCanvas" width="240" height="240"></canvas>
+    <button class="btn-secondary" type="button" onclick="downloadQrCode()">ดาวน์โหลด QR Code</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 // ====================================================
 // CONFIG — ใส่ Supabase URL และ publishable/anon key หลังสร้างโปรเจคแล้ว
@@ -1367,11 +1464,14 @@ const SUPABASE_CONFIG = Object.freeze({
 const CACHE_KEY = 'sppms2_data_v3';
 const CACHE_TS_KEY = 'sppms2_ts_v3';
 const SKIN_KEY = 'sppms2_skin';
+const FAVORITES_KEY = 'sppms2_favorites_v1';
+const RECENT_KEY = 'sppms2_recent_v1';
 const CACHE_TTL = 30 * 60 * 1000; // 30 นาที
 
 let allData = [];
 let filteredData = [];
 let currentAmphoe = '';
+let currentSpecialView = '';
 let currentQuery = '';
 let editingRowIndex = -1;
 let fabOpen = false;
@@ -1379,6 +1479,10 @@ let multiDirectors = new Set();
 let isSaving = false;
 let revealObserver;
 let previousFocus = null;
+let realtimeClient = null;
+let realtimeChannel = null;
+let deferredInstallPrompt = null;
+let activeQrRecord = null;
 
 function isSupabaseConfigured() {
   return /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SUPABASE_CONFIG.url)
@@ -1530,6 +1634,68 @@ function mapSupabaseRecord(row) {
   };
 }
 
+function getFavoriteIds() {
+  try { return new Set(JSON.parse(localStorage.getItem(FAVORITES_KEY) || '[]')); }
+  catch (e) { return new Set(); }
+}
+
+function saveFavoriteIds(ids) {
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify([...ids]));
+}
+
+function isFavorite(id) { return getFavoriteIds().has(String(id)); }
+
+function updateFavoriteCount() {
+  const count = document.getElementById('favoriteCount');
+  if (count) count.textContent = getFavoriteIds().size;
+}
+
+function toggleFavorite(event, id) {
+  event?.stopPropagation();
+  const ids = getFavoriteIds();
+  const key = String(id);
+  if (ids.has(key)) ids.delete(key); else ids.add(key);
+  saveFavoriteIds(ids);
+  updateFavoriteCount();
+  applyFilter();
+  showToast(ids.has(key) ? 'เพิ่มในรายการโปรดแล้ว' : 'นำออกจากรายการโปรดแล้ว', 'success');
+}
+
+function getRecentIds() {
+  try { return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]').map(String); }
+  catch (e) { return []; }
+}
+
+function recordRecent(id) {
+  const key = String(id);
+  const next = [key, ...getRecentIds().filter(item => item !== key)].slice(0, 12);
+  localStorage.setItem(RECENT_KEY, JSON.stringify(next));
+}
+
+function filterSpecial(view) {
+  currentSpecialView = view;
+  currentAmphoe = '';
+  document.querySelectorAll('.filter-tab').forEach(tab => {
+    const active = tab.id === `tab-${view}`;
+    tab.classList.toggle('active', active);
+    tab.setAttribute('aria-pressed', String(active));
+  });
+  applyFilter();
+}
+
+function updateConnectionStatus(state, label) {
+  const el = document.getElementById('connectionStatus');
+  if (!el) return;
+  el.className = `connection-status ${state}`;
+  el.textContent = label || ({
+    online: 'เชื่อมต่อแล้ว',
+    syncing: 'กำลังซิงค์...',
+    offline: 'ออฟไลน์',
+    error: 'เชื่อมต่อล้มเหลว',
+    connecting: 'กำลังเชื่อมต่อ...',
+  }[state] || state);
+}
+
 function supabaseHeaders() {
   return {
     apikey: SUPABASE_CONFIG.publishableKey,
@@ -1553,11 +1719,17 @@ async function supabaseRequest(path, options = {}) {
   return json;
 }
 
-async function apiFetch(params) {
+async function apiFetch(params = {}) {
   if (!isSupabaseConfigured()) throw new Error('ยังไม่ได้ตั้งค่า Supabase URL และ publishable key');
-  const columns = 'id,school,director,tambon,amphoe,phone,legacy_row_index,created_at,updated_at';
-  const rows = await supabaseRequest(`${SUPABASE_CONFIG.table}?select=${columns}&order=school.asc`);
+  const columns = 'id,school,director,tambon,amphoe,phone,legacy_row_index,created_at,updated_at,deleted_at';
+  const deletedFilter = params.includeDeleted ? 'deleted_at=not.is.null' : 'deleted_at=is.null';
+  const rows = await supabaseRequest(`${SUPABASE_CONFIG.table}?select=${columns}&${deletedFilter}&order=school.asc`);
   return { records: (rows || []).map(mapSupabaseRecord) };
+}
+
+async function apiFetchHistory() {
+  const rows = await supabaseRequest('phonebook_change_log?select=id,record_id,action,before_data,after_data,changed_at&order=changed_at.desc&limit=100');
+  return rows || [];
 }
 
 async function apiPost(body) {
@@ -1580,8 +1752,16 @@ async function apiPost(body) {
   }
   if (body.action === 'delete') {
     return supabaseRequest(`${SUPABASE_CONFIG.table}?id=eq.${id}`, {
-      method: 'DELETE',
+      method: 'PATCH',
       headers: { Prefer: 'return=minimal' },
+      body: JSON.stringify({ deleted_at: new Date().toISOString() }),
+    });
+  }
+  if (body.action === 'restore') {
+    return supabaseRequest(`${SUPABASE_CONFIG.table}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { Prefer: 'return=minimal' },
+      body: JSON.stringify({ deleted_at: null }),
     });
   }
   throw new Error('ไม่รู้จักคำสั่ง: ' + body.action);
@@ -1610,12 +1790,14 @@ function setProgress(pct, msg) {
 
 async function init() {
   setProgress(5, 'กำลังเริ่มต้น...');
+  updateConnectionStatus('connecting');
   document.getElementById('loader').classList.remove('hidden');
 
   if (!isSupabaseConfigured()) {
     setProgress(100, 'ยังไม่ได้ตั้งค่า Supabase');
     document.getElementById('loader').setAttribute('aria-busy', 'false');
     document.getElementById('loader').classList.add('hidden');
+    updateConnectionStatus('error');
     showSetupBanner('ยังไม่ได้ตั้งค่า Supabase URL และ publishable key ใน index.html');
     return;
   }
@@ -1638,6 +1820,7 @@ async function init() {
 
 async function fetchAndUpdate(silent) {
   if (!silent) setProgress(20, 'กำลังดึงข้อมูลจาก Supabase...');
+  updateConnectionStatus('syncing');
   try {
     const json = await apiFetch({ action: 'list' });
     allData = json.records || [];
@@ -1650,7 +1833,9 @@ async function fetchAndUpdate(silent) {
       updateStats();
       applyFilter();
       showFreshness('fresh');
+      updateConnectionStatus('online');
     }
+    if (!silent) updateConnectionStatus('online');
   } catch(e) {
     if (!silent) {
       const cached = loadCache();
@@ -1659,12 +1844,14 @@ async function fetchAndUpdate(silent) {
         computeMultiDirectors(allData);
         finishLoad();
         showFreshness('cached');
+        updateConnectionStatus('offline', 'ใช้ข้อมูลแคช');
         showToast('ใช้ข้อมูลแคช (เชื่อมต่อไม่ได้)', 'error');
       } else {
         showLoadError();
       }
     } else {
       showFreshness('cached');
+      updateConnectionStatus('offline');
       showToast('รีเฟรชล้มเหลว: ' + e.message, 'error');
     }
   }
@@ -1680,12 +1867,16 @@ function finishLoad() {
   document.getElementById('statsBar').style.display = 'flex';
   document.getElementById('resultInfo').style.display = 'flex';
   document.getElementById('headerCount').textContent = allData.length;
+  updateFavoriteCount();
+  updateConnectionStatus('online');
+  focusSchoolFromUrl();
   setTimeout(() => document.getElementById('loader').classList.add('hidden'), 400);
 }
 
-async function refreshData() {
+async function refreshData(options = {}) {
   const icon = document.getElementById('refreshIcon');
   icon.classList.add('spinning');
+  updateConnectionStatus('syncing');
   try {
     const json = await apiFetch({ action: 'list' });
     allData = json.records || [];
@@ -1693,9 +1884,11 @@ async function refreshData() {
     saveCache(allData);
     updateStats();
     applyFilter();
-    showToast('อัปเดตข้อมูลเรียบร้อย ✓', 'success');
+    updateConnectionStatus('online');
+    if (!options.silent) showToast('อัปเดตข้อมูลเรียบร้อย ✓', 'success');
   } catch(e) {
-    showToast('รีเฟรชล้มเหลว: ' + e.message, 'error');
+    updateConnectionStatus(navigator.onLine ? 'error' : 'offline');
+    if (!options.silent) showToast('รีเฟรชล้มเหลว: ' + e.message, 'error');
   }
   icon.classList.remove('spinning');
 }
@@ -1711,6 +1904,8 @@ function applyFilter() {
   const q = normalize(currentQuery);
   filteredData = allData.filter(d => {
     if (currentAmphoe && d.amphoe !== currentAmphoe) return false;
+    if (currentSpecialView === 'favorites' && !isFavorite(d.rowIndex)) return false;
+    if (currentSpecialView === 'recent' && !getRecentIds().includes(String(d.rowIndex))) return false;
     if (!q) return true;
     const { clean } = stripTitle(d.director);
     return (
@@ -1731,6 +1926,7 @@ function applyFilter() {
 
 function filterAmphoe(amphoe) {
   currentAmphoe = amphoe;
+  currentSpecialView = '';
   document.querySelectorAll('.filter-tab').forEach(t => {
     const active = t.id === (amphoe ? 'tab-' + amphoe : 'tab-all');
     t.classList.toggle('active', active);
@@ -1759,6 +1955,7 @@ function updateStats() {
   document.getElementById('statMulti').textContent = multiDirectors.size;
   document.getElementById('headerCount').textContent = allData.length;
   document.getElementById('tab-all').textContent = `ทั้งหมด (${allData.length})`;
+  updateFavoriteCount();
   ['แม่สะเรียง','สบเมย','แม่ลาน้อย'].forEach(a => {
     const el = document.getElementById('tab-' + a);
     if (el) el.textContent = `อ.${a} (${allData.filter(d=>d.amphoe===a).length})`;
@@ -1795,8 +1992,9 @@ function renderCards() {
     const { prefix, clean } = stripTitle(d.director);
     const isMulti = multiDirectors.has(d.director);
     const phoneClean = (d.phone || '').replace(/\s/g,'');
+    const favorite = isFavorite(d.rowIndex);
     return `
-      <article class="school-card reveal-card" id="card-${i}" style="--i:${Math.min(i, 8)}">
+      <article class="school-card reveal-card" id="card-${i}" data-record-id="${escHtml(d.rowIndex)}" style="--i:${Math.min(i, 8)}">
         ${isMulti ? '<span class="multi-school-badge">ดูแลหลายโรงเรียน</span>' : ''}
         <div class="card-header">
           <div class="card-avatar ${gender}">${escHtml(initials)}</div>
@@ -1807,7 +2005,10 @@ function renderCards() {
               <span class="name-part">${highlight(clean, q)}</span>
             </div>
           </div>
-          <button type="button" class="card-edit" onclick="openEditModal(${JSON.stringify(d.rowIndex)})" aria-label="แก้ไขข้อมูล ${escHtml(d.school || 'โรงเรียน')}">แก้ไข</button>
+          <div class="card-tools">
+            <button type="button" class="favorite-btn ${favorite ? 'active' : ''}" onclick="toggleFavorite(event,${JSON.stringify(d.rowIndex)})" aria-pressed="${favorite}" aria-label="${favorite ? 'นำออกจากรายการโปรด' : 'เพิ่มในรายการโปรด'}">${favorite ? '★' : '☆'}</button>
+            <button type="button" class="card-edit" onclick="openEditModal(${JSON.stringify(d.rowIndex)})" aria-label="แก้ไขข้อมูล ${escHtml(d.school || 'โรงเรียน')}">แก้ไข</button>
+          </div>
         </div>
         <div class="card-body">
           <div class="card-location">
@@ -1818,6 +2019,7 @@ function renderCards() {
           <div class="card-phone">
             <span class="phone-number">${highlight(d.phone, q)}</span>
             <button type="button" class="btn-copy" id="copy-${i}" onclick="copyPhone(event,'${escHtml(phoneClean)}',${i})" title="คัดลอก" aria-label="คัดลอกเบอร์ ${escHtml(d.phone || '')}">⎘</button>
+            <button type="button" class="btn-qr" onclick="openQrModal(event,${JSON.stringify(d.rowIndex)})" title="สร้าง QR Code" aria-label="สร้าง QR Code สำหรับ ${escHtml(d.school || 'โรงเรียน')}">QR</button>
             <a class="btn-call" href="tel:${escHtml(phoneClean)}" onclick="event.stopPropagation()">📞 โทร</a>
           </div>
         </div>
@@ -1825,6 +2027,216 @@ function renderCards() {
   }).join('');
   animateCards();
 }
+
+function csvEscape(value) {
+  const text = String(value ?? '');
+  return /[",\n\r]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+function exportCsv() {
+  const rows = (currentQuery || currentAmphoe || currentSpecialView) ? filteredData : allData;
+  if (!rows.length) { showToast('ยังไม่มีข้อมูลสำหรับส่งออก', 'error'); return; }
+  const headers = ['ชื่อโรงเรียน', 'ผู้อำนวยการ', 'ตำบล', 'อำเภอ', 'โทรศัพท์', 'อัปเดตล่าสุด'];
+  const lines = [headers, ...rows.map(row => [
+    row.school, row.director, row.tambon, row.amphoe, row.phone,
+    row.updated_at ? new Date(row.updated_at).toLocaleString('th-TH') : '',
+  ])].map(row => row.map(csvEscape).join(','));
+  const blob = new Blob([`\ufeff${lines.join('\r\n')}`], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `phonebook-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+  showToast(`ส่งออก ${rows.length} รายการแล้ว`, 'success');
+}
+
+function exportExcel() {
+  const rows = (currentQuery || currentAmphoe || currentSpecialView) ? filteredData : allData;
+  if (!rows.length) { showToast('ยังไม่มีข้อมูลสำหรับส่งออก', 'error'); return; }
+  if (!window.XLSX) { showToast('โหลดเครื่องมือ Excel ไม่สำเร็จ ลองรีเฟรชหน้าเว็บ', 'error'); return; }
+  const data = rows.map(row => ({
+    'ชื่อโรงเรียน': row.school || '',
+    'ผู้อำนวยการ': row.director || '',
+    'ตำบล': row.tambon || '',
+    'อำเภอ': row.amphoe || '',
+    'โทรศัพท์': row.phone || '',
+    'อัปเดตล่าสุด': row.updated_at ? new Date(row.updated_at).toLocaleString('th-TH') : '',
+  }));
+  const workbook = window.XLSX.utils.book_new();
+  const sheet = window.XLSX.utils.json_to_sheet(data);
+  sheet['!cols'] = [{ wch: 30 }, { wch: 24 }, { wch: 18 }, { wch: 16 }, { wch: 18 }, { wch: 22 }];
+  window.XLSX.utils.book_append_sheet(workbook, sheet, 'Phonebook');
+  window.XLSX.writeFile(workbook, `phonebook-${new Date().toISOString().slice(0, 10)}.xlsx`);
+  showToast(`ส่งออก Excel ${rows.length} รายการแล้ว`, 'success');
+}
+
+function formatChangeAction(action) {
+  return ({ insert: 'เพิ่มข้อมูล', update: 'แก้ไขข้อมูล', delete: 'ย้ายไปถังขยะ', restore: 'กู้คืนข้อมูล' }[action] || action);
+}
+
+async function openHistoryPanel() {
+  closeManagementPanels();
+  const panel = document.getElementById('historyPanel');
+  panel.hidden = false;
+  const list = document.getElementById('historyList');
+  list.innerHTML = '<div class="panel-empty">กำลังโหลดประวัติ...</div>';
+  try {
+    const rows = await apiFetchHistory();
+    if (!rows.length) { list.innerHTML = '<div class="panel-empty">ยังไม่มีประวัติการเปลี่ยนแปลง</div>'; return; }
+    list.innerHTML = rows.map(item => {
+      const data = item.after_data || item.before_data || {};
+      const school = data.school || 'ไม่ทราบโรงเรียน';
+      const when = item.changed_at ? new Date(item.changed_at).toLocaleString('th-TH') : 'ไม่ทราบเวลา';
+      return `<div class="history-item"><div class="history-main"><strong>${escHtml(school)}</strong><span><span class="history-action">${formatChangeAction(item.action)}</span> · ${escHtml(when)}</span></div></div>`;
+    }).join('');
+  } catch (error) {
+    list.innerHTML = `<div class="panel-empty">โหลดประวัติไม่ได้: ${escHtml(error.message)}</div>`;
+  }
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+async function openTrashPanel() {
+  closeManagementPanels();
+  const panel = document.getElementById('trashPanel');
+  panel.hidden = false;
+  await loadTrashPanel();
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeManagementPanels() {
+  document.getElementById('historyPanel').hidden = true;
+  document.getElementById('trashPanel').hidden = true;
+}
+
+async function loadTrashPanel() {
+  const list = document.getElementById('trashList');
+  list.innerHTML = '<div class="panel-empty">กำลังโหลดถังขยะ...</div>';
+  try {
+    const json = await apiFetch({ includeDeleted: true });
+    const rows = json.records || [];
+    if (!rows.length) { list.innerHTML = '<div class="panel-empty">ถังขยะว่าง</div>'; return; }
+    list.innerHTML = rows.map(row => {
+      const when = row.deleted_at ? new Date(row.deleted_at).toLocaleString('th-TH') : '';
+      return `<div class="trash-item"><div class="trash-main"><strong>${escHtml(row.school)}</strong><span>${escHtml(row.phone || 'ไม่มีเบอร์')} · ลบเมื่อ ${escHtml(when)}</span></div><button class="trash-restore" type="button" onclick="restoreRecord(${JSON.stringify(row.rowIndex)})">กู้คืน</button></div>`;
+    }).join('');
+  } catch (error) {
+    list.innerHTML = `<div class="panel-empty">โหลดถังขยะไม่ได้: ${escHtml(error.message)}<br><small>อาจต้องรัน migration ของ Phonebook ใน Supabase ก่อน</small></div>`;
+  }
+}
+
+async function restoreRecord(id) {
+  try {
+    await apiPost({ action: 'restore', rowIndex: id });
+    localStorage.removeItem(CACHE_KEY);
+    await refreshData({ silent: true });
+    await loadTrashPanel();
+    showToast('กู้คืนข้อมูลเรียบร้อย ✓', 'success');
+  } catch (error) {
+    showToast('กู้คืนไม่ได้: ' + error.message, 'error');
+  }
+}
+
+function focusSchoolFromUrl() {
+  const id = new URLSearchParams(location.search).get('school');
+  if (!id) return;
+  const index = filteredData.findIndex(row => String(row.rowIndex) === String(id));
+  if (index < 0) return;
+  setTimeout(() => {
+    const card = document.getElementById(`card-${index}`);
+    if (!card) return;
+    card.classList.add('is-focus');
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => card.classList.remove('is-focus'), 5000);
+  }, 150);
+}
+
+function openQrModal(event, id) {
+  event?.stopPropagation();
+  const row = allData.find(item => String(item.rowIndex) === String(id));
+  if (!row) return;
+  recordRecent(id);
+  activeQrRecord = row;
+  const overlay = document.getElementById('qrOverlay');
+  const canvas = document.getElementById('qrCanvas');
+  document.getElementById('qrSchoolName').textContent = row.school;
+  overlay.classList.add('open');
+  overlay.setAttribute('aria-hidden', 'false');
+  if (!window.QRCode?.toCanvas) {
+    showToast('โหลด QR Code ไม่สำเร็จ ลองรีเฟรชหน้าเว็บ', 'error');
+    return;
+  }
+  const url = new URL('./index.html', location.href);
+  url.search = '';
+  url.searchParams.set('school', row.rowIndex);
+  window.QRCode.toCanvas(canvas, url.toString(), { width: 240, margin: 2, color: { dark: '#0b2034', light: '#ffffff' } }, error => {
+    if (error) showToast('สร้าง QR Code ไม่สำเร็จ', 'error');
+  });
+}
+
+function closeQrModal() {
+  const overlay = document.getElementById('qrOverlay');
+  overlay.classList.remove('open');
+  overlay.setAttribute('aria-hidden', 'true');
+  activeQrRecord = null;
+}
+
+function downloadQrCode() {
+  if (!activeQrRecord) return;
+  const canvas = document.getElementById('qrCanvas');
+  const link = document.createElement('a');
+  link.download = `qr-${activeQrRecord.school.replace(/[^ก-๙a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'school'}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+function initRealtime() {
+  if (!window.supabase?.createClient) return;
+  realtimeClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.publishableKey, {
+    auth: { persistSession: false, autoRefreshToken: false },
+  });
+  realtimeChannel = realtimeClient.channel('phonebook-live')
+    .on('postgres_changes', { event: '*', schema: 'public', table: SUPABASE_CONFIG.table }, payload => {
+      refreshData({ silent: true });
+      if (!document.getElementById('historyPanel').hidden) openHistoryPanel();
+      if (!document.getElementById('trashPanel').hidden) loadTrashPanel();
+      if (payload.eventType === 'INSERT') showToast('มีข้อมูลใหม่เข้ามา', 'success');
+      if (payload.eventType === 'UPDATE') showToast('ข้อมูลถูกอัปเดตจากอุปกรณ์อื่น', 'success');
+    })
+    .subscribe(status => {
+      if (status === 'SUBSCRIBED') updateConnectionStatus('online', 'ออนไลน์ • Realtime');
+      else if (status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') updateConnectionStatus(navigator.onLine ? 'online' : 'offline');
+    });
+}
+
+function initPwa() {
+  if ('serviceWorker' in navigator) navigator.serviceWorker.register('./service-worker.js').catch(() => {});
+  window.addEventListener('beforeinstallprompt', event => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    document.getElementById('installAction').hidden = false;
+  });
+  window.addEventListener('appinstalled', () => {
+    deferredInstallPrompt = null;
+    document.getElementById('installAction').hidden = true;
+    showToast('ติดตั้งแอปเรียบร้อยแล้ว ✓', 'success');
+  });
+}
+
+async function installPwa() {
+  if (!deferredInstallPrompt) {
+    showToast('เปิดเมนูเบราว์เซอร์แล้วเลือก เพิ่มลงหน้าจอหลัก', 'success');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+}
+
+window.addEventListener('online', () => { updateConnectionStatus('online'); refreshData({ silent: true }); });
+window.addEventListener('offline', () => updateConnectionStatus('offline'));
 
 function copyPhone(e, phone, idx) {
   e.stopPropagation();
@@ -1857,6 +2269,7 @@ function openAddModal() {
 function openEditModal(rowIndex) {
   const d = allData.find(r => r.rowIndex === rowIndex);
   if (!d) return;
+  recordRecent(rowIndex);
   previousFocus = document.activeElement;
   editingRowIndex = rowIndex;
   document.getElementById('modalTitle').textContent = 'แก้ไขข้อมูล';
@@ -2003,7 +2416,7 @@ async function saveRecord() {
 async function deleteRecord() {
   if (isSaving || editingRowIndex < 0) return;
   const d = allData.find(r => r.rowIndex === editingRowIndex);
-  if (!confirm(`ลบ "${d?.school || ''}" ออกจากฐานข้อมูล?\n\nการกระทำนี้ไม่สามารถย้อนกลับได้`)) return;
+  if (!confirm(`ย้าย "${d?.school || ''}" ไปถังขยะ?\n\nสามารถกู้คืนข้อมูลได้ภายหลัง`)) return;
   setModalBusy(true);
   try {
     await apiPost({ action: 'delete', rowIndex: editingRowIndex });
@@ -2011,6 +2424,7 @@ async function deleteRecord() {
     closeModal();
     localStorage.removeItem(CACHE_KEY);
     await refreshData();
+    if (!document.getElementById('trashPanel').hidden) await loadTrashPanel();
   } catch(e) {
     showModalError('เกิดข้อผิดพลาด: ' + e.message);
   }
@@ -2082,6 +2496,11 @@ document.addEventListener('keydown', e => {
     closeModal();
     return;
   }
+  if (e.key === 'Escape' && document.getElementById('qrOverlay').classList.contains('open')) {
+    e.preventDefault();
+    closeQrModal();
+    return;
+  }
   if (modalOpen && e.key === 'Tab') {
     const focusable = [...overlay.querySelectorAll('button, input, select, [tabindex]:not([tabindex="-1"])')].filter(el => !el.disabled && el.offsetParent !== null);
     if (!focusable.length) return;
@@ -2101,6 +2520,8 @@ document.addEventListener('keydown', e => {
 initVisualEnhancements();
 initTheme();
 initSkin();
+initPwa();
+initRealtime();
 init();
 </script>
 </body>

@@ -1,0 +1,19 @@
+{
+  "name": "สมุดโทรศัพท์ ผอ.โรงเรียน สพป.มส.2",
+  "short_name": "สมุดโทรศัพท์",
+  "lang": "th",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0b2034",
+  "theme_color": "#1a5276",
+  "description": "สมุดโทรศัพท์ผู้อำนวยการโรงเรียน สพป.แม่ฮ่องสอน เขต 2",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
