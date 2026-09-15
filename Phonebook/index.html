@@ -1202,9 +1202,6 @@
     <strong id="setupBannerTitle">เชื่อมต่อข้อมูลไม่ได้</strong>
     <div id="setupBannerMessage">ตรวจสอบการเชื่อมต่อ แล้วลองใหม่อีกครั้ง</div>
     <div class="setup-url-row">
-      <label class="sr-only" for="urlInput">Google Apps Script URL</label>
-      <input id="urlInput" type="url" inputmode="url" autocomplete="url" placeholder="https://script.google.com/..." />
-      <button class="btn-save-url" type="button" onclick="saveScriptUrl()">บันทึก URL</button>
       <button type="button" aria-label="ลองโหลดข้อมูลอีกครั้ง" onclick="retryDataLoad()">ลองใหม่</button>
     </div>
   </div>
@@ -1228,7 +1225,7 @@
     </div>
     <div class="header-count">
       <div class="num" id="headerCount">—</div>
-      <div class="lbl">ข้อมูล</div>
+      <div class="lbl">โรงเรียน</div>
     </div>
   </div>
   <details class="theme-picker">
@@ -1359,10 +1356,14 @@
 
 <script>
 // ====================================================
-// CONFIG — แก้ URL นี้หลัง deploy Apps Script แล้ว
-// หรือใส่ผ่าน UI แล้วกด "บันทึก URL"
+// CONFIG — ใส่ Supabase URL และ publishable/anon key หลังสร้างโปรเจคแล้ว
+// คีย์นี้ใช้ในหน้าเว็บได้ แต่ต้องเปิด RLS ตามไฟล์ supabase/schema.sql
 // ====================================================
-const SCRIPT_URL_KEY = 'sppms2_script_url';
+const SUPABASE_CONFIG = Object.freeze({
+  url: 'https://jtveymfojswonzkqbqyl.supabase.co',
+  publishableKey: 'sb_publishable_EL7cOZG_FMeFivkDBQVzHA_A8CuzyD9',
+  table: 'phonebook_records',
+});
 const CACHE_KEY = 'sppms2_data_v3';
 const CACHE_TS_KEY = 'sppms2_ts_v3';
 const SKIN_KEY = 'sppms2_skin';
@@ -1378,6 +1379,11 @@ let multiDirectors = new Set();
 let isSaving = false;
 let revealObserver;
 let previousFocus = null;
+
+function isSupabaseConfigured() {
+  return /^https:\/\/[a-z0-9-]+\.supabase\.co$/i.test(SUPABASE_CONFIG.url)
+    && Boolean(SUPABASE_CONFIG.publishableKey);
+}
 
 // Lightweight cinematic motion: one rAF scroll writer and observers only for cards in view.
 function initVisualEnhancements() {
@@ -1443,27 +1449,10 @@ function scrollToTop() {
   window.scrollTo({ top: 0, behavior: document.documentElement.classList.contains('no-motion') ? 'auto' : 'smooth' });
 }
 
-function getScriptUrl() {
-  return localStorage.getItem(SCRIPT_URL_KEY) || '';
-}
-
-function saveScriptUrl() {
-  const url = document.getElementById('urlInput').value.trim();
-  if (!url.startsWith('https://script.google.com')) {
-    showToast('URL ไม่ถูกต้อง ต้องเริ่มด้วย https://script.google.com', 'error'); return;
-  }
-  localStorage.setItem(SCRIPT_URL_KEY, url);
-  hideSetupBanner();
-  showToast('บันทึก URL แล้ว กำลังโหลดข้อมูล...', 'success');
-  localStorage.removeItem(CACHE_KEY);
-  init();
-}
-
 function showSetupBanner(message = 'ตรวจสอบการเชื่อมต่อ แล้วลองใหม่อีกครั้ง') {
   const b = document.getElementById('setupBanner');
   b.style.display = 'flex';
   document.getElementById('setupBannerMessage').textContent = message;
-  document.getElementById('urlInput').value = getScriptUrl();
 }
 
 function hideSetupBanner() {
@@ -1476,11 +1465,11 @@ function retryDataLoad() {
 }
 
 function showLoadError() {
-  setProgress(100, 'โหลดข้อมูลไม่สำเร็จ');
+  setProgress(100, 'โหลดจาก Supabase ไม่สำเร็จ');
   document.getElementById('loader').setAttribute('aria-busy', 'false');
   document.getElementById('loaderStatus').style.color = '#ffd3d0';
   document.getElementById('loader').classList.add('hidden');
-  showSetupBanner('เชื่อมต่อ Google Sheets ไม่สำเร็จ กด “ลองใหม่” หรือแก้ไข URL ด้านล่าง');
+  showSetupBanner('เชื่อมต่อ Supabase ไม่สำเร็จ ตรวจสอบ URL, publishable key และ RLS ใน supabase/schema.sql');
 }
 
 function showFreshness(kind) {
@@ -1533,30 +1522,69 @@ function computeMultiDirectors(data) {
   multiDirectors = new Set(Object.entries(cnt).filter(([,v]) => v > 1).map(([k]) => k));
 }
 
-async function apiFetch(params) {
-  const url = getScriptUrl();
-  if (!url) throw new Error('ยังไม่ได้ตั้งค่า Script URL');
-  const res = await fetch(url + '?' + new URLSearchParams(params));
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  const json = await res.json();
-  if (json.error) throw new Error(json.error);
+function mapSupabaseRecord(row) {
+  return {
+    ...row,
+    // Keep the current UI contract while moving the real key to Supabase UUIDs.
+    rowIndex: row.id,
+  };
+}
+
+function supabaseHeaders() {
+  return {
+    apikey: SUPABASE_CONFIG.publishableKey,
+    Authorization: `Bearer ${SUPABASE_CONFIG.publishableKey}`,
+    'Content-Type': 'application/json',
+  };
+}
+
+async function supabaseRequest(path, options = {}) {
+  const res = await fetch(`${SUPABASE_CONFIG.url}/rest/v1/${path}`, {
+    ...options,
+    headers: { ...supabaseHeaders(), ...(options.headers || {}) },
+  });
+  const raw = await res.text();
+  let json = null;
+  try { json = raw ? JSON.parse(raw) : null; } catch (e) {}
+  if (!res.ok) {
+    const message = json?.message || json?.hint || json?.details || json?.error_description || `HTTP ${res.status}`;
+    throw new Error(message);
+  }
   return json;
 }
 
+async function apiFetch(params) {
+  if (!isSupabaseConfigured()) throw new Error('ยังไม่ได้ตั้งค่า Supabase URL และ publishable key');
+  const columns = 'id,school,director,tambon,amphoe,phone,legacy_row_index,created_at,updated_at';
+  const rows = await supabaseRequest(`${SUPABASE_CONFIG.table}?select=${columns}&order=school.asc`);
+  return { records: (rows || []).map(mapSupabaseRecord) };
+}
+
 async function apiPost(body) {
-  // ใช้ GET แทน POST เพื่อหลีกเลี่ยง CORS preflight ที่ Apps Script ไม่รองรับ
-  const url = getScriptUrl();
-  if (!url) throw new Error('ยังไม่ได้ตั้งค่า Script URL');
-  const params = new URLSearchParams({
-    action: body.action,
-    rowIndex: body.rowIndex ?? '',
-    data: JSON.stringify(body.data ?? {}),
-  });
-  const res = await fetch(url + '?' + params);
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  const json = await res.json();
-  if (json.error) throw new Error(json.error);
-  return json;
+  if (!isSupabaseConfigured()) throw new Error('ยังไม่ได้ตั้งค่า Supabase URL และ publishable key');
+  const data = body.data || {};
+  if (body.action === 'add') {
+    return supabaseRequest(SUPABASE_CONFIG.table, {
+      method: 'POST',
+      headers: { Prefer: 'return=minimal' },
+      body: JSON.stringify({ school: data.school, director: data.director, tambon: data.tambon, amphoe: data.amphoe, phone: data.phone }),
+    });
+  }
+  const id = encodeURIComponent(String(body.rowIndex));
+  if (body.action === 'update') {
+    return supabaseRequest(`${SUPABASE_CONFIG.table}?id=eq.${id}`, {
+      method: 'PATCH',
+      headers: { Prefer: 'return=minimal' },
+      body: JSON.stringify({ school: data.school, director: data.director, tambon: data.tambon, amphoe: data.amphoe, phone: data.phone }),
+    });
+  }
+  if (body.action === 'delete') {
+    return supabaseRequest(`${SUPABASE_CONFIG.table}?id=eq.${id}`, {
+      method: 'DELETE',
+      headers: { Prefer: 'return=minimal' },
+    });
+  }
+  throw new Error('ไม่รู้จักคำสั่ง: ' + body.action);
 }
 
 function saveCache(data) {
@@ -1582,19 +1610,13 @@ function setProgress(pct, msg) {
 
 async function init() {
   setProgress(5, 'กำลังเริ่มต้น...');
-  const DEFAULT_URL = 'https://script.google.com/macros/s/AKfycbzQBD725osvExNQADQtRg4Jy2ar8fKRCeQPYESXJxmvr2Ang6YL9X8TdOl9LR7F4tE/exec';
-  const storedUrl = localStorage.getItem(SCRIPT_URL_KEY) || '';
-  if (!storedUrl) {
-    localStorage.setItem(SCRIPT_URL_KEY, DEFAULT_URL);
-  }
   document.getElementById('loader').classList.remove('hidden');
 
-  const scriptUrl = getScriptUrl();
-  if (!scriptUrl) {
-    setProgress(100, 'ยังไม่ได้ตั้งค่า Script URL');
+  if (!isSupabaseConfigured()) {
+    setProgress(100, 'ยังไม่ได้ตั้งค่า Supabase');
     document.getElementById('loader').setAttribute('aria-busy', 'false');
     document.getElementById('loader').classList.add('hidden');
-    showSetupBanner('ยังไม่ได้ตั้งค่า URL สำหรับโหลดข้อมูล');
+    showSetupBanner('ยังไม่ได้ตั้งค่า Supabase URL และ publishable key ใน index.html');
     return;
   }
 
@@ -1615,7 +1637,7 @@ async function init() {
 }
 
 async function fetchAndUpdate(silent) {
-  if (!silent) setProgress(20, 'กำลังดึงข้อมูลจาก Google Sheets...');
+  if (!silent) setProgress(20, 'กำลังดึงข้อมูลจาก Supabase...');
   try {
     const json = await apiFetch({ action: 'list' });
     allData = json.records || [];
