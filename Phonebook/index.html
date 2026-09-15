@@ -2006,8 +2006,8 @@ function renderCards() {
             </div>
           </div>
           <div class="card-tools">
-            <button type="button" class="favorite-btn ${favorite ? 'active' : ''}" onclick="toggleFavorite(event,${JSON.stringify(d.rowIndex)})" aria-pressed="${favorite}" aria-label="${favorite ? 'นำออกจากรายการโปรด' : 'เพิ่มในรายการโปรด'}">${favorite ? '★' : '☆'}</button>
-            <button type="button" class="card-edit" onclick="openEditModal(${JSON.stringify(d.rowIndex)})" aria-label="แก้ไขข้อมูล ${escHtml(d.school || 'โรงเรียน')}">แก้ไข</button>
+            <button type="button" class="favorite-btn ${favorite ? 'active' : ''}" onclick="toggleFavorite(event,${escHtml(JSON.stringify(d.rowIndex))})" aria-pressed="${favorite}" aria-label="${favorite ? 'นำออกจากรายการโปรด' : 'เพิ่มในรายการโปรด'}">${favorite ? '★' : '☆'}</button>
+            <button type="button" class="card-edit" onclick="openEditModal(${escHtml(JSON.stringify(d.rowIndex))})" aria-label="แก้ไขข้อมูล ${escHtml(d.school || 'โรงเรียน')}">แก้ไข</button>
           </div>
         </div>
         <div class="card-body">
@@ -2019,7 +2019,7 @@ function renderCards() {
           <div class="card-phone">
             <span class="phone-number">${highlight(d.phone, q)}</span>
             <button type="button" class="btn-copy" id="copy-${i}" onclick="copyPhone(event,'${escHtml(phoneClean)}',${i})" title="คัดลอก" aria-label="คัดลอกเบอร์ ${escHtml(d.phone || '')}">⎘</button>
-            <button type="button" class="btn-qr" onclick="openQrModal(event,${JSON.stringify(d.rowIndex)})" title="สร้าง QR Code" aria-label="สร้าง QR Code สำหรับ ${escHtml(d.school || 'โรงเรียน')}">QR</button>
+            <button type="button" class="btn-qr" onclick="openQrModal(event,${escHtml(JSON.stringify(d.rowIndex))})" title="สร้าง QR Code" aria-label="สร้าง QR Code สำหรับ ${escHtml(d.school || 'โรงเรียน')}">QR</button>
             <a class="btn-call" href="tel:${escHtml(phoneClean)}" onclick="event.stopPropagation()">📞 โทร</a>
           </div>
         </div>
@@ -2120,7 +2120,7 @@ async function loadTrashPanel() {
     if (!rows.length) { list.innerHTML = '<div class="panel-empty">ถังขยะว่าง</div>'; return; }
     list.innerHTML = rows.map(row => {
       const when = row.deleted_at ? new Date(row.deleted_at).toLocaleString('th-TH') : '';
-      return `<div class="trash-item"><div class="trash-main"><strong>${escHtml(row.school)}</strong><span>${escHtml(row.phone || 'ไม่มีเบอร์')} · ลบเมื่อ ${escHtml(when)}</span></div><button class="trash-restore" type="button" onclick="restoreRecord(${JSON.stringify(row.rowIndex)})">กู้คืน</button></div>`;
+      return `<div class="trash-item"><div class="trash-main"><strong>${escHtml(row.school)}</strong><span>${escHtml(row.phone || 'ไม่มีเบอร์')} · ลบเมื่อ ${escHtml(when)}</span></div><button class="trash-restore" type="button" onclick="restoreRecord(${escHtml(JSON.stringify(row.rowIndex))})">กู้คืน</button></div>`;
     }).join('');
   } catch (error) {
     list.innerHTML = `<div class="panel-empty">โหลดถังขยะไม่ได้: ${escHtml(error.message)}<br><small>อาจต้องรัน migration ของ Phonebook ใน Supabase ก่อน</small></div>`;
@@ -2330,7 +2330,7 @@ function renderCopyFromList() {
     return;
   }
   list.innerHTML = candidates.slice(0, 30).map(d => `
-    <button type="button" class="copyfrom-item" onclick="applyDirectorFrom(${d.rowIndex})" aria-label="นำเข้าข้อมูลจาก ${escHtml(d.school)}">
+    <button type="button" class="copyfrom-item" onclick="applyDirectorFrom(${escHtml(JSON.stringify(d.rowIndex))})" aria-label="นำเข้าข้อมูลจาก ${escHtml(d.school)}">
       <span class="ci-school">🏫 ${escHtml(d.school)}</span>
       <span class="ci-director">👤 ${escHtml(d.director || '—')}</span>
       <span class="ci-phone">📞 ${escHtml(d.phone || '—')}</span>
