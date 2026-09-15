@@ -1449,7 +1449,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 // ====================================================
@@ -2164,16 +2164,36 @@ function openQrModal(event, id) {
   document.getElementById('qrSchoolName').textContent = row.school;
   overlay.classList.add('open');
   overlay.setAttribute('aria-hidden', 'false');
-  if (!window.QRCode?.toCanvas) {
+  if (typeof window.qrcode !== 'function') {
     showToast('โหลด QR Code ไม่สำเร็จ ลองรีเฟรชหน้าเว็บ', 'error');
     return;
   }
   const url = new URL('./index.html', location.href);
   url.search = '';
   url.searchParams.set('school', row.rowIndex);
-  window.QRCode.toCanvas(canvas, url.toString(), { width: 240, margin: 2, color: { dark: '#0b2034', light: '#ffffff' } }, error => {
-    if (error) showToast('สร้าง QR Code ไม่สำเร็จ', 'error');
-  });
+  try {
+    const qr = window.qrcode(0, 'M');
+    qr.addData(url.toString(), 'Byte');
+    qr.make();
+    const size = canvas.width;
+    const moduleCount = qr.getModuleCount();
+    const margin = 16;
+    const cellSize = Math.floor((size - margin * 2) / moduleCount);
+    const offset = Math.floor((size - cellSize * moduleCount) / 2);
+    const context = canvas.getContext('2d');
+    context.fillStyle = '#ffffff';
+    context.fillRect(0, 0, size, size);
+    context.fillStyle = '#0b2034';
+    for (let rowIndex = 0; rowIndex < moduleCount; rowIndex++) {
+      for (let columnIndex = 0; columnIndex < moduleCount; columnIndex++) {
+        if (qr.isDark(rowIndex, columnIndex)) {
+          context.fillRect(offset + columnIndex * cellSize, offset + rowIndex * cellSize, cellSize, cellSize);
+        }
+      }
+    }
+  } catch (error) {
+    showToast('สร้าง QR Code ไม่สำเร็จ', 'error');
+  }
 }
 
 function closeQrModal() {
