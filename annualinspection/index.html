@@ -118,6 +118,9 @@
       <article class="summary-card"><span>รายการทั้งหมด</span><strong id="summaryTotal">–</strong></article>
       <article class="summary-card"><span>ส่งรายงานตรวจสอบแล้ว</span><strong id="summaryGDone">–</strong></article>
       <article class="summary-card"><span>รอส่งรายงานตรวจสอบ</span><strong id="summaryGPending">–</strong></article>
+      <article class="summary-card"><span>มีตัดจำหน่าย · ส่งครบแล้ว</span><strong id="summaryDisposalDone">–</strong></article>
+      <article class="summary-card"><span>มีตัดจำหน่าย · รอส่ง</span><strong id="summaryDisposalPending">–</strong></article>
+      <article class="summary-card"><span>ต้องแก้ไข · ติดตามต่อ</span><strong id="summaryCorrection">–</strong></article>
     </section>
     <section class="filters" aria-label="ตัวกรองข้อมูล">
       <label>ค้นหาโรงเรียนหรือข้อมูล
@@ -131,6 +134,10 @@
           <option value="all">ทุกสถานะ</option>
           <option value="inspected">ส่งแล้ว</option>
           <option value="pending">รอส่ง</option>
+          <option value="disposal">มีรายการตัดจำหน่าย</option>
+          <option value="disposalDone">มีตัดจำหน่าย · ส่งครบแล้ว</option>
+          <option value="disposalPending">มีตัดจำหน่าย · รอส่งรายงานตัดจำหน่าย</option>
+          <option value="correction">ต้องแก้ไข · ติดตามต่อ</option>
         </select>
       </label>
     </section>
@@ -177,6 +184,9 @@
       $('summaryTotal').textContent = formatNumber(state.summary.total);
       $('summaryGDone').textContent = formatNumber(state.summary.gDone);
       $('summaryGPending').textContent = formatNumber(state.summary.gPending);
+      $('summaryDisposalDone').textContent = formatNumber(state.summary.disposalYesH);
+      $('summaryDisposalPending').textContent = formatNumber(state.summary.disposalYesGNoH);
+      $('summaryCorrection').textContent = formatNumber(state.summary.correction);
     }
     function renderDistricts() {
       const selected = $('district').value;
@@ -197,6 +207,10 @@
         if (district && text(record.district) !== district) return false;
         if (progress === 'inspected' && !isPresent(record.inspected)) return false;
         if (progress === 'pending' && isPresent(record.inspected)) return false;
+        if (progress === 'disposal' && text(record.disposal) !== 'มี') return false;
+        if (progress === 'disposalDone' && !(text(record.disposal) === 'มี' && isPresent(record.inspected) && isPresent(record.accountRemoval))) return false;
+        if (progress === 'disposalPending' && !(text(record.disposal) === 'มี' && isPresent(record.inspected) && !isPresent(record.accountRemoval))) return false;
+        if (progress === 'correction' && text(record.correctionStatus) !== 'แก้ไข') return false;
         return true;
       });
     }
@@ -216,10 +230,15 @@
       const docNo = firstValue(record, ['docNo', 'documentNo', 'เลขที่หนังสือ']);
       const disposal = firstValue(record, ['disposal', 'ตัดจำหน่าย']);
       const inspected = isPresent(record.inspected);
-      const accountRemoval = firstValue(record, ['accountRemoval', 'ขั้นขอตัดจากบัญชี']);
+      const accountRemoval = typeof record.accountRemoval === 'boolean'
+        ? (record.accountRemoval ? 'ส่งแล้ว' : 'ยังไม่ส่ง')
+        : firstValue(record, ['accountRemoval', 'ขั้นขอตัดจากบัญชี']);
       const correction = firstValue(record, ['correctionStatus', 'correction', 'แก้ไข ไม่แก้ไข']);
       const remark = firstValue(record, ['remark', 'remarks', 'note', 'หมายเหตุ']);
       const location = [subdistrict, district].filter(Boolean).join(' · ');
+      const disposalReport = disposal === 'มี'
+        ? (isPresent(record.accountRemoval) ? 'ส่งแล้ว' : 'ยังไม่ส่ง')
+        : disposal === 'ไม่มี' ? 'ไม่ต้องส่ง' : 'รอระบุ';
       return '<article class="record-card">' +
         '<div class="record-head"><div>' +
         '<div class="record-number">ลำดับ ' + escapeHtml(no || '-') + '</div>' +
@@ -228,6 +247,7 @@
         '</div><div class="chips">' +
         chip('ตรวจสอบ', inspected ? 'ส่งแล้ว' : 'รอส่ง', inspected) +
         chip('ตัดจำหน่าย', disposal || '-', disposal === 'มี' ? true : disposal === 'ไม่มี' ? false : null) +
+        chip('รายงานตัดจำหน่าย', disposalReport, disposal === 'มี' ? isPresent(record.accountRemoval) : null) +
         '</div></div>' +
         '<div class="details">' +
         detail('เลขที่เอกสาร', docNo) +
