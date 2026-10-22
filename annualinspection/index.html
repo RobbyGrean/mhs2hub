@@ -2,16 +2,297 @@
 <html lang="th">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="0;url=https://script.google.com/macros/s/AKfycbzT3h1NjuuSYCvEr_IxViqbuShJNStVwb7aJsHnd_mScJqFOAtRWUaHVFDXFyhShjx8/exec">
-  <link rel="canonical" href="https://script.google.com/macros/s/AKfycbzT3h1NjuuSYCvEr_IxViqbuShJNStVwb7aJsHnd_mScJqFOAtRWUaHVFDXFyhShjx8/exec">
-  <title>กำลังเปิดระบบตรวจติดตามงาน…</title>
-  <script>
-    window.location.replace("https://script.google.com/macros/s/AKfycbzT3h1NjuuSYCvEr_IxViqbuShJNStVwb7aJsHnd_mScJqFOAtRWUaHVFDXFyhShjx8/exec");
-  </script>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b6d63">
+  <title>ตรวจสอบประจำปี · Viewer</title>
+  <style>
+    :root {
+      --ink: #23372f;
+      --muted: #63766d;
+      --green: #0b6d63;
+      --green-soft: #e2f3ed;
+      --gold: #b7791f;
+      --gold-soft: #fff4d8;
+      --red: #a53b35;
+      --red-soft: #fff0ed;
+      --line: #cadbd3;
+      --paper: #fffdf7;
+      --shadow: 0 14px 36px rgba(35, 61, 50, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: linear-gradient(180deg, #eaf7f2 0, #f7faf5 340px, #f7faf5 100%);
+      font-family: "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+    }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .shell { width: min(1180px, calc(100% - 28px)); margin: 0 auto; padding: 28px 0 48px; }
+    .topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 22px;
+    }
+    .eyebrow { margin: 0 0 5px; color: var(--green); font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
+    h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.55rem); letter-spacing: -.03em; }
+    .subtitle { margin: 7px 0 0; color: var(--muted); }
+    .button {
+      border: 0;
+      border-radius: 12px;
+      padding: 11px 15px;
+      color: #fff;
+      background: var(--green);
+      box-shadow: 0 7px 16px rgba(11, 109, 99, .18);
+    }
+    .button:disabled { cursor: wait; opacity: .65; }
+    .notice {
+      margin: 0 0 16px;
+      border: 1px solid #efc3bd;
+      border-radius: 14px;
+      padding: 13px 15px;
+      color: var(--red);
+      background: var(--red-soft);
+    }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .summary-card, .filters, .record-card, .empty {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 253, 247, .94);
+      box-shadow: var(--shadow);
+    }
+    .summary-card { padding: 17px; }
+    .summary-card span { color: var(--muted); font-size: .9rem; }
+    .summary-card strong { display: block; margin-top: 5px; color: var(--green); font-size: 1.75rem; }
+    .filters { display: grid; grid-template-columns: minmax(240px, 1.6fr) minmax(190px, 1fr) minmax(190px, 1fr); gap: 12px; padding: 15px; }
+    label { display: grid; gap: 6px; color: var(--muted); font-size: .88rem; font-weight: 700; }
+    input, select { width: 100%; border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; color: var(--ink); background: #fff; outline: none; }
+    input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(11, 109, 99, .12); }
+    .meta-row { display: flex; justify-content: space-between; gap: 12px; margin: 15px 3px 11px; color: var(--muted); font-size: .88rem; }
+    .meta-row p { margin: 0; }
+    .cards { display: grid; gap: 12px; }
+    .record-card { padding: 17px; }
+    .record-head { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
+    .record-number { color: var(--muted); font-size: .85rem; }
+    .record-title { margin: 3px 0 4px; font-size: 1.14rem; }
+    .record-location { margin: 0; color: var(--muted); }
+    .chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+    .chip { border-radius: 999px; padding: 5px 9px; font-size: .78rem; white-space: nowrap; }
+    .chip-ok { color: #17634d; background: var(--green-soft); }
+    .chip-pending { color: #8a5a15; background: var(--gold-soft); }
+    .chip-neutral { color: #52655d; background: #edf2ef; }
+    .details { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 15px; }
+    .detail { border-radius: 11px; padding: 10px 11px; background: #f4f8f4; }
+    .detail-wide { grid-column: 1 / -1; }
+    .detail-label { display: block; color: var(--muted); font-size: .76rem; }
+    .detail-value { display: block; margin-top: 3px; overflow-wrap: anywhere; }
+    .empty { padding: 32px 18px; text-align: center; }
+    .empty h2 { margin: 0 0 6px; font-size: 1.1rem; }
+    .empty p { margin: 0; color: var(--muted); }
+    [hidden] { display: none !important; }
+    @media (max-width: 720px) {
+      .shell { width: min(100% - 18px, 1180px); padding-top: 18px; }
+      .topbar, .meta-row { flex-direction: column; }
+      .topbar .button { align-self: stretch; }
+      .summary-grid, .filters, .details { grid-template-columns: 1fr; }
+      .detail-wide { grid-column: auto; }
+      .record-head { flex-direction: column; }
+      .chips { justify-content: flex-start; }
+    }
+  </style>
 </head>
 <body>
-  <p>กำลังเปิดระบบตรวจติดตามงาน… หากไม่เปลี่ยนหน้าอัตโนมัติ ให้
-    <a href="https://script.google.com/macros/s/AKfycbzT3h1NjuuSYCvEr_IxViqbuShJNStVwb7aJsHnd_mScJqFOAtRWUaHVFDXFyhShjx8/exec">คลิกที่นี่</a>
-  </p>
+  <main class="shell">
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">VIEWER · READ ONLY</p>
+        <h1>ตรวจสอบประจำปี</h1>
+        <p class="subtitle">ค้นหาและติดตามสถานะงานของโรงเรียน</p>
+      </div>
+      <button class="button" id="refresh" type="button">รีเฟรชข้อมูล</button>
+    </header>
+    <div class="notice" id="notice" role="alert" hidden></div>
+    <section class="summary-grid" aria-label="สรุปข้อมูล">
+      <article class="summary-card"><span>รายการทั้งหมด</span><strong id="summaryTotal">–</strong></article>
+      <article class="summary-card"><span>ส่งรายงานตรวจสอบแล้ว</span><strong id="summaryGDone">–</strong></article>
+      <article class="summary-card"><span>รอส่งรายงานตรวจสอบ</span><strong id="summaryGPending">–</strong></article>
+    </section>
+    <section class="filters" aria-label="ตัวกรองข้อมูล">
+      <label>ค้นหาโรงเรียนหรือข้อมูล
+        <input id="search" type="search" placeholder="พิมพ์ชื่อโรงเรียน เลขที่ หรืออำเภอ…" autocomplete="off">
+      </label>
+      <label>อำเภอ
+        <select id="district"><option value="">ทุกอำเภอ</option></select>
+      </label>
+      <label>สถานะรายงานตรวจสอบ
+        <select id="progress">
+          <option value="all">ทุกสถานะ</option>
+          <option value="inspected">ส่งแล้ว</option>
+          <option value="pending">รอส่ง</option>
+        </select>
+      </label>
+    </section>
+    <div class="meta-row">
+      <p id="count">กำลังโหลดข้อมูล…</p>
+      <p id="meta"></p>
+    </div>
+    <section class="cards" id="list" aria-live="polite"></section>
+    <section class="empty" id="empty" hidden>
+      <h2>ไม่พบรายการ</h2>
+      <p>ลองเปลี่ยนคำค้นหา อำเภอ หรือสถานะที่เลือก</p>
+    </section>
+  </main>
+  <script>
+    'use strict';
+    const API_URL = 'https://script.google.com/macros/s/AKfycbzT3h1NjuuSYCvEr_IxViqbuShJNStVwb7aJsHnd_mScJqFOAtRWUaHVFDXFyhShjx8/exec';
+    const state = { records: [], districts: [], summary: {} };
+    let activeScript = null;
+    let activeTimer = null;
+    const $ = (id) => document.getElementById(id);
+    const text = (value) => value === null || value === undefined ? '' : String(value).trim();
+    const firstValue = (record, keys) => {
+      for (const key of keys) {
+        const value = text(record[key]);
+        if (value) return value;
+      }
+      return '';
+    };
+    const escapeHtml = (value) => text(value).replace(/[&<>'\"]/g, (char) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[char]));
+    const isPresent = (value) => {
+      if (value === true) return true;
+      if (value === false || value === null || value === undefined || value === 0) return false;
+      const normalized = text(value).toLowerCase();
+      return normalized !== '' && !['false', '0', 'ไม่มี', 'no', 'ยังไม่ส่ง', 'รอ'].includes(normalized);
+    };
+    const formatNumber = (value) => Number(value || 0).toLocaleString('th-TH');
+    function showError(message) {
+      $('notice').textContent = message;
+      $('notice').hidden = false;
+    }
+    function renderSummary() {
+      $('summaryTotal').textContent = formatNumber(state.summary.total);
+      $('summaryGDone').textContent = formatNumber(state.summary.gDone);
+      $('summaryGPending').textContent = formatNumber(state.summary.gPending);
+    }
+    function renderDistricts() {
+      const selected = $('district').value;
+      const options = ['<option value="">ทุกอำเภอ</option>'];
+      state.districts.forEach((district) => {
+        options.push('<option value="' + escapeHtml(district) + '">' + escapeHtml(district) + '</option>');
+      });
+      $('district').innerHTML = options.join('');
+      $('district').value = state.districts.includes(selected) ? selected : '';
+    }
+    function filteredRecords() {
+      const query = text($('search').value).toLowerCase();
+      const district = $('district').value;
+      const progress = $('progress').value;
+      return state.records.filter((record) => {
+        const searchable = Object.values(record || {}).map(text).join(' ').toLowerCase();
+        if (query && !searchable.includes(query)) return false;
+        if (district && text(record.district) !== district) return false;
+        if (progress === 'inspected' && !isPresent(record.inspected)) return false;
+        if (progress === 'pending' && isPresent(record.inspected)) return false;
+        return true;
+      });
+    }
+    function chip(label, value, good) {
+      const className = good === true ? 'chip-ok' : good === false ? 'chip-pending' : 'chip-neutral';
+      return '<span class="chip ' + className + '">' + escapeHtml(label) + ': ' + escapeHtml(value || '-') + '</span>';
+    }
+    function detail(label, value, wide) {
+      return '<div class="detail' + (wide ? ' detail-wide' : '') + '"><span class="detail-label">' +
+        escapeHtml(label) + '</span><span class="detail-value">' + escapeHtml(value || '-') + '</span></div>';
+    }
+    function recordCard(record) {
+      const no = firstValue(record, ['no', 'number', 'ลำดับ']);
+      const school = firstValue(record, ['school', 'โรงเรียน']) || 'ไม่ระบุชื่อโรงเรียน';
+      const subdistrict = firstValue(record, ['subdistrict', 'ตำบล']);
+      const district = firstValue(record, ['district', 'อำเภอ']);
+      const docNo = firstValue(record, ['docNo', 'documentNo', 'เลขที่หนังสือ']);
+      const disposal = firstValue(record, ['disposal', 'ตัดจำหน่าย']);
+      const inspected = isPresent(record.inspected);
+      const accountRemoval = firstValue(record, ['accountRemoval', 'ขั้นขอตัดจากบัญชี']);
+      const correction = firstValue(record, ['correctionStatus', 'correction', 'แก้ไข ไม่แก้ไข']);
+      const remark = firstValue(record, ['remark', 'remarks', 'note', 'หมายเหตุ']);
+      const location = [subdistrict, district].filter(Boolean).join(' · ');
+      return '<article class="record-card">' +
+        '<div class="record-head"><div>' +
+        '<div class="record-number">ลำดับ ' + escapeHtml(no || '-') + '</div>' +
+        '<h2 class="record-title">' + escapeHtml(school) + '</h2>' +
+        '<p class="record-location">' + escapeHtml(location || 'ไม่ระบุพื้นที่') + '</p>' +
+        '</div><div class="chips">' +
+        chip('ตรวจสอบ', inspected ? 'ส่งแล้ว' : 'รอส่ง', inspected) +
+        chip('ตัดจำหน่าย', disposal || '-', disposal === 'มี' ? true : disposal === 'ไม่มี' ? false : null) +
+        '</div></div>' +
+        '<div class="details">' +
+        detail('เลขที่เอกสาร', docNo) +
+        detail('ขั้นขอตัดจากบัญชี', accountRemoval) +
+        detail('สถานะแก้ไข', correction) +
+        detail('หมายเหตุ / เหตุผลแก้ไข', remark, true) +
+        '</div></article>';
+    }
+    function renderRecords() {
+      const records = filteredRecords();
+      $('count').textContent = records.length.toLocaleString('th-TH') + ' รายการ จากทั้งหมด ' + state.records.length.toLocaleString('th-TH') + ' รายการ';
+      $('list').innerHTML = records.map(recordCard).join('');
+      $('empty').hidden = records.length !== 0;
+    }
+    function finishRequest(callbackName, script) {
+      if (activeTimer) window.clearTimeout(activeTimer);
+      activeTimer = null;
+      if (script && script.parentNode) script.parentNode.removeChild(script);
+      if (window[callbackName]) delete window[callbackName];
+      activeScript = null;
+      $('refresh').disabled = false;
+    }
+    function loadData() {
+      if (activeScript) activeScript.remove();
+      if (activeTimer) window.clearTimeout(activeTimer);
+      $('refresh').disabled = true;
+      $('notice').hidden = true;
+      const callbackName = 'annualViewerCallback_' + Date.now();
+      const script = document.createElement('script');
+      activeScript = script;
+      window[callbackName] = (payload) => {
+        finishRequest(callbackName, script);
+        try {
+          if (!payload || !Array.isArray(payload.records)) throw new Error('รูปแบบข้อมูลจาก Viewer ไม่ถูกต้อง');
+          state.records = payload.records;
+          state.districts = Array.isArray(payload.districts) ? payload.districts : [];
+          state.summary = payload.summary || {};
+          renderSummary();
+          renderDistricts();
+          renderRecords();
+          const updatedAt = payload.updatedAt ? new Date(payload.updatedAt) : null;
+          $('meta').textContent = updatedAt && !Number.isNaN(updatedAt.getTime())
+            ? 'อัปเดตล่าสุด ' + updatedAt.toLocaleString('th-TH')
+            : 'ข้อมูลล่าสุด';
+        } catch (error) {
+          showError(error.message || 'อ่านข้อมูลไม่สำเร็จ');
+        }
+      };
+      script.onerror = () => {
+        finishRequest(callbackName, script);
+        showError('เชื่อมต่อข้อมูลไม่สำเร็จ กรุณากดรีเฟรชอีกครั้ง');
+      };
+      script.src = API_URL + '?api=viewer&callback=' + encodeURIComponent(callbackName) + '&_=' + Date.now();
+      script.async = true;
+      document.body.appendChild(script);
+      activeTimer = window.setTimeout(() => {
+        finishRequest(callbackName, script);
+        showError('การโหลดข้อมูลใช้เวลานานเกินไป กรุณาลองใหม่');
+      }, 20000);
+    }
+    $('search').addEventListener('input', renderRecords);
+    $('district').addEventListener('change', renderRecords);
+    $('progress').addEventListener('change', renderRecords);
+    $('refresh').addEventListener('click', loadData);
+    loadData();
+  </script>
 </body>
 </html>
