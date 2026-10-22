@@ -4,315 +4,226 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b6d63">
-  <title>ตรวจสอบประจำปี · Viewer</title>
+  <title>Viewer · ค้นหาโรงเรียน</title>
   <style>
     :root {
-      --ink: #23372f;
-      --muted: #63766d;
-      --green: #0b6d63;
-      --green-soft: #e2f3ed;
-      --gold: #b7791f;
-      --gold-soft: #fff4d8;
-      --red: #a53b35;
+      --ink: #243b35;
+      --muted: #5f766c;
+      --teal: #0b6d63;
+      --teal-dark: #07594f;
+      --blue: #466f99;
+      --gold: #9a6817;
+      --red: #a7433c;
       --red-soft: #fff0ed;
-      --line: #cadbd3;
-      --paper: #fffdf7;
-      --shadow: 0 14px 36px rgba(35, 61, 50, .08);
+      --line: #cbd9d1;
+      --shadow: 0 8px 22px rgba(37, 61, 50, .06);
     }
     * { box-sizing: border-box; }
+    html { min-width: 320px; }
     body {
       margin: 0;
       color: var(--ink);
-      background: linear-gradient(180deg, #eaf7f2 0, #f7faf5 340px, #f7faf5 100%);
+      background: linear-gradient(180deg, #e9f6f0 0, #f7faf5 430px, #f7faf5 100%);
       font-family: "Noto Sans Thai", "Leelawadee UI", Tahoma, sans-serif;
+      font-size: 14px;
+      line-height: 1.45;
     }
     button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
     button { cursor: pointer; }
-    .shell { width: min(1180px, calc(100% - 28px)); margin: 0 auto; padding: 28px 0 48px; }
-    .topbar {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 22px;
+    a { color: inherit; text-decoration: none; }
+    .app-shell { width: min(1080px, calc(100% - 28px)); margin: 0 auto; padding: 18px 0 36px; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
+    .brand { display: flex; align-items: center; gap: 11px; min-width: 0; }
+    .brand-mark, .section-icon { display: inline-grid; place-items: center; flex: 0 0 auto; color: var(--teal); background: #d4f0e4; }
+    .brand-mark { width: 44px; height: 44px; border-radius: 15px; color: #fff; background: var(--teal); box-shadow: 0 8px 18px rgba(11, 109, 99, .18); }
+    .brand-mark svg, .section-icon svg, .resource-link svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; stroke-width: 1.8; }
+    .brand-title { margin: 0; color: var(--ink); font-size: 16px; font-weight: 800; line-height: 1.25; }
+    .brand-subtitle { margin: 2px 0 0; color: var(--muted); font-size: 11px; }
+    .source-pill { flex: 0 0 auto; border: 1px solid #b7ddce; border-radius: 999px; padding: 7px 13px; color: #356e5e; background: rgba(255, 255, 255, .45); font-size: 12px; font-weight: 800; }
+    .intro { display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 15px; border-radius: 22px; padding: 24px 26px; color: #fff; background: linear-gradient(135deg, #07594f, #0c756a); box-shadow: 0 13px 27px rgba(5, 87, 75, .16); }
+    .eyebrow { margin: 0 0 4px; color: #ffe9a9; font-size: 12px; font-weight: 800; letter-spacing: .04em; }
+    h1, h2, p { margin-top: 0; }
+    .intro h1 { margin: 0 0 5px; color: #fff; font-size: clamp(28px, 4vw, 36px); letter-spacing: -.04em; line-height: 1.1; }
+    .intro p { max-width: 780px; margin: 0; color: rgba(255, 255, 255, .9); font-size: 13px; }
+    .intro .source-pill { color: #fff; border-color: rgba(255, 255, 255, .27); background: rgba(255, 255, 255, .1); }
+    .panel { margin-bottom: 14px; border: 1px solid var(--line); border-radius: 19px; padding: 17px; background: rgba(255, 253, 247, .94); box-shadow: var(--shadow); }
+    .section-heading { display: flex; align-items: center; gap: 11px; margin: 0 0 13px; }
+    .section-icon { width: 38px; height: 38px; border-radius: 12px; }
+    .section-heading h2 { margin: 0; color: var(--ink); font-size: 17px; line-height: 1.2; }
+    .section-heading p { margin: 2px 0 0; color: var(--muted); font-size: 11px; }
+    .search-section-heading { flex-wrap: wrap; }
+    .resource-links { display: flex; flex-wrap: wrap; gap: 9px; margin-left: auto; }
+    .resource-link { display: inline-flex; align-items: center; gap: 7px; border: 1px solid #b9decf; border-radius: 11px; padding: 8px 12px; color: #2f6b5b; background: #e9f8ef; font-size: 12px; font-weight: 800; transition: transform .15s ease, box-shadow .15s ease; }
+    .resource-link:last-child { border-color: #efc8c0; color: #8d4e48; background: #fff1ed; }
+    .resource-link:hover, .resource-link:focus-visible { transform: translateY(-1px); box-shadow: 0 5px 12px rgba(37, 61, 50, .1); }
+    .search-grid { display: grid; grid-template-columns: minmax(0, 1.8fr) minmax(150px, .8fr) minmax(170px, .9fr) auto; align-items: end; gap: 11px; }
+    .field-label { display: block; margin-bottom: 6px; color: #526b62; font-size: 12px; font-weight: 800; }
+    .query-wrap { position: relative; }
+    .text-input, .select-input { width: 100%; min-height: 44px; border: 1px solid #c9d7cf; border-radius: 12px; padding: 10px 13px; color: var(--ink); background: #fff; outline: none; }
+    .text-input { padding-right: 42px; }
+    .text-input::placeholder { color: #819087; }
+    .text-input:focus, .select-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(11, 109, 99, .12); }
+    .clear-search { position: absolute; top: 50%; right: 8px; display: grid; place-items: center; width: 29px; height: 29px; transform: translateY(-50%); border: 0; border-radius: 50%; color: #728178; background: transparent; font-size: 21px; line-height: 1; }
+    .clear-search:hover, .clear-search:focus-visible { background: #edf4ef; }
+    .button { min-height: 44px; border: 1px solid #cad9d1; border-radius: 12px; padding: 9px 14px; color: var(--ink); background: #fff; font-weight: 800; white-space: nowrap; }
+    .button:hover, .button:focus-visible { border-color: var(--teal); color: var(--teal-dark); box-shadow: 0 4px 12px rgba(37, 61, 50, .1); }
+    .button:disabled, .select-input:disabled { cursor: wait; opacity: .65; }
+    .notice { margin: -1px 0 14px; border: 1px solid #efc3bd; border-radius: 14px; padding: 12px 14px; color: var(--red); background: var(--red-soft); }
+    .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 14px; }
+    .summary-card { display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 100%; min-height: 68px; border: 1px solid #cbd9d1; border-radius: 15px; padding: 13px 15px; color: var(--ink); background: rgba(255, 253, 247, .94); box-shadow: var(--shadow); text-align: left; transition: transform .15s ease, box-shadow .15s ease; }
+    .summary-card:hover, .summary-card:focus-visible { transform: translateY(-1px); box-shadow: 0 9px 20px rgba(37, 61, 50, .12); }
+    .summary-card[data-filter="all"], .summary-card[data-filter="inspected"], .summary-card[data-filter="disposalDone"] { border-color: #b6decf; background: #e0f3e9; }
+    .summary-card[data-filter="pending"], .summary-card[data-filter="disposalPending"] { border-color: #edcf8d; background: #fff0cc; }
+    .summary-card[data-filter="correction"] { border-color: #efc3bd; background: #ffebe7; }
+    .summary-label { color: #526b62; font-size: 12px; line-height: 1.35; }
+    .summary-number { flex: 0 0 auto; color: var(--teal-dark); font-size: 24px; font-variant-numeric: tabular-nums; font-weight: 800; }
+    .summary-card[data-filter="pending"] .summary-number, .summary-card[data-filter="disposalPending"] .summary-number { color: var(--gold); }
+    .summary-card[data-filter="correction"] .summary-number { color: var(--red); }
+    .results-panel { padding-bottom: 13px; background: rgba(232, 247, 237, .88); }
+    .results-heading { margin-bottom: 8px; }
+    .results-heading-main { display: flex; align-items: center; gap: 11px; }
+    .results-heading-side { margin-left: auto; color: #345f50; font-size: 12px; font-weight: 800; }
+    .result-meta { min-height: 20px; margin: 0 0 9px; color: #526c64; font-size: 11px; }
+    .school-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .school-card { min-width: 0; border: 1px solid #d7e0d9; border-left: 4px solid #9bceae; border-radius: 15px; padding: 12px 13px 13px; background: #fffefa; box-shadow: 0 5px 13px rgba(37, 61, 50, .05); }
+    .school-card.is-pending { border-left-color: #dfa523; }
+    .school-card.is-correction { border-left-color: #d8655c; }
+    .school-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+    .school-name { margin: 0; color: #273d36; font-size: 15px; font-weight: 800; line-height: 1.25; }
+    .school-location { margin: 3px 0 0; color: #5d766c; font-size: 11px; }
+    .school-number { flex: 0 0 auto; border-radius: 8px; padding: 4px 8px; color: #705984; background: #f0eaff; font-size: 11px; line-height: 1; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 10px; }
+    .chip { display: inline-block; border-radius: 999px; padding: 4px 7px; color: #52665e; background: #edf3ef; font-size: 10px; line-height: 1.2; white-space: nowrap; }
+    .chip-ok { color: #256b55; background: #dff3e9; }
+    .chip-pending { color: #876016; background: #fff0cc; }
+    .chip-error { color: #9b433c; background: #ffe5e0; }
+    .chip-neutral { color: #65517c; background: #f0eaff; }
+    .details { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; border-top: 1px solid #e3e8e3; padding-top: 10px; }
+    .detail-cell { min-width: 0; border-radius: 11px; padding: 9px 10px; background: #f1f7f3; }
+    .detail-cell-wide { grid-column: 1 / -1; }
+    .detail-cell.missing { border: 1px solid #efb8b0; background: #fff1ef; }
+    .detail-label { display: block; margin-bottom: 2px; color: #587269; font-size: 10px; }
+    .detail-value { display: block; color: #2b423a; font-size: 12px; overflow-wrap: anywhere; }
+    .detail-cell.missing .detail-value, .detail-value.result-error { color: var(--red); font-weight: 800; }
+    .empty-state { margin-top: 12px; border: 1px dashed #90c7a4; border-radius: 15px; padding: 30px 18px; color: #426554; background: #f3faef; text-align: center; }
+    .empty-state strong { display: block; margin-bottom: 5px; color: var(--ink); font-size: 16px; }
+    .empty-state[hidden], .notice[hidden], .loading[hidden] { display: none; }
+    .footnote { margin: 13px 2px 0; color: #526c64; font-size: 12px; line-height: 1.5; }
+    @media (max-width: 760px) {
+      .app-shell { width: min(100% - 18px, 1080px); padding-top: 14px; }
+      .topbar { align-items: flex-start; margin-bottom: 13px; }
+      .brand-mark { width: 40px; height: 40px; }
+      .source-pill { padding: 7px 10px; }
+      .intro { align-items: flex-start; flex-direction: column; gap: 12px; border-radius: 18px; padding: 18px; }
+      .intro .source-pill { align-self: flex-start; }
+      .resource-links { width: 100%; margin-left: 0; }
+      .resource-link { flex: 1 1 auto; justify-content: center; }
+      .search-grid { grid-template-columns: 1fr; }
+      .summary-grid, .school-list { grid-template-columns: 1fr; }
+      .results-heading { align-items: flex-start; }
+      .results-heading-side { margin-left: 0; }
     }
-    .eyebrow { margin: 0 0 5px; color: var(--green); font-size: .78rem; font-weight: 800; letter-spacing: .12em; }
-    h1 { margin: 0; font-size: clamp(1.65rem, 3vw, 2.55rem); letter-spacing: -.03em; }
-    .subtitle { margin: 7px 0 0; color: var(--muted); }
-    .button {
-      border: 0;
-      border-radius: 12px;
-      padding: 11px 15px;
-      color: #fff;
-      background: var(--green);
-      box-shadow: 0 7px 16px rgba(11, 109, 99, .18);
-    }
-    .button:disabled { cursor: wait; opacity: .65; }
-    .notice {
-      margin: 0 0 16px;
-      border: 1px solid #efc3bd;
-      border-radius: 14px;
-      padding: 13px 15px;
-      color: var(--red);
-      background: var(--red-soft);
-    }
-    .summary-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
-    .summary-card, .filters, .record-card, .empty {
-      border: 1px solid var(--line);
-      border-radius: 18px;
-      background: rgba(255, 253, 247, .94);
-      box-shadow: var(--shadow);
-    }
-    .summary-card { padding: 17px; }
-    .summary-card span { color: var(--muted); font-size: .9rem; }
-    .summary-card strong { display: block; margin-top: 5px; color: var(--green); font-size: 1.75rem; }
-    .filters { display: grid; grid-template-columns: minmax(240px, 1.6fr) minmax(190px, 1fr) minmax(190px, 1fr); gap: 12px; padding: 15px; }
-    label { display: grid; gap: 6px; color: var(--muted); font-size: .88rem; font-weight: 700; }
-    input, select { width: 100%; border: 1px solid var(--line); border-radius: 11px; padding: 10px 12px; color: var(--ink); background: #fff; outline: none; }
-    input:focus, select:focus { border-color: var(--green); box-shadow: 0 0 0 3px rgba(11, 109, 99, .12); }
-    .meta-row { display: flex; justify-content: space-between; gap: 12px; margin: 15px 3px 11px; color: var(--muted); font-size: .88rem; }
-    .meta-row p { margin: 0; }
-    .cards { display: grid; gap: 12px; }
-    .record-card { padding: 17px; }
-    .record-head { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
-    .record-number { color: var(--muted); font-size: .85rem; }
-    .record-title { margin: 3px 0 4px; font-size: 1.14rem; }
-    .record-location { margin: 0; color: var(--muted); }
-    .chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
-    .chip { border-radius: 999px; padding: 5px 9px; font-size: .78rem; white-space: nowrap; }
-    .chip-ok { color: #17634d; background: var(--green-soft); }
-    .chip-pending { color: #8a5a15; background: var(--gold-soft); }
-    .chip-neutral { color: #52655d; background: #edf2ef; }
-    .details { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 15px; }
-    .detail { border-radius: 11px; padding: 10px 11px; background: #f4f8f4; }
-    .detail-wide { grid-column: 1 / -1; }
-    .detail-label { display: block; color: var(--muted); font-size: .76rem; }
-    .detail-value { display: block; margin-top: 3px; overflow-wrap: anywhere; }
-    .empty { padding: 32px 18px; text-align: center; }
-    .empty h2 { margin: 0 0 6px; font-size: 1.1rem; }
-    .empty p { margin: 0; color: var(--muted); }
-    [hidden] { display: none !important; }
-    @media (max-width: 720px) {
-      .shell { width: min(100% - 18px, 1180px); padding-top: 18px; }
-      .topbar, .meta-row { flex-direction: column; }
-      .topbar .button { align-self: stretch; }
-      .summary-grid, .filters, .details { grid-template-columns: 1fr; }
-      .detail-wide { grid-column: auto; }
-      .record-head { flex-direction: column; }
-      .chips { justify-content: flex-start; }
+    @media (max-width: 470px) {
+      .topbar { flex-direction: column; }
+      .topbar .source-pill { align-self: flex-start; }
+      .summary-card { min-height: 62px; }
+      .details { grid-template-columns: 1fr; }
+      .detail-cell-wide { grid-column: auto; }
     }
   </style>
 </head>
 <body>
-  <main class="shell">
+  <main class="app-shell">
     <header class="topbar">
-      <div>
-        <p class="eyebrow">VIEWER · READ ONLY</p>
-        <h1>ตรวจสอบประจำปี</h1>
-        <p class="subtitle">ค้นหาและติดตามสถานะงานของโรงเรียน</p>
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="5.8"></circle><path d="m15.2 15.2 4.3 4.3"></path></svg>
+        </span>
+        <div>
+          <p class="brand-title">ติดตามตรวจสอบพัสดุประจำปี 2569</p>
+          <p class="brand-subtitle">ค้นหาและดูสถานะโรงเรียน</p>
+        </div>
       </div>
-      <button class="button" id="refresh" type="button">รีเฟรชข้อมูล</button>
+      <div class="source-pill">Viewer · อ่านอย่างเดียว</div>
     </header>
+    <section class="intro" aria-labelledby="pageTitle">
+      <div>
+        <div class="eyebrow">VIEWER · ประจำปี 2569</div>
+        <h1 id="pageTitle">ค้นหาโรงเรียน</h1>
+        <p>ค้นหาชื่อโรงเรียนเป็นหลัก หรือค้นด้วยลำดับ ตำบล และอำเภอ เลขที่นำส่ง ผลตรวจ และหมายเหตุแสดงบนการ์ดทันที</p>
+      </div>
+      <div class="source-pill">ไม่มีสิทธิ์แก้ไขข้อมูล</div>
+    </section>
     <div class="notice" id="notice" role="alert" hidden></div>
-    <section class="summary-grid" aria-label="สรุปข้อมูล">
-      <article class="summary-card"><span>รายการทั้งหมด</span><strong id="summaryTotal">–</strong></article>
-      <article class="summary-card"><span>ส่งรายงานตรวจสอบแล้ว</span><strong id="summaryGDone">–</strong></article>
-      <article class="summary-card"><span>รอส่งรายงานตรวจสอบ</span><strong id="summaryGPending">–</strong></article>
-      <article class="summary-card"><span>มีตัดจำหน่าย · ส่งครบแล้ว</span><strong id="summaryDisposalDone">–</strong></article>
-      <article class="summary-card"><span>มีตัดจำหน่าย · รอส่ง</span><strong id="summaryDisposalPending">–</strong></article>
-      <article class="summary-card"><span>ต้องแก้ไข · ติดตามต่อ</span><strong id="summaryCorrection">–</strong></article>
+    <section class="panel search-panel" aria-labelledby="searchTitle">
+      <div class="section-heading search-section-heading">
+        <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="5.8"></circle><path d="m15.2 15.2 4.3 4.3"></path></svg></span>
+        <div><h2 id="searchTitle">ค้นหาโรงเรียน</h2><p>พิมพ์ค้นหาทันทีจากรายการที่โหลดแล้ว</p></div>
+        <div class="resource-links" aria-label="เอกสารอ้างอิงสำหรับโรงเรียน">
+          <a class="resource-link" href="https://drive.google.com/file/d/1u3TbcDuFdGWDF4AyC5cyUvMuXozTt0Gf/view?usp=sharing" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M7 3.5h7l3 3V20.5H7z"></path><path d="M14 3.5v4h3"></path><path d="M9.5 12h5M9.5 15h5"></path></svg><span>หนังสือนำส่ง</span></a>
+          <a class="resource-link" href="https://drive.google.com/drive/folders/1D0oKVvwcKR66U5CFdoSkGNXUY0Jt6gzV?usp=sharing" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24"><path d="M3.5 6.5h6l2 2h9v10.5h-17z"></path><path d="M3.5 6.5v-1h6l2 2"></path></svg><span>ตัวอย่างเอกสารปีก่อน</span></a>
+        </div>
+      </div>
+      <div class="search-grid">
+        <div><label class="field-label" for="searchInput">ชื่อโรงเรียน ลำดับ ตำบล หรืออำเภอ</label><div class="query-wrap"><input class="text-input" id="searchInput" type="search" placeholder="พิมพ์ชื่อโรงเรียนเป็นหลัก" autocomplete="off"><button class="clear-search" id="clearSearchButton" type="button" aria-label="ล้างคำค้น">×</button></div></div>
+        <div><label class="field-label" for="districtFilter">อำเภอ</label><select class="select-input" id="districtFilter" disabled><option value="">ทุกอำเภอ</option></select></div>
+        <div><label class="field-label" for="progressFilter">ความคืบหน้า</label><select class="select-input" id="progressFilter" disabled><option value="all">ทุกสถานะ</option><option value="inspected">ส่งรายงานตรวจสอบแล้ว</option><option value="pending">ยังไม่ส่งรายงานตรวจสอบ</option><option value="disposal">มีรายการตัดจำหน่าย</option><option value="disposalDone">มีตัดจำหน่าย · ส่งรายงานครบแล้ว</option><option value="disposalPending">มีตัดจำหน่าย · ส่งรายงานตรวจสอบแล้ว รอรายงานตัดจำหน่าย</option><option value="correction">ต้องแก้ไข · ติดตามต่อ</option></select></div>
+        <button class="button" id="refreshButton" type="button">รีเฟรชข้อมูล</button>
+      </div>
+      <p class="footnote loading" id="loading" aria-live="polite">กำลังโหลดข้อมูลโรงเรียน…</p>
     </section>
-    <section class="filters" aria-label="ตัวกรองข้อมูล">
-      <label>ค้นหาโรงเรียนหรือข้อมูล
-        <input id="search" type="search" placeholder="พิมพ์ชื่อโรงเรียน เลขที่ หรืออำเภอ…" autocomplete="off">
-      </label>
-      <label>อำเภอ
-        <select id="district"><option value="">ทุกอำเภอ</option></select>
-      </label>
-      <label>สถานะรายงานตรวจสอบ
-        <select id="progress">
-          <option value="all">ทุกสถานะ</option>
-          <option value="inspected">ส่งแล้ว</option>
-          <option value="pending">รอส่ง</option>
-          <option value="disposal">มีรายการตัดจำหน่าย</option>
-          <option value="disposalDone">มีตัดจำหน่าย · ส่งครบแล้ว</option>
-          <option value="disposalPending">มีตัดจำหน่าย · รอส่งรายงานตัดจำหน่าย</option>
-          <option value="correction">ต้องแก้ไข · ติดตามต่อ</option>
-        </select>
-      </label>
+    <section class="summary-grid" aria-label="สรุปจากข้อมูลจริง">
+      <button class="summary-card" data-filter="all" type="button"><span class="summary-label">โรงเรียนทั้งหมด</span><strong class="summary-number" id="summaryTotal">–</strong></button>
+      <button class="summary-card" data-filter="inspected" type="button"><span class="summary-label">ส่งรายงานตรวจสอบแล้ว</span><strong class="summary-number" id="summaryInspected">–</strong></button>
+      <button class="summary-card" data-filter="pending" type="button"><span class="summary-label">ยังไม่ส่งรายงานตรวจสอบ</span><strong class="summary-number" id="summaryPending">–</strong></button>
+      <button class="summary-card" data-filter="disposalDone" type="button"><span class="summary-label">มีตัดจำหน่าย · ส่งรายงานครบแล้ว</span><strong class="summary-number" id="summaryDisposalDone">–</strong></button>
+      <button class="summary-card" data-filter="disposalPending" type="button"><span class="summary-label">มีตัดจำหน่าย · ส่งรายงานตรวจสอบแล้ว รอรายงานตัดจำหน่าย</span><strong class="summary-number" id="summaryDisposalPending">–</strong></button>
+      <button class="summary-card" data-filter="correction" type="button"><span class="summary-label">ต้องแก้ไข · ติดตามต่อ</span><strong class="summary-number" id="summaryCorrection">–</strong></button>
     </section>
-    <div class="meta-row">
-      <p id="count">กำลังโหลดข้อมูล…</p>
-      <p id="meta"></p>
-    </div>
-    <section class="cards" id="list" aria-live="polite"></section>
-    <section class="empty" id="empty" hidden>
-      <h2>ไม่พบรายการ</h2>
-      <p>ลองเปลี่ยนคำค้นหา อำเภอ หรือสถานะที่เลือก</p>
+    <section class="panel results-panel" aria-labelledby="resultsTitle">
+      <div class="section-heading results-heading">
+        <div class="results-heading-main"><span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 7h14M5 12h14M5 17h14"></path><circle cx="3.5" cy="7" r=".8" fill="currentColor" stroke="none"></circle><circle cx="3.5" cy="12" r=".8" fill="currentColor" stroke="none"></circle><circle cx="3.5" cy="17" r=".8" fill="currentColor" stroke="none"></circle></svg></span><div><h2 id="resultsTitle">รายชื่อโรงเรียน</h2><p>เรียงตามลำดับในชีท</p></div></div>
+        <div class="results-heading-side" id="count">กำลังโหลดข้อมูล…</div>
+      </div>
+      <p class="result-meta" id="meta"></p>
+      <div class="school-list" id="schoolList" aria-live="polite" aria-busy="true"></div>
+      <div class="empty-state" id="emptyState" hidden><strong id="emptyTitle">ไม่พบรายการ</strong><span id="emptyMessage">ลองเปลี่ยนคำค้นหา อำเภอ หรือสถานะที่เลือก</span></div>
+      <p class="footnote">ผู้ที่มีลิงก์และลงชื่อเข้าใช้บัญชี Google จะดูข้อมูลทั้ง 179 รายการได้ Viewer นี้ไม่มีคำสั่งบันทึกหรือแก้ไขชีท</p>
     </section>
   </main>
   <script>
     'use strict';
     const API_URL = 'https://script.google.com/macros/s/AKfycbzT3h1NjuuSYCvEr_IxViqbuShJNStVwb7aJsHnd_mScJqFOAtRWUaHVFDXFyhShjx8/exec';
-    const state = { records: [], districts: [], summary: {} };
+    const state = { records: [], districts: [], summary: {}, ready: false, updatedAt: null };
     let activeScript = null;
     let activeTimer = null;
-    const $ = (id) => document.getElementById(id);
+    const ui = { search: document.getElementById('searchInput'), clearSearch: document.getElementById('clearSearchButton'), district: document.getElementById('districtFilter'), progress: document.getElementById('progressFilter'), refresh: document.getElementById('refreshButton'), loading: document.getElementById('loading'), notice: document.getElementById('notice'), count: document.getElementById('count'), meta: document.getElementById('meta'), list: document.getElementById('schoolList'), empty: document.getElementById('emptyState'), emptyTitle: document.getElementById('emptyTitle'), emptyMessage: document.getElementById('emptyMessage') };
     const text = (value) => value === null || value === undefined ? '' : String(value).trim();
-    const firstValue = (record, keys) => {
-      for (const key of keys) {
-        const value = text(record[key]);
-        if (value) return value;
-      }
-      return '';
-    };
-    const escapeHtml = (value) => text(value).replace(/[&<>'\"]/g, (char) => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-    }[char]));
-    const isPresent = (value) => {
-      if (value === true) return true;
-      if (value === false || value === null || value === undefined || value === 0) return false;
-      const normalized = text(value).toLowerCase();
-      return normalized !== '' && !['false', '0', 'ไม่มี', 'no', 'ยังไม่ส่ง', 'รอ'].includes(normalized);
-    };
-    const formatNumber = (value) => Number(value || 0).toLocaleString('th-TH');
-    function showError(message) {
-      $('notice').textContent = message;
-      $('notice').hidden = false;
-    }
-    function renderSummary() {
-      $('summaryTotal').textContent = formatNumber(state.summary.total);
-      $('summaryGDone').textContent = formatNumber(state.summary.gDone);
-      $('summaryGPending').textContent = formatNumber(state.summary.gPending);
-      $('summaryDisposalDone').textContent = formatNumber(state.summary.disposalYesH);
-      $('summaryDisposalPending').textContent = formatNumber(state.summary.disposalYesGNoH);
-      $('summaryCorrection').textContent = formatNumber(state.summary.correction);
-    }
-    function renderDistricts() {
-      const selected = $('district').value;
-      const options = ['<option value="">ทุกอำเภอ</option>'];
-      state.districts.forEach((district) => {
-        options.push('<option value="' + escapeHtml(district) + '">' + escapeHtml(district) + '</option>');
-      });
-      $('district').innerHTML = options.join('');
-      $('district').value = state.districts.includes(selected) ? selected : '';
-    }
-    function filteredRecords() {
-      const query = text($('search').value).toLowerCase();
-      const district = $('district').value;
-      const progress = $('progress').value;
-      return state.records.filter((record) => {
-        const searchable = Object.values(record || {}).map(text).join(' ').toLowerCase();
-        if (query && !searchable.includes(query)) return false;
-        if (district && text(record.district) !== district) return false;
-        if (progress === 'inspected' && !isPresent(record.inspected)) return false;
-        if (progress === 'pending' && isPresent(record.inspected)) return false;
-        if (progress === 'disposal' && text(record.disposal) !== 'มี') return false;
-        if (progress === 'disposalDone' && !(text(record.disposal) === 'มี' && isPresent(record.inspected) && isPresent(record.accountRemoval))) return false;
-        if (progress === 'disposalPending' && !(text(record.disposal) === 'มี' && isPresent(record.inspected) && !isPresent(record.accountRemoval))) return false;
-        if (progress === 'correction' && text(record.correctionStatus) !== 'แก้ไข') return false;
-        return true;
-      });
-    }
-    function chip(label, value, good) {
-      const className = good === true ? 'chip-ok' : good === false ? 'chip-pending' : 'chip-neutral';
-      return '<span class="chip ' + className + '">' + escapeHtml(label) + ': ' + escapeHtml(value || '-') + '</span>';
-    }
-    function detail(label, value, wide) {
-      return '<div class="detail' + (wide ? ' detail-wide' : '') + '"><span class="detail-label">' +
-        escapeHtml(label) + '</span><span class="detail-value">' + escapeHtml(value || '-') + '</span></div>';
-    }
-    function recordCard(record) {
-      const no = firstValue(record, ['no', 'number', 'ลำดับ']);
-      const school = firstValue(record, ['school', 'โรงเรียน']) || 'ไม่ระบุชื่อโรงเรียน';
-      const subdistrict = firstValue(record, ['subdistrict', 'ตำบล']);
-      const district = firstValue(record, ['district', 'อำเภอ']);
-      const docNo = firstValue(record, ['docNo', 'documentNo', 'เลขที่หนังสือ']);
-      const disposal = firstValue(record, ['disposal', 'ตัดจำหน่าย']);
-      const inspected = isPresent(record.inspected);
-      const accountRemoval = typeof record.accountRemoval === 'boolean'
-        ? (record.accountRemoval ? 'ส่งแล้ว' : 'ยังไม่ส่ง')
-        : firstValue(record, ['accountRemoval', 'ขั้นขอตัดจากบัญชี']);
-      const correction = firstValue(record, ['correctionStatus', 'correction', 'แก้ไข ไม่แก้ไข']);
-      const remark = firstValue(record, ['remark', 'remarks', 'note', 'หมายเหตุ']);
-      const location = [subdistrict, district].filter(Boolean).join(' · ');
-      const disposalReport = disposal === 'มี'
-        ? (isPresent(record.accountRemoval) ? 'ส่งแล้ว' : 'ยังไม่ส่ง')
-        : disposal === 'ไม่มี' ? 'ไม่ต้องส่ง' : 'รอระบุ';
-      return '<article class="record-card">' +
-        '<div class="record-head"><div>' +
-        '<div class="record-number">ลำดับ ' + escapeHtml(no || '-') + '</div>' +
-        '<h2 class="record-title">' + escapeHtml(school) + '</h2>' +
-        '<p class="record-location">' + escapeHtml(location || 'ไม่ระบุพื้นที่') + '</p>' +
-        '</div><div class="chips">' +
-        chip('ตรวจสอบ', inspected ? 'ส่งแล้ว' : 'รอส่ง', inspected) +
-        chip('ตัดจำหน่าย', disposal || '-', disposal === 'มี' ? true : disposal === 'ไม่มี' ? false : null) +
-        chip('รายงานตัดจำหน่าย', disposalReport, disposal === 'มี' ? isPresent(record.accountRemoval) : null) +
-        '</div></div>' +
-        '<div class="details">' +
-        detail('เลขที่เอกสาร', docNo) +
-        detail('ขั้นขอตัดจากบัญชี', accountRemoval) +
-        detail('สถานะแก้ไข', correction) +
-        detail('หมายเหตุ / เหตุผลแก้ไข', remark, true) +
-        '</div></article>';
-    }
-    function renderRecords() {
-      const records = filteredRecords();
-      $('count').textContent = records.length.toLocaleString('th-TH') + ' รายการ จากทั้งหมด ' + state.records.length.toLocaleString('th-TH') + ' รายการ';
-      $('list').innerHTML = records.map(recordCard).join('');
-      $('empty').hidden = records.length !== 0;
-    }
-    function finishRequest(callbackName, script) {
-      if (activeTimer) window.clearTimeout(activeTimer);
-      activeTimer = null;
-      if (script && script.parentNode) script.parentNode.removeChild(script);
-      if (window[callbackName]) delete window[callbackName];
-      activeScript = null;
-      $('refresh').disabled = false;
-    }
-    function loadData() {
-      if (activeScript) activeScript.remove();
-      if (activeTimer) window.clearTimeout(activeTimer);
-      $('refresh').disabled = true;
-      $('notice').hidden = true;
-      const callbackName = 'annualViewerCallback_' + Date.now();
-      const script = document.createElement('script');
-      activeScript = script;
-      window[callbackName] = (payload) => {
-        finishRequest(callbackName, script);
-        try {
-          if (!payload || !Array.isArray(payload.records)) throw new Error('รูปแบบข้อมูลจาก Viewer ไม่ถูกต้อง');
-          state.records = payload.records;
-          state.districts = Array.isArray(payload.districts) ? payload.districts : [];
-          state.summary = payload.summary || {};
-          renderSummary();
-          renderDistricts();
-          renderRecords();
-          const updatedAt = payload.updatedAt ? new Date(payload.updatedAt) : null;
-          $('meta').textContent = updatedAt && !Number.isNaN(updatedAt.getTime())
-            ? 'อัปเดตล่าสุด ' + updatedAt.toLocaleString('th-TH')
-            : 'ข้อมูลล่าสุด';
-        } catch (error) {
-          showError(error.message || 'อ่านข้อมูลไม่สำเร็จ');
-        }
-      };
-      script.onerror = () => {
-        finishRequest(callbackName, script);
-        showError('เชื่อมต่อข้อมูลไม่สำเร็จ กรุณากดรีเฟรชอีกครั้ง');
-      };
-      script.src = API_URL + '?api=viewer&callback=' + encodeURIComponent(callbackName) + '&_=' + Date.now();
-      script.async = true;
-      document.body.appendChild(script);
-      activeTimer = window.setTimeout(() => {
-        finishRequest(callbackName, script);
-        showError('การโหลดข้อมูลใช้เวลานานเกินไป กรุณาลองใหม่');
-      }, 20000);
-    }
-    $('search').addEventListener('input', renderRecords);
-    $('district').addEventListener('change', renderRecords);
-    $('progress').addEventListener('change', renderRecords);
-    $('refresh').addEventListener('click', loadData);
-    loadData();
+    function firstValue(record, keys) { for (const key of keys) { const value = text(record && record[key]); if (value) return value; } return ''; }
+    function escapeHtml(value) { return text(value).replace(/[&<>'"]/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[character])); }
+    function normalizeSearch(value) { return text(value).toLowerCase().replace(/\s+/g, ' '); }
+    function isPresent(value) { if (value === true) return true; if (value === false || value === null || value === undefined || value === 0) return false; const normalized = text(value).toLowerCase(); return normalized !== '' && !['false', '0', 'ไม่มี', 'no', 'ยังไม่ส่ง', 'รอ', 'ยังไม่ระบุ'].includes(normalized); }
+    function formatNumber(value) { return Number(value || 0).toLocaleString('th-TH'); }
+    function setNotice(message, visible) { ui.notice.textContent = message || ''; ui.notice.hidden = !visible; }
+    function renderSummary() { document.getElementById('summaryTotal').textContent = formatNumber(state.summary.total); document.getElementById('summaryInspected').textContent = formatNumber(state.summary.gDone); document.getElementById('summaryPending').textContent = formatNumber(state.summary.gPending); document.getElementById('summaryDisposalDone').textContent = formatNumber(state.summary.disposalYesH); document.getElementById('summaryDisposalPending').textContent = formatNumber(state.summary.disposalYesGNoH); document.getElementById('summaryCorrection').textContent = formatNumber(state.summary.correction); }
+    function renderDistrictOptions(selectedDistrict) { const options = ['<option value="">ทุกอำเภอ</option>']; state.districts.forEach((district) => options.push('<option value="' + escapeHtml(district) + '">' + escapeHtml(district) + '</option>')); ui.district.innerHTML = options.join(''); ui.district.value = state.districts.includes(selectedDistrict) ? selectedDistrict : ''; }
+    function displayResult(record) { const result = firstValue(record, ['inspectionResult', 'result', 'ตรวจสอบผล', 'ผลตรวจ']); if (result) return result; const correction = firstValue(record, ['correctionStatus', 'correction', 'แก้ไข ไม่แก้ไข']); if (correction === 'แก้ไข') return 'ต้องแก้ไข'; if (correction === 'ไม่แก้ไข') return 'ผ่าน'; return 'ยังไม่ระบุผลตรวจ'; }
+    function matchesProgress(record, progress) { const inspected = isPresent(record.inspected); const disposal = firstValue(record, ['disposal', 'ตัดจำหน่าย']); const accountRemoval = isPresent(record.accountRemoval); const result = displayResult(record); if (progress === 'inspected') return inspected; if (progress === 'pending') return !inspected; if (progress === 'disposal') return disposal === 'มี'; if (progress === 'disposalDone') return disposal === 'มี' && inspected && accountRemoval; if (progress === 'disposalPending') return disposal === 'มี' && inspected && !accountRemoval; if (progress === 'correction') return result === 'ต้องแก้ไข' || firstValue(record, ['correctionStatus']) === 'แก้ไข'; return true; }
+    function filteredRecords() { const query = normalizeSearch(ui.search.value); const district = ui.district.value; const progress = ui.progress.value; return state.records.filter((record) => { const searchable = Object.values(record || {}).map(text).join(' ').toLowerCase(); return (!query || searchable.includes(query)) && (!district || text(record.district) === district) && matchesProgress(record, progress); }); }
+    function statusChip(label, value, className) { return '<span class="chip ' + className + '">' + escapeHtml(label) + ': ' + escapeHtml(value) + '</span>'; }
+    function detailCell(label, value, options) { const settings = options || {}; const classes = 'detail-cell' + (settings.wide ? ' detail-cell-wide' : '') + (settings.missing ? ' missing' : ''); const valueClass = 'detail-value' + (settings.error ? ' result-error' : ''); return '<div class="' + classes + '"><span class="detail-label">' + escapeHtml(label) + '</span><span class="' + valueClass + '">' + escapeHtml(value) + '</span></div>'; }
+    function recordCard(record) { const no = firstValue(record, ['no', 'number', 'ลำดับ']) || '-'; const school = firstValue(record, ['school', 'โรงเรียน']) || 'ไม่ระบุชื่อโรงเรียน'; const subdistrict = firstValue(record, ['subdistrict', 'ตำบล']); const district = firstValue(record, ['district', 'อำเภอ']); const docNo = firstValue(record, ['docNo', 'documentNo', 'เลขที่หนังสือนำส่ง']); const disposal = firstValue(record, ['disposal', 'ตัดจำหน่าย']) || 'ยังไม่ระบุ'; const inspected = isPresent(record.inspected); const result = displayResult(record); const remark = firstValue(record, ['remark', 'remarks', 'note', 'หมายเหตุ']) || 'ไม่มีหมายเหตุ'; const accountRemoval = isPresent(record.accountRemoval); const disposalReport = disposal === 'มี' ? (accountRemoval ? 'ส่งแล้ว' : 'ยังไม่ส่ง') : disposal === 'ไม่มี' ? 'ไม่ต้องส่ง' : 'รอระบุ'; const disposalClass = disposal === 'มี' ? 'chip-error' : disposal === 'ไม่มี' ? 'chip-ok' : 'chip-pending'; const reportClass = disposal === 'มี' ? (accountRemoval ? 'chip-ok' : 'chip-pending') : 'chip-neutral'; const resultError = result === 'ต้องแก้ไข'; const cardClass = !inspected ? ' is-pending' : resultError ? ' is-correction' : ''; const location = [subdistrict, district].filter(Boolean).join(' · '); return '<article class="school-card' + cardClass + '">' + '<div class="school-head"><div><h3 class="school-name">' + escapeHtml(school) + '</h3><p class="school-location">' + escapeHtml(location || 'ไม่ระบุพื้นที่') + '</p></div><span class="school-number">ลำดับ ' + escapeHtml(no) + '</span></div>' + '<div class="chips">' + statusChip('ตัดจำหน่าย', disposal, disposalClass) + statusChip('รายงานตรวจสอบ', inspected ? 'ส่งแล้ว' : 'ยังไม่ส่ง', inspected ? 'chip-ok' : 'chip-pending') + statusChip('รายงานตัดจำหน่าย', disposalReport, reportClass) + '</div>' + '<div class="details">' + detailCell('เลขที่หนังสือนำส่ง', docNo || 'ยังไม่มีเลขที่นำส่ง', { missing: !docNo }) + detailCell('ผลตรวจ', result, { error: resultError }) + detailCell('หมายเหตุ / เหตุผลแก้ไข', remark, { wide: true }) + '</div>' + '</article>'; }
+    function renderSchools() { if (!state.ready) return; const filtered = filteredRecords(); ui.count.textContent = 'พบ ' + formatNumber(filtered.length) + ' จาก ' + formatNumber(state.records.length) + ' โรงเรียน'; ui.list.innerHTML = filtered.map(recordCard).join(''); ui.list.setAttribute('aria-busy', 'false'); ui.empty.hidden = filtered.length !== 0; if (!filtered.length) { ui.emptyTitle.textContent = 'ไม่พบรายการ'; ui.emptyMessage.textContent = 'ลองเปลี่ยนคำค้นหา อำเภอ หรือสถานะที่เลือก'; } }
+    function finishRequest(callbackName, script) { if (activeTimer) window.clearTimeout(activeTimer); activeTimer = null; if (script && script.parentNode) script.parentNode.removeChild(script); if (window[callbackName]) delete window[callbackName]; activeScript = null; ui.refresh.disabled = false; ui.loading.hidden = true; ui.list.setAttribute('aria-busy', 'false'); }
+    function loadViewerData() { if (activeScript) activeScript.remove(); if (activeTimer) window.clearTimeout(activeTimer); const previousDistrict = ui.district.value; const previousProgress = ui.progress.value; ui.refresh.disabled = true; ui.district.disabled = true; ui.progress.disabled = true; ui.list.setAttribute('aria-busy', 'true'); ui.loading.hidden = false; ui.loading.textContent = state.ready ? 'กำลังรีเฟรชข้อมูลล่าสุด…' : 'กำลังโหลดข้อมูลโรงเรียน…'; setNotice('', false); const callbackName = 'annualViewerCallback_' + Date.now(); const script = document.createElement('script'); activeScript = script; window[callbackName] = (payload) => { finishRequest(callbackName, script); try { if (!payload || !Array.isArray(payload.records)) throw new Error('รูปแบบข้อมูลจาก Viewer ไม่ถูกต้อง'); state.records = payload.records; state.districts = Array.isArray(payload.districts) ? payload.districts : []; state.summary = payload.summary || {}; state.updatedAt = payload.updatedAt || null; state.ready = true; renderDistrictOptions(previousDistrict); ui.progress.value = previousProgress || 'all'; ui.district.disabled = false; ui.progress.disabled = false; renderSummary(); renderSchools(); const timestamp = state.updatedAt ? new Date(state.updatedAt) : null; ui.meta.textContent = 'ค้นหาในข้อมูลที่โหลดไว้แล้ว · อัปเดตล่าสุด ' + (timestamp && !Number.isNaN(timestamp.getTime()) ? timestamp.toLocaleString('th-TH') : 'ขณะนี้'); } catch (error) { setNotice(error.message || 'โหลดข้อมูลไม่สำเร็จ กรุณารีเฟรชอีกครั้ง', true); } }; script.onerror = () => { finishRequest(callbackName, script); ui.district.disabled = !state.ready; ui.progress.disabled = !state.ready; setNotice('โหลดข้อมูลไม่สำเร็จ กรุณารีเฟรชอีกครั้ง', true); }; script.src = API_URL + '?api=viewer&callback=' + encodeURIComponent(callbackName) + '&_=' + Date.now(); script.async = true; document.body.appendChild(script); activeTimer = window.setTimeout(() => { finishRequest(callbackName, script); ui.district.disabled = !state.ready; ui.progress.disabled = !state.ready; setNotice('การโหลดข้อมูลใช้เวลานานเกินไป กรุณาลองใหม่', true); }, 20000); }
+    ui.search.addEventListener('input', renderSchools);
+    ui.clearSearch.addEventListener('click', () => { ui.search.value = ''; ui.search.focus(); renderSchools(); });
+    ui.district.addEventListener('change', renderSchools);
+    ui.progress.addEventListener('change', renderSchools);
+    ui.refresh.addEventListener('click', loadViewerData);
+    document.querySelectorAll('.summary-card').forEach((card) => { card.addEventListener('click', () => { ui.progress.value = card.dataset.filter; renderSchools(); document.querySelector('.results-panel').scrollIntoView({ behavior: 'smooth', block: 'start' }); }); });
+    document.addEventListener('DOMContentLoaded', loadViewerData);
   </script>
 </body>
 </html>
