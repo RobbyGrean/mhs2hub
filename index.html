@@ -6,7 +6,7 @@
   <title>ศูนย์รวมคู่มือด้านงานพัสดุ</title>
   <link rel="icon" type="image/svg+xml" href="./favicon.svg">
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./style.css?v=20260817-inventory-dropdown">
+  <link rel="stylesheet" href="./style.css?v=20261026-inspection-deadline">
 </head>
 <body>
 
@@ -310,6 +310,25 @@
       </div>
     </a>
 
+    <section class="inspection-deadline-section" aria-labelledby="inspectionDeadlineTitle">
+      <button class="inspection-deadline-launch" id="inspectionDeadlineToggle" type="button"
+              aria-expanded="false" aria-controls="inspectionDeadlineGuide">
+        <span class="inspection-deadline-icon" aria-hidden="true">⏱️</span>
+        <span class="inspection-deadline-copy">
+          <strong id="inspectionDeadlineTitle">ระยะเวลาการตรวจรับ ตาม ว681</strong>
+          <small>กดเพื่อแสดงภาพสรุประยะเวลาการตรวจรับพัสดุ</small>
+        </span>
+        <span class="inspection-deadline-arrow" aria-hidden="true">⌄</span>
+      </button>
+      <div class="inspection-deadline-guide" id="inspectionDeadlineGuide" role="region"
+           aria-labelledby="inspectionDeadlineTitle" hidden>
+        <img class="inspection-deadline-image"
+             src="pictureassets/inspection-acceptance-deadline-w681.png"
+             alt="อินโฟกราฟิกระยะเวลาในการตรวจรับพัสดุของคณะกรรมการตรวจรับพัสดุ ตามหนังสือ ว 681"
+             width="1672" height="941" loading="lazy" decoding="async">
+      </div>
+    </section>
+
     <!-- 8. PassaduAIagent (quick-access copy) -->
     <div class="card card-passadu card-passadu-main span2" onclick="this.classList.toggle('open')">
       <div class="spotlight"></div><div class="passadu-orb" aria-hidden="true"></div>
@@ -601,6 +620,6 @@
   <button class="music-next" onclick="nextSong()" title="สุ่มเพลงถัดไป">⏭️</button>
 </div>
 
-<script src="./script.js?v=20260619-sparkle-touch"></script>
+<script src="./script.js?v=20261026-inspection-deadline"></script>
 </body>
 </html>

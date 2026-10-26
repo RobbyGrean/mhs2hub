@@ -217,6 +217,19 @@ function goAppealSlide(index) {
   }, { passive:true });
 })();
 
+(() => {
+  const toggle = document.getElementById('inspectionDeadlineToggle');
+  const guide = document.getElementById('inspectionDeadlineGuide');
+  if (!toggle || !guide) return;
+
+  toggle.addEventListener('click', () => {
+    const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+    toggle.setAttribute('aria-expanded', String(!isOpen));
+    guide.hidden = isOpen;
+    if (!isOpen) guide.scrollIntoView({ behavior:'smooth', block:'nearest' });
+  });
+})();
+
 function syncSupplyKeyboardDir() {
   const activeKey = supplyKeyboardStack[supplyKeyboardStack.length - 1];
   if (!activeKey) {

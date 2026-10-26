@@ -1601,3 +1601,70 @@ body::after {
   .classroom-portal-action { width:100%; }
   .classroom-portal-stack { top:2.2rem;right:-1rem;width:105px;height:59px; }
 }
+
+.inspection-deadline-section { grid-column:1 / -1; }
+.inspection-deadline-launch {
+  position:relative;
+  isolation:isolate;
+  overflow:hidden;
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:0.85rem;
+  font:inherit;
+  padding:1rem 1.1rem;
+  border:1px solid rgba(125,211,252,0.4);
+  border-radius:1rem;
+  color:#fff;
+  text-align:left;
+  cursor:pointer;
+  background:linear-gradient(135deg, rgba(20,73,110,0.94), rgba(20,45,75,0.96));
+  box-shadow:0 12px 35px rgba(14,116,180,0.16), inset 0 1px 0 rgba(255,255,255,0.1);
+  transition:transform 180ms var(--ease), box-shadow 180ms var(--ease), border-color 180ms var(--ease);
+}
+.inspection-deadline-launch:hover {
+  transform:translateY(-2px);
+  border-color:rgba(125,211,252,0.7);
+  box-shadow:0 16px 40px rgba(14,116,180,0.3), inset 0 1px 0 rgba(255,255,255,0.14);
+}
+.inspection-deadline-launch:focus-visible {
+  outline:3px solid rgba(125,211,252,0.9);
+  outline-offset:3px;
+}
+.inspection-deadline-icon {
+  width:2.45rem;
+  height:2.45rem;
+  flex:0 0 auto;
+  display:grid;
+  place-items:center;
+  border-radius:0.75rem;
+  background:rgba(125,211,252,0.17);
+  color:#bae6fd;
+  font-size:1.3rem;
+}
+.inspection-deadline-copy { display:grid; gap:0.18rem; min-width:0; }
+.inspection-deadline-copy strong { font-size:clamp(0.92rem, 2.1vw, 1.05rem); line-height:1.45; }
+.inspection-deadline-copy small { color:rgba(186,230,253,0.8); font-size:0.78rem; }
+.inspection-deadline-arrow {
+  margin-left:auto;
+  color:#7dd3fc;
+  font-size:1.55rem;
+  line-height:1;
+  transition:transform 220ms var(--ease);
+}
+.inspection-deadline-launch[aria-expanded="true"] .inspection-deadline-arrow { transform:rotate(180deg); }
+.inspection-deadline-guide {
+  margin-top:0.85rem;
+  padding:clamp(0.65rem, 2vw, 1rem);
+  border:1px solid rgba(125,211,252,0.32);
+  border-radius:1rem;
+  background:rgba(10,25,44,0.72);
+  box-shadow:0 14px 40px rgba(0,0,0,0.24);
+}
+.inspection-deadline-guide[hidden] { display:none; }
+.inspection-deadline-image { display:block; width:100%; height:auto; border-radius:0.65rem; }
+@media(max-width:640px) {
+  .inspection-deadline-launch { align-items:flex-start; padding:0.85rem; gap:0.65rem; }
+  .inspection-deadline-icon { width:2.15rem; height:2.15rem; border-radius:0.65rem; }
+  .inspection-deadline-copy small { display:none; }
+}
